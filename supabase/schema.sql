@@ -127,31 +127,46 @@ ALTER TABLE public.jogos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.estatisticas_partida ENABLE ROW LEVEL SECURITY;
 
 -- Profiles: usuário vê/edita apenas o próprio; todos podem ver
+DROP POLICY IF EXISTS "profiles_select_all" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_insert_own" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_update_own" ON public.profiles;
 CREATE POLICY "profiles_select_all" ON public.profiles FOR SELECT USING (TRUE);
 CREATE POLICY "profiles_insert_own" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 CREATE POLICY "profiles_update_own" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
 -- Jogadores: todos podem ver; autenticados podem inserir
+DROP POLICY IF EXISTS "jogadores_select_all" ON public.jogadores;
+DROP POLICY IF EXISTS "jogadores_insert_auth" ON public.jogadores;
+DROP POLICY IF EXISTS "jogadores_update_auth" ON public.jogadores;
 CREATE POLICY "jogadores_select_all" ON public.jogadores FOR SELECT USING (TRUE);
 CREATE POLICY "jogadores_insert_auth" ON public.jogadores FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 CREATE POLICY "jogadores_update_auth" ON public.jogadores FOR UPDATE USING (auth.role() = 'authenticated');
 
 -- Votos: usuário vê e insere apenas os próprios
+DROP POLICY IF EXISTS "votos_select_own" ON public.votos;
+DROP POLICY IF EXISTS "votos_insert_own" ON public.votos;
 CREATE POLICY "votos_select_own" ON public.votos FOR SELECT USING (auth.uid() = votante_id);
 CREATE POLICY "votos_insert_own" ON public.votos FOR INSERT WITH CHECK (auth.uid() = votante_id);
 
 -- Votos diários: usuário gerencia apenas os próprios
+DROP POLICY IF EXISTS "votos_diarios_own" ON public.votos_diarios;
 CREATE POLICY "votos_diarios_own" ON public.votos_diarios FOR ALL USING (auth.uid() = votante_id);
 
 -- Campeões: público para leitura
+DROP POLICY IF EXISTS "campeoes_select_all" ON public.campeoes_semana;
 CREATE POLICY "campeoes_select_all" ON public.campeoes_semana FOR SELECT USING (TRUE);
 
 -- Jogos: todos veem; autenticados criam
+DROP POLICY IF EXISTS "jogos_select_all" ON public.jogos;
+DROP POLICY IF EXISTS "jogos_insert_auth" ON public.jogos;
+DROP POLICY IF EXISTS "jogos_update_auth" ON public.jogos;
 CREATE POLICY "jogos_select_all" ON public.jogos FOR SELECT USING (TRUE);
 CREATE POLICY "jogos_insert_auth" ON public.jogos FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 CREATE POLICY "jogos_update_auth" ON public.jogos FOR UPDATE USING (auth.role() = 'authenticated');
 
 -- Estatísticas: todos veem; autenticados inserem
+DROP POLICY IF EXISTS "stats_select_all" ON public.estatisticas_partida;
+DROP POLICY IF EXISTS "stats_insert_auth" ON public.estatisticas_partida;
 CREATE POLICY "stats_select_all" ON public.estatisticas_partida FOR SELECT USING (TRUE);
 CREATE POLICY "stats_insert_auth" ON public.estatisticas_partida FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
