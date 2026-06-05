@@ -82,11 +82,7 @@ export default function Home({ onNavigate }) {
 
         {/* Botões principais */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
-          <button className="btn btn-primary" onClick={() => onNavigate('jogadores', { openAdd: true })}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-            Adicionar Jogador
-          </button>
-          <button className="btn btn-secondary" onClick={() => onNavigate('votar')}>
+          <button className="btn btn-primary" onClick={() => onNavigate('votar')}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             Avaliar Jogadores
           </button>

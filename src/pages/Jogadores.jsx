@@ -75,10 +75,7 @@ export default function Jogadores({ initialOpenAdd = false }) {
               <p style={{ color: '#64748b', fontSize: 13 }}>{jogadores.length} cadastrados</p>
             </div>
           </div>
-          <button className="btn btn-primary btn-sm" onClick={() => setShowAdd(true)}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-            Adicionar Jogador
-          </button>
+
         </div>
 
         {/* Busca */}
