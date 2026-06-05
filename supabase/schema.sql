@@ -5,7 +5,7 @@
 
 -- Extensões necessárias
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pg_cron";
+-- CREATE EXTENSION IF NOT EXISTS "pg_cron"; -- Comentado para evitar erro se a extensão não estiver disponível
 
 -- ============================================================
 -- TABELAS
@@ -392,11 +392,11 @@ $$;
 
 -- Agendar cron job todo domingo às 23:59 (requer pg_cron habilitado no Supabase)
 -- Execute este comando no SQL Editor do Supabase após habilitar pg_cron:
-SELECT cron.schedule(
-  'rotina-semanal-domingo',
-  '59 23 * * 0', -- Toda domingo às 23:59
-  $$SELECT public.rotina_semanal_domingo()$$
-);
+-- SELECT cron.schedule(
+--   'rotina-semanal-domingo',
+--   '59 23 * * 0', -- Toda domingo às 23:59
+--   $$SELECT public.rotina_semanal_domingo()$$
+-- );
 
 -- ============================================================
 -- TRIGGER: auto-criar profile ao registrar usuário
