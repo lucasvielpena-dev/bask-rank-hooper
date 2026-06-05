@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase, authAPI } from './lib/supabase';
+import { supabase, authAPI, profilesAPI } from './lib/supabase';
 import './styles/global.css';
 
 import Home from './pages/Home';
@@ -8,7 +8,9 @@ import Jogadores from './pages/Jogadores';
 import Votar from './pages/Votar';
 import Jogos from './pages/Jogos';
 import Stats from './pages/Stats';
-import AuthModal from './components/AuthModal';
+
+import AuthScreen from './components/AuthScreen';
+import CompleteProfileScreen from './components/CompleteProfileScreen';
 
 const PAGES = {
   inicio: { label: 'Início', icon: 'home' },
@@ -35,16 +37,96 @@ export default function App() {
   const [page, setPage] = useState('inicio');
   const [pageProps, setPageProps] = useState({});
   const [user, setUser] = useState(null);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+
+  // States para edição do perfil
+  const [editApelido, setEditApelido] = useState('');
+  const [editAltura, setEditAltura] = useState('');
+  const [editIdade, setEditIdade] = useState('');
+  const [salvandoPerfil, setSalvandoPerfil] = useState(false);
+  const [erroPerfil, setErroPerfil] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+      if (user) {
+        loadProfile(user.id);
+      } else {
+        setProfile(null);
+        setLoadingProfile(false);
+      }
+    });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user ?? null);
+      const u = session?.user ?? null;
+      setUser(u);
+      if (u) {
+        loadProfile(u.id);
+      } else {
+        setProfile(null);
+        setLoadingProfile(false);
+      }
     });
     return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  async function loadProfile(uid) {
+    try {
+      const { data } = await profilesAPI.obterPerfil(uid);
+      if (data) {
+        setProfile(data);
+        setEditApelido(data.apelido || '');
+        setEditAltura(data.altura || '');
+        setEditIdade(data.idade || '');
+        setLoadingProfile(false);
+      } else {
+        // Se o trigger do Supabase ainda não completou a inserção, tenta novamente em 1s
+        setTimeout(() => loadProfile(uid), 1000);
+      }
+    } catch (e) {
+      console.error(e);
+      setLoadingProfile(false);
+    }
+  }
+
+  async function handleSaveProfile(e) {
+    e.preventDefault();
+    setSalvandoPerfil(true);
+    setErroPerfil(null);
+
+    const parsedAltura = parseFloat(editAltura);
+    const parsedIdade = parseInt(editIdade);
+
+    try {
+      if (!editApelido.trim()) {
+        throw new Error('Por favor, informe seu apelido.');
+      }
+      if (isNaN(parsedAltura) || parsedAltura <= 0 || parsedAltura > 3) {
+        throw new Error('Por favor, informe uma altura válida (ex: 1.85).');
+      }
+      if (isNaN(parsedIdade) || parsedIdade <= 0 || parsedIdade > 120) {
+        throw new Error('Por favor, informe uma idade válida.');
+      }
+
+      const { data, error } = await profilesAPI.atualizar(profile.id, {
+        apelido: editApelido.trim(),
+        altura: parsedAltura,
+        idade: parsedIdade
+      });
+
+      if (error) throw error;
+      setProfile(data);
+      setIsEditingProfile(false);
+    } catch (err) {
+      setErroPerfil(err.message || 'Erro ao salvar alterações.');
+    } finally {
+      setSalvandoPerfil(false);
+    }
+  }
 
   function navigate(to, props = {}) {
     setPage(to);
@@ -55,14 +137,44 @@ export default function App() {
     switch (page) {
       case 'inicio': return <Home onNavigate={navigate} />;
       case 'ranking': return <Ranking />;
-      case 'jogadores': return <Jogadores user={user} onOpenLogin={() => setIsAuthOpen(true)} initialOpenAdd={pageProps.openAdd} />;
-      case 'votar': return <Votar user={user} onOpenLogin={() => setIsAuthOpen(true)} />;
-      case 'jogos': return <Jogos user={user} onOpenLogin={() => setIsAuthOpen(true)} />;
-      case 'stats': return <Stats user={user} />;
+      case 'jogadores': return <Jogadores initialOpenAdd={pageProps.openAdd} />;
+      case 'votar': return <Votar />;
+      case 'jogos': return <Jogos />;
+      case 'stats': return <Stats />;
       default: return <Home onNavigate={navigate} />;
     }
   }
 
+  // 1. Fluxo de Carregamento
+  if (user && loadingProfile) {
+    return (
+      <div className="app-shell" style={{ justifyContent: 'center', minHeight: '100dvh' }}>
+        <div className="loading"><div className="spinner" />Carregando perfil...</div>
+      </div>
+    );
+  }
+
+  // 2. Fluxo: Sem autenticação -> Bloquear acesso total
+  if (!user) {
+    return <AuthScreen />;
+  }
+
+  // 3. Fluxo: Autenticado mas sem cadastro completo -> Bloquear e exigir preenchimento
+  if (!profile || !profile.cadastro_completo) {
+    return (
+      <CompleteProfileScreen 
+        profile={profile} 
+        onComplete={(updatedProfile) => {
+          setProfile(updatedProfile);
+          setEditApelido(updatedProfile.apelido || '');
+          setEditAltura(updatedProfile.altura || '');
+          setEditIdade(updatedProfile.idade || '');
+        }} 
+      />
+    );
+  }
+
+  // 4. Fluxo: Acesso total liberado
   return (
     <div className="app-shell">
       {/* Header */}
@@ -74,34 +186,23 @@ export default function App() {
           </div>
           <div className="header-subtitle">ALTAMIRA • PARÁ</div>
         </div>
-        {user ? (
-          <div 
-            onClick={() => setShowUserMenu(true)}
-            style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
-          >
+        
+        <div 
+          onClick={() => setShowUserMenu(true)}
+          style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
+        >
+          {profile.foto_perfil ? (
+            <img 
+              src={profile.foto_perfil} 
+              alt="Avatar" 
+              style={{ width: 30, height: 30, borderRadius: '50%', border: '1px solid var(--border)' }} 
+            />
+          ) : (
             <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(59,130,246,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#60a5fa' }}>
-              {user.user_metadata?.nome?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
+              {profile.nome_completo?.charAt(0).toUpperCase()}
             </div>
-          </div>
-        ) : (
-          <button 
-            onClick={() => setIsAuthOpen(true)}
-            style={{ 
-              marginLeft: 'auto', 
-              background: 'var(--accent-blue-dim)', 
-              border: '1px solid var(--border)', 
-              color: '#60a5fa', 
-              padding: '6px 14px', 
-              borderRadius: '50px', 
-              fontSize: '13px', 
-              fontWeight: 600, 
-              cursor: 'pointer',
-              fontFamily: 'inherit'
-            }}
-          >
-            Entrar
-          </button>
-        )}
+          )}
+        </div>
       </header>
 
       {/* Page */}
@@ -121,42 +222,159 @@ export default function App() {
         ))}
       </nav>
 
-      {/* Modais de Autenticação */}
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-
-      {showUserMenu && user && (
-        <div className="modal-overlay" onClick={() => setShowUserMenu(false)}>
+      {/* Modal Menu Usuário / Meu Perfil */}
+      {showUserMenu && user && profile && (
+        <div className="modal-overlay" onClick={() => { if (!salvandoPerfil) { setShowUserMenu(false); setIsEditingProfile(false); } }}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 400 }}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 800, fontSize: 20, marginBottom: 6, textAlign: 'center' }}>Sua Conta</h3>
+            <h3 style={{ fontWeight: 800, fontSize: 20, marginBottom: 6, textAlign: 'center' }}>
+              {isEditingProfile ? 'Editar Perfil' : 'Meu Perfil'}
+            </h3>
             <p style={{ color: '#64748b', fontSize: 13, marginBottom: 20, textAlign: 'center' }}>
-              Logado como <strong style={{ color: '#f1f5f9' }}>{user.user_metadata?.nome || user.email}</strong>
+              {isEditingProfile ? 'Atualize suas informações pessoais' : 'Informações do seu perfil de atleta'}
             </p>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'var(--bg-elevated)' }}>
-                <div className="avatar">{user.user_metadata?.nome?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}</div>
-                <div style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  <div style={{ fontWeight: 700 }}>{user.user_metadata?.nome || 'Usuário'}</div>
-                  <div style={{ fontSize: 12, color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</div>
-                </div>
+
+            {erroPerfil && (
+              <div style={{
+                background: 'rgba(239,68,68,0.1)',
+                border: '1px solid rgba(239,68,68,0.3)',
+                borderRadius: 8,
+                color: '#f87171',
+                padding: '10px 14px',
+                fontSize: 13,
+                marginBottom: 16
+              }}>
+                ⚠️ {erroPerfil}
               </div>
-              
-              <button 
-                className="btn btn-secondary" 
-                onClick={async () => {
-                  await authAPI.logout();
-                  setShowUserMenu(false);
-                }}
-                style={{ color: '#f87171', borderColor: 'rgba(239,68,68,0.2)' }}
-              >
-                Sair da Conta
-              </button>
-              
-              <button className="btn btn-primary" onClick={() => setShowUserMenu(false)}>
-                Fechar
-              </button>
-            </div>
+            )}
+
+            {isEditingProfile ? (
+              <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div>
+                  <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                    Apelido *
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    value={editApelido}
+                    onChange={(e) => setEditApelido(e.target.value)}
+                    placeholder="Ex: DD, Viel..."
+                  />
+                </div>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                  <div>
+                    <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                      Altura (m) *
+                    </label>
+                    <input
+                      required
+                      type="number"
+                      step="0.01"
+                      min="0.5"
+                      max="3"
+                      value={editAltura}
+                      onChange={(e) => setEditAltura(e.target.value)}
+                      placeholder="Ex: 1.85"
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                      Idade *
+                    </label>
+                    <input
+                      required
+                      type="number"
+                      min="1"
+                      max="120"
+                      value={editIdade}
+                      onChange={(e) => setEditIdade(e.target.value)}
+                      placeholder="Ex: 25"
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
+                  <button 
+                    type="button" 
+                    className="btn btn-secondary" 
+                    onClick={() => { setIsEditingProfile(false); setErroPerfil(null); }}
+                    style={{ flex: 1 }}
+                    disabled={salvandoPerfil}
+                  >
+                    Cancelar
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="btn btn-primary" 
+                    style={{ flex: 2 }}
+                    disabled={salvandoPerfil}
+                  >
+                    {salvandoPerfil ? <div className="spinner" /> : 'Salvar'}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'var(--bg-elevated)' }}>
+                  {profile.foto_perfil ? (
+                    <img 
+                      src={profile.foto_perfil} 
+                      alt="Avatar" 
+                      style={{ width: 44, height: 44, borderRadius: '50%', border: '1px solid var(--border)' }} 
+                    />
+                  ) : (
+                    <div className="avatar">
+                      {profile.nome_completo?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <div style={{ fontWeight: 700 }}>{profile.nome_completo}</div>
+                    <div style={{ fontSize: 12, color: '#64748b' }}>{profile.email}</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+                  <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
+                    <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>APELIDO</div>
+                    <div style={{ fontWeight: 800, color: '#f1f5f9', fontSize: 14 }}>{profile.apelido}</div>
+                  </div>
+                  <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
+                    <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>ALTURA</div>
+                    <div style={{ fontWeight: 800, color: '#60a5fa', fontSize: 14 }}>{Number(profile.altura).toFixed(2)}m</div>
+                  </div>
+                  <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
+                    <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>IDADE</div>
+                    <div style={{ fontWeight: 800, color: '#f59e0b', fontSize: 14 }}>{profile.idade} anos</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
+                  <button 
+                    className="btn btn-secondary"
+                    onClick={() => setIsEditingProfile(true)}
+                    style={{ flex: 1 }}
+                  >
+                    Editar Perfil
+                  </button>
+                  <button 
+                    className="btn btn-secondary" 
+                    onClick={async () => {
+                      await authAPI.logout();
+                      setShowUserMenu(false);
+                    }}
+                    style={{ flex: 1, color: '#f87171', borderColor: 'rgba(239,68,68,0.2)' }}
+                  >
+                    Sair da Conta
+                  </button>
+                </div>
+
+                <button className="btn btn-primary" onClick={() => setShowUserMenu(false)}>
+                  Fechar
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

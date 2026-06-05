@@ -161,6 +161,16 @@ export const authAPI = {
     return { data, error };
   },
 
+  loginGoogle: async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    });
+    return { data, error };
+  },
+
   logout: async () => {
     const { error } = await supabase.auth.signOut();
     return { error };
@@ -170,4 +180,25 @@ export const authAPI = {
     const { data: { user } } = await supabase.auth.getUser();
     return user;
   },
+};
+
+export const profilesAPI = {
+  obterPerfil: async (id) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+    return { data, error };
+  },
+
+  atualizar: async (id, updates) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+    return { data, error };
+  }
 };

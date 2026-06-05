@@ -12,13 +12,17 @@ CREATE EXTENSION IF NOT EXISTS "pg_cron";
 -- ============================================================
 
 -- Perfis de usuários (extends auth.users do Supabase)
-CREATE TABLE IF NOT EXISTS public.profiles (
+CREATE TABLE public.profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
-  nome TEXT NOT NULL,
-  avatar_url TEXT,
-  is_player BOOLEAN DEFAULT FALSE,
-  player_id UUID, -- se o usuário também é um jogador cadastrado
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  nome_completo TEXT NOT NULL,
+  apelido TEXT,
+  email TEXT,
+  foto_perfil TEXT,
+  altura NUMERIC,
+  idade INTEGER,
+  cadastro_completo BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Jogadores cadastrados
@@ -401,10 +405,11 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
 BEGIN
-  INSERT INTO public.profiles (id, nome, avatar_url)
+  INSERT INTO public.profiles (id, nome_completo, email, foto_perfil)
   VALUES (
     NEW.id,
-    COALESCE(NEW.raw_user_meta_data->>'nome', NEW.email),
+    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'nome', NEW.email),
+    NEW.email,
     NEW.raw_user_meta_data->>'avatar_url'
   );
   RETURN NEW;

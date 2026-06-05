@@ -30,7 +30,7 @@ function StarPicker({ value, onChange, disabled }) {
   );
 }
 
-export default function Votar({ user, onOpenLogin }) {
+export default function Votar() {
   const [jogadores, setJogadores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [estrelas, setEstrelas] = useState({});
@@ -39,13 +39,7 @@ export default function Votar({ user, onOpenLogin }) {
   const [statusHoje, setStatusHoje] = useState(null);
   const [expandido, setExpandido] = useState(null);
 
-  useEffect(() => { 
-    if (user) {
-      loadDados(); 
-    } else {
-      setLoading(false);
-    }
-  }, [user]);
+  useEffect(() => { loadDados(); }, []);
 
   async function loadDados() {
     setLoading(true);
@@ -84,21 +78,6 @@ export default function Votar({ user, onOpenLogin }) {
   }
 
   const getInitial = (nome) => nome ? nome.charAt(0).toUpperCase() : '?';
-
-  if (!user) return (
-    <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-      <div style={{ textAlign: 'center', padding: '0 24px' }}>
-        <div style={{ fontSize: 64, marginBottom: 16 }}>🔒</div>
-        <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 8, color: '#f1f5f9' }}>Área Restrita</h3>
-        <p style={{ color: '#64748b', fontSize: 14, lineHeight: 1.5, marginBottom: 24 }}>
-          Você precisa estar logado para poder votar e avaliar o desempenho dos outros jogadores da quadra.
-        </p>
-        <button className="btn btn-primary" onClick={onOpenLogin}>
-          Entrar ou Criar Conta
-        </button>
-      </div>
-    </div>
-  );
 
   if (loading) return (
     <div className="page-content">
