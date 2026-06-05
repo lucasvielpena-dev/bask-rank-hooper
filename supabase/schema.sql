@@ -47,12 +47,10 @@ CREATE TABLE IF NOT EXISTS public.votos (
   votante_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   jogador_id UUID REFERENCES public.jogadores(id) ON DELETE CASCADE NOT NULL,
   estrelas INTEGER NOT NULL CHECK (estrelas BETWEEN 1 AND 5),
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  data_voto DATE DEFAULT CURRENT_DATE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE (votante_id, jogador_id, data_voto)
 );
-
--- Impede voto duplo no mesmo jogador pelo mesmo usuário no mesmo dia (antifraude)
-CREATE UNIQUE INDEX IF NOT EXISTS idx_votos_um_por_dia 
-ON public.votos (votante_id, jogador_id, (created_at::DATE));
 
 -- Controle de votos diários por usuário (antifraude)
 CREATE TABLE IF NOT EXISTS public.votos_diarios (
@@ -108,7 +106,7 @@ CREATE TABLE IF NOT EXISTS public.estatisticas_partida (
 -- ============================================================
 CREATE INDEX IF NOT EXISTS idx_jogadores_media ON public.jogadores(media_estrelas DESC, total_votos DESC);
 CREATE INDEX IF NOT EXISTS idx_votos_jogador ON public.votos(jogador_id);
-CREATE INDEX IF NOT EXISTS idx_votos_votante_data ON public.votos(votante_id, (created_at::DATE));
+CREATE INDEX IF NOT EXISTS idx_votos_votante_data ON public.votos(votante_id, data_voto);
 CREATE INDEX IF NOT EXISTS idx_votos_diarios_votante ON public.votos_diarios(votante_id, data);
 
 -- ============================================================
@@ -205,7 +203,7 @@ BEGIN
   FROM public.votos
   WHERE votante_id = v_votante_id
     AND jogador_id = p_jogador_id
-    AND created_at::DATE = v_hoje;
+    AND data_voto = v_hoje;
 
   IF v_voto_existente > 0 THEN
     RETURN jsonb_build_object('sucesso', FALSE, 'erro', 'Você já votou neste jogador hoje. Volte amanhã!');
@@ -302,7 +300,7 @@ AS $$
   ),
   votos_hoje AS (
     SELECT jogador_id FROM public.votos
-    WHERE votante_id = auth.uid() AND created_at::DATE = CURRENT_DATE
+    WHERE votante_id = auth.uid() AND data_voto = CURRENT_DATE
   )
   SELECT
     j.id,
