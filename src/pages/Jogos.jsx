@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { jogosAPI } from '../lib/supabase';
 
-export default function Jogos() {
+export default function Jogos({ user, onOpenLogin }) {
   const [aba, setAba] = useState('jogos');
   const [jogos, setJogos] = useState([]);
   const [historico, setHistorico] = useState([]);
@@ -11,7 +11,13 @@ export default function Jogos() {
   const [salvando, setSalvando] = useState(false);
   const [toast, setToast] = useState(null);
 
-  useEffect(() => { loadJogos(); }, []);
+  useEffect(() => { 
+    if (user) {
+      loadJogos(); 
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
 
   async function loadJogos() {
     setLoading(true);
@@ -57,6 +63,21 @@ export default function Jogos() {
     if (!d) return '';
     return new Date(d).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
+
+  if (!user) return (
+    <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+      <div style={{ textAlign: 'center', padding: '0 24px' }}>
+        <div style={{ fontSize: 64, marginBottom: 16 }}>🔒</div>
+        <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 8, color: '#f1f5f9' }}>Área Restrita</h3>
+        <p style={{ color: '#64748b', fontSize: 14, lineHeight: 1.5, marginBottom: 24 }}>
+          Você precisa estar logado para visualizar a programação de jogos e o placar em tempo real.
+        </p>
+        <button className="btn btn-primary" onClick={onOpenLogin}>
+          Entrar ou Criar Conta
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="page-content">

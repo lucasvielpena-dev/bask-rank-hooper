@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from './lib/supabase';
+import { supabase, authAPI } from './lib/supabase';
 import './styles/global.css';
 
 import Home from './pages/Home';
@@ -8,6 +8,7 @@ import Jogadores from './pages/Jogadores';
 import Votar from './pages/Votar';
 import Jogos from './pages/Jogos';
 import Stats from './pages/Stats';
+import AuthModal from './components/AuthModal';
 
 const PAGES = {
   inicio: { label: 'Início', icon: 'home' },
@@ -34,6 +35,8 @@ export default function App() {
   const [page, setPage] = useState('inicio');
   const [pageProps, setPageProps] = useState({});
   const [user, setUser] = useState(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
@@ -52,10 +55,10 @@ export default function App() {
     switch (page) {
       case 'inicio': return <Home onNavigate={navigate} />;
       case 'ranking': return <Ranking />;
-      case 'jogadores': return <Jogadores initialOpenAdd={pageProps.openAdd} />;
-      case 'votar': return <Votar />;
-      case 'jogos': return <Jogos />;
-      case 'stats': return <Stats />;
+      case 'jogadores': return <Jogadores user={user} onOpenLogin={() => setIsAuthOpen(true)} initialOpenAdd={pageProps.openAdd} />;
+      case 'votar': return <Votar user={user} onOpenLogin={() => setIsAuthOpen(true)} />;
+      case 'jogos': return <Jogos user={user} onOpenLogin={() => setIsAuthOpen(true)} />;
+      case 'stats': return <Stats user={user} />;
       default: return <Home onNavigate={navigate} />;
     }
   }
@@ -71,12 +74,33 @@ export default function App() {
           </div>
           <div className="header-subtitle">ALTAMIRA • PARÁ</div>
         </div>
-        {user && (
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
+        {user ? (
+          <div 
+            onClick={() => setShowUserMenu(true)}
+            style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
+          >
             <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(59,130,246,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#60a5fa' }}>
-              {user.email?.charAt(0).toUpperCase()}
+              {user.user_metadata?.nome?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
             </div>
           </div>
+        ) : (
+          <button 
+            onClick={() => setIsAuthOpen(true)}
+            style={{ 
+              marginLeft: 'auto', 
+              background: 'var(--accent-blue-dim)', 
+              border: '1px solid var(--border)', 
+              color: '#60a5fa', 
+              padding: '6px 14px', 
+              borderRadius: '50px', 
+              fontSize: '13px', 
+              fontWeight: 600, 
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}
+          >
+            Entrar
+          </button>
         )}
       </header>
 
@@ -96,6 +120,46 @@ export default function App() {
           </button>
         ))}
       </nav>
+
+      {/* Modais de Autenticação */}
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+
+      {showUserMenu && user && (
+        <div className="modal-overlay" onClick={() => setShowUserMenu(false)}>
+          <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 400 }}>
+            <div className="modal-handle" />
+            <h3 style={{ fontWeight: 800, fontSize: 20, marginBottom: 6, textAlign: 'center' }}>Sua Conta</h3>
+            <p style={{ color: '#64748b', fontSize: 13, marginBottom: 20, textAlign: 'center' }}>
+              Logado como <strong style={{ color: '#f1f5f9' }}>{user.user_metadata?.nome || user.email}</strong>
+            </p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'var(--bg-elevated)' }}>
+                <div className="avatar">{user.user_metadata?.nome?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}</div>
+                <div style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div style={{ fontWeight: 700 }}>{user.user_metadata?.nome || 'Usuário'}</div>
+                  <div style={{ fontSize: 12, color: '#64748b', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}</div>
+                </div>
+              </div>
+              
+              <button 
+                className="btn btn-secondary" 
+                onClick={async () => {
+                  await authAPI.logout();
+                  setShowUserMenu(false);
+                }}
+                style={{ color: '#f87171', borderColor: 'rgba(239,68,68,0.2)' }}
+              >
+                Sair da Conta
+              </button>
+              
+              <button className="btn btn-primary" onClick={() => setShowUserMenu(false)}>
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
