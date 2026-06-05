@@ -314,7 +314,7 @@ AS $$
   WHERE j.ativo = TRUE
     AND (SELECT player_id FROM meu_player) IS DISTINCT FROM j.id
   ORDER BY RANDOM()
-  LIMIT 6; -- retorna 6 para o front poder shufflear
+  LIMIT 2; -- retorna exatamente 2 jogadores para o sorteio da aba Votar
 $$;
 
 -- Função: verificar status de voto do usuário hoje
