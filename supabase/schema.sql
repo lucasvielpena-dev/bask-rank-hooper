@@ -439,6 +439,52 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- ============================================================
+-- TABELAS PARA JOGOS DA NOITE (PARTIDAS E PARTICIPANTES)
+-- ============================================================
+
+-- Partidas
+CREATE TABLE IF NOT EXISTS public.partidas (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  cidade TEXT DEFAULT 'Altamira',
+  uf TEXT DEFAULT 'PA',
+  time_a TEXT NOT NULL,
+  time_b TEXT NOT NULL,
+  placar_time_a INTEGER DEFAULT 0,
+  placar_time_b INTEGER DEFAULT 0,
+  tempo_total TEXT DEFAULT '00:00',
+  periodos INTEGER DEFAULT 1,
+  status TEXT DEFAULT 'ativo' CHECK (status IN ('ativo', 'finalizado')),
+  mvp_id UUID REFERENCES public.jogadores(id) ON DELETE SET NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Participantes da partida
+CREATE TABLE IF NOT EXISTS public.partida_jogadores (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  partida_id UUID REFERENCES public.partidas(id) ON DELETE CASCADE NOT NULL,
+  jogador_id UUID REFERENCES public.jogadores(id) ON DELETE CASCADE NOT NULL,
+  time CHAR(1) CHECK (time IN ('A', 'B')) NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RLS para Partidas e Participantes
+ALTER TABLE public.partidas ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.partida_jogadores ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "partidas_select_all" ON public.partidas;
+DROP POLICY IF EXISTS "partidas_insert_auth" ON public.partidas;
+DROP POLICY IF EXISTS "partidas_update_auth" ON public.partidas;
+CREATE POLICY "partidas_select_all" ON public.partidas FOR SELECT USING (TRUE);
+CREATE POLICY "partidas_insert_auth" ON public.partidas FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "partidas_update_auth" ON public.partidas FOR UPDATE USING (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "partida_jogadores_select_all" ON public.partida_jogadores;
+DROP POLICY IF EXISTS "partida_jogadores_insert_auth" ON public.partida_jogadores;
+CREATE POLICY "partida_jogadores_select_all" ON public.partida_jogadores FOR SELECT USING (TRUE);
+CREATE POLICY "partida_jogadores_insert_auth" ON public.partida_jogadores FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+
+-- ============================================================
 -- DADOS DE EXEMPLO (opcional - remover em produção)
 -- ============================================================
 -- INSERT INTO public.jogadores (nome, apelido, posicao) VALUES

@@ -202,3 +202,48 @@ export const profilesAPI = {
     return { data, error };
   }
 };
+
+export const partidasAPI = {
+  listar: async () => {
+    const { data, error } = await supabase
+      .from('partidas')
+      .select('*')
+      .order('created_at', { ascending: false });
+    return { data, error };
+  },
+
+  obterJogadoresDaPartida: async (partidaId) => {
+    const { data, error } = await supabase
+      .from('partida_jogadores')
+      .select('*, jogador:jogadores(nome, apelido)')
+      .eq('partida_id', partidaId);
+    return { data, error };
+  },
+
+  criar: async (partida) => {
+    const { data, error } = await supabase
+      .from('partidas')
+      .insert([partida])
+      .select()
+      .single();
+    return { data, error };
+  },
+
+  adicionarJogadores: async (jogadores) => {
+    const { data, error } = await supabase
+      .from('partida_jogadores')
+      .insert(jogadores)
+      .select();
+    return { data, error };
+  },
+
+  atualizar: async (id, updates) => {
+    const { data, error } = await supabase
+      .from('partidas')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+    return { data, error };
+  }
+};
