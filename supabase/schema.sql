@@ -47,10 +47,12 @@ CREATE TABLE IF NOT EXISTS public.votos (
   votante_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   jogador_id UUID REFERENCES public.jogadores(id) ON DELETE CASCADE NOT NULL,
   estrelas INTEGER NOT NULL CHECK (estrelas BETWEEN 1 AND 5),
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  -- Impede voto duplo no mesmo jogador pelo mesmo usuário no mesmo dia
-  UNIQUE (votante_id, jogador_id, (created_at::DATE))
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Impede voto duplo no mesmo jogador pelo mesmo usuário no mesmo dia (antifraude)
+CREATE UNIQUE INDEX IF NOT EXISTS idx_votos_um_por_dia 
+ON public.votos (votante_id, jogador_id, (created_at::DATE));
 
 -- Controle de votos diários por usuário (antifraude)
 CREATE TABLE IF NOT EXISTS public.votos_diarios (
