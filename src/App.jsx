@@ -49,6 +49,21 @@ export default function App() {
   const [salvandoPerfil, setSalvandoPerfil] = useState(false);
   const [erroPerfil, setErroPerfil] = useState(null);
 
+  const handleEditAlturaChange = (e) => {
+    const digits = e.target.value.replace(/\D/g, '');
+    let formatted = '';
+    if (digits.length > 0) {
+      if (digits.length === 1) {
+        formatted = digits;
+      } else if (digits.length === 2) {
+        formatted = `${digits[0]},${digits[1]}`;
+      } else {
+        formatted = `${digits[0]},${digits.substring(1, 3)}`;
+      }
+    }
+    setEditAltura(formatted);
+  };
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
@@ -80,7 +95,7 @@ export default function App() {
       if (data) {
         setProfile(data);
         setEditApelido(data.apelido || '');
-        setEditAltura(data.altura || '');
+        setEditAltura(data.altura ? data.altura.toString().replace('.', ',') : '');
         setEditIdade(data.idade || '');
         setLoadingProfile(false);
       } else if (retries < 3) {
@@ -123,7 +138,7 @@ export default function App() {
     setSalvandoPerfil(true);
     setErroPerfil(null);
 
-    const parsedAltura = parseFloat(editAltura);
+    const parsedAltura = parseFloat(editAltura.toString().replace(',', '.'));
     const parsedIdade = parseInt(editIdade);
 
     try {
@@ -192,7 +207,7 @@ export default function App() {
         onComplete={(updatedProfile) => {
           setProfile(updatedProfile);
           setEditApelido(updatedProfile.apelido || '');
-          setEditAltura(updatedProfile.altura || '');
+          setEditAltura(updatedProfile.altura ? updatedProfile.altura.toString().replace('.', ',') : '');
           setEditIdade(updatedProfile.idade || '');
         }} 
       />
@@ -295,13 +310,11 @@ export default function App() {
                     </label>
                     <input
                       required
-                      type="number"
-                      step="0.01"
-                      min="0.5"
-                      max="3"
+                      type="text"
+                      inputMode="decimal"
                       value={editAltura}
-                      onChange={(e) => setEditAltura(e.target.value)}
-                      placeholder="Ex: 1.85"
+                      onChange={handleEditAlturaChange}
+                      placeholder="Ex: 1,85"
                     />
                   </div>
                   <div>

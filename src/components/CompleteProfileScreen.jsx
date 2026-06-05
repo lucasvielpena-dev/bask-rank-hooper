@@ -3,8 +3,23 @@ import { profilesAPI } from '../lib/supabase';
 
 export default function CompleteProfileScreen({ profile, onComplete }) {
   const [apelido, setApelido] = useState(profile?.apelido || '');
-  const [altura, setAltura] = useState(profile?.altura || '');
+  const [altura, setAltura] = useState(profile?.altura ? profile.altura.toString().replace('.', ',') : '');
   const [idade, setIdade] = useState(profile?.idade || '');
+
+  const handleAlturaChange = (e) => {
+    const digits = e.target.value.replace(/\D/g, '');
+    let formatted = '';
+    if (digits.length > 0) {
+      if (digits.length === 1) {
+        formatted = digits;
+      } else if (digits.length === 2) {
+        formatted = `${digits[0]},${digits[1]}`;
+      } else {
+        formatted = `${digits[0]},${digits.substring(1, 3)}`;
+      }
+    }
+    setAltura(formatted);
+  };
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
 
@@ -13,7 +28,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
     setCarregando(true);
     setErro(null);
 
-    const parsedAltura = parseFloat(altura);
+    const parsedAltura = parseFloat(altura.toString().replace(',', '.'));
     const parsedIdade = parseInt(idade);
 
     try {
@@ -143,13 +158,11 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               </label>
               <input
                 required
-                type="number"
-                step="0.01"
-                min="0.5"
-                max="3"
+                type="text"
+                inputMode="decimal"
                 value={altura}
-                onChange={(e) => setAltura(e.target.value)}
-                placeholder="Ex: 1.85"
+                onChange={handleAlturaChange}
+                placeholder="Ex: 1,85"
               />
             </div>
             <div>
