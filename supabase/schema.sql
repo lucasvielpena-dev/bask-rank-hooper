@@ -21,6 +21,8 @@ CREATE TABLE public.profiles (
   altura NUMERIC,
   idade INTEGER,
   cadastro_completo BOOLEAN DEFAULT FALSE,
+  is_player BOOLEAN DEFAULT FALSE,
+  player_id UUID,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
