@@ -74,7 +74,7 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function loadProfile(uid) {
+  async function loadProfile(uid, retries = 0) {
     try {
       const { data } = await profilesAPI.obterPerfil(uid);
       if (data) {
@@ -83,9 +83,34 @@ export default function App() {
         setEditAltura(data.altura || '');
         setEditIdade(data.idade || '');
         setLoadingProfile(false);
-      } else {
+      } else if (retries < 3) {
         // Se o trigger do Supabase ainda não completou a inserção, tenta novamente em 1s
-        setTimeout(() => loadProfile(uid), 1000);
+        setTimeout(() => loadProfile(uid, retries + 1), 1000);
+      } else {
+        // Fallback: criar perfil no front-end caso o trigger do banco não tenha rodado
+        const fallbackProfile = {
+          id: uid,
+          nome_completo: user?.user_metadata?.nome || user?.user_metadata?.full_name || user?.email || 'Jogador',
+          email: user?.email,
+          foto_perfil: user?.user_metadata?.avatar_url || null,
+          cadastro_completo: false
+        };
+        
+        const { data: createdData } = await supabase
+          .from('profiles')
+          .insert([fallbackProfile])
+          .select()
+          .single();
+
+        if (createdData) {
+          setProfile(createdData);
+          setEditApelido(createdData.apelido || '');
+          setEditAltura(createdData.altura || '');
+          setEditIdade(createdData.idade || '');
+        } else {
+          setProfile(fallbackProfile);
+        }
+        setLoadingProfile(false);
       }
     } catch (e) {
       console.error(e);

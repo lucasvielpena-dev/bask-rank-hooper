@@ -8,11 +8,13 @@ export default function AuthScreen() {
   const [nome, setNome] = useState('');
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setCarregando(true);
     setErro(null);
+    setSuccessMsg(null);
 
     try {
       if (tab === 'login') {
@@ -22,8 +24,12 @@ export default function AuthScreen() {
         if (!nome.trim()) {
           throw new Error('Por favor, informe seu nome completo.');
         }
-        const { error } = await authAPI.registrar(email, senha, nome);
+        const { data, error } = await authAPI.registrar(email, senha, nome);
         if (error) throw error;
+        
+        if (data && !data.session) {
+          setSuccessMsg('Cadastro realizado! Um e-mail de confirmação foi enviado. Por favor, confirme seu e-mail antes de entrar.');
+        }
       }
     } catch (err) {
       setErro(err.message || 'Ocorreu um erro ao processar a autenticação.');
@@ -35,6 +41,7 @@ export default function AuthScreen() {
   async function handleGoogleLogin() {
     setCarregando(true);
     setErro(null);
+    setSuccessMsg(null);
     try {
       const { error } = await authAPI.loginGoogle();
       if (error) throw error;
@@ -81,6 +88,20 @@ export default function AuthScreen() {
             lineHeight: 1.4
           }}>
             ⚠️ {erro}
+          </div>
+        )}
+
+        {successMsg && (
+          <div style={{
+            background: 'rgba(34,197,94,0.1)',
+            border: '1px solid rgba(34,197,94,0.3)',
+            borderRadius: 10,
+            color: '#4ade80',
+            padding: '12px 16px',
+            fontSize: 13,
+            lineHeight: 1.4
+          }}>
+            ✓ {successMsg}
           </div>
         )}
 
