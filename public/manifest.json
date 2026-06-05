@@ -1,0 +1,9 @@
+{
+  "short_name": "Ranks Hoops",
+  "name": "Ranks Hoops - Altamira",
+  "icons": [{"src": "favicon.ico", "sizes": "64x64"}],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0d0f14",
+  "background_color": "#0d0f14"
+}
