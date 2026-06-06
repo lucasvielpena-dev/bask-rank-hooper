@@ -293,6 +293,17 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   const starsVal = localJogador.media_estrelas || 0;
   const badgeText = starsVal >= 4.5 ? 'ELITE' : starsVal >= 4.0 ? 'DESTAQUE' : starsVal >= 3.5 ? 'PROMESSA' : 'EM DEV.';
 
+  const currentYear = new Date().getFullYear();
+  // Evolution index
+  let evolutionIndex = 0;
+  if (starsVal >= 4.5) {
+    evolutionIndex = 3;
+  } else if (starsVal >= 4.0) {
+    evolutionIndex = 2;
+  } else if (starsVal >= 3.0) {
+    evolutionIndex = 1;
+  }
+
 
   return (
     <div className="modal-overlay" style={{ alignItems: 'center', padding: '16px' }}>
@@ -445,6 +456,31 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 </div>
               ))}
             </div>
+
+            {/* Linha de Evolução */}
+            <div className="card" style={{ background: '#111827', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '14px 16px' }}>
+              <div style={{ fontSize: '9px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                LINHA DE EVOLUÇÃO
+              </div>
+              <div className="evolution-timeline" style={{ margin: '18px 0 6px' }}>
+                <div className="evolution-progress-line" style={{ width: `${evolutionIndex * 33.3}%` }} />
+                {[
+                  { label: 'Rookie', year: String(currentYear - 3), val: 0 },
+                  { label: 'Promessa', year: String(currentYear - 2), val: 1 },
+                  { label: 'Elite', year: String(currentYear - 1), val: 2 },
+                  { label: 'MVP', year: String(currentYear), val: 3 },
+                ].map(step => (
+                  <div key={step.label} className={`evolution-step ${evolutionIndex >= step.val ? 'completed' : ''} ${evolutionIndex === step.val ? 'active' : ''}`}>
+                    <div className="evolution-dot" style={{ width: '22px', height: '22px', fontSize: '9px' }}>
+                      {step.val === 3 ? '★' : step.val + 1}
+                    </div>
+                    <div className="evolution-label" style={{ fontSize: '8px', marginTop: 4 }}>{step.label}</div>
+                    <div className="evolution-year" style={{ fontSize: '7px' }}>{step.year}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
 
             {/* Tab Bar interna (SOBRE, ESTATÍSTICAS, HISTÓRICO) */}
             <div style={{
