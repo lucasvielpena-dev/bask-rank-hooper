@@ -442,7 +442,9 @@ export default function App() {
       </header>
 
       {/* Page */}
-      {renderPage()}
+      <div key={page} className="page-transition">
+        {renderPage()}
+      </div>
 
       {/* Bottom Nav */}
       <nav className="bottom-nav">

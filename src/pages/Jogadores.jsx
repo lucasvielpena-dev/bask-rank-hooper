@@ -151,7 +151,11 @@ export default function Jogadores({ profile }) {
 
         {/* Lista */}
         {loading ? (
-          <div className="loading"><div className="spinner" />Carregando...</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 20 }}>
+            {[1, 2, 3, 4, 5].map(idx => (
+              <div key={idx} className="skeleton" style={{ height: 72, borderRadius: '16px' }} />
+            ))}
+          </div>
         ) : filtrados.length === 0 ? (
           <div className="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -159,8 +163,8 @@ export default function Jogadores({ profile }) {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 20 }}>
-            {filtrados.map(j => (
-              <div key={j.id} className="card" onClick={() => setSelectedPlayer(j)} style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}>
+            {filtrados.map((j, i) => (
+              <div key={j.id} className="card card-enter" onClick={() => setSelectedPlayer(j)} style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', animationDelay: `${i * 30}ms` }}>
                 <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={40} hasCrown={j.atual_campeao} />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>

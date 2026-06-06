@@ -348,7 +348,7 @@ export default function Stats() {
                     <span style={{ fontSize: 20, fontWeight: 900, color: '#60a5fa' }}>{medias?.aproveitamento}%</span>
                   </div>
                   <div className="progress-bar" style={{ height: 8 }}>
-                    <div className="progress-fill blue" style={{ width: `${(totais?.arremessos_convertidos / (totais?.arremessos_tentados || 1)) * 100}%` }} />
+                    <div className="progress-fill blue bar-grow-fill" style={{ width: `${(totais?.arremessos_convertidos / (totais?.arremessos_tentados || 1)) * 100}%` }} />
                   </div>
                   <div style={{ fontSize: 11, color: '#64748b', marginTop: 4 }}>
                     {totais?.arremessos_convertidos} convertidos / {totais?.arremessos_tentados} tentados

@@ -36,7 +36,7 @@ function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = fa
   if (fotoUrl) {
     return (
       <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
-        {hasCrown && <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
+        {hasCrown && <div className="crown-animate" style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
         <img src={fotoUrl} alt={nome} style={avatarStyle} />
       </div>
     );
@@ -44,7 +44,7 @@ function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = fa
 
   return (
     <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
-      {hasCrown && <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
+      {hasCrown && <div className="crown-animate" style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
       <div style={{
         ...avatarStyle,
         background: getGradientForName(nome),
@@ -134,8 +134,28 @@ export default function Ranking({ profile }) {
   const totalAvaliacoes = ranking.reduce((acc, curr) => acc + Number(curr.total_votos), 0);
 
   if (loading) return (
-    <div className="page-content">
-      <div className="loading"><div className="spinner" /><span>Carregando ranking...</span></div>
+    <div className="page-content" style={{ padding: '20px' }}>
+      {/* Header Skeleton */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+        <div className="skeleton skeleton-avatar" style={{ width: 40, height: 40 }} />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div className="skeleton skeleton-bar" style={{ width: '60%', height: 16 }} />
+          <div className="skeleton skeleton-bar" style={{ width: '40%', height: 12 }} />
+        </div>
+      </div>
+      
+      {/* Stats Header Skeleton */}
+      <div style={{ display: 'flex', gap: 10, marginBottom: 24, height: 50, borderRadius: '12px' }} className="skeleton" />
+
+      {/* Podium Skeleton */}
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 8, height: 160, marginBottom: 28, borderRadius: '16px' }} className="skeleton" />
+
+      {/* List Skeletons */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {[1, 2, 3, 4].map(idx => (
+          <div key={idx} className="skeleton" style={{ height: 72, borderRadius: '16px' }} />
+        ))}
+      </div>
     </div>
   );
 
@@ -201,7 +221,7 @@ export default function Ranking({ profile }) {
 
                   {/* 2º lugar - esquerda */}
                   {top3[1] ? (
-                    <div onClick={() => setSelectedPlayer(top3[1])} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, cursor: 'pointer', transition: 'transform 0.2s' }}>
+                    <div onClick={() => setSelectedPlayer(top3[1])} className="podium-2" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, cursor: 'pointer', transition: 'transform 0.2s' }}>
                       <PlayerAvatar fotoUrl={top3[1].foto_url} nome={top3[1].nome} size={52} border="2px solid #94a3b8" />
                       <div style={{
                         height: 75,
@@ -234,7 +254,7 @@ export default function Ranking({ profile }) {
 
                   {/* 1º lugar - centro */}
                   {top3[0] && (
-                    <div onClick={() => setSelectedPlayer(top3[0])} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1.1, cursor: 'pointer', zIndex: 2, transition: 'transform 0.2s' }}>
+                    <div onClick={() => setSelectedPlayer(top3[0])} className="podium-1" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1.1, cursor: 'pointer', zIndex: 2, transition: 'transform 0.2s' }}>
                       <PlayerAvatar fotoUrl={top3[0].foto_url} nome={top3[0].nome} size={68} border="3px solid #f59e0b" hasCrown={true} />
                       <div className="leader-active-glow" style={{
                         height: 105,
@@ -265,7 +285,7 @@ export default function Ranking({ profile }) {
 
                   {/* 3º lugar - direita */}
                   {top3[2] ? (
-                    <div onClick={() => setSelectedPlayer(top3[2])} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 0.9, cursor: 'pointer', transition: 'transform 0.2s' }}>
+                    <div onClick={() => setSelectedPlayer(top3[2])} className="podium-3" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 0.9, cursor: 'pointer', transition: 'transform 0.2s' }}>
                       <PlayerAvatar fotoUrl={top3[2].foto_url} nome={top3[2].nome} size={46} border="2px solid #cd7c2f" />
                       <div style={{
                         height: 55,
@@ -309,14 +329,15 @@ export default function Ranking({ profile }) {
                   {ranking.map((j, i) => {
                     const evolVal = getEvolucao(j.id);
                     return (
-                      <div key={j.id} className="card" onClick={() => setSelectedPlayer(j)} style={{
+                      <div key={j.id} className="card card-enter" onClick={() => setSelectedPlayer(j)} style={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: 12,
                         padding: '16px 16px',
                         cursor: 'pointer',
                         background: 'var(--bg-card)',
-                        border: '1px solid var(--border)'
+                        border: '1px solid var(--border)',
+                        animationDelay: `${i * 30}ms`
                       }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 32, gap: 2 }}>
                           <span style={{ fontWeight: 900, fontSize: 14, color: i === 0 ? '#fbbf24' : i === 1 ? '#94a3b8' : i === 2 ? '#cd7c2f' : 'var(--text-muted)' }}>

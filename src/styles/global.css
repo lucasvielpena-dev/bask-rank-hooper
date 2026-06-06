@@ -621,19 +621,21 @@ input:focus { border-color: var(--accent-blue); }
   50% { opacity: 1; transform: scale(1.1); }
 }
 
-/* Animação pulsante para o cronômetro ativo */
+/* Animação pulsante para o cronômetro ativo com escala */
 @keyframes borderPulse {
   0%, 100% {
     border-color: rgba(34, 197, 94, 0.3);
     box-shadow: 0 0 8px rgba(34, 197, 94, 0.15);
+    transform: scale(1);
   }
   50% {
     border-color: rgba(34, 197, 94, 1);
     box-shadow: 0 0 20px rgba(34, 197, 94, 0.45);
+    transform: scale(1.03);
   }
 }
 .timer-active-pulse {
-  animation: borderPulse 2s infinite ease-in-out !important;
+  animation: borderPulse 1s infinite ease-in-out !important; /* Loop de 1 segundo */
 }
 
 /* Brilho pulsante dourado para o líder do pódio */
@@ -649,4 +651,122 @@ input:focus { border-color: var(--accent-blue); }
 }
 .leader-active-glow {
   animation: leaderGlow 3s infinite ease-in-out !important;
+}
+
+/* Transição de página fluida */
+@keyframes pageEnter {
+  from {
+    opacity: 0.9;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.page-transition {
+  animation: pageEnter 300ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Feedback tátil em botões */
+.btn:active, button:not(.nav-item):not(.btn-counter):active {
+  transform: scale(0.95);
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Feedback tátil nos botões + e - */
+.btn-counter:active {
+  transform: scale(1.1) !important;
+  transition: transform 120ms cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+/* Contadores animados (remount de key no React) */
+@keyframes numberPulse {
+  0% { transform: scale(0.85); opacity: 0.7; }
+  50% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.number-animate {
+  display: inline-block;
+  animation: numberPulse 200ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+/* Barras crescendo (Habilidades / Aproveitamento) */
+@keyframes barGrow {
+  from { width: 0% !important; }
+}
+.bar-grow-fill {
+  animation: barGrow 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Feedbacks flutuantes da partida ao vivo */
+@keyframes floatUpFade {
+  0% { transform: translateY(0); opacity: 0.9; }
+  100% { transform: translateY(-28px); opacity: 0; }
+}
+.floating-feedback {
+  position: absolute;
+  font-weight: 900;
+  font-size: 16px;
+  animation: floatUpFade 700ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  pointer-events: none;
+  z-index: 25;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+}
+
+/* Entrada dos cards nas listagens */
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.card-enter {
+  animation: cardEnter 260ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Skeleton Loading Shimmer */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-elevated) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+.skeleton-avatar {
+  border-radius: 50%;
+  background-color: var(--bg-elevated);
+}
+.skeleton-bar {
+  border-radius: 6px;
+  background-color: var(--bg-elevated);
+  height: 12px;
+}
+
+/* Entrada animada do pódio */
+@keyframes podiumEnter {
+  from { opacity: 0; transform: translateY(24px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.podium-1 { animation: podiumEnter 350ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.podium-2 { animation: podiumEnter 350ms cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: 80ms; }
+.podium-3 { animation: podiumEnter 350ms cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: 160ms; }
+
+/* Entrada da Coroa do Líder */
+@keyframes crownEnter {
+  0% { transform: translate(-50%, 6px) scale(0.8); opacity: 0; }
+  100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+}
+.crown-animate {
+  animation: crownEnter 450ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: 300ms;
+}
+
+/* Rolagem suave de conteúdo */
+.page-content {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }

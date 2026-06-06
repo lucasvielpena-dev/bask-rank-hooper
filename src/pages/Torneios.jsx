@@ -86,8 +86,12 @@ export default function Torneios({ profile }) {
           </div>
 
           {/* Listagem */}
-          {loading && torneios.length === 0 ? (
-            <div className="loading"><div className="spinner" /> Carregando competições...</div>
+          {loading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 24 }}>
+              {[1, 2, 3].map(idx => (
+                <div key={idx} className="skeleton" style={{ height: 130, borderRadius: '16px' }} />
+              ))}
+            </div>
           ) : torneios.length === 0 ? (
             <div className="empty-state">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -101,14 +105,14 @@ export default function Torneios({ profile }) {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 24 }}>
-              {torneios.map(t => {
+              {torneios.map((t, i) => {
                 const stat = STATUS_TORNEIO[t.status] || { label: t.status, color: '#94a3b8', bg: 'rgba(0,0,0,0.1)' };
                 return (
                   <div 
                     key={t.id} 
-                    className="card" 
+                    className="card card-enter" 
                     onClick={() => setSelectedTorneio(t)}
-                    style={{ cursor: 'pointer', transition: 'transform 0.2s', borderLeft: `4px solid ${stat.color}` }}
+                    style={{ cursor: 'pointer', transition: 'transform 0.2s', borderLeft: `4px solid ${stat.color}`, animationDelay: `${i * 30}ms` }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                       <span style={{ fontSize: 11, background: stat.bg, color: stat.color, padding: '3px 10px', borderRadius: 50, fontWeight: 700 }}>
@@ -906,6 +910,29 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
   const [statsJogo, setStatsJogo] = useState({}); // { [jogadorId]: { pontos: 0, rebotes: 0, assistencias: 0, tocos: 0, roubos: 0 } }
   const [mvpId, setMvpId] = useState('');
 
+  // Feedbacks flutuantes da partida ao vivo
+  const [feedbacksA, setFeedbacksA] = useState([]);
+  const [feedbacksB, setFeedbacksB] = useState([]);
+
+  function triggerFeedback(time, valor) {
+    if (valor === 0) return;
+    const text = valor > 0 ? `+${valor}` : `${valor}`;
+    const id = Math.random().toString(36).substring(2, 9);
+    const color = valor > 0 ? 'var(--accent-gold)' : '#f87171';
+    const newFeedback = { id, text, color };
+    if (time === 'A') {
+      setFeedbacksA(prev => [...prev, newFeedback]);
+      setTimeout(() => {
+        setFeedbacksA(prev => prev.filter(f => f.id !== id));
+      }, 700);
+    } else {
+      setFeedbacksB(prev => [...prev, newFeedback]);
+      setTimeout(() => {
+        setFeedbacksB(prev => prev.filter(f => f.id !== id));
+      }, 700);
+    }
+  }
+
   const timerRef = useRef(null);
 
   useEffect(() => {
@@ -976,9 +1003,19 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
 
   function ajustarPlacar(time, val) {
     if (time === 'A') {
-      setPlacarA(p => Math.max(0, p + val));
+      setPlacarA(p => {
+        const newVal = Math.max(0, p + val);
+        const diff = newVal - p;
+        if (diff !== 0) triggerFeedback('A', diff);
+        return newVal;
+      });
     } else {
-      setPlacarB(p => Math.max(0, p + val));
+      setPlacarB(p => {
+        const newVal = Math.max(0, p + val);
+        const diff = newVal - p;
+        if (diff !== 0) triggerFeedback('B', diff);
+        return newVal;
+      });
     }
   }
 
@@ -1109,6 +1146,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
       <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
         {/* Team A Card */}
         <div className="card" style={{
+          position: 'relative',
           padding: '24px 14px',
           background: 'linear-gradient(180deg, rgba(59, 130, 246, 0.06) 0%, rgba(26, 30, 40, 0.5) 100%)',
           border: '1.5px solid rgba(59, 130, 246, 0.25)',
@@ -1122,17 +1160,22 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           backdropFilter: 'blur(12px)',
           webkitBackdropFilter: 'blur(12px)'
         }}>
+          {feedbacksA.map(f => (
+            <div key={f.id} className="floating-feedback" style={{ color: f.color, top: '25%', left: '50%', transform: 'translateX(-50%)', fontSize: '28px' }}>
+              {f.text}
+            </div>
+          ))}
           <div style={{ width: '100%', textAlign: 'center' }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{jogo.equipe_a?.nome}</span>
-            <span style={{ fontSize: 96, fontWeight: 900, color: '#3b82f6', fontFamily: 'monospace', display: 'block', marginTop: 10, lineHeight: 1, letterSpacing: '-0.02em' }}>{String(placarA).padStart(2, '0')}</span>
+            <span key={placarA} className="number-animate" style={{ fontSize: 96, fontWeight: 900, color: '#3b82f6', fontFamily: 'monospace', display: 'block', marginTop: 10, lineHeight: 1, letterSpacing: '-0.02em' }}>{String(placarA).padStart(2, '0')}</span>
           </div>
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr 1fr', gap: 6, alignItems: 'center' }}>
-              <button onClick={() => ajustarPlacar('A', 1)} style={{ border: '1px solid rgba(59, 130, 246, 0.3)', background: 'rgba(59, 130, 246, 0.05)', color: '#93c5fd', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
-              <button onClick={() => ajustarPlacar('A', 2)} style={{ border: 'none', background: '#3b82f6', color: '#ffffff', borderRadius: '8px', padding: '12px 0', fontSize: '18px', fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.08)', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)' }}>+2</button>
-              <button onClick={() => ajustarPlacar('A', 3)} style={{ border: '1.5px solid #fbbf24', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
+              <button className="btn-counter" onClick={() => ajustarPlacar('A', 1)} style={{ border: '1px solid rgba(59, 130, 246, 0.3)', background: 'rgba(59, 130, 246, 0.05)', color: '#93c5fd', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
+              <button className="btn-counter" onClick={() => ajustarPlacar('A', 2)} style={{ border: 'none', background: '#3b82f6', color: '#ffffff', borderRadius: '8px', padding: '12px 0', fontSize: '18px', fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.08)', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)' }}>+2</button>
+              <button className="btn-counter" onClick={() => ajustarPlacar('A', 3)} style={{ border: '1.5px solid #fbbf24', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
             </div>
-            <button onClick={() => ajustarPlacar('A', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(255, 255, 255, 0.02)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
+            <button className="btn-counter" onClick={() => ajustarPlacar('A', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(255, 255, 255, 0.02)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
           </div>
         </div>
 
@@ -1158,6 +1201,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
 
         {/* Team B Card */}
         <div className="card" style={{
+          position: 'relative',
           padding: '24px 14px',
           background: 'linear-gradient(180deg, rgba(239, 68, 68, 0.06) 0%, rgba(26, 30, 40, 0.5) 100%)',
           border: '1.5px solid rgba(239, 68, 68, 0.25)',
@@ -1171,17 +1215,22 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           backdropFilter: 'blur(12px)',
           webkitBackdropFilter: 'blur(12px)'
         }}>
+          {feedbacksB.map(f => (
+            <div key={f.id} className="floating-feedback" style={{ color: f.color, top: '25%', left: '50%', transform: 'translateX(-50%)', fontSize: '28px' }}>
+              {f.text}
+            </div>
+          ))}
           <div style={{ width: '100%', textAlign: 'center' }}>
             <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{jogo.equipe_b?.nome}</span>
-            <span style={{ fontSize: 96, fontWeight: 900, color: '#ef4444', fontFamily: 'monospace', display: 'block', marginTop: 10, lineHeight: 1, letterSpacing: '-0.02em' }}>{String(placarB).padStart(2, '0')}</span>
+            <span key={placarB} className="number-animate" style={{ fontSize: 96, fontWeight: 900, color: '#ef4444', fontFamily: 'monospace', display: 'block', marginTop: 10, lineHeight: 1, letterSpacing: '-0.02em' }}>{String(placarB).padStart(2, '0')}</span>
           </div>
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr 1fr', gap: 6, alignItems: 'center' }}>
-              <button onClick={() => ajustarPlacar('B', 1)} style={{ border: '1px solid rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.05)', color: '#fca5a5', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
-              <button onClick={() => ajustarPlacar('B', 2)} style={{ border: 'none', background: '#ef4444', color: '#ffffff', borderRadius: '8px', padding: '12px 0', fontSize: '18px', fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.08)', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)' }}>+2</button>
-              <button onClick={() => ajustarPlacar('B', 3)} style={{ border: '1.5px solid #fbbf24', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
+              <button className="btn-counter" onClick={() => ajustarPlacar('B', 1)} style={{ border: '1px solid rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.05)', color: '#fca5a5', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
+              <button className="btn-counter" onClick={() => ajustarPlacar('B', 2)} style={{ border: 'none', background: '#ef4444', color: '#ffffff', borderRadius: '8px', padding: '12px 0', fontSize: '18px', fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.08)', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)' }}>+2</button>
+              <button className="btn-counter" onClick={() => ajustarPlacar('B', 3)} style={{ border: '1.5px solid #fbbf24', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
             </div>
-            <button onClick={() => ajustarPlacar('B', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(255, 255, 255, 0.02)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
+            <button className="btn-counter" onClick={() => ajustarPlacar('B', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(255, 255, 255, 0.02)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
           </div>
         </div>
       </div>

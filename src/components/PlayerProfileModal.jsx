@@ -332,7 +332,7 @@ export default function PlayerProfileModal({ jogador, onClose }) {
                       </div>
                       <div className="progress-bar" style={{ height: 6 }}>
                         <div 
-                          className="progress-fill blue" 
+                          className="progress-fill blue bar-grow-fill" 
                           style={{ width: localJogador.total_votos >= 1 ? `${(mediaAspecto / 5) * 100}%` : '0%' }} 
                         />
                       </div>
@@ -365,7 +365,7 @@ export default function PlayerProfileModal({ jogador, onClose }) {
                   </div>
                 </div>
                 <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${communityStats.winRate}%`, background: '#22c55e' }} />
+                  <div className="progress-fill bar-grow-fill" style={{ width: `${communityStats.winRate}%`, background: '#22c55e' }} />
                 </div>
               </div>
             )}
