@@ -388,6 +388,14 @@ export const torneiosAPI = {
       .select()
       .single();
     return { data, error };
+  },
+
+  excluir: async (id) => {
+    const { data, error } = await supabase
+      .from('torneios')
+      .delete()
+      .eq('id', id);
+    return { data, error };
   }
 };
 

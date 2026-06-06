@@ -322,6 +322,20 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
     }
   }
 
+  async function handleExcluirTorneio() {
+    if (!window.confirm('Deseja realmente excluir este torneio? Essa ação é irreversível e apagará todas as equipes, jogos e estatísticas dele.')) return;
+    try {
+      const { error } = await torneiosAPI.excluir(torneio.id);
+      if (error) {
+        alert('Erro ao excluir torneio: ' + error.message);
+      } else {
+        onBack();
+      }
+    } catch (err) {
+      alert('Erro ao excluir torneio: ' + err.message);
+    }
+  }
+
   // Gera chaveamento de Mata-Mata (Eliminatória Simples)
   async function handleIniciarTorneio() {
     const equipesAprovadas = equipes.filter(e => e.aprovado);
@@ -558,7 +572,10 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     🛑 Finalizar Torneio Definitivamente
                   </button>
                 )}
-                <small style={{ color: 'var(--text-muted)', fontSize: 11 }}>Como organizador, você pode gerenciar jogos, placares e aprovar inscrições.</small>
+                <button className="btn btn-secondary" onClick={handleExcluirTorneio} style={{ color: '#ef4444', borderColor: 'rgba(239,68,68,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                  🗑️ Excluir Torneio Definitivamente
+                </button>
+                <small style={{ color: 'var(--text-muted)', fontSize: 11 }}>Como organizador, você pode gerenciar jogos, placares, aprovar inscrições ou excluir este torneio.</small>
               </div>
             )}
           </div>
