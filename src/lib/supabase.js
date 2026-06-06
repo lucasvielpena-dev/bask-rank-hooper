@@ -10,28 +10,22 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // ============================================================
 
 export const jogadoresAPI = {
-  listar: async (cidade) => {
-    let query = supabase
-      .from('jogadores')
-      .select('*')
-      .eq('ativo', true);
-    if (cidade) {
-      query = query.eq('cidade', cidade);
-    }
-    const { data, error } = await query.order('nome');
-    return { data, error };
-  },
-
-  buscar: async (termo, cidade) => {
-    let query = supabase
+  listar: async () => {
+    const { data, error } = await supabase
       .from('jogadores')
       .select('*')
       .eq('ativo', true)
-      .ilike('nome', `%${termo}%`);
-    if (cidade) {
-      query = query.eq('cidade', cidade);
-    }
-    const { data, error } = await query.order('nome');
+      .order('media_estrelas', { ascending: false })
+      .order('total_votos', { ascending: false });
+    return { data, error };
+  },
+
+  buscar: async (termo) => {
+    const { data, error } = await supabase
+      .from('jogadores')
+      .select('*')
+      .eq('ativo', true)
+      .or(`nome.ilike.%${termo}%,apelido.ilike.%${termo}%`);
     return { data, error };
   },
 

@@ -21,12 +21,11 @@ export default function Jogadores({ profile }) {
 
   useEffect(() => {
     loadJogadores();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile?.cidade_atual, profile?.cidade]);
+  }, []);
 
   useEffect(() => {
     const channel = supabase
-      .channel('jogadores-realtime')
+      .channel('jogadores-global-realtime')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'jogadores' },
@@ -39,8 +38,7 @@ export default function Jogadores({ profile }) {
     return () => {
       supabase.removeChannel(channel);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [city]);
+  }, []);
 
 
   useEffect(() => {
@@ -56,7 +54,7 @@ export default function Jogadores({ profile }) {
 
   async function loadJogadores() {
     setLoading(true);
-    const { data } = await jogadoresAPI.listar(city);
+    const { data } = await jogadoresAPI.listar();
     setJogadores(data || []);
     setFiltrados(data || []);
     setLoading(false);
