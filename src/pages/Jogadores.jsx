@@ -313,10 +313,6 @@ export default function Jogadores({ profile }) {
     }
   }
 
-  const getRankIndicator = (rank) => {
-    return `#${rank}`;
-  };
-
   return (
     <div className="page-content">
       <div style={{ padding: '20px 20px 0' }}>
