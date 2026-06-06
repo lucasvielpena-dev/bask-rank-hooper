@@ -515,7 +515,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
   }
 
   return (
-    <div style={{ padding: '20px 20px 0', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ padding: '20px 20px 24px', height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Header com botão voltar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
         <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'var(--accent-blue-light)', cursor: 'pointer', display: 'flex', alignItems: 'center', fontSize: 13, fontWeight: 700, padding: 0 }}>
@@ -1101,7 +1101,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
   }
 
   return (
-    <div style={{ padding: '20px 20px 0', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ padding: '20px 20px 24px', height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
         <button onClick={onBack} style={{
           display: 'inline-flex',

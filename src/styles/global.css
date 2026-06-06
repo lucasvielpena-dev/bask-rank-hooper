@@ -136,17 +136,13 @@ body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: calc(var(--nav-height) + 12px);
+  padding-bottom: 24px;
   scrollbar-width: none;
 }
 .page-content::-webkit-scrollbar { display: none; }
 
 /* Bottom nav */
 .bottom-nav {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   height: 68px;
   background: rgba(21, 24, 32, 0.85);
   backdrop-filter: blur(16px);
