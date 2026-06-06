@@ -3,23 +3,15 @@ import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 
 const FILTROS = [
-  { key: 'todos', label: '👥 Todos' },
-  { key: 'avaliados', label: '⭐ Mais Avaliados' },
-  { key: 'votados', label: '📈 Mais Votados' },
-  { key: 'elite', label: '🏆 Elite' },
-  { key: 'promessa', label: '💎 Promessa' },
-  { key: 'mvp', label: '🥇 MVP' }
+  { key: 'todos', label: 'Todos' },
+  { key: 'avaliados', label: 'Mais Avaliados' },
+  { key: 'votados', label: 'Mais Votados' },
+  { key: 'elite', label: 'Elite' },
+  { key: 'promessa', label: 'Promessa' },
+  { key: 'mvp', label: 'MVP' }
 ];
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
-
-function renderBadge(media, totalVotos) {
-  if (!totalVotos || totalVotos < 1) return null;
-  if (media >= 4.5) return <span className="badge-elite" style={{ marginLeft: 6 }}>🏆 Elite</span>;
-  if (media >= 4.0) return <span className="badge-destaque" style={{ marginLeft: 6 }}>⭐ Destaque</span>;
-  if (media >= 3.5) return <span className="badge-promessa" style={{ marginLeft: 6 }}>📈 Promessa</span>;
-  return <span className="badge-desenvolvimento" style={{ marginLeft: 6 }}>🔄 Em Des.</span>;
-}
 
 function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = false }) {
   const initial = nome ? nome.charAt(0).toUpperCase() : '?';
@@ -322,9 +314,6 @@ export default function Jogadores({ profile }) {
   }
 
   const getRankIndicator = (rank) => {
-    if (rank === 1) return '🥇 #1';
-    if (rank === 2) return '🥈 #2';
-    if (rank === 3) return '🥉 #3';
     return `#${rank}`;
   };
 
@@ -420,13 +409,17 @@ export default function Jogadores({ profile }) {
                         {j.apelido && <span style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }}>"{j.apelido}"</span>}
                       </div>
                       <div style={{ fontSize: 11, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, flexWrap: 'wrap' }}>
-                        <span style={{ fontWeight: 800, color: rankVal <= 3 ? 'var(--accent-gold)' : 'var(--text-muted)' }}>
-                          {getRankIndicator(rankVal)} em {j.cidade}
-                        </span>
-                        <span style={{ color: 'var(--text-muted)' }}>•</span>
+                        {rankVal > 0 && (
+                          <>
+                            <span style={{ fontWeight: 700, color: 'var(--text-muted)' }}>
+                              #{rankVal}
+                            </span>
+                            <span style={{ color: 'var(--text-muted)' }}>•</span>
+                          </>
+                        )}
                         <span>{j.posicao || 'Ala'}</span>
                         <span style={{ color: 'var(--text-muted)' }}>•</span>
-                        <span>📍 {j.cidade} - {j.uf}</span>
+                        <span>{j.cidade} - {j.uf}</span>
                       </div>
                     </div>
 
@@ -444,40 +437,36 @@ export default function Jogadores({ profile }) {
                     </div>
                   </div>
 
-                  {/* Badges / Selos */}
-                  {j.total_votos >= 1 && (
-                    <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
-                      {renderBadge(j.media_estrelas, j.total_votos)}
-                      {(j.atual_campeao || mvpPlayerIds.has(j.id)) && (
-                        <span className="badge-elite" style={{ background: 'rgba(59,130,246,0.1)', color: 'var(--accent-blue-light)', borderColor: 'rgba(59,130,246,0.25)' }}>
-                          🏅 MVP
-                        </span>
-                      )}
-                    </div>
-                  )}
-
                   {/* Botões de Ação Rápida */}
                   <div style={{ display: 'flex', gap: 8, marginTop: 14, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
                     <button 
                       className="btn btn-secondary btn-sm" 
                       onClick={() => setSelectedPlayer({ ...j, rank: rankVal })} 
-                      style={{ flex: 1, margin: 0, padding: '8px 14px' }}
+                      style={{ 
+                        flex: 1, 
+                        margin: 0, 
+                        padding: '8px 14px',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        background: 'rgba(255, 255, 255, 0.02)',
+                        color: 'var(--text-primary)'
+                      }}
                     >
                       Ver Perfil
                     </button>
                     <button 
-                      className={`btn btn-sm ${hasVoted ? 'btn-secondary' : 'btn-primary'}`}
+                      className="btn btn-sm"
                       onClick={() => handleOpenVote(j)}
                       style={{ 
                         flex: 1, 
                         margin: 0, 
                         padding: '8px 14px',
-                        background: hasVoted ? 'rgba(34,197,94,0.08)' : 'var(--accent-blue)',
-                        color: hasVoted ? '#22c55e' : '#ffffff',
-                        border: hasVoted ? '1px solid rgba(34,197,94,0.15)' : 'none'
+                        background: hasVoted ? 'rgba(255, 255, 255, 0.05)' : '#2563EB',
+                        color: hasVoted ? 'var(--text-muted)' : '#ffffff',
+                        border: hasVoted ? '1px solid rgba(255, 255, 255, 0.08)' : 'none',
+                        fontWeight: 700
                       }}
                     >
-                      {hasVoted ? '✓ Avaliado' : '⭐ Avaliar'}
+                      {hasVoted ? '✓ Avaliado' : 'Avaliar'}
                     </button>
                   </div>
                 </div>
