@@ -21,6 +21,32 @@
   --radius-sm: 10px;
   --nav-height: 64px;
   --header-height: 60px;
+
+  /* Console de Partida Controles */
+  --counter-btn-a-color: #93c5fd;
+  --counter-btn-b-color: #fca5a5;
+  --vs-badge-bg: #0d0f14;
+  --text-danger: #f87171;
+  --border-danger: rgba(239, 68, 68, 0.3);
+
+  /* Medalhas e Pódio */
+  --gold-color: #f59e0b;
+  --silver-color: #94a3b8;
+  --bronze-color: #cd7c2f;
+  --podium-wrapper-bg: rgba(21, 24, 32, 0.4);
+  --podium-bg-1st: linear-gradient(180deg, rgba(245, 158, 11, 0.18) 0%, rgba(26, 30, 40, 0.9) 100%);
+  --podium-border-1st: 1.5px solid rgba(245, 158, 11, 0.5);
+  --podium-bg-2nd: linear-gradient(180deg, rgba(148, 163, 184, 0.12) 0%, rgba(26, 30, 40, 0.85) 100%);
+  --podium-border-2nd: 1.5px solid rgba(148, 163, 184, 0.4);
+  --podium-bg-3rd: linear-gradient(180deg, rgba(205, 124, 47, 0.12) 0%, rgba(26, 30, 40, 0.85) 100%);
+  --podium-border-3rd: 1.5px solid rgba(205, 124, 47, 0.4);
+
+  /* Console de Partida */
+  --card-team-a-bg: linear-gradient(180deg, rgba(59, 130, 246, 0.06) 0%, rgba(26, 30, 40, 0.5) 100%);
+  --card-team-b-bg: linear-gradient(180deg, rgba(239, 68, 68, 0.06) 0%, rgba(26, 30, 40, 0.5) 100%);
+  --card-team-a-border: 1.5px solid rgba(59, 130, 246, 0.25);
+  --card-team-b-border: 1.5px solid rgba(239, 68, 68, 0.25);
+  --timer-bg: rgba(26, 30, 40, 0.5);
 }
 
 * {
@@ -577,7 +603,7 @@ input:focus { border-color: var(--accent-blue); }
 
 /* Light Theme Variables Override */
 .light-theme {
-  --bg-primary: #F8FAFC;
+  --bg-primary: #F7F8FA;
   --bg-secondary: #F1F5F9;
   --bg-card: #FFFFFF;
   --bg-card-hover: #F8FAFC;
@@ -585,34 +611,126 @@ input:focus { border-color: var(--accent-blue); }
   --text-primary: #0F172A;
   --text-secondary: #475569;
   --text-muted: #64748B;
-  --border: #E2E8F0;
-  --border-active: rgba(59, 130, 246, 0.3);
-  --shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
+  --border: rgba(15, 23, 42, 0.05);
+  --border-active: rgba(37, 99, 235, 0.3);
+  --shadow: 0 4px 16px rgba(15, 23, 42, 0.02);
+  --shadow-elevated: 0 10px 40px rgba(15, 23, 42, 0.06);
+
+  --accent-blue: #2563eb;
+  --accent-blue-light: #3b82f6;
+  --accent-blue-dim: rgba(37, 99, 235, 0.06);
+  --accent-gold: #d97706;
+  --accent-gold-dim: rgba(217, 119, 6, 0.12);
+
+  /* Medalhas e Pódio */
+  --gold-color: #d97706;
+  --silver-color: #64748b;
+  --bronze-color: #b45309;
+  --podium-wrapper-bg: rgba(241, 245, 249, 0.6);
+  --podium-bg-1st: linear-gradient(180deg, rgba(245, 158, 11, 0.08) 0%, #FFFFFF 100%);
+  --podium-border-1st: 1.5px solid rgba(245, 158, 11, 0.25);
+  --podium-bg-2nd: linear-gradient(180deg, rgba(148, 163, 184, 0.05) 0%, #FFFFFF 100%);
+  --podium-border-2nd: 1px solid rgba(148, 163, 184, 0.15);
+  --podium-bg-3rd: linear-gradient(180deg, rgba(205, 124, 47, 0.05) 0%, #FFFFFF 100%);
+  --podium-border-3rd: 1px solid rgba(205, 124, 47, 0.15);
+
+  /* Console de Partida */
+  --card-team-a-bg: linear-gradient(180deg, rgba(59, 130, 246, 0.03) 0%, #FFFFFF 100%);
+  --card-team-b-bg: linear-gradient(180deg, rgba(239, 68, 68, 0.03) 0%, #FFFFFF 100%);
+  --card-team-a-border: 1px solid rgba(59, 130, 246, 0.15);
+  --card-team-b-border: 1px solid rgba(239, 68, 68, 0.15);
+  --timer-bg: #FFFFFF;
+
+  --counter-btn-a-color: #2563eb;
+  --counter-btn-b-color: #dc2626;
+  --vs-badge-bg: #f1f5f9;
+  --text-danger: #dc2626;
+  --border-danger: rgba(220, 38, 38, 0.2);
 }
 
-.light-theme.app-shell, .light-theme .app-shell {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='800' viewBox='0 0 400 800'%3E%3Cpath d='M 30 30 L 370 30 L 370 770 L 30 770 Z' fill='none' stroke='%230f172a' stroke-width='1' opacity='0.015'/%3E%3Ccircle cx='200' cy='400' r='55' fill='none' stroke='%230f172a' stroke-width='1' opacity='0.015'/%3E%3Cline x1='30' y1='400' x2='370' y2='400' stroke='%230f172a' stroke-width='1' opacity='0.015'/%3E%3Cpath d='M 30 160 A 170 170 0 0 0 370 160' fill='none' stroke='%230f172a' stroke-width='1' opacity='0.015'/%3E%3Cpath d='M 30 640 A 170 170 0 0 1 370 640' fill='none' stroke='%230f172a' stroke-width='1' opacity='0.015'/%3E%3C/svg%3E");
+/* Light Theme Component Overrides */
+.light-theme .btn-primary {
+  background: var(--accent-blue) !important;
+  color: #ffffff !important;
+}
+.light-theme .btn-primary:hover {
+  background: #1d4ed8 !important;
 }
 
-.light-theme .app-header {
-  background: rgba(248, 250, 252, 0.82);
+.light-theme .btn-secondary {
+  background: #ffffff !important;
+  color: var(--accent-blue-light) !important;
+  border: 1px solid rgba(37, 99, 235, 0.15) !important;
+}
+.light-theme .btn-secondary:hover {
+  background: rgba(37, 99, 235, 0.03) !important;
+  border-color: rgba(37, 99, 235, 0.3) !important;
+}
+
+.light-theme input, .light-theme select, .light-theme textarea {
+  background: #f1f5f9 !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  color: var(--text-primary) !important;
+}
+.light-theme input:focus, .light-theme select:focus, .light-theme textarea:focus {
+  border-color: var(--accent-blue) !important;
+  background: #ffffff !important;
+}
+.light-theme input::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light-theme .progress-bar {
+  background: rgba(15, 23, 42, 0.08) !important;
 }
 
 .light-theme .bottom-nav {
-  background: rgba(241, 245, 249, 0.85);
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-top: 1px solid rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 -4px 12px rgba(15, 23, 42, 0.02) !important;
 }
-
 .light-theme .nav-item.active {
-  background: rgba(59, 130, 246, 0.08);
+  background: rgba(37, 99, 235, 0.06) !important;
+  color: var(--accent-blue) !important;
+}
+.light-theme .nav-item {
+  color: #64748b !important;
+}
+.light-theme .nav-item.active::after {
+  background: var(--accent-blue) !important;
+  box-shadow: 0 0 6px var(--accent-blue) !important;
 }
 
-.light-theme .card {
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
-  border-color: #e2e8f0;
+.light-theme .modal-sheet {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 -10px 40px rgba(15, 23, 42, 0.06) !important;
+}
+.light-theme .modal-handle {
+  background: #cbd5e1 !important;
 }
 
-.light-theme .card:hover {
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
+.light-theme .leader-active-glow {
+  animation: none !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(245, 158, 11, 0.1) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+  background: var(--bg-card) !important;
+}
+
+.light-theme .timer-active-pulse {
+  animation: borderPulseSoft 1s infinite ease-in-out !important;
+}
+@keyframes borderPulseSoft {
+  0%, 100% {
+    border-color: rgba(34, 197, 94, 0.2);
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.05);
+    transform: scale(1);
+  }
+  50% {
+    border-color: rgba(34, 197, 94, 0.6);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.15);
+    transform: scale(1.02);
+  }
 }
 
 /* Animations */

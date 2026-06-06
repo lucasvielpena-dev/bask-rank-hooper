@@ -166,7 +166,7 @@ export default function Ranking({ profile }) {
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20 }}>
           <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
           </div>
           <div>
             <h2 style={{ fontWeight: 800, fontSize: 20 }}>🏀 Ranking de {city}</h2>
@@ -208,7 +208,7 @@ export default function Ranking({ profile }) {
               <div style={{
                 position: 'relative',
                 marginBottom: 28,
-                background: 'rgba(21, 24, 32, 0.4)',
+                background: 'var(--podium-wrapper-bg)',
                 border: '1px solid var(--border)',
                 borderRadius: '16px',
                 padding: '24px 12px 0 12px',
@@ -222,12 +222,12 @@ export default function Ranking({ profile }) {
                   {/* 2º lugar - esquerda */}
                   {top3[1] ? (
                     <div onClick={() => setSelectedPlayer(top3[1])} className="podium-2" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, cursor: 'pointer', transition: 'transform 0.2s' }}>
-                      <PlayerAvatar fotoUrl={top3[1].foto_url} nome={top3[1].nome} size={52} border="2px solid #94a3b8" />
+                      <PlayerAvatar fotoUrl={top3[1].foto_url} nome={top3[1].nome} size={52} border="2px solid var(--silver-color)" />
                       <div style={{
                         height: 75,
                         width: '100%',
-                        background: 'linear-gradient(180deg, rgba(148, 163, 184, 0.12) 0%, rgba(26, 30, 40, 0.85) 100%)',
-                        border: '1.5px solid rgba(148, 163, 184, 0.4)',
+                        background: 'var(--podium-bg-2nd)',
+                        border: 'var(--podium-border-2nd)',
                         borderRadius: '12px 12px 0 0',
                         display: 'flex',
                         flexDirection: 'column',
@@ -255,12 +255,12 @@ export default function Ranking({ profile }) {
                   {/* 1º lugar - centro */}
                   {top3[0] && (
                     <div onClick={() => setSelectedPlayer(top3[0])} className="podium-1" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1.1, cursor: 'pointer', zIndex: 2, transition: 'transform 0.2s' }}>
-                      <PlayerAvatar fotoUrl={top3[0].foto_url} nome={top3[0].nome} size={68} border="3px solid #f59e0b" hasCrown={true} />
+                      <PlayerAvatar fotoUrl={top3[0].foto_url} nome={top3[0].nome} size={68} border="3px solid var(--gold-color)" hasCrown={true} />
                       <div className="leader-active-glow" style={{
                         height: 105,
                         width: '100%',
-                        background: 'linear-gradient(180deg, rgba(245, 158, 11, 0.18) 0%, rgba(26, 30, 40, 0.9) 100%)',
-                        border: '1.5px solid rgba(245, 158, 11, 0.5)',
+                        background: 'var(--podium-bg-1st)',
+                        border: 'var(--podium-border-1st)',
                         borderRadius: '12px 12px 0 0',
                         display: 'flex',
                         flexDirection: 'column',
@@ -271,7 +271,7 @@ export default function Ranking({ profile }) {
                         boxShadow: '0 6px 20px rgba(245, 158, 11, 0.2)'
                       }}>
                         <div style={{ textAlign: 'center', width: '100%' }}>
-                          <div style={{ fontSize: '12px', fontWeight: 900, color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', padding: '0 2px' }}>
+                          <div style={{ fontSize: '12px', fontWeight: 900, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', padding: '0 2px' }}>
                             {top3[0].nome.split(' ')[0]}
                           </div>
                           <div style={{ fontSize: '11px', color: '#fbbf24', fontWeight: 800, marginTop: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
@@ -286,12 +286,12 @@ export default function Ranking({ profile }) {
                   {/* 3º lugar - direita */}
                   {top3[2] ? (
                     <div onClick={() => setSelectedPlayer(top3[2])} className="podium-3" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 0.9, cursor: 'pointer', transition: 'transform 0.2s' }}>
-                      <PlayerAvatar fotoUrl={top3[2].foto_url} nome={top3[2].nome} size={46} border="2px solid #cd7c2f" />
+                      <PlayerAvatar fotoUrl={top3[2].foto_url} nome={top3[2].nome} size={46} border="2px solid var(--bronze-color)" />
                       <div style={{
                         height: 55,
                         width: '100%',
-                        background: 'linear-gradient(180deg, rgba(205, 124, 47, 0.12) 0%, rgba(26, 30, 40, 0.85) 100%)',
-                        border: '1.5px solid rgba(205, 124, 47, 0.4)',
+                        background: 'var(--podium-bg-3rd)',
+                        border: 'var(--podium-border-3rd)',
                         borderRadius: '12px 12px 0 0',
                         display: 'flex',
                         flexDirection: 'column',

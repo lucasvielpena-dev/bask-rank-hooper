@@ -69,7 +69,7 @@ export default function Torneios({ profile }) {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2">
                   <circle cx="12" cy="8" r="7"/>
                   <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
                 </svg>
@@ -518,7 +518,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
     <div style={{ padding: '20px 20px 0', height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Header com botão voltar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-        <button onClick={onBack} style={{ background: 'none', border: 'none', color: '#60a5fa', cursor: 'pointer', display: 'flex', alignItems: 'center', fontSize: 13, fontWeight: 700, padding: 0 }}>
+        <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'var(--accent-blue-light)', cursor: 'pointer', display: 'flex', alignItems: 'center', fontSize: 13, fontWeight: 700, padding: 0 }}>
           ← Voltar
         </button>
         <span style={{ marginLeft: 'auto', background: STATUS_TORNEIO[torneio.status]?.bg, color: STATUS_TORNEIO[torneio.status]?.color, padding: '3px 8px', borderRadius: 4, fontSize: 10, fontWeight: 800 }}>
@@ -1137,7 +1137,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           backdropFilter: 'blur(12px)',
           webkitBackdropFilter: 'blur(12px)'
         }}>
-          <span style={{ fontSize: '24px', fontWeight: 900, color: '#60a5fa', lineHeight: 1 }}>{periodo}º</span>
+          <span style={{ fontSize: '24px', fontWeight: 900, color: 'var(--accent-blue-light)', lineHeight: 1 }}>{periodo}º</span>
           <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>PERÍODO</span>
         </div>
       </div>
@@ -1148,8 +1148,8 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         <div className="card" style={{
           position: 'relative',
           padding: '24px 14px',
-          background: 'linear-gradient(180deg, rgba(59, 130, 246, 0.06) 0%, rgba(26, 30, 40, 0.5) 100%)',
-          border: '1.5px solid rgba(59, 130, 246, 0.25)',
+          background: 'var(--card-team-a-bg)',
+          border: 'var(--card-team-a-border)',
           borderTop: '4px solid #3b82f6',
           borderRadius: '16px',
           display: 'flex',
@@ -1171,9 +1171,9 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           </div>
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr 1fr', gap: 6, alignItems: 'center' }}>
-              <button className="btn-counter" onClick={() => ajustarPlacar('A', 1)} style={{ border: '1px solid rgba(59, 130, 246, 0.3)', background: 'rgba(59, 130, 246, 0.05)', color: '#93c5fd', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
+              <button className="btn-counter" onClick={() => ajustarPlacar('A', 1)} style={{ border: '1px solid rgba(59, 130, 246, 0.3)', background: 'rgba(59, 130, 246, 0.05)', color: 'var(--counter-btn-a-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
               <button className="btn-counter" onClick={() => ajustarPlacar('A', 2)} style={{ border: 'none', background: '#3b82f6', color: '#ffffff', borderRadius: '8px', padding: '12px 0', fontSize: '18px', fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.08)', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)' }}>+2</button>
-              <button className="btn-counter" onClick={() => ajustarPlacar('A', 3)} style={{ border: '1.5px solid #fbbf24', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
+              <button className="btn-counter" onClick={() => ajustarPlacar('A', 3)} style={{ border: '1.5px solid var(--gold-color)', background: 'var(--accent-gold-dim)', color: 'var(--gold-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
             </div>
             <button className="btn-counter" onClick={() => ajustarPlacar('A', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(255, 255, 255, 0.02)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
           </div>
@@ -1185,7 +1185,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           left: '50%',
           top: '30%',
           transform: 'translate(-50%, -50%)',
-          background: '#0d0f14',
+          background: 'var(--vs-badge-bg)',
           border: '2.5px solid var(--border)',
           borderRadius: '50%',
           width: '40px',
@@ -1203,8 +1203,8 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         <div className="card" style={{
           position: 'relative',
           padding: '24px 14px',
-          background: 'linear-gradient(180deg, rgba(239, 68, 68, 0.06) 0%, rgba(26, 30, 40, 0.5) 100%)',
-          border: '1.5px solid rgba(239, 68, 68, 0.25)',
+          background: 'var(--card-team-b-bg)',
+          border: 'var(--card-team-b-border)',
           borderTop: '4px solid #ef4444',
           borderRadius: '16px',
           display: 'flex',
@@ -1226,9 +1226,9 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           </div>
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr 1fr', gap: 6, alignItems: 'center' }}>
-              <button className="btn-counter" onClick={() => ajustarPlacar('B', 1)} style={{ border: '1px solid rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.05)', color: '#fca5a5', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
+              <button className="btn-counter" onClick={() => ajustarPlacar('B', 1)} style={{ border: '1px solid rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.05)', color: 'var(--counter-btn-b-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
               <button className="btn-counter" onClick={() => ajustarPlacar('B', 2)} style={{ border: 'none', background: '#ef4444', color: '#ffffff', borderRadius: '8px', padding: '12px 0', fontSize: '18px', fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.08)', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)' }}>+2</button>
-              <button className="btn-counter" onClick={() => ajustarPlacar('B', 3)} style={{ border: '1.5px solid #fbbf24', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
+              <button className="btn-counter" onClick={() => ajustarPlacar('B', 3)} style={{ border: '1.5px solid var(--gold-color)', background: 'var(--accent-gold-dim)', color: 'var(--gold-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
             </div>
             <button className="btn-counter" onClick={() => ajustarPlacar('B', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(255, 255, 255, 0.02)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
           </div>
@@ -1245,7 +1245,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         transition: 'all 0.3s ease',
         border: timerAtivo ? '1px solid #22c55e' : '1px solid var(--border)',
         padding: '24px',
-        background: 'rgba(26, 30, 40, 0.5)',
+        background: 'var(--timer-bg)',
         backdropFilter: 'blur(12px)',
         webkitBackdropFilter: 'blur(12px)'
       }}>
@@ -1434,7 +1434,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
                 {r.jogador?.foto_perfil ? (
                   <img src={r.jogador.foto_perfil} alt="Avatar" style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} />
                 ) : (
-                  <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: '#60a5fa' }}>
+                  <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'var(--accent-blue-light)' }}>
                     {r.jogador?.nome_completo?.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -1510,7 +1510,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
                     {p.foto_perfil ? (
                       <img src={p.foto_perfil} alt="Avatar" style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />
                     ) : (
-                      <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#60a5fa' }}>
+                      <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: 'var(--accent-blue-light)' }}>
                         {p.nome_completo?.charAt(0).toUpperCase()}
                       </div>
                     )}

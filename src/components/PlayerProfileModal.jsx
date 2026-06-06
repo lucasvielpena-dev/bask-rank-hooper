@@ -32,7 +32,7 @@ function StarPicker({ value, onChange, disabled }) {
             transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
           }}
         >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill={(hover || value) >= i ? '#f59e0b' : 'none'} stroke={(hover || value) >= i ? '#f59e0b' : '#475569'} strokeWidth="2">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill={(hover || value) >= i ? 'var(--accent-gold)' : 'none'} stroke={(hover || value) >= i ? 'var(--accent-gold)' : 'var(--text-muted)'} strokeWidth="2">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
         </button>
@@ -252,7 +252,7 @@ export default function PlayerProfileModal({ jogador, onClose }) {
                   <div key={f.key} style={{ background: 'var(--bg-secondary)', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                       <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
-                      <span style={{ fontSize: 11, color: '#f59e0b', fontWeight: 600 }}>
+                      <span style={{ fontSize: 11, color: 'var(--accent-gold)', fontWeight: 600 }}>
                         {labelsNota[val]}
                       </span>
                     </div>
@@ -385,7 +385,7 @@ export default function PlayerProfileModal({ jogador, onClose }) {
               <button 
                 className="btn btn-secondary" 
                 onClick={() => setShowDenunciar(true)}
-                style={{ flex: 1, color: '#f87171', borderColor: 'rgba(239,68,68,0.2)' }}
+                style={{ flex: 1, color: 'var(--text-danger)', borderColor: 'var(--border-danger)' }}
               >
                 ⚠️ Denunciar
               </button>

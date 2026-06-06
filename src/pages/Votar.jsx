@@ -31,7 +31,7 @@ function StarPicker({ value, onChange, disabled }) {
             transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
           }}
         >
-          <svg width="32" height="32" viewBox="0 0 24 24" fill={(hover || value) >= i ? '#f59e0b' : 'none'} stroke={(hover || value) >= i ? '#f59e0b' : '#475569'} strokeWidth="2">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill={(hover || value) >= i ? 'var(--accent-gold)' : 'none'} stroke={(hover || value) >= i ? 'var(--accent-gold)' : 'var(--text-muted)'} strokeWidth="2">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
         </button>
@@ -120,23 +120,23 @@ export default function Votar() {
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 8 }}>
-          <div style={{ width: 40, height: 40, background: 'rgba(245,158,11,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <div style={{ width: 40, height: 40, background: 'var(--accent-gold-dim)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
           <div>
             <h2 style={{ fontWeight: 800, fontSize: 20 }}>Avaliar Jogadores</h2>
-            <p style={{ color: '#64748b', fontSize: 13 }}>5 fundamentos · nota de 1 a 5 estrelas</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>5 fundamentos · nota de 1 a 5 estrelas</p>
           </div>
         </div>
 
         {/* Status do dia */}
         {statusHoje && (
           <div className="card" style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <div>
               <span style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Avaliações hoje: </span>
-              <span style={{ color: '#60a5fa', fontWeight: 700 }}>{statusHoje.votos_hoje}/20</span>
-              <span style={{ color: '#64748b', fontSize: 12, marginLeft: 8 }}>({statusHoje.restantes} restantes)</span>
+              <span style={{ color: 'var(--accent-blue-light)', fontWeight: 700 }}>{statusHoje.votos_hoje}/20</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: 12, marginLeft: 8 }}>({statusHoje.restantes} restantes)</span>
             </div>
           </div>
         )}
@@ -165,13 +165,13 @@ export default function Votar() {
                     <div style={{ flex: 1 }}>
                       <div style={{ fontWeight: 700 }}>{j.nome}</div>
                       {j.ja_votou_hoje && (
-                        <div style={{ fontSize: 12, color: '#f59e0b' }}>✓ Já avaliado</div>
+                        <div style={{ fontSize: 12, color: 'var(--accent-gold)' }}>✓ Já avaliado</div>
                       )}
                       {!j.ja_votou_hoje && (
-                        <div style={{ fontSize: 12, color: '#60a5fa' }}>Toque para avaliar →</div>
+                        <div style={{ fontSize: 12, color: 'var(--accent-blue-light)' }}>Toque para avaliar →</div>
                       )}
                     </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ transform: expandido === j.id ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" style={{ transform: expandido === j.id ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>
                   </div>
 
                   {/* Expandido - avaliação */}
@@ -188,7 +188,7 @@ export default function Votar() {
                             <div key={f.key} style={{ background: 'var(--bg-secondary)', padding: 12, borderRadius: 8, border: '1px solid var(--border)' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                                 <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
-                                <span style={{ fontSize: 12, color: '#f59e0b', fontWeight: 600 }}>
+                                <span style={{ fontSize: 12, color: 'var(--accent-gold)', fontWeight: 600 }}>
                                   {labelsNota[val]}
                                 </span>
                               </div>
@@ -223,7 +223,7 @@ export default function Votar() {
                   )}
 
                   {expandido === j.id && j.ja_votou_hoje && (
-                    <div style={{ marginTop: 12, padding: '12px', background: 'rgba(245,158,11,0.08)', borderRadius: 10, textAlign: 'center', fontSize: 13, color: '#f59e0b' }}>
+                    <div style={{ marginTop: 12, padding: '12px', background: 'var(--accent-gold-dim)', borderRadius: 10, textAlign: 'center', fontSize: 13, color: 'var(--accent-gold)' }}>
                       ✓ Você já avaliou este jogador.
                     </div>
                   )}

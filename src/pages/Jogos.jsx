@@ -376,7 +376,7 @@ export default function Jogos() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{ width: 40, height: 40, background: 'rgba(99,102,241,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
               </div>
               <div>
                 <h2 style={{ fontWeight: 800, fontSize: 20 }}>Jogos da Noite</h2>
@@ -648,8 +648,8 @@ export default function Jogos() {
             <div className="card" style={{
               position: 'relative',
               padding: '24px 14px',
-              background: 'linear-gradient(180deg, rgba(59, 130, 246, 0.06) 0%, rgba(26, 30, 40, 0.5) 100%)',
-              border: '1.5px solid rgba(59, 130, 246, 0.25)',
+              background: 'var(--card-team-a-bg)',
+              border: 'var(--card-team-a-border)',
               borderTop: '4px solid #3b82f6',
               borderRadius: '16px',
               display: 'flex',
@@ -671,9 +671,9 @@ export default function Jogos() {
               </div>
               <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr 1fr', gap: 6, alignItems: 'center' }}>
-                  <button className="btn-counter" onClick={() => ajustarPlacar('A', 1)} style={{ border: '1px solid rgba(59, 130, 246, 0.3)', background: 'rgba(59, 130, 246, 0.05)', color: '#93c5fd', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
+                  <button className="btn-counter" onClick={() => ajustarPlacar('A', 1)} style={{ border: '1px solid rgba(59, 130, 246, 0.3)', background: 'rgba(59, 130, 246, 0.05)', color: 'var(--counter-btn-a-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
                   <button className="btn-counter" onClick={() => ajustarPlacar('A', 2)} style={{ border: 'none', background: '#3b82f6', color: '#ffffff', borderRadius: '8px', padding: '12px 0', fontSize: '18px', fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.08)', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)' }}>+2</button>
-                  <button className="btn-counter" onClick={() => ajustarPlacar('A', 3)} style={{ border: '1.5px solid #fbbf24', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
+                  <button className="btn-counter" onClick={() => ajustarPlacar('A', 3)} style={{ border: '1.5px solid var(--gold-color)', background: 'var(--accent-gold-dim)', color: 'var(--gold-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
                 </div>
                 <button className="btn-counter" onClick={() => ajustarPlacar('A', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(255, 255, 255, 0.02)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
               </div>
@@ -685,7 +685,7 @@ export default function Jogos() {
               left: '50%',
               top: '30%',
               transform: 'translate(-50%, -50%)',
-              background: '#0d0f14',
+              background: 'var(--vs-badge-bg)',
               border: '2.5px solid var(--border)',
               borderRadius: '50%',
               width: '40px',
@@ -703,8 +703,8 @@ export default function Jogos() {
             <div className="card" style={{
               position: 'relative',
               padding: '24px 14px',
-              background: 'linear-gradient(180deg, rgba(239, 68, 68, 0.06) 0%, rgba(26, 30, 40, 0.5) 100%)',
-              border: '1.5px solid rgba(239, 68, 68, 0.25)',
+              background: 'var(--card-team-b-bg)',
+              border: 'var(--card-team-b-border)',
               borderTop: '4px solid #ef4444',
               borderRadius: '16px',
               display: 'flex',
@@ -726,9 +726,9 @@ export default function Jogos() {
               </div>
               <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr 1fr', gap: 6, alignItems: 'center' }}>
-                  <button className="btn-counter" onClick={() => ajustarPlacar('B', 1)} style={{ border: '1px solid rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.05)', color: '#fca5a5', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
+                  <button className="btn-counter" onClick={() => ajustarPlacar('B', 1)} style={{ border: '1px solid rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.05)', color: 'var(--counter-btn-b-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
                   <button className="btn-counter" onClick={() => ajustarPlacar('B', 2)} style={{ border: 'none', background: '#ef4444', color: '#ffffff', borderRadius: '8px', padding: '12px 0', fontSize: '18px', fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.08)', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)' }}>+2</button>
-                  <button className="btn-counter" onClick={() => ajustarPlacar('B', 3)} style={{ border: '1.5px solid #fbbf24', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
+                  <button className="btn-counter" onClick={() => ajustarPlacar('B', 3)} style={{ border: '1.5px solid var(--gold-color)', background: 'var(--accent-gold-dim)', color: 'var(--gold-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
                 </div>
                 <button className="btn-counter" onClick={() => ajustarPlacar('B', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(255, 255, 255, 0.02)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
               </div>
@@ -745,7 +745,7 @@ export default function Jogos() {
             transition: 'all 0.3s ease',
             border: timerAtivo ? '1px solid #22c55e' : '1px solid var(--border)',
             padding: '24px',
-            background: 'rgba(26, 30, 40, 0.5)',
+            background: 'var(--timer-bg)',
             backdropFilter: 'blur(12px)',
             webkitBackdropFilter: 'blur(12px)'
           }}>
