@@ -115,15 +115,6 @@ export default function Home({ profile, onNavigate }) {
   const myStars = myPlayerInfo?.media_estrelas || 0;
   const myBadge = getBadgeText(myStars);
 
-  // Evolução index: 0 = Rookie, 1 = Promessa, 2 = Elite, 3 = MVP
-  let evolutionIndex = 0;
-  if (myStars >= 4.5) {
-    evolutionIndex = 3;
-  } else if (myStars >= 4.0) {
-    evolutionIndex = 2;
-  } else if (myStars >= 3.0) {
-    evolutionIndex = 1;
-  }
 
   const greetingName = profile?.apelido || profile?.nome_completo?.split(' ')[0] || 'Atleta';
 
@@ -205,35 +196,6 @@ export default function Home({ profile, onNavigate }) {
           </div>
         </div>
 
-        {/* Card: Sua Evolução */}
-        <div className="card" style={{ background: '#111827', border: '1px solid rgba(255,255, 255, 0.06)', borderRadius: '16px', padding: '16px 20px', marginBottom: 20 }}>
-          <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-            SUA EVOLUÇÃO
-          </div>
-          
-          <div className="evolution-timeline">
-            <div className="evolution-progress-line" style={{ width: `${evolutionIndex * 33.3}%` }} />
-            
-            {[
-              { label: 'Rookie', year: '2023', val: 0 },
-              { label: 'Promessa', year: '2024', val: 1 },
-              { label: 'Elite', year: '2025', val: 2 },
-              { label: 'MVP', year: '2026', val: 3 },
-            ].map((step) => {
-              const isCompleted = evolutionIndex >= step.val;
-              const isActive = evolutionIndex === step.val;
-              return (
-                <div key={step.label} className={`evolution-step ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`}>
-                  <div className="evolution-dot">
-                    {step.val === 3 ? '★' : step.val + 1}
-                  </div>
-                  <div className="evolution-label">{step.label}</div>
-                  <div className="evolution-year">{step.year}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
 
         {/* Seção Destaques */}
         <div style={{ marginBottom: 20 }}>
@@ -242,7 +204,7 @@ export default function Home({ profile, onNavigate }) {
               DESTAQUES
             </div>
             <button 
-              onClick={() => onNavigate('torneios')}
+              onClick={() => onNavigate('jogos', { aba: 'torneios' })}
               style={{ background: 'none', border: 'none', color: '#2563EB', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
             >
               Ver tudo
@@ -409,7 +371,7 @@ export default function Home({ profile, onNavigate }) {
 
             {/* Torneios */}
             <button 
-              onClick={() => onNavigate('torneios')}
+              onClick={() => onNavigate('jogos', { aba: 'torneios' })}
               style={{
                 background: '#1A233D',
                 border: '1px solid rgba(255, 255, 255, 0.06)',

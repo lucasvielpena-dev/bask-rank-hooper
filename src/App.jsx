@@ -5,7 +5,6 @@ import './styles/global.css';
 import Home from './pages/Home';
 import Ranking from './pages/Ranking';
 import Jogadores from './pages/Jogadores';
-import Torneios from './pages/Torneios';
 import Jogos from './pages/Jogos';
 import Stats from './pages/Stats';
 
@@ -532,8 +531,8 @@ export default function App() {
       case 'inicio': return <Home profile={profile} onNavigate={navigate} />;
       case 'ranking': return <Ranking profile={profile} />;
       case 'jogadores': return <Jogadores profile={profile} initialOpenAdd={pageProps.openAdd} />;
-      case 'torneios': return <Torneios profile={profile} />;
-      case 'jogos': return <Jogos />;
+      case 'torneios': return <Jogos profile={profile} initialAba="torneios" />;
+      case 'jogos': return <Jogos profile={profile} initialAba={pageProps.aba || 'jogos'} />;
       case 'perfil': return <Stats profile={profile} onNavigate={navigate} />;
       default: return <Home profile={profile} onNavigate={navigate} />;
     }

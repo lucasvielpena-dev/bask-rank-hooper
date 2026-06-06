@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { partidasAPI, jogadoresAPI } from '../lib/supabase';
+import Torneios from './Torneios';
 
-export default function Jogos() {
+export default function Jogos({ profile, initialAba = 'jogos' }) {
   const [tela, setTela] = useState('lista'); // 'lista' | 'novo' | 'partida'
-  const [aba, setAba] = useState('jogos'); // 'jogos' | 'historico'
+  const [aba, setAba] = useState(initialAba); // 'jogos' | 'historico' | 'torneios'
   
   // Lista de partidas e jogadores para seleção
   const [partidas, setPartidas] = useState([]);
@@ -435,22 +436,33 @@ export default function Jogos() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{ width: 40, height: 40, background: 'rgba(99,102,241,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                {aba === 'torneios' ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2">
+                    <circle cx="12" cy="8" r="7"/>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                )}
               </div>
               <div>
-                <h2 style={{ fontWeight: 800, fontSize: 20 }}>Jogos da Noite</h2>
-                <p style={{ color: '#64748b', fontSize: 13 }}>Gerenciador de partidas</p>
+                <h2 style={{ fontWeight: 800, fontSize: 20 }}>
+                  {aba === 'torneios' ? 'Torneios Regionais' : 'Jogos da Noite'}
+                </h2>
+                <p style={{ color: '#64748b', fontSize: 13 }}>
+                  {aba === 'torneios' ? 'Competições e campeonatos ativos' : 'Gerenciador de partidas'}
+                </p>
               </div>
             </div>
             
-            {partidas.length === 0 && (
+            {partidas.length === 0 && aba !== 'torneios' && (
               <button className="btn btn-primary btn-sm" onClick={() => setTela('novo')}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 Novo Jogo
               </button>
             )}
           </div>
-
+ 
           {/* Tabs */}
           <div className="tabs" style={{ marginBottom: 16 }}>
             <button className={`tab ${aba === 'jogos' ? 'active' : ''}`} onClick={() => setAba('jogos')}>
@@ -462,10 +474,15 @@ export default function Jogos() {
                 <span style={{ background: '#3b82f6', color: 'white', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{historico.length}</span>
               )}
             </button>
+            <button className={`tab ${aba === 'torneios' ? 'active' : ''}`} onClick={() => setAba('torneios')}>
+              Torneios
+            </button>
           </div>
 
           {/* Renderização conforme Aba */}
-          {loading ? (
+          {aba === 'torneios' ? (
+            <Torneios profile={profile} isNested={true} />
+          ) : loading ? (
             aba === 'jogos' ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div className="skeleton" style={{ height: 170, borderRadius: '16px' }} />
