@@ -5,7 +5,6 @@ import './styles/global.css';
 import Home from './pages/Home';
 import Ranking from './pages/Ranking';
 import Jogadores from './pages/Jogadores';
-import Votar from './pages/Votar';
 import Torneios from './pages/Torneios';
 import Jogos from './pages/Jogos';
 import Stats from './pages/Stats';
@@ -27,7 +26,6 @@ const PAGES = {
   inicio: { label: 'Início', icon: 'court' },
   ranking: { label: 'Ranking', icon: 'trophy' },
   jogadores: { label: 'Jogadores', icon: 'users' },
-  votar: { label: 'Votar', icon: 'star' },
   torneios: { label: 'Torneios', icon: 'award' },
   jogos: { label: 'Jogos', icon: 'basketball' },
   stats: { label: 'Stats', icon: 'bar' },
@@ -359,7 +357,6 @@ export default function App() {
       case 'inicio': return <Home profile={profile} onNavigate={navigate} />;
       case 'ranking': return <Ranking profile={profile} />;
       case 'jogadores': return <Jogadores profile={profile} initialOpenAdd={pageProps.openAdd} />;
-      case 'votar': return <Votar />;
       case 'torneios': return <Torneios profile={profile} />;
       case 'jogos': return <Jogos />;
       case 'stats': return <Stats />;

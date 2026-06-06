@@ -103,11 +103,13 @@ export default function PlayerProfileModal({ jogador, onClose }) {
         .select('time, partida:partidas(*)')
         .eq('jogador_id', jogador.id);
       
+      let totalGames = 0;
+      let wins = 0;
+      let losses = 0;
+      let winRate = 0;
+      
       if (myMatches) {
         const finishedMatches = myMatches.filter(m => m.partida?.status === 'finalizado');
-        let wins = 0;
-        let losses = 0;
-        
         finishedMatches.forEach(m => {
           const p = m.partida;
           const myTeam = m.time;
@@ -121,10 +123,37 @@ export default function PlayerProfileModal({ jogador, onClose }) {
           }
         });
         
-        const totalGames = finishedMatches.length;
-        const winRate = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
-        setCommunityStats({ games: totalGames, wins, losses, winRate });
+        totalGames = finishedMatches.length;
+        winRate = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
       }
+
+      // 2b. Obter estatísticas acumuladas da partida (pontos, rebotes, assistências)
+      const { data: myStats } = await supabase
+        .from('estatisticas_partida')
+        .select('pontos, rebotes, assistencias')
+        .eq('jogador_id', jogador.id);
+
+      let totalPoints = 0;
+      let totalRebounds = 0;
+      let totalAssists = 0;
+
+      if (myStats) {
+        myStats.forEach(s => {
+          totalPoints += s.pontos || 0;
+          totalRebounds += s.rebotes || 0;
+          totalAssists += s.assistencias || 0;
+        });
+      }
+
+      setCommunityStats({
+        games: totalGames,
+        wins,
+        losses,
+        winRate,
+        points: totalPoints,
+        rebounds: totalRebounds,
+        assists: totalAssists
+      });
 
       // 3. Obter dados de autenticação e avaliação existente
       const user = (await supabase.auth.getUser()).data.user;
@@ -346,6 +375,38 @@ export default function PlayerProfileModal({ jogador, onClose }) {
                 </div>
               )}
             </div>
+
+            {/* Estatísticas de Carreira */}
+            {communityStats && (
+              <div className="card" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 14 }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-blue-light)', letterSpacing: '0.05em' }}>ESTATÍSTICAS DE CARREIRA</span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, textAlign: 'center' }}>
+                  <div style={{ background: 'var(--bg-secondary)', padding: '10px 4px', borderRadius: 8, border: '1px solid var(--border)' }}>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>PONTOS</div>
+                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 16 }}>{communityStats.points || 0}</div>
+                  </div>
+                  <div style={{ background: 'var(--bg-secondary)', padding: '10px 4px', borderRadius: 8, border: '1px solid var(--border)' }}>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>REBOTES</div>
+                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 16 }}>{communityStats.rebounds || 0}</div>
+                  </div>
+                  <div style={{ background: 'var(--bg-secondary)', padding: '10px 4px', borderRadius: 8, border: '1px solid var(--border)' }}>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>ASSISTS</div>
+                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 16 }}>{communityStats.assists || 0}</div>
+                  </div>
+                  <div style={{ background: 'var(--bg-secondary)', padding: '10px 4px', borderRadius: 8, border: '1px solid var(--border)' }}>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>JOGOS</div>
+                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 16 }}>{communityStats.games || 0}</div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Aproveitamento Comunidade */}
             {communityStats && communityStats.games > 0 && (

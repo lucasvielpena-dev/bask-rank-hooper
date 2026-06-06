@@ -1,6 +1,17 @@
 import { useState, useEffect } from 'react';
-import { supabase, jogadoresAPI } from '../lib/supabase';
+import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import PlayerProfileModal from '../components/PlayerProfileModal';
+
+const FILTROS = [
+  { key: 'todos', label: '👥 Todos' },
+  { key: 'avaliados', label: '⭐ Mais Avaliados' },
+  { key: 'votados', label: '📈 Mais Votados' },
+  { key: 'elite', label: '🏆 Elite' },
+  { key: 'promessa', label: '💎 Promessa' },
+  { key: 'mvp', label: '🥇 MVP' }
+];
+
+const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
 
 function renderBadge(media, totalVotos) {
   if (!totalVotos || totalVotos < 1) return null;
@@ -15,13 +26,13 @@ function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = fa
   
   const getGradientForName = (name) => {
     const colors = [
-      ['#3b82f6', '#1d4ed8'], // Blue
-      ['#f59e0b', '#d97706'], // Gold
-      ['#10b981', '#047857'], // Emerald
-      ['#8b5cf6', '#6d28d9'], // Violet
-      ['#ec4899', '#be185d'], // Pink
-      ['#f43f5e', '#be123c'], // Rose
-      ['#06b6d4', '#0891b2'], // Cyan
+      ['#3b82f6', '#1d4ed8'],
+      ['#f59e0b', '#d97706'],
+      ['#10b981', '#047857'],
+      ['#8b5cf6', '#6d28d9'],
+      ['#ec4899', '#be185d'],
+      ['#f43f5e', '#be123c'],
+      ['#06b6d4', '#0891b2'],
     ];
     let hash = 0;
     for (let i = 0; i < (name || '').length; i++) {
@@ -69,20 +80,68 @@ function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = fa
   );
 }
 
+function StarPicker({ value, onChange, disabled }) {
+  const [hover, setHover] = useState(0);
+  return (
+    <div style={{ display: 'flex', gap: 12, justifyContent: 'center', margin: '10px 0' }}>
+      {[1, 2, 3, 4, 5].map(i => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => !disabled && onChange(i)}
+          onMouseEnter={() => !disabled && setHover(i)}
+          onMouseLeave={() => !disabled && setHover(0)}
+          disabled={disabled}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: disabled ? 'default' : 'pointer',
+            padding: '6px',
+            transition: 'transform 0.1s',
+            transform: (hover || value) >= i ? 'scale(1.22)' : 'scale(1)',
+          }}
+        >
+          <svg width="36" height="36" viewBox="0 0 24 24" fill={(hover || value) >= i ? 'var(--accent-gold)' : 'none'} stroke={(hover || value) >= i ? 'var(--accent-gold)' : 'var(--text-muted)'} strokeWidth="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function Jogadores({ profile }) {
   const [jogadores, setJogadores] = useState([]);
   const [filtrados, setFiltrados] = useState([]);
   const [busca, setBusca] = useState('');
+  const [filtroAtivo, setFiltroAtivo] = useState('todos');
   const [loading, setLoading] = useState(true);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
+  // Ranks e MVPs
+  const [ranks, setRanks] = useState({});
+  const [mvpPlayerIds, setMvpPlayerIds] = useState(new Set());
+
+  // Voto rápido modal
+  const [votingPlayer, setVotingPlayer] = useState(null);
+  const [notaVoto, setNotaVoto] = useState(0);
+  const [comentarioVoto, setComentarioVoto] = useState('');
+  const [enviandoVoto, setEnviandoVoto] = useState(false);
+  const [votosStatus, setVotosStatus] = useState(null);
+
+  // Toast feedback
+  const [toast, setToast] = useState(null);
+
+  const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
+
   useEffect(() => {
     loadJogadores();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [city]);
 
   useEffect(() => {
     const channel = supabase
-      .channel('jogadores-global-realtime')
+      .channel('jogadores-global-realtime-unified')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'jogadores' },
@@ -95,50 +154,157 @@ export default function Jogadores({ profile }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [city]);
 
-
+  // Aplicar busca e filtros combinados
   useEffect(() => {
-    if (busca.trim() === '') {
-      setFiltrados(jogadores);
-    } else {
-      setFiltrados(jogadores.filter(j =>
+    let result = [...jogadores];
+
+    // 1. Filtrar por termo de busca
+    if (busca.trim() !== '') {
+      result = result.filter(j =>
         j.nome.toLowerCase().includes(busca.toLowerCase()) ||
         (j.apelido || '').toLowerCase().includes(busca.toLowerCase())
-      ));
+      );
     }
-  }, [busca, jogadores]);
+
+    // 2. Filtrar por categoria ativa
+    if (filtroAtivo === 'elite') {
+      result = result.filter(j => j.media_estrelas >= 4.5 && j.total_votos >= 1);
+    } else if (filtroAtivo === 'promessa') {
+      result = result.filter(j => j.media_estrelas >= 3.5 && j.media_estrelas < 4.5 && j.total_votos >= 1);
+    } else if (filtroAtivo === 'mvp') {
+      result = result.filter(j => j.atual_campeao || mvpPlayerIds.has(j.id));
+    }
+
+    // 3. Aplicar ordenação baseada no filtro selecionado
+    if (filtroAtivo === 'votados') {
+      result.sort((a, b) => b.total_votos - a.total_votos || b.media_estrelas - a.media_estrelas);
+    } else {
+      // Filtros 'todos', 'avaliados', 'elite', 'promessa', 'mvp' ordenam por média de estrelas
+      result.sort((a, b) => b.media_estrelas - a.media_estrelas || b.total_votos - a.total_votos);
+    }
+
+    setFiltrados(result);
+  }, [busca, jogadores, filtroAtivo, mvpPlayerIds]);
 
   async function loadJogadores() {
     setLoading(true);
-    const { data } = await jogadoresAPI.listar();
-    setJogadores(data || []);
-    setFiltrados(data || []);
+    try {
+      const [{ data: jogs }, { data: partidasData }, { data: votesStatus }] = await Promise.all([
+        jogadoresAPI.listar(),
+        supabase.from('partidas').select('mvp_id'),
+        votacaoAPI.getStatusHoje()
+      ]);
+
+      const players = jogs || [];
+      // Filtrar jogadores da cidade atual
+      const cityPlayers = players.filter(j => (j.cidade || '').toLowerCase() === city.toLowerCase());
+      
+      setJogadores(cityPlayers);
+      setVotosStatus(votesStatus);
+
+      // Calcular Ranks baseado no ordenamento de nota
+      const sortedByRank = [...cityPlayers].sort((a, b) => b.media_estrelas - a.media_estrelas || b.total_votos - a.total_votos);
+      const playerRanks = {};
+      sortedByRank.forEach((j, index) => {
+        playerRanks[j.id] = index + 1;
+      });
+      setRanks(playerRanks);
+
+      // Mapear MVPs da cidade
+      const mvps = new Set(partidasData?.map(p => p.mvp_id).filter(Boolean) || []);
+      setMvpPlayerIds(mvps);
+
+    } catch (e) {
+      console.error('Erro ao carregar atletas:', e);
+    }
     setLoading(false);
   }
 
+  function showToast(msg, type = 'success') {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3500);
+  }
+
+  function handleOpenVote(player) {
+    // 1. Impedir votar em si mesmo
+    if (profile?.player_id === player.id) {
+      showToast('Você não pode avaliar a si mesmo!', 'error');
+      return;
+    }
+
+    // 2. Verificar limite diário de votos
+    if (votosStatus && votosStatus.restantes <= 0) {
+      showToast('Você atingiu o limite de 20 avaliações por dia!', 'error');
+      return;
+    }
+
+    setVotingPlayer(player);
+    setNotaVoto(0);
+    setComentarioVoto('');
+  }
+
+  async function handleSubmitVote(e) {
+    e.preventDefault();
+    if (notaVoto < 1 || notaVoto > 5) {
+      showToast('Por favor, escolha uma nota de 1 a 5 estrelas.', 'error');
+      return;
+    }
+
+    setEnviandoVoto(true);
+    try {
+      // Executa a avaliação rápida atribuindo a mesma nota aos 5 fundamentos
+      const { data, error } = await votacaoAPI.votar(votingPlayer.id, {
+        arremesso: notaVoto,
+        defesa: notaVoto,
+        passe: notaVoto,
+        fisicalidade: notaVoto,
+        mentalidade: notaVoto,
+        comentario: comentarioVoto.trim() || null
+      });
+
+      if (error || !data?.sucesso) {
+        showToast(data?.erro || error?.message || 'Erro ao registrar avaliação.', 'error');
+      } else {
+        showToast(`✓ Avaliação computada! Nova média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
+        setVotingPlayer(null);
+        loadJogadores();
+      }
+    } catch (err) {
+      showToast('Erro de conexão ao salvar avaliação.', 'error');
+    } finally {
+      setEnviandoVoto(false);
+    }
+  }
+
+  const getRankIndicator = (rank) => {
+    if (rank === 1) return '🥇 #1';
+    if (rank === 2) return '🥈 #2';
+    if (rank === 3) return '🥉 #3';
+    return `#${rank}`;
+  };
 
   return (
     <div className="page-content">
       <div style={{ padding: '20px 20px 0' }}>
-
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
             <div>
               <h2 style={{ fontWeight: 800, fontSize: 20 }}>Jogadores</h2>
-              <p style={{ color: '#64748b', fontSize: 13 }}>{jogadores.length} cadastrados</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{jogadores.length} atletas em {city}</p>
             </div>
           </div>
         </div>
 
-
-        {/* Busca */}
+        {/* Busca e Barra de Pesquisa */}
         <div style={{ position: 'relative', marginBottom: 16 }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
           <input
@@ -149,58 +315,216 @@ export default function Jogadores({ profile }) {
           />
         </div>
 
-        {/* Lista */}
+        {/* Filtros Pílulas Deslizantes */}
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 16, scrollbarWidth: 'none', webkitOverflowScrolling: 'touch' }} className="hide-scrollbar">
+          {FILTROS.map(f => {
+            const active = filtroAtivo === f.key;
+            return (
+              <button
+                key={f.key}
+                onClick={() => setFiltroAtivo(f.key)}
+                style={{
+                  flexShrink: 0,
+                  padding: '8px 16px',
+                  borderRadius: '30px',
+                  border: active ? '1.5px solid var(--accent-blue)' : '1.5px solid var(--border)',
+                  background: active ? 'var(--accent-blue-dim)' : 'var(--bg-card)',
+                  color: active ? 'var(--accent-blue-light)' : 'var(--text-secondary)',
+                  fontWeight: 700,
+                  fontSize: 12,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Lista de Jogadores */}
         {loading ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 20 }}>
-            {[1, 2, 3, 4, 5].map(idx => (
-              <div key={idx} className="skeleton" style={{ height: 72, borderRadius: '16px' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 20 }}>
+            {[1, 2, 3, 4].map(idx => (
+              <div key={idx} className="skeleton" style={{ height: 120, borderRadius: '16px' }} />
             ))}
           </div>
         ) : filtrados.length === 0 ? (
           <div className="empty-state">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             <h3>Nenhum jogador encontrado</h3>
+            <p>Selecione outro filtro ou altere sua busca por nome/apelido.</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 20 }}>
-            {filtrados.map((j, i) => (
-              <div key={j.id} className="card card-enter" onClick={() => setSelectedPlayer(j)} style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', animationDelay: `${i * 30}ms` }}>
-                <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={40} hasCrown={j.atual_campeao} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                    {j.nome}
-                    {renderBadge(j.media_estrelas, j.total_votos)}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 30 }}>
+            {filtrados.map((j, i) => {
+              const rankVal = ranks[j.id] || 0;
+              const hasVoted = j.ja_votou_hoje;
+              return (
+                <div 
+                  key={j.id} 
+                  className="card card-enter" 
+                  style={{ animationDelay: `${i * 25}ms`, padding: '16px 18px' }}
+                >
+                  {/* Informações Principais */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={44} hasCrown={j.atual_campeao} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 800, fontSize: 16, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                        <span style={{ color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {j.nome}
+                        </span>
+                        {j.apelido && <span style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }}>"{j.apelido}"</span>}
+                      </div>
+                      <div style={{ fontSize: 11, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                        <span style={{ fontWeight: 800, color: rankVal <= 3 ? 'var(--accent-gold)' : 'var(--text-muted)' }}>
+                          {getRankIndicator(rankVal)}
+                        </span>
+                        <span style={{ color: 'var(--text-muted)' }}>•</span>
+                        <span>{j.posicao || 'Ala'}</span>
+                      </div>
+                    </div>
+
+                    {/* Média de Estrelas */}
+                    <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <span style={{ fontSize: '18px', fontWeight: 900, color: 'var(--accent-gold)' }}>
+                          {j.total_votos >= 1 ? Number(j.media_estrelas).toFixed(1) : 'S/N'}
+                        </span>
+                        <span style={{ color: 'var(--accent-gold)', fontSize: '14px' }}>★</span>
+                      </div>
+                      <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>
+                        {j.total_votos} {j.total_votos === 1 ? 'voto' : 'votos'}
+                      </div>
+                    </div>
                   </div>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>
-                    {j.apelido && <span style={{ marginRight: 8 }}>"{j.apelido}"</span>}
-                    {j.posicao && <span>{j.posicao}</span>}
-                  </div>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  {j.total_votos >= 1 ? (
-                    <>
-                      <div style={{ color: '#60a5fa', fontWeight: 700, fontSize: 14 }}>★ {Number(j.media_estrelas).toFixed(1)}</div>
-                      <div style={{ fontSize: 11, color: '#64748b' }}>{j.total_votos} av.</div>
-                    </>
-                  ) : (
-                    <div style={{ fontSize: 11, color: '#475569' }}>
-                      {j.total_votos}/1 av.
+
+                  {/* Badges / Selos */}
+                  {j.total_votos >= 1 && (
+                    <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+                      {renderBadge(j.media_estrelas, j.total_votos)}
+                      {(j.atual_campeao || mvpPlayerIds.has(j.id)) && (
+                        <span className="badge-elite" style={{ background: 'rgba(59,130,246,0.1)', color: 'var(--accent-blue-light)', borderColor: 'rgba(59,130,246,0.25)' }}>
+                          🏅 MVP
+                        </span>
+                      )}
                     </div>
                   )}
+
+                  {/* Botões de Ação Rápida */}
+                  <div style={{ display: 'flex', gap: 8, marginTop: 14, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
+                    <button 
+                      className="btn btn-secondary btn-sm" 
+                      onClick={() => setSelectedPlayer(j)} 
+                      style={{ flex: 1, margin: 0, padding: '8px 14px' }}
+                    >
+                      Ver Perfil
+                    </button>
+                    <button 
+                      className={`btn btn-sm ${hasVoted ? 'btn-secondary' : 'btn-primary'}`}
+                      onClick={() => handleOpenVote(j)}
+                      style={{ 
+                        flex: 1, 
+                        margin: 0, 
+                        padding: '8px 14px',
+                        background: hasVoted ? 'rgba(34,197,94,0.08)' : 'var(--accent-blue)',
+                        color: hasVoted ? '#22c55e' : '#ffffff',
+                        border: hasVoted ? '1px solid rgba(34,197,94,0.15)' : 'none'
+                      }}
+                    >
+                      {hasVoted ? '✓ Avaliado' : '⭐ Avaliar'}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
 
+      {/* MODAL SHEET: AVALIAÇÃO RÁPIDA */}
+      {votingPlayer && (
+        <div className="modal-overlay" onClick={() => { if (!enviandoVoto) setVotingPlayer(null); }}>
+          <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 400 }}>
+            <div className="modal-handle" />
+            <h3 style={{ fontWeight: 900, fontSize: 20, marginBottom: 4, textAlign: 'center' }}>
+              Avaliar {votingPlayer.nome}
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 16, textAlign: 'center' }}>
+              Selecione uma nota de 1 a 5 estrelas e adicione um comentário opcional.
+            </p>
+
+            <form onSubmit={handleSubmitVote} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {/* Star Picker */}
+              <div style={{ background: 'var(--bg-secondary)', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border)', textAlign: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Qual sua nota? *</span>
+                  <span style={{ fontSize: 12, color: 'var(--accent-gold)', fontWeight: 700 }}>
+                    {labelsNota[notaVoto]}
+                  </span>
+                </div>
+                <StarPicker value={notaVoto} onChange={setNotaVoto} disabled={enviandoVoto} />
+              </div>
+
+              {/* Comentário Opcional */}
+              <div>
+                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                  Comentário (opcional)
+                </label>
+                <textarea
+                  rows="3"
+                  maxLength="200"
+                  value={comentarioVoto}
+                  onChange={e => setComentarioVoto(e.target.value)}
+                  placeholder="Ex: Joga muito coletivo, excelente arremesso..."
+                  style={{ resize: 'none' }}
+                  disabled={enviandoVoto}
+                />
+              </div>
+
+              {/* Status de Votos Diários */}
+              {votosStatus && (
+                <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-muted)' }}>
+                  Você já avaliou <strong>{votosStatus.votos_hoje}/20</strong> jogadores hoje.
+                </div>
+              )}
+
+              {/* Botões do Modal */}
+              <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={() => setVotingPlayer(null)} 
+                  disabled={enviandoVoto}
+                  style={{ flex: 1 }}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit" 
+                  className="btn btn-primary" 
+                  disabled={enviandoVoto || notaVoto < 1}
+                  style={{ flex: 2 }}
+                >
+                  {enviandoVoto ? <div className="spinner" /> : 'Confirmar Enviar'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL SHEET: DETALHES DO JOGADOR */}
       {selectedPlayer && (
         <PlayerProfileModal
           jogador={selectedPlayer}
-          onClose={() => setSelectedPlayer(null)}
+          onClose={() => { setSelectedPlayer(null); loadJogadores(); }}
         />
       )}
 
+      {/* Toast Feedback */}
+      {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
     </div>
   );
 }

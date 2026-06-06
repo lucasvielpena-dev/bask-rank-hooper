@@ -86,6 +86,7 @@ export const votacaoAPI = {
       p_ip: metadata.ip || null,
       p_device_id: metadata.deviceId || null,
       p_localizacao: metadata.localizacao || null,
+      p_comentario: avaliacao.comentario || null
     });
     return { data, error };
   },

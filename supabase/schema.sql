@@ -99,6 +99,9 @@ ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS cidade TEXT DEFAULT 'Altam
 ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS uf TEXT DEFAULT 'PA';
 ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS pais TEXT DEFAULT 'Brasil';
 
+-- Garantir coluna comentario caso a tabela já existisse
+ALTER TABLE public.avaliacoes ADD COLUMN IF NOT EXISTS comentario TEXT;
+
 -- Votos individuais
 CREATE TABLE IF NOT EXISTS public.votos (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -130,6 +133,7 @@ CREATE TABLE IF NOT EXISTS public.avaliacoes (
   fisicalidade INTEGER NOT NULL CHECK (fisicalidade BETWEEN 1 AND 5),
   mentalidade INTEGER NOT NULL CHECK (mentalidade BETWEEN 1 AND 5),
   peso_voto NUMERIC DEFAULT 1.0 NOT NULL,
+  comentario TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE (avaliador_id, jogador_id)
@@ -367,7 +371,8 @@ CREATE OR REPLACE FUNCTION public.registrar_avaliacao(
   p_mentalidade INTEGER,
   p_ip TEXT DEFAULT NULL,
   p_device_id TEXT DEFAULT NULL,
-  p_localizacao TEXT DEFAULT NULL
+  p_localizacao TEXT DEFAULT NULL,
+  p_comentario TEXT DEFAULT NULL
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -426,10 +431,10 @@ BEGIN
 
   -- Inserir ou atualizar avaliação
   INSERT INTO public.avaliacoes (
-    avaliador_id, jogador_id, arremesso, defesa, passe, fisicalidade, mentalidade, peso_voto
+    avaliador_id, jogador_id, arremesso, defesa, passe, fisicalidade, mentalidade, peso_voto, comentario
   )
   VALUES (
-    v_avaliador_id, p_jogador_id, p_arremesso, p_defesa, p_passe, p_fisicalidade, p_mentalidade, v_reputacao
+    v_avaliador_id, p_jogador_id, p_arremesso, p_defesa, p_passe, p_fisicalidade, p_mentalidade, v_reputacao, p_comentario
   )
   ON CONFLICT (avaliador_id, jogador_id)
   DO UPDATE SET
@@ -439,10 +444,11 @@ BEGIN
     fisicalidade = EXCLUDED.fisicalidade,
     mentalidade = EXCLUDED.mentalidade,
     peso_voto = EXCLUDED.peso_voto,
+    comentario = EXCLUDED.comentario,
     updated_at = NOW()
   RETURNING id INTO v_avaliacao_id;
 
-  -- Atualizar contador diário de votos se for uma avaliação nova hoje
+  --/-- Atualizar contador diário de votos se for uma avaliação nova hoje
   IF NOT EXISTS (
     SELECT 1 FROM public.avaliacoes
     WHERE id = v_avaliacao_id AND created_at::DATE = CURRENT_DATE AND updated_at::DATE <> CURRENT_DATE
