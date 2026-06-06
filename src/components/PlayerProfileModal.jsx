@@ -294,13 +294,13 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   const badgeText = starsVal >= 4.5 ? 'ELITE' : starsVal >= 4.0 ? 'DESTAQUE' : starsVal >= 3.5 ? 'PROMESSA' : 'EM DEV.';
 
   // Evolution index
-  let evolutionIndex = -1;
-  if (starsVal >= 4.8) {
-    evolutionIndex = 2; // MVP
-  } else if (starsVal >= 4.5) {
-    evolutionIndex = 1; // Elite
-  } else if (starsVal >= 3.5) {
-    evolutionIndex = 0; // Promessa
+  let evolutionIndex = 0;
+  if (starsVal >= 4.5) {
+    evolutionIndex = 3;
+  } else if (starsVal >= 4.0) {
+    evolutionIndex = 2;
+  } else if (starsVal >= 3.0) {
+    evolutionIndex = 1;
   }
 
 
@@ -462,18 +462,18 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 LINHA DE EVOLUÇÃO
               </div>
               <div className="evolution-timeline" style={{ margin: '18px 0 6px' }}>
-                <div className="evolution-progress-line" style={{ width: `${evolutionIndex <= 0 ? 0 : evolutionIndex === 1 ? 50 : 100}%` }} />
+                <div className="evolution-progress-line" style={{ width: `${evolutionIndex * 33.3}%` }} />
                 {[
-                  { label: 'Promessa', req: '3.5★', val: 0 },
-                  { label: 'Elite', req: '4.5★', val: 1 },
-                  { label: 'MVP', req: '4.8★', val: 2 },
+                  { label: 'Rookie', val: 0 },
+                  { label: 'Promessa', val: 1 },
+                  { label: 'Elite', val: 2 },
+                  { label: 'MVP', val: 3 },
                 ].map(step => (
                   <div key={step.label} className={`evolution-step ${evolutionIndex >= step.val ? 'completed' : ''} ${evolutionIndex === step.val ? 'active' : ''}`}>
                     <div className="evolution-dot" style={{ width: '22px', height: '22px', fontSize: '9px' }}>
-                      {step.val === 2 ? '★' : step.val + 1}
+                      {step.val === 3 ? '★' : step.val + 1}
                     </div>
                     <div className="evolution-label" style={{ fontSize: '8px', marginTop: 4 }}>{step.label}</div>
-                    <div className="evolution-year" style={{ fontSize: '8px', color: 'var(--accent-gold)', fontWeight: 700 }}>{step.req}</div>
                   </div>
                 ))}
               </div>
