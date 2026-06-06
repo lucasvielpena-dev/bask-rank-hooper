@@ -64,7 +64,7 @@ export default function Ranking({ profile }) {
   const [ranking, setRanking] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const [categoria, setCategoria] = useState('geral'); // 'geral' | 'pontos' | 'rebotes' | 'assist' | 'defesa'
+  const categoria = 'geral';
 
   const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
   const uf = profile?.uf || 'PA';
