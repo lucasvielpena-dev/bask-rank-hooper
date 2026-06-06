@@ -69,6 +69,25 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   }, [jogador?.id]);
 
   useEffect(() => {
+    // Adiciona uma entrada no histórico para permitir fechar ao voltar no celular
+    window.history.pushState({ modalOpen: 'profile' }, '');
+
+    const handlePopState = (e) => {
+      onClose();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      // Limpa a entrada do histórico caso o modal seja fechado clicando no X
+      if (window.history.state?.modalOpen === 'profile') {
+        window.history.back();
+      }
+    };
+  }, [onClose]);
+
+  useEffect(() => {
     const channel = supabase
       .channel(`modal-realtime-${jogador.id}`)
       .on(
@@ -285,7 +304,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose} style={{ alignItems: 'center', padding: '16px' }}>
+    <div className="modal-overlay" style={{ alignItems: 'center', padding: '16px' }}>
       <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440, borderRadius: '24px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
         <div className="modal-handle" />
 
@@ -377,28 +396,6 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 zIndex: 1
               }} />
 
-              {/* Botão de Fechar no topo */}
-              <button 
-                onClick={onClose} 
-                style={{
-                  position: 'absolute',
-                  top: 10,
-                  left: 10,
-                  background: 'rgba(0,0,0,0.5)',
-                  border: 'none',
-                  color: '#FFF',
-                  width: 28,
-                  height: 28,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  zIndex: 10
-                }}
-              >
-                ✕
-              </button>
 
               <div style={{ zIndex: 2, padding: '16px', width: '100%' }}>
                 <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#F8FAFC', marginBottom: 2 }}>{localJogador.nome}</h3>
@@ -608,29 +605,55 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             </div>
 
             {/* Ações inferiores */}
-            <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
-              {!isMe && (
+            {!isMe && (
+              <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
                 <button 
                   type="button"
                   className="btn btn-primary" 
                   onClick={() => setShowAvaliar(true)}
-                  style={{ flex: 1.5, background: '#2563EB' }}
+                  style={{
+                    flex: 1,
+                    background: '#2563EB',
+                    height: '48px',
+                    borderRadius: '12px',
+                    fontWeight: 700,
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    fontFamily: 'inherit',
+                    border: 'none',
+                    color: '#FFFFFF'
+                  }}
                 >
                   {jaAvaliou ? '⚙️ Editar Voto' : '★ Avaliar Atleta'}
                 </button>
-              )}
-              <button 
-                className="btn btn-secondary" 
-                onClick={() => setShowDenunciar(true)}
-                style={{ flex: 1, color: '#EF4444', borderColor: 'var(--border-danger)', background: 'none' }}
-              >
-                ⚠️ Denunciar
-              </button>
-            </div>
-            
-            <button className="btn btn-primary" onClick={onClose} style={{ marginTop: 2, background: 'rgba(255,255,255,0.05)', color: '#F8FAFC', border: '1px solid rgba(255,255,255,0.06)' }}>
-              Fechar perfil completo
-            </button>
+                <button 
+                  className="btn btn-secondary" 
+                  onClick={() => setShowDenunciar(true)}
+                  style={{
+                    flex: 1,
+                    color: '#EF4444',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    background: 'none',
+                    height: '48px',
+                    borderRadius: '12px',
+                    fontWeight: 700,
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    fontFamily: 'inherit'
+                  }}
+                >
+                  ⚠️ Denunciar
+                </button>
+              </div>
+            )}
           </div>
         )}
 
