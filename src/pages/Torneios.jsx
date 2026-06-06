@@ -900,6 +900,10 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
   const [tempo, setTempo] = useState(0);
   const [timerAtivo, setTimerAtivo] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [duracaoQuarto, setDuracaoQuarto] = useState(() => {
+    const saved = localStorage.getItem(`duracao_torneio_jogo_${jogo.id}`);
+    return saved ? parseInt(saved) : 10;
+  });
   
   // Roster dos atletas para lançar estatísticas
   const [rosterA, setRosterA] = useState([]);
@@ -938,10 +942,24 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
     carregarRosters();
     
     // Parse tempo total do banco
+    let parsedTempo = 0;
     if (jogo.tempo_total) {
       const parts = jogo.tempo_total.split(':');
       if (parts.length === 2) {
-        setTempo(parseInt(parts[0]) * 60 + parseInt(parts[1]));
+        parsedTempo = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+        setTempo(parsedTempo);
+      }
+    }
+
+    // Determina a duração do quarto
+    const saved = localStorage.getItem(`duracao_torneio_jogo_${jogo.id}`);
+    if (saved) {
+      setDuracaoQuarto(parseInt(saved));
+    } else {
+      const inferred = parsedTempo > 600 ? 12 : 10;
+      setDuracaoQuarto(inferred);
+      if (!jogo.tempo_total || jogo.tempo_total === '00:00') {
+        setTempo(inferred * 60);
       }
     }
 
@@ -952,12 +970,19 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
   useEffect(() => {
     if (timerAtivo) {
       timerRef.current = setInterval(() => {
-        setTempo(t => t + 1);
+        setTempo(t => Math.max(0, t - 1));
       }, 1000);
     } else {
       clearInterval(timerRef.current);
     }
   }, [timerAtivo]);
+
+  // Efeito para tratar o fim do período automaticamente
+  useEffect(() => {
+    if (tempo === 0 && timerAtivo) {
+      setTimerAtivo(false);
+    }
+  }, [tempo, timerAtivo]);
 
   // Sincroniza o placar no Supabase conforme altera no console
   useEffect(() => {
@@ -1099,6 +1124,14 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
     }
   }
 
+  function comecarProximoPeriodo() {
+    setTimerAtivo(false);
+    const novoPeriodo = periodo + 1;
+    setPeriodo(novoPeriodo);
+    const novoTempo = novoPeriodo >= 5 ? 300 : duracaoQuarto * 60;
+    setTempo(novoTempo);
+  }
+
   return (
     <div style={{ padding: '20px 20px 24px', height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
@@ -1123,22 +1156,72 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         </span>
       </div>
 
-      {/* Indicador de Período Pill */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-        <div style={{
-          display: 'inline-flex',
+      {periodo === 1 && tempo === duracaoQuarto * 60 && !timerAtivo && (
+        <div className="card" style={{
+          padding: '12px 16px',
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid var(--border)',
+          borderRadius: '12px',
+          marginBottom: 16,
+          display: 'flex',
           alignItems: 'center',
-          gap: 10,
-          padding: '8px 20px',
-          background: 'rgba(59, 130, 246, 0.08)',
-          border: '1px solid rgba(59, 130, 246, 0.25)',
-          borderRadius: '30px',
-          backdropFilter: 'blur(12px)',
-          webkitBackdropFilter: 'blur(12px)'
+          justifyContent: 'space-between'
         }}>
-          <span style={{ fontSize: '24px', fontWeight: 900, color: 'var(--accent-blue-light)', lineHeight: 1 }}>{periodo}º</span>
-          <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>PERÍODO</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)' }}>Duração do Quarto:</span>
+          <div style={{ display: 'flex', gap: 12 }}>
+            {[10, 12].map(mins => (
+              <label key={mins} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, color: 'var(--text-primary)' }}>
+                <input
+                  type="radio"
+                  name="duracaoQuartoConsole"
+                  checked={duracaoQuarto === mins}
+                  onChange={() => {
+                    setDuracaoQuarto(mins);
+                    setTempo(mins * 60);
+                    localStorage.setItem(`duracao_torneio_jogo_${jogo.id}`, String(mins));
+                  }}
+                  style={{ accentColor: '#3b82f6' }}
+                />
+                {mins} minutos
+              </label>
+            ))}
+          </div>
         </div>
+      )}
+
+      {/* Indicador de Quarto no Topo */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+        {['Q1', 'Q2', 'Q3', 'Q4'].map((q, idx) => {
+          const isActive = periodo === idx + 1;
+          return (
+            <div key={q} style={{
+              padding: '6px 14px',
+              background: isActive ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.03)',
+              border: isActive ? '1px solid #3b82f6' : '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: isActive ? 800 : 500,
+              color: isActive ? '#60a5fa' : 'var(--text-secondary)',
+              letterSpacing: '0.05em'
+            }}>
+              {q}
+            </div>
+          );
+        })}
+        {periodo >= 5 && (
+          <div style={{
+            padding: '6px 14px',
+            background: 'rgba(245, 158, 11, 0.2)',
+            border: '1px solid #f59e0b',
+            borderRadius: '20px',
+            fontSize: '12px',
+            fontWeight: 800,
+            color: '#f59e0b',
+            letterSpacing: '0.05em'
+          }}>
+            PRORROGAÇÃO {periodo > 5 ? `(${periodo - 4})` : ''}
+          </div>
+        )}
       </div>
 
       {/* Placar Centralizado (Unified Scoreboard Card) */}
@@ -1419,6 +1502,86 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
 
       <hr style={{ border: 'none', borderTop: '1px solid rgba(255, 255, 255, 0.08)', margin: '20px 0' }} />
 
+      {/* Seção de Transição de Período Dinâmica */}
+      {tempo === 0 && (
+        <div style={{ marginBottom: 20 }}>
+          {periodo < 4 ? (
+            <div className="card" style={{
+              padding: '20px',
+              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(26, 30, 40, 0.6) 100%)',
+              border: '1px solid rgba(59, 130, 246, 0.3)',
+              borderRadius: '14px',
+              textAlign: 'center'
+            }}>
+              <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
+                Fim do {periodo}º Quarto
+              </h3>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>
+                Iniciar {periodo + 1}º Quarto
+              </p>
+              <button onClick={comecarProximoPeriodo} style={{
+                background: '#3b82f6',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '10px 24px',
+                fontSize: '14px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+              }}>
+                ▶ Começar
+              </button>
+            </div>
+          ) : (placarA === placarB) ? (
+            <div className="card" style={{
+              padding: '20px',
+              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(26, 30, 40, 0.6) 100%)',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              borderRadius: '14px',
+              textAlign: 'center'
+            }}>
+              <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
+                {periodo === 4 ? '4º Quarto Finalizado' : 'Prorrogação Finalizada'}
+              </h3>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>
+                Jogo Empatado! Iniciar Prorrogação
+              </p>
+              <button onClick={comecarProximoPeriodo} style={{
+                background: '#f59e0b',
+                color: '#0d0f14',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '10px 24px',
+                fontSize: '14px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
+              }}>
+                ▶ Iniciar Prorrogação
+              </button>
+            </div>
+          ) : (
+            <div className="card" style={{
+              padding: '16px 20px',
+              background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(26, 30, 40, 0.4) 100%)',
+              border: '1px solid rgba(239, 68, 68, 0.25)',
+              borderRadius: '14px',
+              textAlign: 'center'
+            }}>
+              <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
+                Partida Encerrada
+              </h3>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                O tempo regulamentar foi concluído. Registre o MVP e finalize a partida no botão abaixo.
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Cronômetro visor */}
       <div className={`card ${timerAtivo ? 'timer-active-pulse' : ''}`} style={{
         display: 'flex',
@@ -1450,7 +1613,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         </div>
         
         {/* Botões do Timer */}
-        <div style={{ display: 'flex', gap: 10, width: '100%', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 10, width: '100%', justifyContent: 'center', flexWrap: 'wrap' }}>
           {!timerAtivo ? (
             <button onClick={() => setTimerAtivo(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', background: 'rgba(34, 197, 94, 0.08)', color: '#22c55e', border: '1px solid rgba(34, 197, 94, 0.2)', borderRadius: '8px', fontWeight: 700, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
               ▶ Iniciar
@@ -1460,44 +1623,22 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
               ⏸ Pausar
             </button>
           )}
-          <button onClick={() => { setTimerAtivo(false); setTempo(0); }} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'rgba(100, 116, 139, 0.06)', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
-            🔄 Reiniciar
+          <button onClick={() => {
+            setTimerAtivo(false);
+            const resetTempo = periodo >= 5 ? 300 : duracaoQuarto * 60;
+            setTempo(resetTempo);
+          }} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'rgba(100, 116, 139, 0.06)', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
+            🔄 Reiniciar Quarto
           </button>
+          {tempo > 0 && (periodo < 4 || (periodo === 4 && placarA === placarB) || (periodo >= 5 && placarA === placarB)) && (
+            <button onClick={() => {
+              setTimerAtivo(false);
+              setTempo(0);
+            }} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
+              ⏭ Próximo Quarto
+            </button>
+          )}
         </div>
-      </div>
-
-      <hr style={{ border: 'none', borderTop: '1px solid rgba(255, 255, 255, 0.08)', margin: '20px 0' }} />
-
-      {/* Seção Próximo Período Isolada e Destacada */}
-      <div className="card" style={{
-        padding: '16px 20px',
-        background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(26, 30, 40, 0.4) 100%)',
-        border: '1px solid rgba(245, 158, 11, 0.3)',
-        borderRadius: '14px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 24
-      }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(245, 158, 11, 0.85)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Controle de Período</span>
-          <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>Fim do {periodo}º período da partida</span>
-        </div>
-        <button onClick={() => setPeriodo(p => p + 1)} style={{
-          background: '#f59e0b',
-          color: '#0d0f14',
-          border: 'none',
-          borderRadius: '8px',
-          padding: '10px 18px',
-          fontSize: '13px',
-          fontWeight: 800,
-          cursor: 'pointer',
-          fontFamily: 'inherit',
-          boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
-          transition: 'all 0.2s'
-        }}>
-          Próximo Período
-        </button>
       </div>
 
       {/* Formulário de Estatísticas Individuais */}

@@ -61,6 +61,29 @@ function NavIcon({ type, active }) {
 }
 
 export default function App() {
+  // Garantir a limpeza de cache do Service Worker na mudança de versão do app
+  useEffect(() => {
+    const swVersion = 'v7';
+    const currentVersion = localStorage.getItem('sw_version');
+    if (currentVersion !== swVersion) {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          if (registrations.length > 0) {
+            for (let registration of registrations) {
+              registration.unregister();
+            }
+            localStorage.setItem('sw_version', swVersion);
+            window.location.reload();
+          } else {
+            localStorage.setItem('sw_version', swVersion);
+          }
+        });
+      } else {
+        localStorage.setItem('sw_version', swVersion);
+      }
+    }
+  }, []);
+
   const [page, setPage] = useState('inicio');
   const [pageProps, setPageProps] = useState({});
   const [user, setUser] = useState(null);
