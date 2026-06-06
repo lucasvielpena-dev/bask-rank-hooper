@@ -590,7 +590,7 @@ BEGIN
     )::INTEGER AS posicao
   FROM public.jogadores j
   WHERE j.ativo = TRUE
-    AND j.total_votos >= 10
+    AND j.total_votos >= 1
   ORDER BY j.media_estrelas DESC, j.total_votos DESC
   LIMIT p_limit;
 END;

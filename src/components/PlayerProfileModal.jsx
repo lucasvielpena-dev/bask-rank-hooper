@@ -314,7 +314,7 @@ export default function PlayerProfileModal({ jogador, onClose }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
                 <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>MEDIA DO ATLETA</span>
                 <span style={{ color: 'var(--accent-gold)', fontWeight: 800, fontSize: 18 }}>
-                  ★ {localJogador.total_votos >= 10 ? Number(localJogador.media_estrelas).toFixed(1) : 'S/N'}
+                  ★ {localJogador.total_votos >= 1 ? Number(localJogador.media_estrelas).toFixed(1) : 'S/N'}
                 </span>
               </div>
               
@@ -327,22 +327,22 @@ export default function PlayerProfileModal({ jogador, onClose }) {
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 4 }}>
                         <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{f.label}</span>
                         <span style={{ color: 'var(--accent-blue-light)', fontWeight: 700 }}>
-                          {localJogador.total_votos >= 10 ? `★ ${Number(mediaAspecto).toFixed(1)}` : '--'}
+                          {localJogador.total_votos >= 1 ? `★ ${Number(mediaAspecto).toFixed(1)}` : '--'}
                         </span>
                       </div>
                       <div className="progress-bar" style={{ height: 6 }}>
                         <div 
                           className="progress-fill blue" 
-                          style={{ width: localJogador.total_votos >= 10 ? `${(mediaAspecto / 5) * 100}%` : '0%' }} 
+                          style={{ width: localJogador.total_votos >= 1 ? `${(mediaAspecto / 5) * 100}%` : '0%' }} 
                         />
                       </div>
                     </div>
                   );
                 })}
               </div>
-              {localJogador.total_votos < 10 && (
+              {localJogador.total_votos < 1 && (
                 <div style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', marginTop: 12 }}>
-                  * Avaliações detalhadas ocultas até atingir 10 votos (Atual: {localJogador.total_votos}/10)
+                  * Avaliações detalhadas ocultas até atingir 1 voto (Atual: {localJogador.total_votos}/1)
                 </div>
               )}
             </div>
