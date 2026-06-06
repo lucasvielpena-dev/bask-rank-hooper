@@ -97,6 +97,7 @@ ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS media_fisicalidade NUMERIC
 ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS media_mentalidade NUMERIC(3,2) DEFAULT 0;
 ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS cidade TEXT DEFAULT 'Altamira';
 ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS uf TEXT DEFAULT 'PA';
+ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS pais TEXT DEFAULT 'Brasil';
 
 -- Votos individuais
 CREATE TABLE IF NOT EXISTS public.votos (
