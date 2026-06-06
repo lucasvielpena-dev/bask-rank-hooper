@@ -293,7 +293,9 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   const starsVal = localJogador.media_estrelas || 0;
   const badgeText = starsVal >= 4.5 ? 'ELITE' : starsVal >= 4.0 ? 'DESTAQUE' : starsVal >= 3.5 ? 'PROMESSA' : 'EM DEV.';
 
-  const currentYear = new Date().getFullYear();
+  const createdDate = localJogador?.created_at ? new Date(localJogador.created_at) : new Date();
+  const startYear = createdDate.getFullYear();
+
   // Evolution index
   let evolutionIndex = 0;
   if (starsVal >= 4.5) {
@@ -465,10 +467,10 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               <div className="evolution-timeline" style={{ margin: '18px 0 6px' }}>
                 <div className="evolution-progress-line" style={{ width: `${evolutionIndex * 33.3}%` }} />
                 {[
-                  { label: 'Rookie', year: String(currentYear - 3), val: 0 },
-                  { label: 'Promessa', year: String(currentYear - 2), val: 1 },
-                  { label: 'Elite', year: String(currentYear - 1), val: 2 },
-                  { label: 'MVP', year: String(currentYear), val: 3 },
+                  { label: 'Rookie', year: String(startYear), val: 0 },
+                  { label: 'Promessa', year: String(startYear + 1), val: 1 },
+                  { label: 'Elite', year: String(startYear + 2), val: 2 },
+                  { label: 'MVP', year: String(startYear + 3), val: 3 },
                 ].map(step => (
                   <div key={step.label} className={`evolution-step ${evolutionIndex >= step.val ? 'completed' : ''} ${evolutionIndex === step.val ? 'active' : ''}`}>
                     <div className="evolution-dot" style={{ width: '22px', height: '22px', fontSize: '9px' }}>
