@@ -43,6 +43,8 @@ CREATE TABLE public.profiles (
 );
 
 -- Garantir colunas para bancos de dados já existentes
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cidade TEXT DEFAULT 'Altamira';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS uf TEXT DEFAULT 'PA';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cidade_atual TEXT DEFAULT 'Altamira';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS latitude_atual NUMERIC;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS longitude_atual NUMERIC;
