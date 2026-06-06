@@ -163,7 +163,7 @@ body {
   background: var(--bg-card);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  padding: 18px 20px;
+  padding: 24px 22px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, border-color 0.3s;
 }
@@ -177,7 +177,7 @@ body {
   background: var(--bg-elevated);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  padding: 18px 20px;
+  padding: 24px 22px;
   box-shadow: var(--shadow);
 }
 
@@ -522,4 +522,10 @@ input:focus { border-color: var(--accent-blue); }
 
 .light-theme .card:hover {
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
+}
+
+/* Animations */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.5; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
 }

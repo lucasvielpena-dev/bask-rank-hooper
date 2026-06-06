@@ -574,48 +574,37 @@ export default function Jogos() {
             </div>
           </div>
 
-          {/* Placar Central Gigante */}
-          <div className="card" style={{ padding: '24px 16px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-            <div style={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ flex: 1, textBreak: 'break-word', textAlign: 'center' }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase' }}>{timeANome}</span>
-                <span style={{ fontSize: 56, fontWeight: 900, color: '#3b82f6', display: 'block', marginTop: 4 }}>{String(placarA).padStart(2, '0')}</span>
-              </div>
-              <span style={{ fontSize: 24, fontWeight: 800, color: '#475569' }}>x</span>
-              <div style={{ flex: 1, textBreak: 'break-word', textAlign: 'center' }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase' }}>{timeBNome}</span>
-                <span style={{ fontSize: 56, fontWeight: 900, color: '#ef4444', display: 'block', marginTop: 4 }}>{String(placarB).padStart(2, '0')}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Controles de Pontuação Otimizados */}
+          {/* Placar Central e Controles de Pontuação (Side-by-Side) */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
             {/* Time A */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
-                <button className="btn btn-primary" onClick={() => ajustarPlacar('A', 1)} style={{ padding: '16px 0', fontSize: 18, fontWeight: 800, background: '#3b82f6' }}>+1</button>
-                <button className="btn btn-primary" onClick={() => ajustarPlacar('A', 2)} style={{ padding: '16px 0', fontSize: 18, fontWeight: 800, background: '#3b82f6' }}>+2</button>
-                <button className="btn btn-primary" onClick={() => ajustarPlacar('A', 3)} style={{ padding: '16px 0', fontSize: 18, fontWeight: 800, background: '#3b82f6' }}>+3</button>
+            <div className="card" style={{ padding: '20px 14px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '220px' }}>
+              <div style={{ width: '100%', textAlign: 'center' }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{timeANome}</span>
+                <span style={{ fontSize: 56, fontWeight: 900, color: '#3b82f6', fontFamily: 'monospace', display: 'block', marginTop: 10, lineHeight: 1 }}>{String(placarA).padStart(2, '0')}</span>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
-                <button className="btn btn-secondary" onClick={() => ajustarPlacar('A', -1)} style={{ padding: '12px 0', fontSize: 14, fontWeight: 700 }}>-1</button>
-                <button className="btn btn-secondary" onClick={() => ajustarPlacar('A', -2)} style={{ padding: '12px 0', fontSize: 14, fontWeight: 700 }}>-2</button>
-                <button className="btn btn-secondary" onClick={() => ajustarPlacar('A', -3)} style={{ padding: '12px 0', fontSize: 14, fontWeight: 700 }}>-3</button>
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
+                  <button onClick={() => ajustarPlacar('A', 1)} style={{ border: '1px solid rgba(59, 130, 246, 0.2)', background: 'rgba(59, 130, 246, 0.08)', color: '#3b82f6', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
+                  <button onClick={() => ajustarPlacar('A', 2)} style={{ border: '1px solid rgba(59, 130, 246, 0.2)', background: 'rgba(59, 130, 246, 0.08)', color: '#3b82f6', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+2</button>
+                  <button onClick={() => ajustarPlacar('A', 3)} style={{ border: '1px solid rgba(59, 130, 246, 0.2)', background: 'rgba(59, 130, 246, 0.08)', color: '#3b82f6', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
+                </div>
+                <button onClick={() => ajustarPlacar('A', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(100, 116, 139, 0.06)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
               </div>
             </div>
 
             {/* Time B */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
-                <button className="btn btn-primary" onClick={() => ajustarPlacar('B', 1)} style={{ padding: '16px 0', fontSize: 18, fontWeight: 800, background: '#ef4444' }}>+1</button>
-                <button className="btn btn-primary" onClick={() => ajustarPlacar('B', 2)} style={{ padding: '16px 0', fontSize: 18, fontWeight: 800, background: '#ef4444' }}>+2</button>
-                <button className="btn btn-primary" onClick={() => ajustarPlacar('B', 3)} style={{ padding: '16px 0', fontSize: 18, fontWeight: 800, background: '#ef4444' }}>+3</button>
+            <div className="card" style={{ padding: '20px 14px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '220px' }}>
+              <div style={{ width: '100%', textAlign: 'center' }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{timeBNome}</span>
+                <span style={{ fontSize: 56, fontWeight: 900, color: '#ef4444', fontFamily: 'monospace', display: 'block', marginTop: 10, lineHeight: 1 }}>{String(placarB).padStart(2, '0')}</span>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
-                <button className="btn btn-secondary" onClick={() => ajustarPlacar('B', -1)} style={{ padding: '12px 0', fontSize: 14, fontWeight: 700 }}>-1</button>
-                <button className="btn btn-secondary" onClick={() => ajustarPlacar('B', -2)} style={{ padding: '12px 0', fontSize: 14, fontWeight: 700 }}>-2</button>
-                <button className="btn btn-secondary" onClick={() => ajustarPlacar('B', -3)} style={{ padding: '12px 0', fontSize: 14, fontWeight: 700 }}>-3</button>
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
+                  <button onClick={() => ajustarPlacar('B', 1)} style={{ border: '1px solid rgba(239, 68, 68, 0.2)', background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
+                  <button onClick={() => ajustarPlacar('B', 2)} style={{ border: '1px solid rgba(239, 68, 68, 0.2)', background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+2</button>
+                  <button onClick={() => ajustarPlacar('B', 3)} style={{ border: '1px solid rgba(239, 68, 68, 0.2)', background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
+                </div>
+                <button onClick={() => ajustarPlacar('B', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(100, 116, 139, 0.06)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
               </div>
             </div>
           </div>
@@ -631,15 +620,15 @@ export default function Jogos() {
               {/* Botões do Timer */}
               <div style={{ display: 'flex', gap: 8 }}>
                 {!timerAtivo ? (
-                  <button className="btn btn-primary" onClick={() => setTimerAtivo(true)} style={{ padding: '8px 16px', background: '#22c55e', border: 'none' }}>
+                  <button onClick={() => setTimerAtivo(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', background: 'rgba(34, 197, 94, 0.08)', color: '#22c55e', border: '1px solid rgba(34, 197, 94, 0.2)', borderRadius: '8px', fontWeight: 700, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
                     ▶ Iniciar
                   </button>
                 ) : (
-                  <button className="btn btn-primary" onClick={() => setTimerAtivo(false)} style={{ padding: '8px 16px', background: '#f59e0b', border: 'none' }}>
+                  <button onClick={() => setTimerAtivo(false)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', background: 'rgba(245, 158, 11, 0.08)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: '8px', fontWeight: 700, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
                     ⏸ Pausar
                   </button>
                 )}
-                <button className="btn btn-secondary" onClick={() => { setTimerAtivo(false); setTempo(0); }} style={{ padding: '8px 12px' }}>
+                <button onClick={() => { setTimerAtivo(false); setTempo(0); }} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', background: 'rgba(100, 116, 139, 0.06)', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
                   🔄 Reiniciar
                 </button>
               </div>
@@ -651,7 +640,7 @@ export default function Jogos() {
             {/* Controle de períodos */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>Voltas jogadas: <strong>{periodo}</strong></span>
-              <button className="btn btn-secondary btn-sm" onClick={avancarPeriodo}>
+              <button onClick={avancarPeriodo} style={{ background: 'rgba(99, 102, 241, 0.08)', color: '#818cf8', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '8px', padding: '6px 12px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
                 Próximo Período
               </button>
             </div>
@@ -659,17 +648,17 @@ export default function Jogos() {
 
           {/* Botões de Ação Inferiores */}
           <div style={{ display: 'flex', gap: 10 }}>
-            <button className="btn btn-secondary" onClick={() => {
+            <button onClick={() => {
               setTimerAtivo(false);
               sincronizarPlacarBanco();
               setTela('lista');
-            }} style={{ flex: 1 }}>
+            }} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px 20px', background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: '12px', fontWeight: 600, fontSize: '15px', cursor: 'pointer', fontFamily: 'inherit' }}>
               Sair da Tela
             </button>
-            <button className="btn btn-primary" onClick={() => {
+            <button onClick={() => {
               setTimerAtivo(false);
               setShowFinalizarModal(true);
-            }} style={{ flex: 2, background: '#e11d48', border: 'none' }}>
+            }} style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px 20px', background: 'rgba(225, 29, 72, 0.1)', color: '#f43f5e', border: '1px solid rgba(225, 29, 72, 0.25)', borderRadius: '12px', fontWeight: 700, fontSize: '15px', cursor: 'pointer', fontFamily: 'inherit' }}>
               Finalizar Jogo
             </button>
           </div>

@@ -1074,36 +1074,38 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         </span>
       </div>
 
-      {/* Placar Central */}
-      <div className="card" style={{ display: 'flex', padding: '16px 12px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <h4 style={{ fontSize: 12, fontWeight: 800, color: 'var(--text-secondary)' }}>{jogo.equipe_a?.nome}</h4>
-          <span style={{ fontSize: 48, fontWeight: 900, color: '#3b82f6', display: 'block', marginTop: 4 }}>{placarA}</span>
-        </div>
-        <span style={{ fontSize: 18, color: 'var(--text-muted)', fontWeight: 800 }}>VS</span>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <h4 style={{ fontSize: 12, fontWeight: 800, color: 'var(--text-secondary)' }}>{jogo.equipe_b?.nome}</h4>
-          <span style={{ fontSize: 48, fontWeight: 900, color: '#ef4444', display: 'block', marginTop: 4 }}>{placarB}</span>
-        </div>
-      </div>
-
-      {/* Controles Rapidos Placar */}
+      {/* Placar Central e Controles de Pontuação (Side-by-Side) */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 4 }}>
-            <button className="btn btn-primary" onClick={() => ajustarPlacar('A', 1)} style={{ padding: '8px 0', fontSize: 14, background: '#3b82f6' }}>+1</button>
-            <button className="btn btn-primary" onClick={() => ajustarPlacar('A', 2)} style={{ padding: '8px 0', fontSize: 14, background: '#3b82f6' }}>+2</button>
-            <button className="btn btn-primary" onClick={() => ajustarPlacar('A', 3)} style={{ padding: '8px 0', fontSize: 14, background: '#3b82f6' }}>+3</button>
+        {/* Team A Card */}
+        <div className="card" style={{ padding: '20px 14px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '220px' }}>
+          <div style={{ width: '100%', textAlign: 'center' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{jogo.equipe_a?.nome}</span>
+            <span style={{ fontSize: 56, fontWeight: 900, color: '#3b82f6', fontFamily: 'monospace', display: 'block', marginTop: 10, lineHeight: 1 }}>{placarA}</span>
           </div>
-          <button className="btn btn-secondary" onClick={() => ajustarPlacar('A', -1)} style={{ padding: '6px 0', fontSize: 12 }}>Corrigir (-1)</button>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
+              <button onClick={() => ajustarPlacar('A', 1)} style={{ border: '1px solid rgba(59, 130, 246, 0.2)', background: 'rgba(59, 130, 246, 0.08)', color: '#3b82f6', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
+              <button onClick={() => ajustarPlacar('A', 2)} style={{ border: '1px solid rgba(59, 130, 246, 0.2)', background: 'rgba(59, 130, 246, 0.08)', color: '#3b82f6', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+2</button>
+              <button onClick={() => ajustarPlacar('A', 3)} style={{ border: '1px solid rgba(59, 130, 246, 0.2)', background: 'rgba(59, 130, 246, 0.08)', color: '#3b82f6', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
+            </div>
+            <button onClick={() => ajustarPlacar('A', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(100, 116, 139, 0.06)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
+          </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 4 }}>
-            <button className="btn btn-primary" onClick={() => ajustarPlacar('B', 1)} style={{ padding: '8px 0', fontSize: 14, background: '#ef4444' }}>+1</button>
-            <button className="btn btn-primary" onClick={() => ajustarPlacar('B', 2)} style={{ padding: '8px 0', fontSize: 14, background: '#ef4444' }}>+2</button>
-            <button className="btn btn-primary" onClick={() => ajustarPlacar('B', 3)} style={{ padding: '8px 0', fontSize: 14, background: '#ef4444' }}>+3</button>
+
+        {/* Team B Card */}
+        <div className="card" style={{ padding: '20px 14px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', minHeight: '220px' }}>
+          <div style={{ width: '100%', textAlign: 'center' }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{jogo.equipe_b?.nome}</span>
+            <span style={{ fontSize: 56, fontWeight: 900, color: '#ef4444', fontFamily: 'monospace', display: 'block', marginTop: 10, lineHeight: 1 }}>{placarB}</span>
           </div>
-          <button className="btn btn-secondary" onClick={() => ajustarPlacar('B', -1)} style={{ padding: '6px 0', fontSize: 12 }}>Corrigir (-1)</button>
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
+              <button onClick={() => ajustarPlacar('B', 1)} style={{ border: '1px solid rgba(239, 68, 68, 0.2)', background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
+              <button onClick={() => ajustarPlacar('B', 2)} style={{ border: '1px solid rgba(239, 68, 68, 0.2)', background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+2</button>
+              <button onClick={() => ajustarPlacar('B', 3)} style={{ border: '1px solid rgba(239, 68, 68, 0.2)', background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', borderRadius: '8px', padding: '10px 0', fontSize: '15px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
+            </div>
+            <button onClick={() => ajustarPlacar('B', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(100, 116, 139, 0.06)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
+          </div>
         </div>
       </div>
 
@@ -1114,10 +1116,16 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           <div style={{ fontSize: 28, fontFamily: 'monospace', fontWeight: 800 }}>{formatTempo(tempo)}</div>
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
-          <button className="btn btn-primary btn-sm" onClick={() => setTimerAtivo(!timerAtivo)} style={{ background: timerAtivo ? '#f59e0b' : '#22c55e' }}>
-            {timerAtivo ? 'Pausar' : 'Iniciar'}
-          </button>
-          <button className="btn btn-secondary btn-sm" onClick={() => setPeriodo(p => p + 1)}>
+          {!timerAtivo ? (
+            <button onClick={() => setTimerAtivo(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', background: 'rgba(34, 197, 94, 0.08)', color: '#22c55e', border: '1px solid rgba(34, 197, 94, 0.2)', borderRadius: '8px', fontWeight: 700, fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit' }}>
+              Iniciar
+            </button>
+          ) : (
+            <button onClick={() => setTimerAtivo(false)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', background: 'rgba(245, 158, 11, 0.08)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: '8px', fontWeight: 700, fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit' }}>
+              Pausar
+            </button>
+          )}
+          <button onClick={() => setPeriodo(p => p + 1)} style={{ background: 'rgba(99, 102, 241, 0.08)', color: '#818cf8', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '8px', padding: '8px 12px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
             Período: {periodo}º
           </button>
         </div>
@@ -1168,7 +1176,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           </select>
         </div>
 
-        <button className="btn btn-primary" onClick={handleFinalizarJogo} disabled={loading} style={{ background: '#22c55e' }}>
+        <button onClick={handleFinalizarJogo} disabled={loading} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '14px 20px', background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', border: '1px solid rgba(34, 197, 94, 0.25)', borderRadius: '12px', fontWeight: 700, fontSize: '15px', cursor: 'pointer', fontFamily: 'inherit' }}>
           {loading ? 'Gravando...' : 'Finalizar Partida e Gravar Placar'}
         </button>
       </div>
