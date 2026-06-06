@@ -76,17 +76,26 @@ export default function Home({ profile, onNavigate }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (profile) {
+      const city = profile.cidade_atual || profile.cidade || 'Altamira';
+      const uf = profile.uf || 'PA';
+      loadData(city, uf);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile]);
 
   useEffect(() => {
+    if (!profile) return;
+    const city = profile.cidade_atual || profile.cidade || 'Altamira';
+    const uf = profile.uf || 'PA';
+
     const channel = supabase
       .channel('home-realtime')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'jogadores' },
         () => {
-          loadData();
+          loadData(city, uf);
         }
       )
       .subscribe();
@@ -94,17 +103,16 @@ export default function Home({ profile, onNavigate }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile]);
 
 
-  async function loadData() {
+  async function loadData(cityVal = profile?.cidade_atual || profile?.cidade || 'Altamira', ufVal = profile?.uf || 'PA') {
     setLoading(true);
     try {
-      const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
-      const uf = profile?.uf || 'PA';
       const [{ data: jogs }, { data: ranking }] = await Promise.all([
-        jogadoresAPI.listarPorEstado(uf),
-        rankingAPI.getTop5(city, uf),
+        jogadoresAPI.listarPorEstado(ufVal),
+        rankingAPI.getTop5(cityVal, ufVal),
       ]);
 
       const total = jogs?.length || 0;
@@ -133,16 +141,6 @@ export default function Home({ profile, onNavigate }) {
   return (
     <div className="page-content">
       <div style={{ padding: '24px 20px 0' }}>
-        {/* Badge localização (Pulsante) */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '50px', background: 'rgba(59, 130, 246, 0.05)' }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#60a5fa', display: 'inline-block', animation: 'pulse-slow 2s infinite' }} />
-            <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '0.05em', color: '#60a5fa', textTransform: 'uppercase', lineHeight: 1 }}>
-              {`${profile?.cidade_atual || profile?.cidade || 'Altamira'} • ${profile?.uf || 'PA'} • AO VIVO`}
-            </span>
-          </div>
-        </div>
-
         {/* Hero */}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <h1 style={{ fontFamily: 'DM Sans', fontWeight: 900, fontSize: 44, lineHeight: 1, marginBottom: 10, letterSpacing: '-0.05em', textTransform: 'uppercase' }}>

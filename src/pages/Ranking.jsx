@@ -102,22 +102,34 @@ export default function Ranking({ profile }) {
   const [selectedCity, setSelectedCity] = useState(city);
   const [citiesInState, setCitiesInState] = useState([city]);
 
+  // Sincronizar selectedCity e buscar cidades quando o perfil for carregado
   useEffect(() => {
-    loadStateCities();
-  }, []);
+    if (profile) {
+      const userCity = profile.cidade_atual || profile.cidade || 'Altamira';
+      const userUf = profile.uf || 'PA';
+      setSelectedCity(userCity);
+      setCitiesInState([userCity]);
+      loadStateCities(userUf, userCity);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile]);
 
   useEffect(() => {
-    loadRanking();
-  }, [selectedCity]);
+    if (profile) {
+      loadRanking(selectedCity, stateUf);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCity, profile]);
 
   useEffect(() => {
+    if (!profile) return;
     const channel = supabase
       .channel('ranking-realtime')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'jogadores' },
         () => {
-          loadRanking();
+          loadRanking(selectedCity, stateUf);
         }
       )
       .subscribe();
@@ -125,31 +137,32 @@ export default function Ranking({ profile }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [selectedCity]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCity, profile]);
 
-  async function loadStateCities() {
+  async function loadStateCities(ufVal = stateUf, cityVal = selectedCity) {
     try {
       const { data } = await supabase
         .from('jogadores')
         .select('cidade')
         .eq('ativo', true)
-        .eq('uf', stateUf);
+        .eq('uf', ufVal);
       const cities = [...new Set(data?.map(j => j.cidade).filter(Boolean) || [])].sort();
       if (cities.length > 0) {
-        setCitiesInState(cities);
-        // Garante que a cidade atual está na lista
-        if (!cities.includes(selectedCity)) {
-          setCitiesInState(prev => [...prev, selectedCity].sort());
+        let newList = [...cities];
+        if (!newList.includes(cityVal)) {
+          newList.push(cityVal);
         }
+        setCitiesInState(newList.sort());
       }
     } catch (err) {
       console.error(err);
     }
   }
 
-  async function loadRanking() {
+  async function loadRanking(cityVal = selectedCity, ufVal = stateUf) {
     setLoading(true);
-    const { data } = await rankingAPI.get(selectedCity, stateUf, 50);
+    const { data } = await rankingAPI.get(cityVal, ufVal, 50);
     setRanking(data || []);
     setLoading(false);
   }

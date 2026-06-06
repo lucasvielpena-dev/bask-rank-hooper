@@ -69,6 +69,7 @@ export default function App() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [themePref, setThemePref] = useState('system');
+  const [cityPrompt, setCityPrompt] = useState(null);
 
   // States para edição do perfil
   const [editApelido, setEditApelido] = useState('');
@@ -148,12 +149,174 @@ export default function App() {
   useEffect(() => {
     if (profile && profile.id) {
       verificarLocalizacao(profile);
+      verificarEAutoCriarJogador(profile);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile?.id]);
 
+  async function verificarEAutoCriarJogador(prof) {
+    if (prof.cadastro_completo && !prof.player_id) {
+      console.log('Detectado perfil completo sem player_id. Iniciando auto-correção...');
+      try {
+        const { data: existingJogador } = await supabase
+          .from('jogadores')
+          .select('id')
+          .eq('criado_por', prof.id)
+          .maybeSingle();
+
+        let player_id = existingJogador?.id;
+
+        if (!player_id) {
+          const { data: newJogador, error: jogError } = await supabase
+            .from('jogadores')
+            .insert([{
+              nome: prof.nome_completo || 'Jogador',
+              apelido: prof.apelido || 'Jogador',
+              foto_url: prof.foto_perfil || null,
+              criado_por: prof.id,
+              cidade: prof.cidade_atual || prof.cidade || 'Altamira',
+              uf: prof.uf || 'PA',
+              ativo: true,
+              total_votos: 0,
+              media_estrelas: 0.00
+            }])
+            .select()
+            .single();
+
+          if (jogError) throw jogError;
+          if (newJogador) {
+            player_id = newJogador.id;
+          }
+        }
+
+        if (player_id) {
+          const { data: updatedProfile, error: profError } = await profilesAPI.atualizar(prof.id, {
+            player_id: player_id,
+            is_player: true
+          });
+          if (!profError && updatedProfile) {
+            setProfile(updatedProfile);
+            console.log('Perfil corrigido com sucesso! player_id vinculado:', player_id);
+          }
+        }
+      } catch (err) {
+        console.error('Erro na auto-correção do jogador:', err);
+      }
+    }
+  }
+
+  async function handleConfirmCityUpdate() {
+    if (!cityPrompt || !profile) return;
+    try {
+      const updates = {
+        cidade: cityPrompt.city,
+        cidade_atual: cityPrompt.city,
+        uf: cityPrompt.uf,
+        latitude: cityPrompt.latitude,
+        longitude: cityPrompt.longitude,
+        latitude_atual: cityPrompt.latitude,
+        longitude_atual: cityPrompt.longitude,
+        ultima_mudanca_cidade: new Date().toISOString()
+      };
+
+      const { data: updatedProfile, error } = await profilesAPI.atualizar(profile.id, updates);
+      if (!error && updatedProfile) {
+        if (updatedProfile.player_id) {
+          await supabase
+            .from('jogadores')
+            .update({
+              cidade: cityPrompt.city,
+              uf: cityPrompt.uf
+            })
+            .eq('id', updatedProfile.player_id);
+        }
+        setProfile(updatedProfile);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setCityPrompt(null);
+    }
+  }
+
+  function handleRejectCityUpdate() {
+    if (cityPrompt) {
+      localStorage.setItem(`rejected_city_update_${cityPrompt.city}`, 'true');
+    }
+    setCityPrompt(null);
+  }
+
+  async function solicitarLocalizacaoBanner() {
+    if (!navigator.geolocation) {
+      alert('Seu dispositivo não suporta geolocalização.');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`, {
+          headers: { 'Accept-Language': 'pt-BR' }
+        });
+        const data = await res.json();
+        const address = data.address || {};
+        const detectedCity = address.city || address.town || address.village || address.municipality || 'Altamira';
+        const stateName = (address.state || '').toLowerCase();
+        const detectedUf = ESTADO_TO_UF[stateName] || 'PA';
+        const detectedCountry = address.country || 'Brasil';
+
+        // 1. Criar novo jogador diretamente
+        const { data: newJogador, error: jogError } = await supabase
+          .from('jogadores')
+          .insert([{
+            nome: profile.nome_completo || 'Jogador',
+            apelido: profile.apelido || 'Jogador',
+            foto_url: profile.foto_perfil || null,
+            criado_por: profile.id,
+            cidade: detectedCity,
+            uf: detectedUf,
+            pais: detectedCountry,
+            ativo: true,
+            total_votos: 0,
+            media_estrelas: 0.00
+          }])
+          .select()
+          .single();
+
+        if (jogError) throw jogError;
+
+        if (newJogador) {
+          // 2. Atualizar perfil
+          const { data: updatedProfile, error: profError } = await profilesAPI.atualizar(profile.id, {
+            player_id: newJogador.id,
+            is_player: true,
+            cidade: detectedCity,
+            cidade_atual: detectedCity,
+            uf: detectedUf,
+            pais: detectedCountry,
+            latitude: latitude,
+            longitude: longitude,
+            latitude_atual: latitude,
+            longitude_atual: longitude,
+          });
+
+          if (!profError && updatedProfile) {
+            setProfile(updatedProfile);
+            alert(`Sucesso! Seu perfil de jogador foi criado em ${detectedCity} - ${detectedUf}.`);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao obter localização ou registrar: ' + err.message);
+      }
+    }, (err) => {
+      console.warn(err);
+      alert('Acesso à localização negado. Permita o acesso nas configurações do seu navegador para participar.');
+    });
+  }
+
   async function verificarLocalizacao(prof) {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation || !prof.player_id) return;
 
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
@@ -168,42 +331,17 @@ export default function App() {
         const stateName = (address.state || '').toLowerCase();
         const detectedUf = ESTADO_TO_UF[stateName] || 'PA';
 
-        const now = new Date();
-        const updates = {
-          latitude_atual: latitude,
-          longitude_atual: longitude,
-          ultima_verificacao_localizacao: now.toISOString()
-        };
-
+        // Se detectou uma cidade diferente da cadastrada atualmente
         if (detectedCity.toLowerCase() !== (prof.cidade_atual || '').toLowerCase()) {
-          if (!prof.cidade_detectada || prof.cidade_detectada.toLowerCase() !== detectedCity.toLowerCase()) {
-            updates.cidade_detectada = detectedCity;
-            updates.uf_detectada = detectedUf;
-            updates.data_primeira_deteccao = now.toISOString();
-          } else {
-            const primeiraDeteccao = new Date(prof.data_primeira_deteccao);
-            const diffMs = now.getTime() - primeiraDeteccao.getTime();
-            const diffHours = diffMs / (1000 * 60 * 60);
-
-            if (diffHours >= 24) {
-              updates.cidade_atual = detectedCity;
-              updates.cidade = detectedCity;
-              updates.uf = detectedUf;
-              updates.ultima_mudanca_cidade = now.toISOString();
-              updates.cidade_detectada = null;
-              updates.uf_detectada = null;
-              updates.data_primeira_deteccao = null;
-            }
+          const alreadyRejected = localStorage.getItem(`rejected_city_update_${detectedCity}`);
+          if (!alreadyRejected) {
+            setCityPrompt({
+              city: detectedCity,
+              uf: detectedUf,
+              latitude,
+              longitude
+            });
           }
-        } else {
-          updates.cidade_detectada = null;
-          updates.uf_detectada = null;
-          updates.data_primeira_deteccao = null;
-        }
-
-        const { data: updatedProfile, error } = await profilesAPI.atualizar(prof.id, updates);
-        if (!error && updatedProfile) {
-          setProfile(updatedProfile);
         }
       } catch (err) {
         console.error('Erro na geolocalização / geocodificação:', err);
@@ -338,6 +476,18 @@ export default function App() {
       });
 
       if (error) throw error;
+
+      // Sincronizar com a tabela jogadores diretamente (fallback robusto para triggers do banco)
+      if (data && data.player_id) {
+        await supabase
+          .from('jogadores')
+          .update({
+            apelido: editApelido.trim(),
+            foto_url: editFoto
+          })
+          .eq('id', data.player_id);
+      }
+
       setProfile(data);
       setIsEditingProfile(false);
     } catch (err) {
@@ -412,12 +562,6 @@ export default function App() {
           <div className="header-title" style={{ fontSize: '20px', fontWeight: 900, letterSpacing: '-0.04em', textTransform: 'uppercase', lineHeight: 1 }}>
             Ranks <span style={{ color: 'var(--accent-blue-light)' }}>Hoops</span>
           </div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 4, padding: '2px 8px', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: '50px', background: 'rgba(59, 130, 246, 0.05)' }}>
-            <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#60a5fa', display: 'inline-block', animation: 'pulse-slow 2s infinite' }} />
-            <span style={{ fontSize: '9px', fontWeight: 800, letterSpacing: '0.05em', color: '#60a5fa', textTransform: 'uppercase', lineHeight: 1 }}>
-              {`${profile.cidade_atual || profile.cidade || 'ALTAMIRA'} • ${profile.uf || 'PA'}`}
-            </span>
-          </div>
         </div>
         
         <div 
@@ -437,6 +581,39 @@ export default function App() {
           )}
         </div>
       </header>
+
+      {/* Banner de Solicitação de Localização */}
+      {profile && profile.cadastro_completo && !profile.player_id && (
+        <div style={{
+          background: 'rgba(245,158,11,0.12)',
+          borderBottom: '1px solid rgba(245,158,11,0.2)',
+          padding: '12px 20px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+          textAlign: 'center'
+        }}>
+          <span style={{ fontSize: 13, color: '#fde047', fontWeight: 600 }}>
+            Para participar dos rankings municipais, é necessário permitir acesso à localização.
+          </span>
+          <button 
+            onClick={solicitarLocalizacaoBanner}
+            style={{
+              background: '#f59e0b',
+              color: '#000',
+              border: 'none',
+              borderRadius: '20px',
+              padding: '6px 16px',
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: 'pointer'
+            }}
+          >
+            Permitir Localização
+          </button>
+        </div>
+      )}
 
       {/* Page */}
       <div key={page} className="page-transition">
@@ -673,6 +850,51 @@ export default function App() {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmação de Mudança de Cidade */}
+      {cityPrompt && (
+        <div className="modal-overlay" style={{ zIndex: 2000 }}>
+          <div className="modal-sheet" style={{ maxWidth: 400, padding: 24, textAlign: 'center' }}>
+            <div style={{ fontSize: 40, marginBottom: 12 }}>📍</div>
+            <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 10 }}>Mudar cidade de competição?</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
+              Detectamos que você está em <strong>{cityPrompt.city} - {cityPrompt.uf}</strong>. Deseja atualizar sua cidade de competição?
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <button 
+                onClick={handleConfirmCityUpdate}
+                style={{
+                  background: 'var(--accent-blue)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 50,
+                  padding: '12px',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: 'pointer'
+                }}
+              >
+                Atualizar
+              </button>
+              <button 
+                onClick={handleRejectCityUpdate}
+                style={{
+                  background: 'transparent',
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 50,
+                  padding: '12px',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: 'pointer'
+                }}
+              >
+                Manter Atual
+              </button>
+            </div>
           </div>
         </div>
       )}

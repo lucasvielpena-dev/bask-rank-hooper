@@ -1,5 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase, profilesAPI } from '../lib/supabase';
+
+const ESTADO_TO_UF = {
+  'acre': 'AC', 'alagoas': 'AL', 'amapá': 'AP', 'amazonas': 'AM', 'bahia': 'BA',
+  'ceará': 'CE', 'distrito federal': 'DF', 'espírito santo': 'ES', 'goiás': 'GO',
+  'maranhão': 'MA', 'mato grosso': 'MT', 'mato grosso do sul': 'MS', 'minas gerais': 'MG',
+  'pará': 'PA', 'paraíba': 'PB', 'paraná': 'PR', 'pernambuco': 'PE', 'piauí': 'PI',
+  'rio de janeiro': 'RJ', 'rio grande do norte': 'RN', 'rio grande do sul': 'RS',
+  'rondônia': 'RO', 'roraima': 'RR', 'santa catarina': 'SC', 'são paulo': 'SP',
+  'sergipe': 'SE', 'tocantins': 'TO'
+};
 
 export default function CompleteProfileScreen({ profile, onComplete }) {
   const [apelido, setApelido] = useState(profile?.apelido || '');
@@ -7,6 +17,59 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
   const [idade, setIdade] = useState(profile?.idade || '');
   const [avatarUrl, setAvatarUrl] = useState(profile?.foto_perfil || '');
   const [uploading, setUploading] = useState(false);
+  const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState(null);
+
+  // Estados de Localização Automática
+  const [locationStatus, setLocationStatus] = useState('prompt'); // 'prompt', 'requesting', 'success', 'denied', 'error'
+  const [cidade, setCidade] = useState('');
+  const [uf, setUf] = useState('');
+  const [pais, setPais] = useState('');
+  const [coords, setCoords] = useState(null); // { latitude, longitude }
+
+  useEffect(() => {
+    obterLocalizacao();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function obterLocalizacao() {
+    if (!navigator.geolocation) {
+      setLocationStatus('error');
+      return;
+    }
+
+    setLocationStatus('requesting');
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setCoords({ latitude, longitude });
+        
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`, {
+            headers: { 'Accept-Language': 'pt-BR' }
+          });
+          const data = await res.json();
+          const address = data.address || {};
+          const detectedCity = address.city || address.town || address.village || address.municipality || 'Altamira';
+          const stateName = (address.state || '').toLowerCase();
+          const detectedUf = ESTADO_TO_UF[stateName] || 'PA';
+          const detectedCountry = address.country || 'Brasil';
+
+          setCidade(detectedCity);
+          setUf(detectedUf);
+          setPais(detectedCountry);
+          setLocationStatus('success');
+        } catch (err) {
+          console.error(err);
+          setLocationStatus('error');
+        }
+      },
+      (err) => {
+        console.warn(err);
+        setLocationStatus('denied');
+      }
+    );
+  }
 
   const handleAlturaChange = (e) => {
     const digits = e.target.value.replace(/\D/g, '');
@@ -49,9 +112,6 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
     }
   };
 
-  const [carregando, setCarregando] = useState(false);
-  const [erro, setErro] = useState(null);
-
   async function handleSubmit(e) {
     e.preventDefault();
     setCarregando(true);
@@ -82,12 +142,78 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
         throw new Error('Este apelido já está em uso por outro jogador.');
       }
 
+      let player_id = null;
+      let is_player = false;
+
+      // Se a localização foi obtida com sucesso, criamos o jogador
+      if (locationStatus === 'success' && cidade && uf) {
+        // Verificar se já existe jogador para este usuário (busca preventiva)
+        const { data: existingJogador } = await supabase
+          .from('jogadores')
+          .select('id')
+          .eq('criado_por', profile.id)
+          .maybeSingle();
+
+        if (existingJogador) {
+          player_id = existingJogador.id;
+          is_player = true;
+          // Atualizar jogador existente
+          await supabase
+            .from('jogadores')
+            .update({
+              nome: profile.nome_completo || 'Jogador',
+              apelido: apelido.trim(),
+              foto_url: avatarUrl || null,
+              cidade: cidade,
+              uf: uf
+            })
+            .eq('id', player_id);
+        } else {
+          // Criar novo jogador
+          const { data: newJogador, error: jogError } = await supabase
+            .from('jogadores')
+            .insert([{
+              nome: profile.nome_completo || 'Jogador',
+              apelido: apelido.trim(),
+              foto_url: avatarUrl || null,
+              criado_por: profile.id,
+              cidade: cidade,
+              uf: uf,
+              pais: pais,
+              ativo: true,
+              total_votos: 0,
+              media_estrelas: 0.00
+            }])
+            .select()
+            .single();
+
+          if (jogError) {
+            console.error('Erro ao cadastrar jogador:', jogError);
+            throw new Error('Erro ao salvar jogador no banco: ' + jogError.message);
+          }
+          if (newJogador) {
+            player_id = newJogador.id;
+            is_player = true;
+          }
+        }
+      }
+
       const { data, error } = await profilesAPI.atualizar(profile.id, {
         apelido: apelido.trim(),
         altura: parsedAltura,
         idade: parsedIdade,
         foto_perfil: avatarUrl,
-        cadastro_completo: true
+        cadastro_completo: true,
+        player_id: player_id,
+        is_player: is_player,
+        cidade: is_player ? cidade : null,
+        cidade_atual: is_player ? cidade : null,
+        uf: is_player ? uf : null,
+        pais: is_player ? pais : null,
+        latitude: is_player ? coords?.latitude : null,
+        longitude: is_player ? coords?.longitude : null,
+        latitude_atual: is_player ? coords?.latitude : null,
+        longitude_atual: is_player ? coords?.longitude : null,
       });
 
       if (error) throw error;
@@ -226,6 +352,32 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               placeholder="Ex: DD, Viel, etc."
             />
           </div>
+
+          {/* Status da Localização Automática */}
+          {locationStatus === 'requesting' && (
+            <div style={{ padding: '12px', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 8, fontSize: 13, color: '#93c5fd', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} />
+              Obtendo localização atual...
+            </div>
+          )}
+
+          {locationStatus === 'success' && (
+            <div style={{ padding: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 8, fontSize: 13, color: '#a7f3d0' }}>
+              ✓ Localização identificada: <strong>{cidade} - {uf}</strong> (Ranking Municipal liberado)
+            </div>
+          )}
+
+          {locationStatus === 'denied' && (
+            <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 8, fontSize: 13, color: '#fca5a5' }}>
+              ⚠️ Acesso à localização negado. Você poderá usar o aplicativo, mas não participará dos rankings.
+            </div>
+          )}
+
+          {locationStatus === 'error' && (
+            <div style={{ padding: '12px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 8, fontSize: 13, color: '#fde047' }}>
+              ⚠️ Não foi possível obter sua localização. Você poderá usar o aplicativo, mas não participará dos rankings.
+            </div>
+          )}
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>

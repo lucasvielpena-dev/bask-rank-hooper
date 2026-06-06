@@ -139,16 +139,26 @@ export default function Jogadores({ profile }) {
 
 
   useEffect(() => {
-    loadJogadores();
+    if (profile) {
+      loadJogadores();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [profile]);
 
   useEffect(() => {
+    if (!profile) return;
     const channel = supabase
       .channel('jogadores-global-realtime-unified')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'jogadores' },
+        () => {
+          loadJogadores();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'avaliacoes' },
         () => {
           loadJogadores();
         }
@@ -159,7 +169,7 @@ export default function Jogadores({ profile }) {
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [profile]);
 
   // Aplicar busca e filtros combinados
   useEffect(() => {
@@ -202,13 +212,26 @@ export default function Jogadores({ profile }) {
     setLoading(true);
     try {
       const stateUfVal = profile?.uf || 'PA';
-      const [{ data: jogs }, { data: partidasData }, { data: votesStatus }] = await Promise.all([
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+
+      const [{ data: jogs }, { data: partidasData }, { data: votesStatus }, { data: minhasAvaliacoes }] = await Promise.all([
         jogadoresAPI.listarPorEstado(stateUfVal),
         supabase.from('partidas').select('mvp_id'),
-        votacaoAPI.getStatusHoje()
+        votacaoAPI.getStatusHoje(),
+        // Buscar avaliações já feitas pelo usuário logado para marcar como "já avaliado"
+        userId
+          ? supabase.from('avaliacoes').select('jogador_id').eq('avaliador_id', userId)
+          : Promise.resolve({ data: [] })
       ]);
 
-      const players = jogs || [];
+      // Criar Set de jogadores já avaliados pelo usuário
+      const avaliadosSet = new Set((minhasAvaliacoes || []).map(a => a.jogador_id));
+
+      // Marcar ja_votou_hoje em cada jogador
+      const players = (jogs || []).map(j => ({
+        ...j,
+        ja_votou_hoje: avaliadosSet.has(j.id)
+      }));
       
       setJogadores(players);
       setVotosStatus(votesStatus);
