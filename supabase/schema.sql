@@ -495,8 +495,8 @@ RETURNS TRIGGER AS $$
 DECLARE
   v_jogador_id UUID;
 BEGIN
-  -- Cria o registro do atleta na tabela jogadores assim que o cadastro_completo do perfil muda para TRUE
-  IF NEW.cadastro_completo = TRUE AND (OLD.cadastro_completo = FALSE OR OLD.cadastro_completo IS NULL) AND NEW.player_id IS NULL THEN
+  -- Cria o registro do atleta na tabela jogadores se o cadastro_completo for TRUE e ainda não tiver player_id
+  IF NEW.cadastro_completo = TRUE AND NEW.player_id IS NULL THEN
     INSERT INTO public.jogadores (
       nome,
       apelido,
