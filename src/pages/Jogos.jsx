@@ -398,6 +398,21 @@ export default function Jogos() {
     return `${m}:${s}`;
   };
 
+  const getQuarterScore = (q, time) => {
+    // Se o período pedido é o período atual ativo
+    if (q === periodo) {
+      const somaAnteriores = periodosScores.reduce((acc, curr) => acc + (time === 'A' ? curr.a : curr.b), 0);
+      return Math.max(0, (time === 'A' ? placarA : placarB) - somaAnteriores);
+    }
+    // Se já está gravado no histórico
+    const found = periodosScores.find(item => item.periodo === q);
+    if (found) {
+      return time === 'A' ? found.a : found.b;
+    }
+    // Se ainda não começou
+    return '-';
+  };
+
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3000);
@@ -669,83 +684,69 @@ export default function Jogos() {
       {/* TELA 3: PAINEL DA PARTIDA ATIVA */}
       {tela === 'partida' && partidaAtiva && (
         <div style={{ padding: '20px' }}>
-          {/* Header Jogo */}
+          {/* Header Placar Ao Vivo */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <button onClick={() => { setTimerAtivo(false); sincronizarPlacarBanco(); setTela('lista'); }} style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '6px 12px',
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid var(--border)',
-              borderRadius: '20px',
-              color: 'var(--text-secondary)',
-              cursor: 'pointer',
-              fontSize: '12px',
-              fontWeight: 600,
-              transition: 'all 0.2s'
-            }}>
-              ← Sair do Jogo
+            <button 
+              onClick={() => { setTimerAtivo(false); sincronizarPlacarBanco(); setTela('lista'); }} 
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                background: 'none',
+                border: 'none',
+                color: '#60A5FA',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 700,
+                fontFamily: 'inherit',
+                padding: 0
+              }}
+            >
+              ← PLACAR AO VIVO
             </button>
-            <div style={{ textAlign: 'right' }}>
-              <span style={{ background: 'rgba(34,197,94,0.12)', color: '#4ade80', padding: '3px 8px', borderRadius: 4, fontSize: 10, fontWeight: 800 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: '#94A3B8' }}>
+                {periodo >= 5 ? 'PRORROGAÇÃO' : `${periodo}º QUARTO`}
+              </span>
+              <span style={{ background: '#EF4444', color: '#FFF', padding: '2px 6px', borderRadius: '4px', fontSize: '9px', fontWeight: 800 }}>
                 AO VIVO
               </span>
             </div>
           </div>
 
-          {/* Indicador de Quarto no Topo */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-            {['Q1', 'Q2', 'Q3', 'Q4'].map((q, idx) => {
-              const isActive = periodo === idx + 1;
-              return (
-                <div key={q} style={{
-                  padding: '6px 14px',
-                  background: isActive ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.03)',
-                  border: isActive ? '1px solid #3b82f6' : '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '20px',
-                  fontSize: '12px',
-                  fontWeight: isActive ? 800 : 500,
-                  color: isActive ? '#60a5fa' : 'var(--text-secondary)',
-                  letterSpacing: '0.05em'
-                }}>
-                  {q}
-                </div>
-              );
-            })}
-            {periodo >= 5 && (
-              <div style={{
-                padding: '6px 14px',
-                background: 'rgba(245, 158, 11, 0.2)',
-                border: '1px solid #f59e0b',
-                borderRadius: '20px',
-                fontSize: '12px',
-                fontWeight: 800,
-                color: '#f59e0b',
-                letterSpacing: '0.05em'
-              }}>
-                PRORROGAÇÃO {periodo > 5 ? `(${periodo - 4})` : ''}
-              </div>
-            )}
+          {/* Cronômetro visor (Mockup style: Large and Centered at the top) */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginBottom: 20
+          }}>
+            <span className={timerAtivo ? 'timer-active-pulse-text' : ''} style={{
+              fontSize: '84px',
+              fontFamily: 'monospace',
+              fontWeight: 800,
+              color: '#FFFFFF',
+              lineHeight: 1,
+              letterSpacing: '-0.02em'
+            }}>
+              {formatTempo(tempo)}
+            </span>
           </div>
 
-          {/* Placar Centralizado (Unified Scoreboard Card) */}
+          {/* Placar Central (Unified Scoreboard Card) */}
           <div className="card" style={{
             padding: '20px 16px',
-            background: 'rgba(26, 30, 40, 0.65)',
-            border: '1px solid var(--border)',
+            background: '#111827',
+            border: '1px solid rgba(255,255,255,0.06)',
             borderRadius: '16px',
             display: 'grid',
             gridTemplateColumns: '1fr auto 1fr',
             alignItems: 'center',
             gap: 12,
-            marginBottom: 24,
-            backdropFilter: 'blur(12px)',
-            webkitBackdropFilter: 'blur(12px)',
+            marginBottom: 20,
             position: 'relative'
           }}>
             {/* Floating Feedbacks Time A */}
-            <div style={{ position: 'absolute', left: '25%', top: '35%', pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', left: '22%', top: '35%', pointerEvents: 'none' }}>
               {feedbacksA.map(f => (
                 <div key={f.id} className="floating-feedback" style={{ color: f.color, fontSize: '32px' }}>
                   {f.text}
@@ -754,7 +755,7 @@ export default function Jogos() {
             </div>
 
             {/* Floating Feedbacks Time B */}
-            <div style={{ position: 'absolute', right: '25%', top: '35%', pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', right: '22%', top: '35%', pointerEvents: 'none' }}>
               {feedbacksB.map(f => (
                 <div key={f.id} className="floating-feedback" style={{ color: f.color, fontSize: '32px' }}>
                   {f.text}
@@ -763,413 +764,358 @@ export default function Jogos() {
             </div>
 
             {/* Time A Name & Score */}
-            <div style={{ textAlign: 'center', minWidth: 0 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 0 }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.03)',
+                border: '2px solid #2563EB',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 6
+              }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2a14.5 14.5 0 0 1 0 20" />
+                  <path d="M2 12h20" />
+                </svg>
+              </div>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
                 {timeANome}
               </span>
               <span key={placarA} className="number-animate" style={{
-                fontSize: '90px',
-                fontWeight: 'bold',
-                color: '#3b82f6',
-                fontFamily: "'Bebas Neue', 'Oswald', sans-serif",
+                fontSize: '48px',
+                fontWeight: 900,
+                color: '#F8FAFC',
                 display: 'block',
-                marginTop: 6,
+                marginTop: 4,
                 lineHeight: 1
               }}>
-                {String(placarA).padStart(2, '0')}
+                {placarA}
               </span>
             </div>
 
-            {/* Vertical Line Separator */}
-            <div style={{
-              width: '1px',
-              height: '80px',
-              background: 'rgba(255, 255, 255, 0.15)',
-              alignSelf: 'center',
-              margin: '0 8px'
-            }} />
+            {/* Center VS */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#64748B', fontSize: '12px', fontWeight: 700 }}>
+              VS
+            </div>
 
             {/* Time B Name & Score */}
-            <div style={{ textAlign: 'center', minWidth: 0 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 0 }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.03)',
+                border: '2px solid #F97316',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 6
+              }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2a14.5 14.5 0 0 1 0 20" />
+                  <path d="M2 12h20" />
+                </svg>
+              </div>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
                 {timeBNome}
               </span>
               <span key={placarB} className="number-animate" style={{
-                fontSize: '90px',
-                fontWeight: 'bold',
-                color: '#ef4444',
-                fontFamily: "'Bebas Neue', 'Oswald', sans-serif",
+                fontSize: '48px',
+                fontWeight: 900,
+                color: '#F8FAFC',
                 display: 'block',
-                marginTop: 6,
+                marginTop: 4,
                 lineHeight: 1
               }}>
-                {String(placarB).padStart(2, '0')}
+                {placarB}
               </span>
             </div>
           </div>
 
-          <hr style={{ border: 'none', borderTop: '1px solid rgba(255, 255, 255, 0.08)', margin: '20px 0' }} />
-
-          {/* Controles de Pontuação (Side-by-Side) */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
-            {/* Controles Time A */}
-            <div className="card" style={{
-              padding: '16px 12px',
-              background: 'var(--card-team-a-bg)',
-              border: 'var(--card-team-a-border)',
-              borderRadius: '14px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 12
-            }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pontuar {timeANome}</span>
-              
-              {/* Botões Positivos */}
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, width: '100%', justifyContent: 'center' }}>
-                <button className="btn-counter" onClick={() => ajustarPlacar('A', 1)} style={{
-                  flex: 1.0,
-                  height: '38px',
-                  background: 'rgba(59, 130, 246, 0.1)',
-                  border: '1px solid rgba(59, 130, 246, 0.3)',
-                  color: '#60a5fa',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit'
-                }}>+1</button>
-                <button className="btn-counter" onClick={() => ajustarPlacar('A', 2)} style={{
-                  flex: 1.2,
-                  height: '44px',
-                  background: '#3b82f6',
-                  border: 'none',
-                  color: '#ffffff',
-                  borderRadius: '8px',
-                  fontSize: '18px',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
-                }}>+2</button>
-                <button className="btn-counter" onClick={() => ajustarPlacar('A', 3)} style={{
-                  flex: 1.4,
-                  height: '50px',
-                  background: 'rgba(245, 158, 11, 0.2)',
-                  border: '2px solid #f59e0b',
-                  color: '#f59e0b',
-                  borderRadius: '8px',
-                  fontSize: '22px',
-                  fontWeight: 900,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  boxShadow: '0 0 10px rgba(245, 158, 11, 0.4)'
-                }}>+3</button>
-              </div>
-
-              {/* Botões Negativos */}
-              <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center', marginTop: 4 }}>
-                <button className="btn-counter" onClick={() => ajustarPlacar('A', -1)} style={{
-                  flex: 1,
-                  padding: '5px 0',
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  color: 'rgba(255, 255, 255, 0.4)',
-                  background: 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit'
-                }}>-1</button>
-                <button className="btn-counter" onClick={() => ajustarPlacar('A', -2)} style={{
-                  flex: 1,
-                  padding: '5px 0',
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  color: 'rgba(255, 255, 255, 0.4)',
-                  background: 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit'
-                }}>-2</button>
-                <button className="btn-counter" onClick={() => ajustarPlacar('A', -3)} style={{
-                  flex: 1,
-                  padding: '5px 0',
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  color: 'rgba(255, 255, 255, 0.4)',
-                  background: 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit'
-                }}>-3</button>
-              </div>
-            </div>
-
-            {/* Controles Time B */}
-            <div className="card" style={{
-              padding: '16px 12px',
-              background: 'var(--card-team-b-bg)',
-              border: 'var(--card-team-b-border)',
-              borderRadius: '14px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 12
-            }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pontuar {timeBNome}</span>
-              
-              {/* Botões Positivos */}
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, width: '100%', justifyContent: 'center' }}>
-                <button className="btn-counter" onClick={() => ajustarPlacar('B', 1)} style={{
-                  flex: 1.0,
-                  height: '38px',
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
-                  color: '#f87171',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit'
-                }}>+1</button>
-                <button className="btn-counter" onClick={() => ajustarPlacar('B', 2)} style={{
-                  flex: 1.2,
-                  height: '44px',
-                  background: '#ef4444',
-                  border: 'none',
-                  color: '#ffffff',
-                  borderRadius: '8px',
-                  fontSize: '18px',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
-                }}>+2</button>
-                <button className="btn-counter" onClick={() => ajustarPlacar('B', 3)} style={{
-                  flex: 1.4,
-                  height: '50px',
-                  background: 'rgba(245, 158, 11, 0.2)',
-                  border: '2px solid #f59e0b',
-                  color: '#f59e0b',
-                  borderRadius: '8px',
-                  fontSize: '22px',
-                  fontWeight: 900,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  boxShadow: '0 0 10px rgba(245, 158, 11, 0.4)'
-                }}>+3</button>
-              </div>
-
-              {/* Botões Negativos */}
-              <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center', marginTop: 4 }}>
-                <button className="btn-counter" onClick={() => ajustarPlacar('B', -1)} style={{
-                  flex: 1,
-                  padding: '5px 0',
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  color: 'rgba(255, 255, 255, 0.4)',
-                  background: 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit'
-                }}>-1</button>
-                <button className="btn-counter" onClick={() => ajustarPlacar('B', -2)} style={{
-                  flex: 1,
-                  padding: '5px 0',
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  color: 'rgba(255, 255, 255, 0.4)',
-                  background: 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit'
-                }}>-2</button>
-                <button className="btn-counter" onClick={() => ajustarPlacar('B', -3)} style={{
-                  flex: 1,
-                  padding: '5px 0',
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  color: 'rgba(255, 255, 255, 0.4)',
-                  background: 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit'
-                }}>-3</button>
-              </div>
-            </div>
+          {/* Tabela de Parciais por Quarto */}
+          <div style={{
+            background: '#111827',
+            border: '1px solid rgba(255, 255, 255, 0.06)',
+            borderRadius: '12px',
+            padding: '12px 14px',
+            marginBottom: 20,
+            overflowX: 'auto'
+          }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'center' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', color: '#64748B' }}>
+                  <th style={{ padding: '6px 4px', textAlign: 'left', fontWeight: 600 }}>TIME</th>
+                  <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q1</th>
+                  <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q2</th>
+                  <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q3</th>
+                  <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q4</th>
+                  {periodo >= 5 && <th style={{ padding: '6px 4px', fontWeight: 600 }}>PR</th>}
+                  <th style={{ padding: '6px 4px', fontWeight: 800, color: '#F8FAFC' }}>T</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Linha Time A */}
+                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', color: '#F8FAFC', fontWeight: 600 }}>
+                  <td style={{ padding: '8px 4px', textAlign: 'left', color: '#60A5FA', fontWeight: 700 }}>
+                    {timeANome.substring(0, 3).toUpperCase()}
+                  </td>
+                  <td style={{ padding: '8px 4px' }}>{getQuarterScore(1, 'A')}</td>
+                  <td style={{ padding: '8px 4px' }}>{getQuarterScore(2, 'A')}</td>
+                  <td style={{ padding: '8px 4px' }}>{getQuarterScore(3, 'A')}</td>
+                  <td style={{ padding: '8px 4px' }}>{getQuarterScore(4, 'A')}</td>
+                  {periodo >= 5 && <td style={{ padding: '8px 4px' }}>{getQuarterScore(5, 'A')}</td>}
+                  <td style={{ padding: '8px 4px', fontWeight: 800, color: '#3B82F6' }}>{placarA}</td>
+                </tr>
+                {/* Linha Time B */}
+                <tr style={{ color: '#F8FAFC', fontWeight: 600 }}>
+                  <td style={{ padding: '8px 4px', textAlign: 'left', color: '#F87171', fontWeight: 700 }}>
+                    {timeBNome.substring(0, 3).toUpperCase()}
+                  </td>
+                  <td style={{ padding: '8px 4px' }}>{getQuarterScore(1, 'B')}</td>
+                  <td style={{ padding: '8px 4px' }}>{getQuarterScore(2, 'B')}</td>
+                  <td style={{ padding: '8px 4px' }}>{getQuarterScore(3, 'B')}</td>
+                  <td style={{ padding: '8px 4px' }}>{getQuarterScore(4, 'B')}</td>
+                  {periodo >= 5 && <td style={{ padding: '8px 4px' }}>{getQuarterScore(5, 'B')}</td>}
+                  <td style={{ padding: '8px 4px', fontWeight: 800, color: '#EF4444' }}>{placarB}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <hr style={{ border: 'none', borderTop: '1px solid rgba(255, 255, 255, 0.08)', margin: '20px 0' }} />
-
-          {/* Seção de Transição de Período Dinâmica */}
+          {/* Seção de Transição de Período Dinâmica (Ao zerar o cronômetro) */}
           {tempo === 0 && (
             <div style={{ marginBottom: 20 }}>
               {periodo < 4 ? (
                 <div className="card" style={{
-                  padding: '20px',
-                  background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(26, 30, 40, 0.6) 100%)',
-                  border: '1px solid rgba(59, 130, 246, 0.3)',
-                  borderRadius: '14px',
+                  padding: '16px',
+                  background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(17, 24, 39, 0.8) 100%)',
+                  border: '1px solid rgba(37, 99, 235, 0.3)',
+                  borderRadius: '12px',
                   textAlign: 'center'
                 }}>
-                  <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
+                  <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#F8FAFC', marginBottom: 4 }}>
                     Fim do {periodo}º Quarto
                   </h3>
-                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>
-                    Iniciar {periodo + 1}º Quarto
-                  </p>
                   <button onClick={comecarProximoPeriodo} style={{
-                    background: '#3b82f6',
+                    background: '#2563EB',
                     color: '#ffffff',
                     border: 'none',
                     borderRadius: '8px',
-                    padding: '10px 24px',
-                    fontSize: '14px',
-                    fontWeight: 800,
+                    padding: '8px 20px',
+                    fontSize: '13px',
+                    fontWeight: 700,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
-                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                    marginTop: 8
                   }}>
-                    ▶ Começar
+                    ▶ Iniciar {periodo + 1}º Quarto
                   </button>
                 </div>
               ) : (placarA === placarB) ? (
                 <div className="card" style={{
-                  padding: '20px',
-                  background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(26, 30, 40, 0.6) 100%)',
-                  border: '1px solid rgba(245, 158, 11, 0.3)',
-                  borderRadius: '14px',
+                  padding: '16px',
+                  background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(17, 24, 39, 0.8) 100%)',
+                  border: '1px solid rgba(249, 115, 22, 0.3)',
+                  borderRadius: '12px',
                   textAlign: 'center'
                 }}>
-                  <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
-                    {periodo === 4 ? '4º Quarto Finalizado' : 'Prorrogação Finalizada'}
+                  <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#F8FAFC', marginBottom: 4 }}>
+                    Jogo Empatado!
                   </h3>
-                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>
-                    Jogo Empatado! Iniciar Prorrogação
-                  </p>
                   <button onClick={comecarProximoPeriodo} style={{
-                    background: '#f59e0b',
-                    color: '#0d0f14',
+                    background: '#F97316',
+                    color: '#080F1A',
                     border: 'none',
                     borderRadius: '8px',
-                    padding: '10px 24px',
-                    fontSize: '14px',
-                    fontWeight: 800,
+                    padding: '8px 20px',
+                    fontSize: '13px',
+                    fontWeight: 700,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
-                    boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
+                    marginTop: 8
                   }}>
-                    ▶ Iniciar Prorrogação
+                    ▶ Iniciar Prorrogação (5 min)
                   </button>
                 </div>
               ) : (
                 <div className="card" style={{
-                  padding: '16px 20px',
-                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(26, 30, 40, 0.4) 100%)',
+                  padding: '14px 16px',
+                  background: 'rgba(239, 68, 68, 0.1)',
                   border: '1px solid rgba(239, 68, 68, 0.25)',
-                  borderRadius: '14px',
+                  borderRadius: '12px',
                   textAlign: 'center'
                 }}>
-                  <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
+                  <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#EF4444', marginBottom: 2 }}>
                     Partida Encerrada
                   </h3>
-                  <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-                    O tempo regulamentar foi concluído. Registre o MVP e finalize a partida no botão abaixo.
+                  <p style={{ fontSize: '11px', color: '#94A3B8' }}>
+                    O tempo regulamentar acabou. Registre o MVP e encerre no botão abaixo.
                   </p>
                 </div>
               )}
             </div>
           )}
 
-          {/* Cronômetro visor */}
-          <div className={`card ${timerAtivo ? 'timer-active-pulse' : ''}`} style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 16,
-            marginBottom: 20,
-            transition: 'all 0.3s ease',
-            border: timerAtivo ? '1px solid rgba(255, 255, 255, 0.4)' : '1px solid var(--border)',
-            padding: '24px',
-            background: 'var(--timer-bg)',
-            backdropFilter: 'blur(12px)',
-            webkitBackdropFilter: 'blur(12px)',
-            width: '100%',
-            minWidth: '40%'
-          }}>
-            <div style={{ textAlign: 'center' }}>
-              <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>TEMPO DE JOGO</span>
-              <span className={timerAtivo ? 'timer-active-pulse-text' : ''} style={{
-                fontSize: '72px',
-                fontFamily: 'monospace',
-                fontWeight: 800,
-                color: '#ffffff',
-                textShadow: timerAtivo ? '0 0 16px rgba(255, 255, 255, 0.4)' : 'none',
-                transition: 'color 0.3s ease, text-shadow 0.3s ease',
-                lineHeight: 1,
-                display: 'inline-block'
-              }}>{formatTempo(tempo)}</span>
+          {/* Controles de Pontuação Rápidos (Botoes + / -) */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+            {/* Controles Time A */}
+            <div style={{
+              padding: '12px',
+              background: '#111827',
+              border: '1px solid rgba(37, 99, 235, 0.2)',
+              borderRadius: '12px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 8
+            }}>
+              <span style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' }}>
+                + Pontuar {timeANome.substring(0,6)}
+              </span>
+              <div style={{ display: 'flex', gap: 6, width: '100%' }}>
+                <button onClick={() => ajustarPlacar('A', 1)} style={{ flex: 1, padding: '6px 0', background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(37,99,235,0.2)', color: '#60A5FA', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
+                <button onClick={() => ajustarPlacar('A', 2)} style={{ flex: 1.2, padding: '8px 0', background: '#2563EB', border: 'none', color: '#FFF', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
+                <button onClick={() => ajustarPlacar('A', 3)} style={{ flex: 1, padding: '6px 0', background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
+              </div>
+              <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center' }}>
+                <button onClick={() => ajustarPlacar('A', -1)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: '#64748B', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-1</button>
+                <button onClick={() => ajustarPlacar('A', -2)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: '#64748B', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-2</button>
+              </div>
             </div>
-            
-            {/* Botões do Timer */}
-            <div style={{ display: 'flex', gap: 10, width: '100%', justifyContent: 'center', flexWrap: 'wrap' }}>
-              {!timerAtivo ? (
-                <button onClick={() => setTimerAtivo(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', background: 'rgba(34, 197, 94, 0.08)', color: '#22c55e', border: '1px solid rgba(34, 197, 94, 0.2)', borderRadius: '8px', fontWeight: 700, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
-                  ▶ Iniciar
-                </button>
-              ) : (
-                <button onClick={() => setTimerAtivo(false)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 20px', background: 'rgba(245, 158, 11, 0.08)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: '8px', fontWeight: 700, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
-                  ⏸ Pausar
-                </button>
-              )}
-              <button onClick={() => {
+
+            {/* Controles Time B */}
+            <div style={{
+              padding: '12px',
+              background: '#111827',
+              border: '1px solid rgba(249, 115, 22, 0.2)',
+              borderRadius: '12px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 8
+            }}>
+              <span style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' }}>
+                + Pontuar {timeBNome.substring(0,6)}
+              </span>
+              <div style={{ display: 'flex', gap: 6, width: '100%' }}>
+                <button onClick={() => ajustarPlacar('B', 1)} style={{ flex: 1, padding: '6px 0', background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', color: '#F97316', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
+                <button onClick={() => ajustarPlacar('B', 2)} style={{ flex: 1.2, padding: '8px 0', background: '#F97316', border: 'none', color: '#080F1A', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
+                <button onClick={() => ajustarPlacar('B', 3)} style={{ flex: 1, padding: '6px 0', background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.3)', color: '#60A5FA', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
+              </div>
+              <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center' }}>
+                <button onClick={() => ajustarPlacar('B', -1)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: '#64748B', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-1</button>
+                <button onClick={() => ajustarPlacar('B', -2)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: '#64748B', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-2</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Controls Row (Prev, Play/Pause circular, Next) */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            background: '#111827',
+            border: '1px solid rgba(255,255,255,0.06)',
+            borderRadius: '16px',
+            padding: '12px 20px',
+            marginBottom: 20
+          }}>
+            {/* Prev/Reset Button */}
+            <button 
+              onClick={() => {
                 setTimerAtivo(false);
                 const resetTempo = periodo >= 5 ? 300 : duracaoQuarto * 60;
                 setTempo(resetTempo);
                 sincronizarPlacarBanco({ tempo_total: formatTempo(resetTempo) });
-              }} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'rgba(100, 116, 139, 0.06)', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
-                🔄 Reiniciar Quarto
-              </button>
-              {tempo > 0 && (periodo < 4 || (periodo === 4 && placarA === placarB) || (periodo >= 5 && placarA === placarB)) && (
-                <button onClick={() => {
-                  setTimerAtivo(false);
+              }}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#64748B',
+                fontSize: '20px',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+              title="Reiniciar Quarto"
+            >
+              ⏮
+            </button>
+
+            {/* Play/Pause Button */}
+            <button 
+              onClick={() => setTimerAtivo(!timerAtivo)}
+              style={{
+                background: '#2563EB',
+                border: 'none',
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                color: '#FFF',
+                fontSize: '22px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
+                transition: 'transform 0.1s'
+              }}
+            >
+              {timerAtivo ? '⏸' : '▶'}
+            </button>
+
+            {/* Next/Finish Button */}
+            <button 
+              onClick={() => {
+                setTimerAtivo(false);
+                if (tempo > 0 && (periodo < 4 || (periodo === 4 && placarA === placarB) || (periodo >= 5 && placarA === placarB))) {
                   setTempo(0);
                   sincronizarPlacarBanco({ tempo_total: '00:00' });
-                }} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
-                  ⏭ Próximo Quarto
-                </button>
-              )}
-            </div>
+                } else {
+                  setShowFinalizarModal(true);
+                }
+              }}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#64748B',
+                fontSize: '20px',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+              title="Próximo Quarto"
+            >
+              ⏭
+            </button>
           </div>
 
-          {/* Botão de Ação Inferior (Isolado e Crítico) */}
-          <div style={{ marginTop: 24, paddingBottom: 20 }}>
-            <button onClick={() => { setTimerAtivo(false); setShowFinalizarModal(true); }} style={{
+          {/* Botão de Finalizar Partida */}
+          <button 
+            onClick={() => { setTimerAtivo(false); setShowFinalizarModal(true); }} 
+            style={{
               width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '16px 20px',
-              background: '#dc2626',
-              color: '#fff',
+              padding: '14px',
+              background: '#EF4444',
+              color: '#FFF',
               border: 'none',
               borderRadius: '12px',
               fontWeight: 800,
-              fontSize: '15px',
+              fontSize: '14px',
               cursor: 'pointer',
               fontFamily: 'inherit',
-              boxShadow: '0 4px 14px rgba(220, 38, 38, 0.35)',
-              transition: 'all 0.2s'
-            }}>
-              Finalizar Jogo
-            </button>
-          </div>
+              boxShadow: '0 4px 12px rgba(239,68,68,0.2)'
+            }}
+          >
+            Finalizar Partida
+          </button>
         </div>
       )}
 

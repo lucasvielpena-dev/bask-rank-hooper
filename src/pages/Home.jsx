@@ -1,84 +1,30 @@
 import { useState, useEffect } from 'react';
 import { supabase, jogadoresAPI, rankingAPI } from '../lib/supabase';
 
-function StarRating({ value }) {
-  return (
-    <div className="stars">
-      {[1,2,3,4,5].map(i => (
-        <span key={i} className={`star${i <= Math.round(value) ? '' : ' empty'}`}>★</span>
-      ))}
-    </div>
-  );
-}
-
-function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = false }) {
-  const initial = nome ? nome.charAt(0).toUpperCase() : '?';
-  
-  const getGradientForName = (name) => {
-    const colors = [
-      ['#3b82f6', '#1d4ed8'], // Blue
-      ['#f59e0b', '#d97706'], // Gold
-      ['#10b981', '#047857'], // Emerald
-      ['#8b5cf6', '#6d28d9'], // Violet
-      ['#ec4899', '#be185d'], // Pink
-      ['#f43f5e', '#be123c'], // Rose
-      ['#06b6d4', '#0891b2'], // Cyan
-    ];
-    let hash = 0;
-    for (let i = 0; i < (name || '').length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const index = Math.abs(hash) % colors.length;
-    return `linear-gradient(135deg, ${colors[index][0]} 0%, ${colors[index][1]} 100%)`;
-  };
-
-  const avatarStyle = {
-    width: size,
-    height: size,
-    borderRadius: '50%',
-    objectFit: 'cover',
-    border: border,
-    flexShrink: 0
-  };
-
-  if (fotoUrl) {
-    return (
-      <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
-        {hasCrown && <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
-        <img src={fotoUrl} alt={nome} style={avatarStyle} />
-      </div>
-    );
+// Deterministic position evolution calculation
+// eslint-disable-next-line no-unused-vars
+const getEvolucaoValue = (id) => {
+  if (!id) return 0;
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = id.charCodeAt(i) + ((hash << 5) - hash);
   }
-
-  return (
-    <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
-      {hasCrown && <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
-      <div style={{
-        ...avatarStyle,
-        background: getGradientForName(nome),
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#ffffff',
-        fontWeight: 800,
-        fontSize: size * 0.44,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-      }}>
-        {initial}
-      </div>
-    </div>
-  );
-}
+  const val = (Math.abs(hash) % 7) - 3; // range -3 to +3
+  return val;
+};
 
 export default function Home({ profile, onNavigate }) {
-  const [stats, setStats] = useState({ jogadores: 0, avaliados: 0 });
+  const [stats, setStats] = useState({ jogadores: 0, torneios: 0, avaliacoes: 0, mediaGeral: 0.0 });
+  const [myPlayerInfo, setMyPlayerInfo] = useState(null);
+  const [myRank, setMyRank] = useState('--');
   const [lider, setLider] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
+  const uf = profile?.uf || 'PA';
+
   useEffect(() => {
     if (profile) {
-      const city = profile.cidade_atual || profile.cidade || 'Altamira';
-      const uf = profile.uf || 'PA';
       loadData(city, uf);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -86,9 +32,6 @@ export default function Home({ profile, onNavigate }) {
 
   useEffect(() => {
     if (!profile) return;
-    const city = profile.cidade_atual || profile.cidade || 'Altamira';
-    const uf = profile.uf || 'PA';
-
     const channel = supabase
       .channel('home-realtime')
       .on(
@@ -106,29 +49,83 @@ export default function Home({ profile, onNavigate }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
-
-  async function loadData(cityVal = profile?.cidade_atual || profile?.cidade || 'Altamira', ufVal = profile?.uf || 'PA') {
+  async function loadData(cityVal = city, ufVal = uf) {
     setLoading(true);
     try {
-      const [{ data: jogs }, { data: ranking }] = await Promise.all([
+      const [{ data: jogs }, { data: ranking }, { count: tCount }] = await Promise.all([
         jogadoresAPI.listarPorEstado(ufVal),
         rankingAPI.getTop5(cityVal, ufVal),
+        supabase.from('torneios').select('*', { count: 'exact', head: true })
       ]);
 
       const total = jogs?.length || 0;
-      const avaliados = jogs?.filter(j => j.total_votos > 0).length || 0;
-      setStats({ jogadores: total, avaliados });
+      const totalVotes = jogs?.reduce((acc, curr) => acc + (curr.total_votos || 0), 0) || 0;
+      const averageStarsSum = jogs?.reduce((acc, curr) => acc + (curr.media_estrelas || 0), 0) || 0;
+      const generalAvg = total > 0 ? (averageStarsSum / total) : 4.8;
+
+      setStats({
+        jogadores: total,
+        torneios: tCount || 0,
+        avaliacoes: totalVotes,
+        mediaGeral: generalAvg
+      });
 
       if (ranking?.length > 0) {
         setLider(ranking[0]);
       } else {
         setLider(null);
       }
+
+      if (profile?.player_id) {
+        // Obter jogador atual
+        const { data: pInfo } = await supabase
+          .from('jogadores')
+          .select('*')
+          .eq('id', profile.player_id)
+          .maybeSingle();
+        if (pInfo) {
+          setMyPlayerInfo(pInfo);
+        }
+
+        // Calcular rank do usuário na cidade
+        const { data: rankList } = await rankingAPI.get(cityVal, ufVal, 200);
+        if (rankList) {
+          const myIndex = rankList.findIndex(j => j.id === profile.player_id);
+          if (myIndex !== -1) {
+            setMyRank(`#${myIndex + 1}`);
+          } else {
+            setMyRank('--');
+          }
+        }
+      }
     } catch (e) {
       console.error(e);
     }
     setLoading(false);
   }
+
+  // Obter Badge com base na média de estrelas
+  const getBadgeText = (media) => {
+    if (media >= 4.5) return 'ELITE';
+    if (media >= 4.0) return 'DESTAQUE';
+    if (media >= 3.5) return 'PROMESSA';
+    return 'EM DEV.';
+  };
+
+  const myStars = myPlayerInfo?.media_estrelas || 0;
+  const myBadge = getBadgeText(myStars);
+
+  // Evolução index: 0 = Rookie, 1 = Promessa, 2 = Elite, 3 = MVP
+  let evolutionIndex = 0;
+  if (myStars >= 4.5) {
+    evolutionIndex = 3;
+  } else if (myStars >= 4.0) {
+    evolutionIndex = 2;
+  } else if (myStars >= 3.0) {
+    evolutionIndex = 1;
+  }
+
+  const greetingName = profile?.apelido || profile?.nome_completo?.split(' ')[0] || 'Atleta';
 
   if (loading) {
     return (
@@ -139,101 +136,298 @@ export default function Home({ profile, onNavigate }) {
   }
 
   return (
-    <div className="page-content">
-      <div style={{ padding: '24px 20px 0' }}>
-        {/* Hero */}
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <h1 style={{ fontFamily: 'DM Sans', fontWeight: 900, fontSize: 44, lineHeight: 1, marginBottom: 10, letterSpacing: '-0.05em', textTransform: 'uppercase' }}>
-            Ranks <span style={{ color: '#60a5fa' }}>Hoops</span>
-          </h1>
-          <p style={{ color: '#94a3b8', fontSize: 14, lineHeight: 1.5 }}>
-            Os melhores jogadores do estado, avaliados<br/>pelos próprios jogadores.
-          </p>
-        </div>
-
-        {/* Botões principais */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
-          <button className="btn btn-primary" onClick={() => onNavigate('jogadores')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '14px 20px', borderRadius: '50px', fontWeight: 600, fontSize: '15px', cursor: 'pointer', fontFamily: 'inherit', width: '100%', border: 'none', background: 'var(--accent-blue)', color: '#fff' }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            Avaliar Jogadores
-          </button>
-        </div>
-
-        {/* Stats cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
-          <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 16px' }}>
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(96, 165, 250, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            </div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.2 }}>{stats.jogadores}</div>
-            <div style={{ fontSize: 10, color: '#64748b', fontWeight: 700, letterSpacing: '0.05em', marginTop: 4, textTransform: 'uppercase' }}>JOGADORES</div>
+    <div className="page-content" style={{ background: '#080F1A' }}>
+      <div style={{ padding: '20px 20px 0' }}>
+        
+        {/* Saudação e Localização */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: '20px', fontWeight: 700, color: '#F8FAFC' }}>
+            Boa noite, <span style={{ color: '#2563EB' }}>{greetingName}</span>
           </div>
-          <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 16px' }}>
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(96, 165, 250, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-            </div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.2 }}>{stats.avaliados}</div>
-            <div style={{ fontSize: 10, color: '#64748b', fontWeight: 700, letterSpacing: '0.05em', marginTop: 4, textTransform: 'uppercase' }}>AVALIADOS</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#94A3B8', fontSize: '12px', marginTop: 4 }}>
+            <span>📍</span> Ranking de {city} - {uf}
           </div>
         </div>
 
-        {/* Card Destaque do Ranking */}
-        {lider && (
-          <div className="card" style={{ marginBottom: 20, position: 'relative', overflow: 'hidden', padding: '24px 22px', border: '1px solid rgba(96, 165, 250, 0.15)', background: 'linear-gradient(135deg, var(--bg-card) 0%, rgba(30, 41, 59, 0.2) 100%)' }}>
-            {/* Elemento decorativo de fundo */}
-            <div style={{ position: 'absolute', right: '-10px', bottom: '-15px', opacity: 0.03, pointerEvents: 'none' }}>
-              <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"><circle cx="12" cy="12" r="10" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10" /><path d="M12 2a15.3 15.3 0 0 0-4 10 15.3 15.3 0 0 0 4 10" /><path d="M2 12h20" /></svg>
+        {/* Card: Sua Posição */}
+        <div className="card" style={{
+          background: '#111827',
+          border: '1px solid rgba(255, 255, 255, 0.06)',
+          borderRadius: '16px',
+          padding: '20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 20,
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <div>
+            <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 6 }}>
+              SUA POSIÇÃO
+            </div>
+            <div style={{ fontSize: '36px', fontWeight: 900, color: '#F97316', lineHeight: 1, marginBottom: 4 }}>
+              {myRank}
+            </div>
+            <div style={{ fontSize: '11px', color: '#94A3B8', marginBottom: 12 }}>
+              Entre {stats.jogadores} jogadores
+            </div>
+            <span style={{
+              background: 'rgba(37, 99, 235, 0.15)',
+              color: '#60A5FA',
+              border: '1px solid rgba(37, 99, 235, 0.3)',
+              borderRadius: '6px',
+              padding: '3px 8px',
+              fontSize: '10px',
+              fontWeight: 800,
+              letterSpacing: '0.02em',
+              textTransform: 'uppercase'
+            }}>
+              {myBadge}
+            </span>
+          </div>
+
+          {/* Gráfico Linear e Avatar com Linha de Tendência */}
+          <div style={{ position: 'relative', width: '100px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="100" height="60" viewBox="0 0 100 60" style={{ position: 'absolute', right: 0, bottom: 0, opacity: 0.75 }}>
+              <path d="M0,50 Q20,38 40,43 T80,18 T100,10" fill="none" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" />
+              <circle cx="100" cy="10" r="3.5" fill="#F97316" />
+            </svg>
+            <div style={{ zIndex: 2, border: '3px solid #111827', borderRadius: '50%', overflow: 'hidden', width: '64px', height: '64px', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
+              {profile?.foto_perfil ? (
+                <img src={profile.foto_perfil} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                <div style={{ width: '100%', height: '100%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', fontWeight: 800, fontSize: '20px' }}>
+                  {greetingName.charAt(0).toUpperCase()}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Card: Sua Evolução */}
+        <div className="card" style={{ background: '#111827', border: '1px solid rgba(255,255, 255, 0.06)', borderRadius: '16px', padding: '16px 20px', marginBottom: 20 }}>
+          <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+            SUA EVOLUÇÃO
+          </div>
+          
+          <div className="evolution-timeline">
+            <div className="evolution-progress-line" style={{ width: `${evolutionIndex * 33.3}%` }} />
+            
+            {[
+              { label: 'Rookie', year: '2023', val: 0 },
+              { label: 'Promessa', year: '2024', val: 1 },
+              { label: 'Elite', year: '2025', val: 2 },
+              { label: 'MVP', year: '2026', val: 3 },
+            ].map((step) => {
+              const isCompleted = evolutionIndex >= step.val;
+              const isActive = evolutionIndex === step.val;
+              return (
+                <div key={step.label} className={`evolution-step ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`}>
+                  <div className="evolution-dot">
+                    {step.val === 3 ? '★' : step.val + 1}
+                  </div>
+                  <div className="evolution-label">{step.label}</div>
+                  <div className="evolution-year">{step.year}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Seção Destaques */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <div style={{ fontSize: '11px', fontWeight: 800, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              DESTAQUES
+            </div>
+            <button 
+              onClick={() => onNavigate('torneios')}
+              style={{ background: 'none', border: 'none', color: '#2563EB', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
+            >
+              Ver tudo
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 6, scrollbarWidth: 'none' }}>
+            {/* Card 1: Posição Semanal */}
+            <div className="card" style={{
+              background: '#111827',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              borderRadius: '12px',
+              padding: '16px',
+              minWidth: '135px',
+              flex: '0 0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '110px'
+            }}>
+              <div style={{ fontSize: '20px', color: '#F97316' }}>📈</div>
+              <div style={{ fontSize: '11px', color: '#F8FAFC', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
+                Você subiu <span style={{ color: '#F97316', fontWeight: 700 }}>3 posições</span> esta semana
+              </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-              <span style={{ fontSize: '11px', fontWeight: 800, color: '#f59e0b', letterSpacing: '0.05em', background: 'rgba(245, 158, 11, 0.1)', padding: '4px 8px', borderRadius: '6px', textTransform: 'uppercase' }}>
-                🔥 #1 Líder de {profile?.cidade_atual || profile?.cidade || 'Altamira'}
-              </span>
+            {/* Card 2: MVP da Semana */}
+            <div className="card" style={{
+              background: '#111827',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              borderRadius: '12px',
+              padding: '16px',
+              minWidth: '135px',
+              flex: '0 0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '110px'
+            }}>
+              <div style={{ fontSize: '20px', color: '#F97316' }}>🏆</div>
+              <div style={{ fontSize: '11px', color: '#F8FAFC', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
+                <span style={{ color: '#F97316', fontWeight: 700 }}>MVP</span> da semana<br />
+                {lider ? lider.nome.split(' ')[0] : 'João Silva'} {(lider?.media_estrelas || 4.9).toFixed(1)} ★
+              </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              {/* Avatar com badge de 1º */}
-              <div style={{ position: 'relative', flexShrink: 0 }}>
-                <PlayerAvatar fotoUrl={lider.foto_url} nome={lider.nome} size={64} border="2px solid #f59e0b" />
-                <div style={{ position: 'absolute', bottom: -4, right: -4, background: '#f59e0b', color: '#0d0f14', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 900, border: '2px solid var(--bg-card)' }}>
-                  1º
-                </div>
-              </div>
-
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 800, fontSize: 18, color: 'var(--text-primary)', marginBottom: 2 }}>
-                  {lider.nome}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600 }}>
-                    {lider.posicao || 'Ala'}
-                  </span>
-                  <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--text-muted)' }} />
-                  <span style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500 }}>
-                    📍 {lider.cidade} - {lider.uf}
-                  </span>
-                  <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--text-muted)' }} />
-                  <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-                    {lider.total_votos} avaliações
-                  </span>
-                </div>
-              </div>
-
-              <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                <div style={{ fontSize: 24, fontWeight: 900, color: '#f59e0b', fontFamily: 'monospace' }}>
-                  {Number(lider.media_estrelas).toFixed(1)}
-                </div>
-                <StarRating value={lider.media_estrelas} />
+            {/* Card 3: Torneio Municipal */}
+            <div className="card" style={{
+              background: '#111827',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              borderRadius: '12px',
+              padding: '16px',
+              minWidth: '135px',
+              flex: '0 0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '110px'
+            }}>
+              <div style={{ fontSize: '20px', color: '#F97316' }}>📅</div>
+              <div style={{ fontSize: '11px', color: '#F8FAFC', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
+                Torneio Municipal<br />
+                <span style={{ color: '#94A3B8' }}>Inscrições abertas</span>
               </div>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* Ver ranking completo (Secundário / Outline) */}
-        <button onClick={() => onNavigate('ranking')} style={{ border: '2px solid #3b82f6', background: 'transparent', color: '#60a5fa', borderRadius: '50px', padding: '14px 20px', fontWeight: 600, fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', marginBottom: '24px', fontFamily: 'inherit' }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-          Ver Ranking Completo
-        </button>
+        {/* Card: Estatísticas Gerais */}
+        <div className="card" style={{
+          background: '#111827',
+          border: '1px solid rgba(255, 255, 255, 0.06)',
+          borderRadius: '16px',
+          padding: '20px',
+          marginBottom: 20
+        }}>
+          <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 16 }}>
+            ESTATÍSTICAS GERAIS
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8 }}>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: '#F8FAFC' }}>{stats.jogadores}</div>
+              <div style={{ fontSize: '10px', color: '#94A3B8', marginTop: 2 }}>Jogadores</div>
+            </div>
+            <div style={{ paddingLeft: 8 }}>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: '#F8FAFC' }}>{stats.torneios}</div>
+              <div style={{ fontSize: '10px', color: '#94A3B8', marginTop: 2 }}>Torneios</div>
+            </div>
+            <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: '#F8FAFC' }}>{stats.avaliacoes}</div>
+              <div style={{ fontSize: '10px', color: '#94A3B8', marginTop: 2 }}>Avaliações</div>
+            </div>
+            <div style={{ paddingLeft: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: '#F97316' }}>{stats.mediaGeral.toFixed(1)}</div>
+              <div style={{ fontSize: '10px', color: '#94A3B8', marginTop: 2 }}>Média Geral</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Ações Rápidas */}
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 12 }}>
+            AÇÕES RÁPIDAS
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            {/* Avaliar Jogador */}
+            <button 
+              onClick={() => onNavigate('jogadores')}
+              style={{
+                background: '#2563EB',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
+            >
+              <div style={{ fontSize: '20px', color: '#FFF', marginBottom: 12 }}>★</div>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: '#FFF' }}>Avaliar<br />jogador</div>
+            </button>
+
+            {/* Meus Jogos */}
+            <button 
+              onClick={() => onNavigate('jogos')}
+              style={{
+                background: '#1A233D',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '12px',
+                padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
+            >
+              <div style={{ fontSize: '20px', color: '#60A5FA', marginBottom: 12 }}>🏀</div>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: '#F8FAFC' }}>Meus<br />jogos</div>
+            </button>
+
+            {/* Ranking */}
+            <button 
+              onClick={() => onNavigate('ranking')}
+              style={{
+                background: '#1A233D',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '12px',
+                padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
+            >
+              <div style={{ fontSize: '20px', color: '#60A5FA', marginBottom: 12 }}>📊</div>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: '#F8FAFC' }}>Ver<br />Ranking</div>
+            </button>
+
+            {/* Torneios */}
+            <button 
+              onClick={() => onNavigate('torneios')}
+              style={{
+                background: '#1A233D',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '12px',
+                padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
+            >
+              <div style={{ fontSize: '20px', color: '#60A5FA', marginBottom: 12 }}>🏆</div>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: '#F8FAFC' }}>Ver<br />Torneios</div>
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   );

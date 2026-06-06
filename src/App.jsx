@@ -25,15 +25,14 @@ const ESTADO_TO_UF = {
 const PAGES = {
   inicio: { label: 'Início', icon: 'court' },
   ranking: { label: 'Ranking', icon: 'trophy' },
-  jogadores: { label: 'Jogadores', icon: 'users' },
-  torneios: { label: 'Torneios', icon: 'award' },
   jogos: { label: 'Jogos', icon: 'basketball' },
-  stats: { label: 'Stats', icon: 'bar' },
+  jogadores: { label: 'Jogadores', icon: 'users' },
+  perfil: { label: 'Perfil', icon: 'perfil' },
 };
 
 function NavIcon({ type, active }) {
   const color = active ? '#60a5fa' : '#64748b';
-  const s = { width: 20, height: 20 };
+  const s = { width: 22, height: 22 };
   if (type === 'court') return (
     <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
       <rect x="2" y="3" width="20" height="18" rx="2" />
@@ -45,7 +44,6 @@ function NavIcon({ type, active }) {
   );
   if (type === 'trophy') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>;
   if (type === 'users') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
-  if (type === 'star') return <svg {...s} viewBox="0 0 24 24" fill={active ? '#60a5fa' : 'none'} stroke={color} strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
   if (type === 'basketball') return (
     <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
       <circle cx="12" cy="12" r="10" />
@@ -55,8 +53,12 @@ function NavIcon({ type, active }) {
       <path d="M17.8 6.2a8.5 8.5 0 0 1 0 11.6" />
     </svg>
   );
-  if (type === 'award') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>;
-  if (type === 'bar') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>;
+  if (type === 'perfil') return (
+    <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
   return null;
 }
 
@@ -532,7 +534,7 @@ export default function App() {
       case 'jogadores': return <Jogadores profile={profile} initialOpenAdd={pageProps.openAdd} />;
       case 'torneios': return <Torneios profile={profile} />;
       case 'jogos': return <Jogos />;
-      case 'stats': return <Stats />;
+      case 'perfil': return <Stats profile={profile} onNavigate={navigate} />;
       default: return <Home profile={profile} onNavigate={navigate} />;
     }
   }
@@ -570,38 +572,91 @@ export default function App() {
   return (
     <div className="app-shell">
       {/* Header */}
-      <header className="app-header" style={{ position: 'relative', overflow: 'hidden' }}>
-        {/* Elemento gráfico de basquete com opacidade muito baixa */}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ position: 'absolute', right: '60px', top: '-10px', width: '90px', height: '90px', opacity: 0.04, pointerEvents: 'none', color: 'var(--text-primary)' }}>
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10" />
-          <path d="M12 2a15.3 15.3 0 0 0-4 10 15.3 15.3 0 0 0 4 10" />
-          <path d="M2 12h20" />
-          <path d="M12 2v20" />
-        </svg>
+      <header className="app-header" style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '12px 16px',
+        background: '#080F1A',
+        borderBottom: '1px solid rgba(255,255,255,0.06)'
+      }}>
+        {/* Hamburger Menu Icon */}
+        <button 
+          onClick={() => setShowUserMenu(true)}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#F8FAFC',
+            fontSize: '22px',
+            cursor: 'pointer',
+            padding: 4,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          ☰
+        </button>
 
-        <div className="header-logo-icon">🏆</div>
-        <div>
-          <div className="header-title" style={{ fontSize: '20px', fontWeight: 900, letterSpacing: '-0.04em', textTransform: 'uppercase', lineHeight: 1 }}>
-            Ranks <span style={{ color: 'var(--accent-blue-light)' }}>Hoops</span>
+        {/* Brand Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{
+            fontFamily: "'Inter', sans-serif",
+            fontWeight: 900,
+            fontSize: '15px',
+            letterSpacing: '0.08em',
+            color: '#F8FAFC',
+            textTransform: 'uppercase'
+          }}>
+            RANKS <span style={{ color: '#60A5FA' }}>HOOPS</span>
           </div>
         </div>
-        
-        <div 
-          onClick={() => setShowUserMenu(true)}
-          style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
-        >
-          {profile.foto_perfil ? (
-            <img 
-              src={profile.foto_perfil} 
-              alt="Avatar" 
-              style={{ width: 30, height: 30, borderRadius: '50%', border: '1px solid var(--border)' }} 
-            />
-          ) : (
-            <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(59,130,246,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#60a5fa' }}>
-              {profile.nome_completo?.charAt(0).toUpperCase()}
-            </div>
-          )}
+
+        {/* Right Actions: Notification Bell + Profile Avatar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          {/* Bell Icon with Badge */}
+          <div style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => alert('Nenhuma notificação nova no momento!')}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F8FAFC" strokeWidth="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <span style={{
+              position: 'absolute',
+              top: -2,
+              right: -2,
+              background: '#F97316',
+              color: '#FFF',
+              fontSize: '8px',
+              fontWeight: 800,
+              width: 13,
+              height: 13,
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1.5px solid #080F1A'
+            }}>
+              3
+            </span>
+          </div>
+
+          {/* Profile Avatar */}
+          <div 
+            onClick={() => setShowUserMenu(true)}
+            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+          >
+            {profile.foto_perfil ? (
+              <img 
+                src={profile.foto_perfil} 
+                alt="Avatar" 
+                style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.2)', objectFit: 'cover' }} 
+              />
+            ) : (
+              <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#60a5fa' }}>
+                {profile.nome_completo?.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
         </div>
       </header>
 

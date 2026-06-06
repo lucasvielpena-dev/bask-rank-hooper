@@ -32,7 +32,7 @@ function StarPicker({ value, onChange, disabled }) {
             transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
           }}
         >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill={(hover || value) >= i ? 'var(--accent-gold)' : 'none'} stroke={(hover || value) >= i ? 'var(--accent-gold)' : 'var(--text-muted)'} strokeWidth="2">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill={(hover || value) >= i ? '#F97316' : 'none'} stroke={(hover || value) >= i ? '#F97316' : 'var(--text-muted)'} strokeWidth="2">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
         </button>
@@ -46,6 +46,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   const [profileData, setProfileData] = useState(null);
   const [communityStats, setCommunityStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [perfilTab, setPerfilTab] = useState('sobre'); // 'sobre' | 'estatisticas' | 'historico'
+  const [historicoJogos, setHistoricoJogos] = useState([]);
   
   // Denúncias
   const [showDenunciar, setShowDenunciar] = useState(false);
@@ -107,6 +109,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
       let wins = 0;
       let losses = 0;
       let winRate = 0;
+      const historyList = [];
       
       if (myMatches) {
         const finishedMatches = myMatches.filter(m => m.partida?.status === 'finalizado');
@@ -115,33 +118,49 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
           const myTeam = m.time;
           const scoreMyTeam = myTeam === 'A' ? p.placar_time_a : p.placar_time_b;
           const scoreOpponent = myTeam === 'A' ? p.placar_time_b : p.placar_time_a;
+          const won = scoreMyTeam > scoreOpponent;
           
-          if (scoreMyTeam > scoreOpponent) {
+          if (won) {
             wins++;
-          } else if (scoreMyTeam < scoreOpponent) {
+          } else {
             losses++;
           }
+          
+          historyList.push({
+            id: p.id,
+            data: p.created_at,
+            timeA: p.time_a,
+            timeB: p.time_b,
+            placarA: p.placar_time_a,
+            placarB: p.placar_time_b,
+            vencedor: won ? 'Ganhou' : 'Perdeu'
+          });
         });
         
         totalGames = finishedMatches.length;
         winRate = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
+        setHistoricoJogos(historyList);
       }
 
-      // 2b. Obter estatísticas acumuladas da partida (pontos, rebotes, assistências)
+      // 3. Obter estatísticas acumuladas de partida (pontos, rebotes, assistências, roubos, tocos)
       const { data: myStats } = await supabase
         .from('estatisticas_partida')
-        .select('pontos, rebotes, assistencias')
+        .select('pontos, rebotes, assistencias, tocos, roubos_bola')
         .eq('jogador_id', jogador.id);
 
       let totalPoints = 0;
       let totalRebounds = 0;
       let totalAssists = 0;
+      let totalSteals = 0;
+      let totalBlocks = 0;
 
       if (myStats) {
         myStats.forEach(s => {
           totalPoints += s.pontos || 0;
           totalRebounds += s.rebotes || 0;
           totalAssists += s.assistencias || 0;
+          totalSteals += s.roubos_bola || 0;
+          totalBlocks += s.tocos || 0;
         });
       }
 
@@ -152,10 +171,12 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
         winRate,
         points: totalPoints,
         rebounds: totalRebounds,
-        assists: totalAssists
+        assists: totalAssists,
+        steals: totalSteals,
+        blocks: totalBlocks
       });
 
-      // 3. Obter dados de autenticação e avaliação existente
+      // 4. Obter dados de autenticação e avaliação existente
       const user = (await supabase.auth.getUser()).data.user;
       if (user) {
         setMinhaId(user.id);
@@ -239,40 +260,37 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
     setTimeout(() => setToast(null), 3000);
   }
 
-  const getInitial = (nome) => nome ? nome.charAt(0).toUpperCase() : '?';
-
   const isMe = minhaId && (minhaId === localJogador.criado_por || (profileData && minhaId === profileData.id));
 
+  // Cálculo das médias PPJ, REB, AST, STL, BLK
+  const totalGamesNum = communityStats?.games || 0;
+  const ppj = totalGamesNum > 0 ? (communityStats.points / totalGamesNum).toFixed(1) : '0.0';
+  const reb = totalGamesNum > 0 ? (communityStats.rebounds / totalGamesNum).toFixed(1) : '0.0';
+  const ast = totalGamesNum > 0 ? (communityStats.assists / totalGamesNum).toFixed(1) : '0.0';
+  const stl = totalGamesNum > 0 ? (communityStats.steals / totalGamesNum).toFixed(1) : '0.0';
+  const blk = totalGamesNum > 0 ? (communityStats.blocks / totalGamesNum).toFixed(1) : '0.0';
+
+  // Badge texto
+  const starsVal = localJogador.media_estrelas || 0;
+  const badgeText = starsVal >= 4.5 ? 'ELITE' : starsVal >= 4.0 ? 'DESTAQUE' : starsVal >= 3.5 ? 'PROMESSA' : 'EM DEV.';
+
+  // Evolution index
+  let evolutionIndex = 0;
+  if (starsVal >= 4.5) {
+    evolutionIndex = 3;
+  } else if (starsVal >= 4.0) {
+    evolutionIndex = 2;
+  } else if (starsVal >= 3.0) {
+    evolutionIndex = 1;
+  }
+
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440 }}>
+    <div className="modal-overlay" onClick={onClose} style={{ alignItems: 'center', padding: '16px' }}>
+      <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440, borderRadius: '24px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
         <div className="modal-handle" />
-        
-        {/* Profile Card Header */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: 20 }}>
-          <div className="avatar avatar-lg" style={{ marginBottom: 12 }}>
-            {getInitial(localJogador.nome)}
-          </div>
-          <h3 style={{ fontWeight: 800, fontSize: 22, color: 'var(--text-primary)' }}>
-            {localJogador.nome}
-          </h3>
-          <p style={{ color: 'var(--text-secondary)', fontSize: 14, fontWeight: 500 }}>
-            {localJogador.apelido ? `"${localJogador.apelido}"` : ''} {localJogador.posicao ? `· ${localJogador.posicao}` : ''}
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center', marginTop: 8 }}>
-            <div className="badge">
-              <span>📍</span> {localJogador.cidade} • {localJogador.uf}
-            </div>
-            {rank && (
-              <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--accent-gold)', marginTop: 2 }}>
-                🏆 #{rank} em {localJogador.cidade}
-              </div>
-            )}
-          </div>
-        </div>
 
         {loading ? (
-          <div className="loading" style={{ padding: '20px 0' }}><div className="spinner" /> Carregando detalhes...</div>
+          <div className="loading" style={{ padding: '40px 0' }}><div className="spinner" /> Carregando detalhes...</div>
         ) : showAvaliar ? (
           // Tela de Avaliação Direta
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -285,10 +303,10 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               {fundamentos.map(f => {
                 const val = estrelas[f.key] || 0;
                 return (
-                  <div key={f.key} style={{ background: 'var(--bg-secondary)', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)' }}>
+                  <div key={f.key} style={{ background: '#0D1527', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                       <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
-                      <span style={{ fontSize: 11, color: 'var(--accent-gold)', fontWeight: 600 }}>
+                      <span style={{ fontSize: 11, color: '#F97316', fontWeight: 600 }}>
                         {labelsNota[val]}
                       </span>
                     </div>
@@ -317,154 +335,306 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 className="btn btn-primary" 
                 onClick={handleConfirmarAvaliacao} 
                 disabled={enviandoAvaliacao || fundamentos.some(f => !estrelas[f.key])} 
-                style={{ flex: 2 }}
+                style={{ flex: 2, background: '#2563EB' }}
               >
                 {enviandoAvaliacao ? 'Salvando...' : 'Salvar Avaliação'}
               </button>
             </div>
           </div>
         ) : (
-          // Tela Principal de Detalhes
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          // Tela Principal de Perfil Estilo Mockup
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, overflowY: 'auto' }}>
             
-            {/* Informações Físicas */}
-            {profileData && (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                <div className="card" style={{ textAlign: 'center', padding: '10px', background: 'var(--bg-elevated)' }}>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>ALTURA</div>
-                  <div style={{ fontWeight: 800, color: 'var(--accent-blue-light)', fontSize: 15 }}>
-                    {profileData.altura ? `${Number(profileData.altura).toFixed(2)}m` : '--'}
-                  </div>
-                </div>
-                <div className="card" style={{ textAlign: 'center', padding: '10px', background: 'var(--bg-elevated)' }}>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>IDADE</div>
-                  <div style={{ fontWeight: 800, color: 'var(--accent-gold)', fontSize: 15 }}>
-                    {profileData.idade ? `${profileData.idade} anos` : '--'}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Avaliação Geral */}
-            <div className="card" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>MEDIA DO ATLETA</span>
-                <span style={{ color: 'var(--accent-gold)', fontWeight: 800, fontSize: 18 }}>
-                  ★ {localJogador.total_votos >= 1 ? Number(localJogador.media_estrelas).toFixed(1) : 'S/N'}
-                </span>
-              </div>
+            {/* Header com Foto Desvanecida e Dados */}
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              height: '220px',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'flex-end',
+              background: '#0D1527',
+              border: '1px solid rgba(255,255,255,0.06)'
+            }}>
+              {localJogador.foto_url ? (
+                <img 
+                  src={localJogador.foto_url} 
+                  alt={localJogador.nome} 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0, opacity: 0.7 }}
+                />
+              ) : (
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #1A233D 0%, #0D1527 100%)', opacity: 0.5 }} />
+              )}
               
-              {/* Aspectos */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {fundamentos.map(f => {
-                  const mediaAspecto = localJogador[`media_${f.key}`] || 0;
-                  return (
-                    <div key={f.key}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 4 }}>
-                        <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{f.label}</span>
-                        <span style={{ color: 'var(--accent-blue-light)', fontWeight: 700 }}>
-                          {localJogador.total_votos >= 1 ? `★ ${Number(mediaAspecto).toFixed(1)}` : '--'}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'linear-gradient(to top, #111827 0%, rgba(17, 24, 39, 0) 100%)',
+                zIndex: 1
+              }} />
+
+              {/* Botão de Fechar no topo */}
+              <button 
+                onClick={onClose} 
+                style={{
+                  position: 'absolute',
+                  top: 10,
+                  left: 10,
+                  background: 'rgba(0,0,0,0.5)',
+                  border: 'none',
+                  color: '#FFF',
+                  width: 28,
+                  height: 28,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  zIndex: 10
+                }}
+              >
+                ✕
+              </button>
+
+              <div style={{ zIndex: 2, padding: '16px', width: '100%' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#F8FAFC', marginBottom: 2 }}>{localJogador.nome}</h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <span style={{
+                    background: 'rgba(37, 99, 235, 0.2)',
+                    color: '#60A5FA',
+                    border: '1px solid rgba(37, 99, 235, 0.4)',
+                    borderRadius: '6px',
+                    padding: '2px 8px',
+                    fontSize: '9px',
+                    fontWeight: 800,
+                    letterSpacing: '0.02em'
+                  }}>
+                    {badgeText}
+                  </span>
+                  <span style={{ color: '#94A3B8', fontSize: '11px' }}>{localJogador.posicao || 'Ala'}</span>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span style={{ fontSize: '22px', fontWeight: 900, color: '#F97316', fontFamily: 'monospace' }}>
+                      {starsVal > 0 ? Number(starsVal).toFixed(1) : '0.0'}
+                    </span>
+                    <span style={{ color: '#F97316', fontSize: '15px' }}>★</span>
+                    <span style={{ color: '#94A3B8', fontSize: '11px', marginLeft: 4 }}>Nota média</span>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#94A3B8' }}>
+                    📍 {rank ? `#${rank} ` : ''}{localJogador.cidade} - {localJogador.uf}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Linha de Métricas (PPJ, REB, AST, STL, BLK) */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(5, 1fr)',
+              gap: 8,
+              background: '#111827',
+              padding: '12px 6px',
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.06)',
+              textAlign: 'center'
+            }}>
+              {[
+                { label: 'PPJ', val: ppj },
+                { label: 'REB', val: reb },
+                { label: 'AST', val: ast },
+                { label: 'STL', val: stl },
+                { label: 'BLK', val: blk },
+              ].map(item => (
+                <div key={item.label}>
+                  <div style={{ fontSize: '16px', fontWeight: 800, color: '#F8FAFC' }}>{item.val}</div>
+                  <div style={{ fontSize: '9px', color: '#64748B', fontWeight: 600, marginTop: 2 }}>{item.label}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Linha de Evolução */}
+            <div className="card" style={{ background: '#111827', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '14px 16px' }}>
+              <div style={{ fontSize: '9px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                LINHA DE EVOLUÇÃO
+              </div>
+              <div className="evolution-timeline" style={{ margin: '18px 0 6px' }}>
+                <div className="evolution-progress-line" style={{ width: `${evolutionIndex * 33.3}%` }} />
+                {[
+                  { label: 'Rookie', year: '2023', val: 0 },
+                  { label: 'Promessa', year: '2024', val: 1 },
+                  { label: 'Elite', year: '2025', val: 2 },
+                  { label: 'MVP', year: '2026', val: 3 },
+                ].map(step => (
+                  <div key={step.label} className={`evolution-step ${evolutionIndex >= step.val ? 'completed' : ''} ${evolutionIndex === step.val ? 'active' : ''}`}>
+                    <div className="evolution-dot" style={{ width: '22px', height: '22px', fontSize: '9px' }}>
+                      {step.val === 3 ? '★' : step.val + 1}
+                    </div>
+                    <div className="evolution-label" style={{ fontSize: '8px', marginTop: 4 }}>{step.label}</div>
+                    <div className="evolution-year" style={{ fontSize: '7px' }}>{step.year}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Tab Bar interna (SOBRE, ESTATÍSTICAS, HISTÓRICO) */}
+            <div style={{
+              display: 'flex',
+              background: '#0D1527',
+              borderRadius: '8px',
+              padding: '3px',
+              gap: 2
+            }}>
+              {[
+                { key: 'sobre', label: 'SOBRE' },
+                { key: 'estatisticas', label: 'ESTATÍSTICAS' },
+                { key: 'historico', label: 'HISTÓRICO' }
+              ].map(t => (
+                <button
+                  key={t.key}
+                  type="button"
+                  onClick={() => setPerfilTab(t.key)}
+                  style={{
+                    flex: 1,
+                    padding: '8px 4px',
+                    borderRadius: '6px',
+                    border: 'none',
+                    background: perfilTab === t.key ? '#1A233D' : 'none',
+                    color: perfilTab === t.key ? '#F8FAFC' : '#64748B',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    fontFamily: 'inherit'
+                  }}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Conteúdo das Tabs */}
+            <div style={{ minHeight: '120px' }}>
+              {perfilTab === 'sobre' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: '13px' }}>
+                  {[
+                    { label: 'Cidade', val: `${localJogador.cidade} - ${localJogador.uf}` },
+                    { label: 'Idade', val: profileData?.idade ? `${profileData.idade} anos` : 'A definir' },
+                    { label: 'Altura', val: profileData?.altura ? `${Number(profileData.altura).toFixed(2)} m` : 'A definir' },
+                    { label: 'Posição', val: localJogador.posicao || 'Ala' },
+                    { label: 'Equipe', val: localJogador.equipe || `${localJogador.cidade} Hoops` },
+                  ].map(item => (
+                    <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 6, borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                      <span style={{ color: '#94A3B8' }}>{item.label}</span>
+                      <span style={{ fontWeight: 600, color: '#F8FAFC' }}>{item.val}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {perfilTab === 'estatisticas' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {fundamentos.map(f => {
+                    const mediaAspecto = localJogador[`media_${f.key}`] || 0;
+                    return (
+                      <div key={f.key}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: 4 }}>
+                          <span style={{ fontWeight: 600, color: '#F8FAFC' }}>{f.label}</span>
+                          <span style={{ color: '#60A5FA', fontWeight: 700 }}>
+                            {localJogador.total_votos >= 1 ? `★ ${Number(mediaAspecto).toFixed(1)}` : '--'}
+                          </span>
+                        </div>
+                        <div className="progress-bar" style={{ height: '6px', background: '#0D1527' }}>
+                          <div 
+                            className="progress-fill bar-grow-fill" 
+                            style={{ width: localJogador.total_votos >= 1 ? `${(mediaAspecto / 5) * 100}%` : '0%', background: '#2563EB' }} 
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {localJogador.total_votos < 1 && (
+                    <div style={{ fontSize: '10px', color: '#64748B', textAlign: 'center', marginTop: 4 }}>
+                      * Média dos fundamentos oculta até atingir pelo menos 1 voto.
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {perfilTab === 'historico' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {historicoJogos.length === 0 ? (
+                    <div style={{ fontSize: '12px', color: '#64748B', textAlign: 'center', padding: '20px 0' }}>
+                      Nenhuma partida finalizada no histórico deste atleta.
+                    </div>
+                  ) : (
+                    historicoJogos.map(h => (
+                      <div key={h.id} style={{
+                        background: '#111827',
+                        padding: '10px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(255,255,255,0.03)',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}>
+                        <div>
+                          <div style={{ fontSize: '12px', fontWeight: 700, color: '#F8FAFC' }}>
+                            {h.timeA} {h.placarA} x {h.placarB} {h.timeB}
+                          </div>
+                          <span style={{ fontSize: '10px', color: '#64748B' }}>
+                            {new Date(h.data).toLocaleDateString('pt-BR')}
+                          </span>
+                        </div>
+                        <span style={{
+                          fontSize: '10px',
+                          fontWeight: 800,
+                          color: h.vencedor === 'Ganhou' ? '#10B981' : '#EF4444',
+                          background: h.vencedor === 'Ganhou' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+                          padding: '2px 6px',
+                          borderRadius: '4px'
+                        }}>
+                          {h.vencedor.toUpperCase()}
                         </span>
                       </div>
-                      <div className="progress-bar" style={{ height: 6 }}>
-                        <div 
-                          className="progress-fill blue bar-grow-fill" 
-                          style={{ width: localJogador.total_votos >= 1 ? `${(mediaAspecto / 5) * 100}%` : '0%' }} 
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              {localJogador.total_votos < 1 && (
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', marginTop: 12 }}>
-                  * Avaliações detalhadas ocultas até atingir 1 voto (Atual: {localJogador.total_votos}/1)
+                    ))
+                  )}
                 </div>
               )}
             </div>
 
-            {/* Estatísticas de Carreira */}
-            {communityStats && (
-              <div className="card" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 14 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="20" x2="18" y2="10"></line>
-                    <line x1="12" y1="20" x2="12" y2="4"></line>
-                    <line x1="6" y1="20" x2="6" y2="14"></line>
-                  </svg>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-blue-light)', letterSpacing: '0.05em' }}>ESTATÍSTICAS DE CARREIRA</span>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, textAlign: 'center' }}>
-                  <div style={{ background: 'var(--bg-secondary)', padding: '10px 4px', borderRadius: 8, border: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>PONTOS</div>
-                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 16 }}>{communityStats.points || 0}</div>
-                  </div>
-                  <div style={{ background: 'var(--bg-secondary)', padding: '10px 4px', borderRadius: 8, border: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>REBOTES</div>
-                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 16 }}>{communityStats.rebounds || 0}</div>
-                  </div>
-                  <div style={{ background: 'var(--bg-secondary)', padding: '10px 4px', borderRadius: 8, border: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>ASSISTS</div>
-                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 16 }}>{communityStats.assists || 0}</div>
-                  </div>
-                  <div style={{ background: 'var(--bg-secondary)', padding: '10px 4px', borderRadius: 8, border: '1px solid var(--border)' }}>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, marginBottom: 4 }}>JOGOS</div>
-                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 16 }}>{communityStats.games || 0}</div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Aproveitamento Comunidade */}
-            {communityStats && communityStats.games > 0 && (
-              <div className="card" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 14 }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-blue-light)', letterSpacing: '0.05em' }}>JOGOS DA NOITE</span>
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 8 }}>
-                  <div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>VITÓRIAS - DERROTAS</div>
-                    <div style={{ fontSize: 20, fontWeight: 800 }}>{communityStats.wins}V - {communityStats.losses}D</div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>WIN RATE</div>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: '#22c55e' }}>{communityStats.winRate}%</div>
-                  </div>
-                </div>
-                <div className="progress-bar">
-                  <div className="progress-fill bar-grow-fill" style={{ width: `${communityStats.winRate}%`, background: '#22c55e' }} />
-                </div>
-              </div>
-            )}
-
-            {/* Botoes de Acao */}
+            {/* Ações inferiores */}
             <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
               {!isMe && (
                 <button 
                   type="button"
                   className="btn btn-primary" 
                   onClick={() => setShowAvaliar(true)}
-                  style={{ flex: 1 }}
+                  style={{ flex: 1.5, background: '#2563EB' }}
                 >
-                  {jaAvaliou ? '⚙️ Editar Voto' : '⭐ Avaliar Atleta'}
+                  {jaAvaliou ? '⚙️ Editar Voto' : '★ Avaliar Atleta'}
                 </button>
               )}
               <button 
                 className="btn btn-secondary" 
                 onClick={() => setShowDenunciar(true)}
-                style={{ flex: 1, color: 'var(--text-danger)', borderColor: 'var(--border-danger)' }}
+                style={{ flex: 1, color: '#EF4444', borderColor: 'var(--border-danger)', background: 'none' }}
               >
                 ⚠️ Denunciar
               </button>
             </div>
-            <button className="btn btn-primary" onClick={onClose} style={{ marginTop: 2 }}>
-              Fechar
+            
+            <button className="btn btn-primary" onClick={onClose} style={{ marginTop: 2, background: 'rgba(255,255,255,0.05)', color: '#F8FAFC', border: '1px solid rgba(255,255,255,0.06)' }}>
+              Fechar perfil completo
             </button>
           </div>
         )}
 
-        {/* Modal interno para envio de denúncia */}
+        {/* Modal de Denúncias */}
         {showDenunciar && (
           <div className="modal-overlay" onClick={() => setShowDenunciar(false)} style={{ zIndex: 200, background: 'rgba(0,0,0,0.8)' }}>
             <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 380, marginBottom: 20 }}>

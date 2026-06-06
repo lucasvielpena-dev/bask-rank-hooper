@@ -1,21 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&family=Oswald:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&family=Oswald:wght@400;700;900&display=swap');
 
 :root {
-  --bg-primary: #0d0f14;
-  --bg-secondary: #151820;
-  --bg-card: #1a1e28;
-  --bg-card-hover: #1f2435;
-  --bg-elevated: #242938;
-  --accent-blue: #3b82f6;
-  --accent-blue-light: #60a5fa;
-  --accent-blue-dim: rgba(59,130,246,0.15);
-  --accent-gold: #f59e0b;
-  --accent-gold-dim: rgba(245,158,11,0.15);
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border: rgba(255,255,255,0.07);
-  --border-active: rgba(59,130,246,0.5);
+  --bg-primary: #080F1A;
+  --bg-secondary: #0D1527;
+  --bg-card: #111827;
+  --bg-card-hover: #161F30;
+  --bg-elevated: #1A233D;
+  --accent-blue: #2563EB;
+  --accent-blue-light: #60A5FA;
+  --accent-blue-dim: rgba(37, 99, 235, 0.12);
+  --accent-gold: #F97316;
+  --accent-gold-dim: rgba(249, 115, 22, 0.12);
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-active: rgba(37, 99, 235, 0.4);
   --shadow: 0 4px 24px rgba(0,0,0,0.4);
   --radius: 16px;
   --radius-sm: 10px;
@@ -23,30 +23,30 @@
   --header-height: 60px;
 
   /* Console de Partida Controles */
-  --counter-btn-a-color: #93c5fd;
+  --counter-btn-a-color: #60a5fa;
   --counter-btn-b-color: #fca5a5;
-  --vs-badge-bg: #0d0f14;
-  --text-danger: #f87171;
-  --border-danger: rgba(239, 68, 68, 0.3);
+  --vs-badge-bg: #080F1A;
+  --text-danger: #ef4444;
+  --border-danger: rgba(239, 68, 68, 0.2);
 
   /* Medalhas e Pódio */
-  --gold-color: #f59e0b;
+  --gold-color: #F97316;
   --silver-color: #94a3b8;
   --bronze-color: #cd7c2f;
-  --podium-wrapper-bg: rgba(21, 24, 32, 0.4);
-  --podium-bg-1st: linear-gradient(180deg, rgba(245, 158, 11, 0.18) 0%, rgba(26, 30, 40, 0.9) 100%);
-  --podium-border-1st: 1.5px solid rgba(245, 158, 11, 0.5);
-  --podium-bg-2nd: linear-gradient(180deg, rgba(148, 163, 184, 0.12) 0%, rgba(26, 30, 40, 0.85) 100%);
+  --podium-wrapper-bg: rgba(13, 21, 39, 0.4);
+  --podium-bg-1st: linear-gradient(180deg, rgba(249, 115, 22, 0.18) 0%, rgba(17, 24, 39, 0.9) 100%);
+  --podium-border-1st: 1.5px solid rgba(249, 115, 22, 0.5);
+  --podium-bg-2nd: linear-gradient(180deg, rgba(148, 163, 184, 0.12) 0%, rgba(17, 24, 39, 0.85) 100%);
   --podium-border-2nd: 1.5px solid rgba(148, 163, 184, 0.4);
-  --podium-bg-3rd: linear-gradient(180deg, rgba(205, 124, 47, 0.12) 0%, rgba(26, 30, 40, 0.85) 100%);
+  --podium-bg-3rd: linear-gradient(180deg, rgba(205, 124, 47, 0.12) 0%, rgba(17, 24, 39, 0.85) 100%);
   --podium-border-3rd: 1.5px solid rgba(205, 124, 47, 0.4);
 
   /* Console de Partida */
-  --card-team-a-bg: linear-gradient(180deg, rgba(59, 130, 246, 0.06) 0%, rgba(26, 30, 40, 0.5) 100%);
-  --card-team-b-bg: linear-gradient(180deg, rgba(239, 68, 68, 0.06) 0%, rgba(26, 30, 40, 0.5) 100%);
-  --card-team-a-border: 1.5px solid rgba(59, 130, 246, 0.25);
+  --card-team-a-bg: linear-gradient(180deg, rgba(37, 99, 235, 0.06) 0%, rgba(17, 24, 39, 0.5) 100%);
+  --card-team-b-bg: linear-gradient(180deg, rgba(239, 68, 68, 0.06) 0%, rgba(17, 24, 39, 0.5) 100%);
+  --card-team-a-border: 1.5px solid rgba(37, 99, 235, 0.25);
   --card-team-b-border: 1.5px solid rgba(239, 68, 68, 0.25);
-  --timer-bg: rgba(26, 30, 40, 0.5);
+  --timer-bg: rgba(17, 24, 39, 0.5);
 }
 
 * {
@@ -62,7 +62,7 @@ html, body, #root {
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
   overscroll-behavior: none;
@@ -116,7 +116,7 @@ body {
 }
 
 .header-title {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 16px;
   line-height: 1;
@@ -233,7 +233,7 @@ body {
   padding: 14px 20px;
   border-radius: 50px;
   border: none;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 15px;
   cursor: pointer;
@@ -518,7 +518,7 @@ input, select, textarea {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 12px 16px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 15px;
   color: var(--text-primary);
   outline: none;
@@ -909,3 +909,96 @@ input:focus { border-color: var(--accent-blue); }
 .timer-active-pulse-text {
   animation: timerPulse 2s infinite ease-in-out;
 }
+
+/* Evolution Timeline styles */
+.evolution-timeline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin: 24px 0 12px;
+  padding: 0 10px;
+}
+
+.evolution-timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 14px;
+  height: 2px;
+  background: var(--border);
+  z-index: 1;
+}
+
+.evolution-progress-line {
+  position: absolute;
+  left: 20px;
+  top: 14px;
+  height: 2px;
+  background: var(--accent-blue);
+  z-index: 2;
+  transition: width 0.3s ease;
+}
+
+.evolution-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 3;
+  cursor: default;
+}
+
+.evolution-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #080F1A;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+}
+
+.evolution-step.completed .evolution-dot {
+  border-color: var(--accent-blue);
+  background: #080F1A;
+  color: var(--accent-blue-light);
+}
+
+.evolution-step.active .evolution-dot {
+  border-color: var(--accent-blue-light);
+  background: var(--accent-blue);
+  color: var(--text-primary);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+  transform: scale(1.15);
+}
+
+.evolution-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 8px;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.evolution-step.active .evolution-label {
+  color: var(--accent-blue-light);
+  font-weight: 700;
+}
+
+.evolution-step.completed .evolution-label {
+  color: var(--text-secondary);
+}
+
+.evolution-year {
+  font-size: 8px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+

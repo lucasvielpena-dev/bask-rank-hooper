@@ -1,21 +1,39 @@
 import { useState, useEffect } from 'react';
-import { estatisticasPessoaisAPI } from '../lib/supabase';
+import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
 
-export default function Stats() {
-  const [aba, setAba] = useState('resumo');
-  const [historico, setHistorico] = useState([]);
+const fundamentos = [
+  { key: 'arremesso', label: 'Arremesso' },
+  { key: 'defesa', label: 'Defesa' },
+  { key: 'passe', label: 'Passe' },
+  { key: 'fisicalidade', label: 'Fisicalidade' },
+  { key: 'mentalidade', label: 'Mentalidade' }
+];
+
+export default function Stats({ profile, onNavigate }) {
+  const [aba, setAba] = useState('sobre'); // 'sobre' | 'estatisticas' | 'historico'
+  const [subAbaHistorico, setSubAbaHistorico] = useState('pessoal'); // 'pessoal' | 'quadra'
+  const [historicoPrivado, setHistoricoPrivado] = useState([]);
+  const [historicoQuadra, setHistoricoQuadra] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showRegistrar, setShowRegistrar] = useState(false);
   const [showAvancado, setShowAvancado] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [toast, setToast] = useState(null);
 
-  // States de estatísticas calculadas
-  const [totais, setTotais] = useState(null);
-  const [medias, setMedias] = useState(null);
-  const [melhorJogo, setMelhorJogo] = useState(null);
+  // States de estatísticas calculadas privadas
+  // eslint-disable-next-line no-unused-vars
+  const [totaisPrivados, setTotaisPrivados] = useState(null);
+  const [mediasPrivadas, setMediasPrivadas] = useState(null);
 
-  // Form State
+  // States do jogador público
+  const [myPlayerInfo, setMyPlayerInfo] = useState(null);
+  const [myRank, setMyRank] = useState('--');
+  const [careerStats, setCareerStats] = useState({ games: 0, points: 0, rebounds: 0, assists: 0, steals: 0, blocks: 0 });
+
+  const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
+  const uf = profile?.uf || 'PA';
+
+  // Form State para partidas pessoais
   const formInicial = {
     data_partida: new Date().toISOString().split('T')[0],
     nome_jogador: '',
@@ -39,21 +57,21 @@ export default function Stats() {
   const [form, setForm] = useState(formInicial);
 
   useEffect(() => {
-    loadStats();
+    if (profile) {
+      loadAllStats();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [profile]);
 
-  async function loadStats() {
+  async function loadAllStats() {
     setLoading(true);
     try {
-      const { data, error } = await estatisticasPessoaisAPI.obterMinhas();
-      if (error) throw error;
-
-      const hist = data || [];
-      setHistorico(hist);
+      // 1. Carregar estatísticas privadas
+      const { data: privData } = await estatisticasPessoaisAPI.obterMinhas();
+      const hist = privData || [];
+      setHistoricoPrivado(hist);
 
       if (hist.length > 0) {
-        // 1. Calcular Totais Acumulados
         const t = hist.reduce((acc, h) => ({
           pontos: acc.pontos + (h.pontos || 0),
           rebotes: acc.rebotes + (h.rebotes || 0),
@@ -63,8 +81,6 @@ export default function Stats() {
           perdas: acc.perdas + (h.perdas_bola || 0),
           arremessos_tentados: acc.arremessos_tentados + (h.arremessos_tentados || 0),
           arremessos_convertidos: acc.arremessos_convertidos + (h.arremessos_convertidos || 0),
-          
-          // Avançadas
           lf_tentados: acc.lf_tentados + (h.lance_livre_tentados || 0),
           lf_convertidos: acc.lf_convertidos + (h.lance_livre_convertidos || 0),
           dois_tentados: acc.dois_tentados + (h.dois_pontos_tentados || 0),
@@ -76,44 +92,112 @@ export default function Stats() {
           arremessos_tentados: 0, arremessos_convertidos: 0,
           lf_tentados: 0, lf_convertidos: 0, dois_tentados: 0, dois_convertidos: 0, tres_tentados: 0, tres_convertidos: 0
         });
-        setTotais(t);
+        setTotaisPrivados(t);
 
-        // 2. Calcular Médias por Jogo
         const qtd = hist.length;
         const m = {
-          pontos: (t.pontos / qtd).toFixed(1).replace('.', ','),
-          rebotes: (t.rebotes / qtd).toFixed(1).replace('.', ','),
-          assistencias: (t.assistencias / qtd).toFixed(1).replace('.', ','),
-          roubos: (t.roubos / qtd).toFixed(1).replace('.', ','),
-          tocos: (t.tocos / qtd).toFixed(1).replace('.', ','),
-          perdas: (t.perdas / qtd).toFixed(1).replace('.', ','),
-          aproveitamento: t.arremessos_tentados > 0 ? ((t.arremessos_convertidos / t.arremessos_tentados) * 100).toFixed(1).replace('.', ',') : '0,0',
+          pontos: (t.pontos / qtd).toFixed(1),
+          rebotes: (t.rebotes / qtd).toFixed(1),
+          assistencias: (t.assistencias / qtd).toFixed(1),
+          roubos: (t.roubos / qtd).toFixed(1),
+          tocos: (t.tocos / qtd).toFixed(1),
+          perdas: (t.perdas / qtd).toFixed(1),
+          aproveitamento: t.arremessos_tentados > 0 ? ((t.arremessos_convertidos / t.arremessos_tentados) * 100).toFixed(1) : '0.0',
         };
-        setMedias(m);
-
-        // 3. Obter Melhor Jogo da Carreira (Baseado no maior número de pontos)
-        let melhor = hist[0];
-        hist.forEach(h => {
-          if ((h.pontos || 0) > (melhor.pontos || 0)) {
-            melhor = h;
-          } else if ((h.pontos || 0) === (melhor.pontos || 0)) {
-            // Desempate por rebotes + assistências
-            const somaAtu = (h.rebotes || 0) + (h.assistencias || 0);
-            const somaMelhor = (melhor.rebotes || 0) + (melhor.assistencias || 0);
-            if (somaAtu > somaMelhor) {
-              melhor = h;
-            }
-          }
-        });
-        setMelhorJogo(melhor);
+        setMediasPrivadas(m);
       } else {
-        setTotais(null);
-        setMedias(null);
-        setMelhorJogo(null);
+        setTotaisPrivados(null);
+        setMediasPrivadas(null);
+      }
+
+      // 2. Carregar informações do jogador público
+      if (profile.player_id) {
+        const { data: pInfo } = await supabase
+          .from('jogadores')
+          .select('*')
+          .eq('id', profile.player_id)
+          .maybeSingle();
+        if (pInfo) {
+          setMyPlayerInfo(pInfo);
+        }
+
+        // Calcular rank
+        const { data: rankList } = await rankingAPI.get(city, uf, 200);
+        if (rankList) {
+          const myIndex = rankList.findIndex(j => j.id === profile.player_id);
+          if (myIndex !== -1) {
+            setMyRank(`#${myIndex + 1}`);
+          }
+        }
+
+        // Obter histórico de partidas oficiais/de quadra
+        const { data: myMatches } = await supabase
+          .from('partida_jogadores')
+          .select('time, partida:partidas(*)')
+          .eq('jogador_id', profile.player_id);
+        
+        let totalGames = 0;
+        const quadraList = [];
+        
+        if (myMatches) {
+          const finishedMatches = myMatches.filter(m => m.partida?.status === 'finalizado');
+          finishedMatches.forEach(m => {
+            const p = m.partida;
+            const myTeam = m.time;
+            const scoreMyTeam = myTeam === 'A' ? p.placar_time_a : p.placar_time_b;
+            const scoreOpponent = myTeam === 'A' ? p.placar_time_b : p.placar_time_a;
+            const won = scoreMyTeam > scoreOpponent;
+            
+            if (won) totalGames++;
+            
+            quadraList.push({
+              id: p.id,
+              data: p.created_at,
+              timeA: p.time_a,
+              timeB: p.time_b,
+              placarA: p.placar_time_a,
+              placarB: p.placar_time_b,
+              vencedor: won ? 'Ganhou' : 'Perdeu'
+            });
+          });
+          setHistoricoQuadra(quadraList);
+          totalGames = finishedMatches.length;
+        }
+
+        // Obter estatísticas oficiais acumuladas
+        const { data: myStats } = await supabase
+          .from('estatisticas_partida')
+          .select('pontos, rebotes, assistencias, tocos, roubos_bola')
+          .eq('jogador_id', profile.player_id);
+
+        let totalPoints = 0;
+        let totalRebounds = 0;
+        let totalAssists = 0;
+        let totalSteals = 0;
+        let totalBlocks = 0;
+
+        if (myStats) {
+          myStats.forEach(s => {
+            totalPoints += s.pontos || 0;
+            totalRebounds += s.rebotes || 0;
+            totalAssists += s.assistencias || 0;
+            totalSteals += s.roubos_bola || 0;
+            totalBlocks += s.tocos || 0;
+          });
+        }
+
+        setCareerStats({
+          games: totalGames,
+          points: totalPoints,
+          rebounds: totalRebounds,
+          assists: totalAssists,
+          steals: totalSteals,
+          blocks: totalBlocks
+        });
       }
     } catch (e) {
       console.error(e);
-      showToast('Erro ao carregar estatísticas.', 'error');
+      showToast('Erro ao carregar dados.', 'error');
     } finally {
       setLoading(false);
     }
@@ -124,7 +208,7 @@ export default function Stats() {
     setTimeout(() => setToast(null), 3000);
   }
 
-  // Lógica de incrementos e sincronização automática
+  // Lógica de incrementos e sincronização de campos privados
   function ajustarCampo(campo, valor) {
     setForm(prev => {
       const updates = { ...prev };
@@ -173,7 +257,7 @@ export default function Stats() {
           const diff = newVal - prev.arremessos_convertidos;
           updates.arremessos_convertidos = newVal;
           updates.arremessos_tentados = Math.max(prev.arremessos_tentados, newVal);
-          updates.pontos = Math.max(0, prev.pontos + diff * 2); // Assume +2 de pontos por padrão para facilidade
+          updates.pontos = Math.max(0, prev.pontos + diff * 2);
         } else if (campo === 'arremessos_tentados') {
           updates.arremessos_tentados = Math.max(prev.arremessos_convertidos, prev.arremessos_tentados + valor);
         } else {
@@ -198,7 +282,6 @@ export default function Stats() {
     try {
       const payload = { ...form };
       if (!showAvancado) {
-        // Limpar avançados caso não seja modo avançado
         payload.lance_livre_tentados = 0;
         payload.lance_livre_convertidos = 0;
         payload.dois_pontos_tentados = 0;
@@ -214,7 +297,7 @@ export default function Stats() {
       setShowRegistrar(false);
       setForm(formInicial);
       setShowAvancado(false);
-      loadStats();
+      loadAllStats();
     } catch (e) {
       console.error(e);
       showToast('Erro ao salvar partida.', 'error');
@@ -224,306 +307,439 @@ export default function Stats() {
   }
 
   async function handleExcluir(id) {
-    if (!window.confirm('Deseja excluir esta partida permanentemente?')) return;
+    if (!window.confirm('Deseja excluir esta partida permanentemente do histórico pessoal?')) return;
     try {
       const { error } = await estatisticasPessoaisAPI.excluir(id);
       if (error) throw error;
       showToast('Partida excluída!', 'success');
-      loadStats();
+      loadAllStats();
     } catch (e) {
       console.error(e);
       showToast('Erro ao excluir partida.', 'error');
     }
   }
 
-  const formatData = (dateStr) => {
-    if (!dateStr) return '';
-    const parts = dateStr.split('-');
-    if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    return dateStr;
-  };
+  // Cálculos de médias oficiais/carreira
+  const totalGamesNum = careerStats.games || 0;
+  const ppj = totalGamesNum > 0 ? (careerStats.points / totalGamesNum).toFixed(1) : '0.0';
+  const reb = totalGamesNum > 0 ? (careerStats.rebounds / totalGamesNum).toFixed(1) : '0.0';
+  const ast = totalGamesNum > 0 ? (careerStats.assists / totalGamesNum).toFixed(1) : '0.0';
+  const stl = totalGamesNum > 0 ? (careerStats.steals / totalGamesNum).toFixed(1) : '0.0';
+  const blk = totalGamesNum > 0 ? (careerStats.blocks / totalGamesNum).toFixed(1) : '0.0';
 
-  const getPercent = (conv, tent) => {
-    if (!tent || tent === 0) return '0,0%';
-    return `${((conv / tent) * 100).toFixed(1).replace('.', ',')}%`;
-  };
+  const starsVal = myPlayerInfo?.media_estrelas || 0;
+  const badgeText = starsVal >= 4.5 ? 'ELITE' : starsVal >= 4.0 ? 'DESTAQUE' : starsVal >= 3.5 ? 'PROMESSA' : 'EM DEV.';
+
+  let evolutionIndex = 0;
+  if (starsVal >= 4.5) {
+    evolutionIndex = 3;
+  } else if (starsVal >= 4.0) {
+    evolutionIndex = 2;
+  } else if (starsVal >= 3.0) {
+    evolutionIndex = 1;
+  }
+
+  if (loading) {
+    return (
+      <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+        <div className="spinner" />
+      </div>
+    );
+  }
 
   return (
-    <div className="page-content">
+    <div className="page-content" style={{ background: '#080F1A' }}>
       <div style={{ padding: '20px 20px 0' }}>
         
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            </div>
-            <div>
-              <h2 style={{ fontWeight: 800, fontSize: 20 }}>Minhas Estatísticas</h2>
-              <p style={{ color: '#64748b', fontSize: 13 }}>Acompanhamento individual privado</p>
-            </div>
-          </div>
-          <button className="btn btn-primary btn-sm" onClick={() => setShowRegistrar(true)}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Registrar Partida
+        {/* Cabeçalho Voltar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+          <button 
+            onClick={() => onNavigate('inicio')} 
+            style={{ background: 'none', border: 'none', color: '#60A5FA', cursor: 'pointer', display: 'flex', alignItems: 'center', fontSize: '13px', fontWeight: 700, padding: 0, fontFamily: 'inherit' }}
+          >
+            ← Início
           </button>
         </div>
 
-        {/* Tabs */}
-        <div className="tabs" style={{ marginBottom: 16 }}>
-          <button className={`tab ${aba === 'resumo' ? 'active' : ''}`} onClick={() => setAba('resumo')}>Resumo</button>
-          <button className={`tab ${aba === 'historico' ? 'active' : ''}`} onClick={() => setAba('historico')}>Histórico</button>
+        {/* Fundo de Imagem com Fade */}
+        <div style={{
+          position: 'relative',
+          width: '100%',
+          height: '210px',
+          borderRadius: '16px',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'flex-end',
+          background: '#0D1527',
+          border: '1px solid rgba(255,255,255,0.06)',
+          marginBottom: 16
+        }}>
+          {profile.foto_perfil ? (
+            <img 
+              src={profile.foto_perfil} 
+              alt={profile.nome_completo} 
+              style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0, opacity: 0.7 }}
+            />
+          ) : (
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #1A233D 0%, #0D1527 100%)', opacity: 0.5 }} />
+          )}
+
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'linear-gradient(to top, #111827 0%, rgba(17, 24, 39, 0) 100%)',
+            zIndex: 1
+          }} />
+
+          <div style={{ zIndex: 2, padding: '16px', width: '100%' }}>
+            <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#F8FAFC', marginBottom: 2 }}>{profile.nome_completo}</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+              <span style={{
+                background: 'rgba(37, 99, 235, 0.2)',
+                color: '#60A5FA',
+                border: '1px solid rgba(37, 99, 235, 0.4)',
+                borderRadius: '6px',
+                padding: '2px 8px',
+                fontSize: '9px',
+                fontWeight: 800,
+                letterSpacing: '0.02em'
+              }}>
+                {badgeText}
+              </span>
+              <span style={{ color: '#94A3B8', fontSize: '11px' }}>{myPlayerInfo?.posicao || 'Ala'}</span>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <span style={{ fontSize: '22px', fontWeight: 900, color: '#F97316', fontFamily: 'monospace' }}>
+                  {starsVal > 0 ? Number(starsVal).toFixed(1) : '0.0'}
+                </span>
+                <span style={{ color: '#F97316', fontSize: '15px' }}>★</span>
+                <span style={{ color: '#94A3B8', fontSize: '11px', marginLeft: 4 }}>Nota média</span>
+              </div>
+              <div style={{ fontSize: '11px', color: '#94A3B8' }}>
+                📍 {myRank !== '--' ? `${myRank} ` : ''}{city} - {uf}
+              </div>
+            </div>
+          </div>
         </div>
 
-        {loading ? (
-          <div className="loading"><div className="spinner" /> Carregando estatísticas...</div>
-        ) : historico.length === 0 ? (
-          <div className="empty-state">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            <h3>Nenhuma partida registrada</h3>
-            <p>Seus dados são privados e não afetam os rankings locais da cidade.</p>
-            <button className="btn btn-primary" onClick={() => setShowRegistrar(true)} style={{ marginTop: 14 }}>
-              Registrar Primeira Partida
-            </button>
+        {/* Linha de Médias de Quadra */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 1fr)',
+          gap: 8,
+          background: '#111827',
+          padding: '12px 6px',
+          borderRadius: '12px',
+          border: '1px solid rgba(255,255,255,0.06)',
+          textAlign: 'center',
+          marginBottom: 16
+        }}>
+          {[
+            { label: 'PPJ', val: ppj },
+            { label: 'REB', val: reb },
+            { label: 'AST', val: ast },
+            { label: 'STL', val: stl },
+            { label: 'BLK', val: blk },
+          ].map(item => (
+            <div key={item.label}>
+              <div style={{ fontSize: '16px', fontWeight: 800, color: '#F8FAFC' }}>{item.val}</div>
+              <div style={{ fontSize: '9px', color: '#64748B', fontWeight: 600, marginTop: 2 }}>{item.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Linha de Evolução */}
+        <div className="card" style={{ background: '#111827', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '14px 16px', marginBottom: 16 }}>
+          <div style={{ fontSize: '9px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+            LINHA DE EVOLUÇÃO
           </div>
-        ) : (
-          <>
-            {aba === 'resumo' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingBottom: 24 }}>
-                
-                {/* Destaque Qtd Jogos */}
-                <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'var(--bg-elevated)' }}>
-                  <div style={{ fontSize: 28 }}>🏀</div>
-                  <div>
-                    <h3 style={{ fontSize: 20, fontWeight: 900 }}>{historico.length} Jogos</h3>
-                    <p style={{ fontSize: 12, color: '#64748b' }}>Partidas registradas no histórico pessoal</p>
-                  </div>
+          <div className="evolution-timeline" style={{ margin: '18px 0 6px' }}>
+            <div className="evolution-progress-line" style={{ width: `${evolutionIndex * 33.3}%` }} />
+            {[
+              { label: 'Rookie', year: '2023', val: 0 },
+              { label: 'Promessa', year: '2024', val: 1 },
+              { label: 'Elite', year: '2025', val: 2 },
+              { label: 'MVP', year: '2026', val: 3 },
+            ].map(step => (
+              <div key={step.label} className={`evolution-step ${evolutionIndex >= step.val ? 'completed' : ''} ${evolutionIndex === step.val ? 'active' : ''}`}>
+                <div className="evolution-dot" style={{ width: '22px', height: '22px', fontSize: '9px' }}>
+                  {step.val === 3 ? '★' : step.val + 1}
                 </div>
+                <div className="evolution-label" style={{ fontSize: '8px', marginTop: 4 }}>{step.label}</div>
+                <div className="evolution-year" style={{ fontSize: '7px' }}>{step.year}</div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-                {/* Médias por Jogo */}
-                <div>
-                  <div className="section-title" style={{ marginBottom: 8 }}>Médias por Jogo</div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-                    {[
-                      { l: 'Pontos', v: medias?.pontos, c: '#f59e0b' },
-                      { l: 'Rebotes', v: medias?.rebotes, c: '#60a5fa' },
-                      { l: 'Assists', v: medias?.assistencias, c: '#10b981' },
-                      { l: 'Roubos', v: medias?.roubos, c: '#818cf8' },
-                      { l: 'Tocos', v: medias?.tocos, c: '#a78bfa' },
-                      { l: 'Perdas', v: medias?.perdas, c: '#f87171' },
-                    ].map(item => (
-                      <div key={item.l} className="card" style={{ textAlign: 'center', padding: '12px 6px' }}>
-                        <div style={{ fontSize: 18, fontWeight: 900, color: item.c }}>{item.v}</div>
-                        <div style={{ fontSize: 10, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginTop: 2 }}>{item.l}</div>
+        {/* Tab Bar interna */}
+        <div style={{
+          display: 'flex',
+          background: '#0D1527',
+          borderRadius: '8px',
+          padding: '3px',
+          gap: 2,
+          marginBottom: 16
+        }}>
+          {[
+            { key: 'sobre', label: 'SOBRE' },
+            { key: 'estatisticas', label: 'ESTATÍSTICAS' },
+            { key: 'historico', label: 'HISTÓRICO' }
+          ].map(t => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setAba(t.key)}
+              style={{
+                flex: 1,
+                padding: '8px 4px',
+                borderRadius: '6px',
+                border: 'none',
+                background: aba === t.key ? '#1A233D' : 'none',
+                color: aba === t.key ? '#F8FAFC' : '#64748B',
+                fontSize: '11px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                fontFamily: 'inherit'
+              }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Conteúdo das Tabs */}
+        <div style={{ minHeight: '140px', paddingBottom: 24 }}>
+          {aba === 'sobre' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: '13px' }}>
+              {[
+                { label: 'Cidade', val: `${city} - ${uf}` },
+                { label: 'Idade', val: profile?.idade ? `${profile.idade} anos` : 'A definir' },
+                { label: 'Altura', val: profile?.altura ? `${Number(profile.altura).toFixed(2)} m` : 'A definir' },
+                { label: 'Posição', val: myPlayerInfo?.posicao || 'Ala' },
+                { label: 'Equipe', val: myPlayerInfo?.equipe || `${city} Hoops` },
+              ].map(item => (
+                <div key={item.label} style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', paddingBottom: 6, borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                  <span style={{ color: '#94A3B8' }}>{item.label}</span>
+                  <span style={{ fontWeight: 600, color: '#F8FAFC' }}>{item.val}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {aba === 'estatisticas' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Avaliações Públicas */}
+              <div>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#60A5FA', letterSpacing: '0.02em', marginBottom: 10 }}>AVALIAÇÕES PÚBLICAS DA QUADRA</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {fundamentos.map(f => {
+                    const mediaAspecto = myPlayerInfo ? myPlayerInfo[`media_${f.key}`] || 0 : 0;
+                    return (
+                      <div key={f.key}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: 4 }}>
+                          <span style={{ fontWeight: 600, color: '#F8FAFC' }}>{f.label}</span>
+                          <span style={{ color: '#60A5FA', fontWeight: 700 }}>
+                            {myPlayerInfo?.total_votos >= 1 ? `★ ${Number(mediaAspecto).toFixed(1)}` : '--'}
+                          </span>
+                        </div>
+                        <div className="progress-bar" style={{ height: '4px', background: '#0D1527' }}>
+                          <div 
+                            className="progress-fill bar-grow-fill" 
+                            style={{ width: myPlayerInfo?.total_votos >= 1 ? `${(mediaAspecto / 5) * 100}%` : '0%', background: '#2563EB' }} 
+                          />
+                        </div>
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
+              </div>
 
-                {/* Totais Acumulados */}
-                <div className="card">
-                  <div className="section-title" style={{ marginBottom: 12 }}>Totais Acumulados</div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
-                    {[
-                      { l: 'Pontos', v: totais?.pontos },
-                      { l: 'Rebotes', v: totais?.rebotes },
-                      { l: 'Assists', v: totais?.assistencias },
-                      { l: 'Roubos', v: totais?.roubos },
-                      { l: 'Tocos', v: totais?.tocos },
-                      { l: 'Turnovers', v: totais?.perdas },
-                    ].map(item => (
-                      <div key={item.l}>
-                        <div style={{ fontSize: 11, color: '#64748b' }}>{item.l}</div>
-                        <div style={{ fontSize: 16, fontWeight: 800 }}>{item.v}</div>
-                      </div>
-                    ))}
-                  </div>
+              {/* Registro Privado */}
+              <div className="card" style={{ background: '#111827', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '12px', padding: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#F97316' }}>ESTATÍSTICAS PRIVADAS (JOGOS DA NOITE)</span>
+                  <span style={{ fontSize: '12px', fontWeight: 700 }}>{historicoPrivado.length} jogos</span>
                 </div>
+                <p style={{ fontSize: '11px', color: '#94A3B8', marginBottom: 14 }}>
+                  Registre seus números de forma privada. Esses dados não afetam os rankings e servem para seu controle pessoal.
+                </p>
 
-                {/* Aproveitamento de Arremessos */}
-                <div className="card">
-                  <div className="section-title" style={{ marginBottom: 12 }}>Aproveitamento de Arremessos</div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Aproveitamento Geral</span>
-                    <span style={{ fontSize: 20, fontWeight: 900, color: '#60a5fa' }}>{medias?.aproveitamento}%</span>
-                  </div>
-                  <div className="progress-bar" style={{ height: 8 }}>
-                    <div className="progress-fill blue bar-grow-fill" style={{ width: `${(totais?.arremessos_convertidos / (totais?.arremessos_tentados || 1)) * 100}%` }} />
-                  </div>
-                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 4 }}>
-                    {totais?.arremessos_convertidos} convertidos / {totais?.arremessos_tentados} tentados
-                  </div>
-
-                  {/* Detalhados avançados se usados */}
-                  {totais && (totais.lf_tentados > 0 || totais.dois_tentados > 0 || totais.tres_tentados > 0) && (
-                    <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                      {totais.lf_tentados > 0 && (
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 2 }}>
-                            <span>Lances Livres</span>
-                            <span style={{ fontWeight: 700 }}>{getPercent(totais.lf_convertidos, totais.lf_tentados)}</span>
-                          </div>
-                          <div style={{ fontSize: 11, color: '#64748b' }}>{totais.lf_convertidos}/{totais.lf_tentados} convertidos</div>
-                        </div>
-                      )}
-                      {totais.dois_tentados > 0 && (
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 2 }}>
-                            <span>Arremessos de 2 Pontos</span>
-                            <span style={{ fontWeight: 700 }}>{getPercent(totais.dois_convertidos, totais.dois_tentados)}</span>
-                          </div>
-                          <div style={{ fontSize: 11, color: '#64748b' }}>{totais.dois_convertidos}/{totais.dois_tentados} convertidos</div>
-                        </div>
-                      )}
-                      {totais.tres_tentados > 0 && (
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 2 }}>
-                            <span>Arremessos de 3 Pontos</span>
-                            <span style={{ fontWeight: 700 }}>{getPercent(totais.tres_convertidos, totais.tres_tentados)}</span>
-                          </div>
-                          <div style={{ fontSize: 11, color: '#64748b' }}>{totais.tres_convertidos}/{totais.tres_tentados} convertidos</div>
-                        </div>
-                      )}
+                {mediasPrivadas ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 14, textAlign: 'center' }}>
+                    <div style={{ background: '#0D1527', padding: '8px 4px', borderRadius: '6px' }}>
+                      <div style={{ fontSize: '14px', fontWeight: 800, color: '#F97316' }}>{mediasPrivadas.pontos}</div>
+                      <div style={{ fontSize: '9px', color: '#64748B' }}>PPJ</div>
                     </div>
+                    <div style={{ background: '#0D1527', padding: '8px 4px', borderRadius: '6px' }}>
+                      <div style={{ fontSize: '14px', fontWeight: 800, color: '#F8FAFC' }}>{mediasPrivadas.rebotes}</div>
+                      <div style={{ fontSize: '9px', color: '#64748B' }}>REB</div>
+                    </div>
+                    <div style={{ background: '#0D1527', padding: '8px 4px', borderRadius: '6px' }}>
+                      <div style={{ fontSize: '14px', fontWeight: 800, color: '#F8FAFC' }}>{mediasPrivadas.assistencias}</div>
+                      <div style={{ fontSize: '9px', color: '#64748B' }}>AST</div>
+                    </div>
+                  </div>
+                ) : null}
+
+                <button className="btn btn-primary btn-sm" onClick={() => setShowRegistrar(true)} style={{ background: '#F97316', color: '#080F1A', border: 'none', width: '100%', fontSize: '12px' }}>
+                  ➕ Registrar Partida Pessoal
+                </button>
+              </div>
+            </div>
+          )}
+
+          {aba === 'historico' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              
+              {/* Seletor de Tipo de Histórico */}
+              <div style={{ display: 'flex', gap: 6, marginBottom: 4 }}>
+                <button
+                  onClick={() => setSubAbaHistorico('pessoal')}
+                  style={{
+                    background: subAbaHistorico === 'pessoal' ? 'rgba(37,99,235,0.1)' : 'none',
+                    border: subAbaHistorico === 'pessoal' ? '1px solid rgba(37,99,235,0.2)' : '1px solid transparent',
+                    borderRadius: '20px',
+                    padding: '4px 12px',
+                    fontSize: '11px',
+                    color: subAbaHistorico === 'pessoal' ? '#60A5FA' : '#64748B',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit'
+                  }}
+                >
+                  Pessoal (Privado)
+                </button>
+                <button
+                  onClick={() => setSubAbaHistorico('quadra')}
+                  style={{
+                    background: subAbaHistorico === 'quadra' ? 'rgba(37,99,235,0.1)' : 'none',
+                    border: subAbaHistorico === 'quadra' ? '1px solid rgba(37,99,235,0.2)' : '1px solid transparent',
+                    borderRadius: '20px',
+                    padding: '4px 12px',
+                    fontSize: '11px',
+                    color: subAbaHistorico === 'quadra' ? '#60A5FA' : '#64748B',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit'
+                  }}
+                >
+                  Oficial (Quadra)
+                </button>
+              </div>
+
+              {subAbaHistorico === 'pessoal' ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {historicoPrivado.length === 0 ? (
+                    <div style={{ fontSize: '12px', color: '#64748B', textAlign: 'center', padding: '20px 0' }}>
+                      Nenhuma partida registrada no seu histórico pessoal privado.
+                    </div>
+                  ) : (
+                    historicoPrivado.map(h => (
+                      <div key={h.id} style={{
+                        background: '#111827',
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(255,255,255,0.03)',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        position: 'relative'
+                      }}>
+                        <div>
+                          <div style={{ fontSize: '12px', fontWeight: 700, color: '#F8FAFC' }}>
+                            {h.pontos} pts | {h.rebotes} reb | {h.assistencias} ast
+                          </div>
+                          <div style={{ fontSize: '10px', color: '#64748B', marginTop: 2 }}>
+                            {new Date(h.data_partida + 'T00:00:00').toLocaleDateString('pt-BR')}
+                            {h.nome_jogador && ` • ${h.nome_jogador}`}
+                          </div>
+                        </div>
+
+                        <button 
+                          onClick={() => handleExcluir(h.id)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#EF4444',
+                            cursor: 'pointer',
+                            padding: 6,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))
                   )}
                 </div>
-
-                {/* Melhor Jogo da Carreira */}
-                {melhorJogo && (
-                  <div className="card" style={{ background: 'var(--bg-elevated)', border: '1px solid rgba(245,158,11,0.2)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                      <span style={{ fontSize: 20 }}>🏆</span>
-                      <div>
-                        <div style={{ fontSize: 12, color: '#f59e0b', fontWeight: 700, letterSpacing: '0.05em' }}>
-                          MELHOR PARTIDA {melhorJogo.nome_jogador ? `(${melhorJogo.nome_jogador})` : ''}
-                        </div>
-                        <div style={{ fontSize: 11, color: '#64748b' }}>Registrado em {formatData(melhorJogo.data_partida)}</div>
-                      </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {historicoQuadra.length === 0 ? (
+                    <div style={{ fontSize: '12px', color: '#64748B', textAlign: 'center', padding: '20px 0' }}>
+                      Nenhuma partida finalizada jogada em quadras oficiais.
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-                      <div>
-                        <div style={{ fontSize: 22, fontWeight: 900, color: '#f59e0b' }}>{melhorJogo.pontos}</div>
-                        <div style={{ fontSize: 11, color: '#64748b' }}>Pontos</div>
-                      </div>
-                      <div>
-                        <div style={{ fontSize: 22, fontWeight: 900, color: '#60a5fa' }}>{melhorJogo.rebotes}</div>
-                        <div style={{ fontSize: 11, color: '#64748b' }}>Rebotes</div>
-                      </div>
-                      <div>
-                        <div style={{ fontSize: 22, fontWeight: 900, color: '#10b981' }}>{melhorJogo.assistencias}</div>
-                        <div style={{ fontSize: 11, color: '#64748b' }}>Assists</div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Últimos Jogos */}
-                <div>
-                  <div className="section-title" style={{ marginBottom: 10 }}>Últimos Jogos</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {historico.slice(0, 5).map(h => (
-                      <div key={h.id} className="card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                          <span style={{ fontSize: 16 }}>🏀</span>
-                          <div>
-                            {h.nome_jogador && <div style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 600 }}>{h.nome_jogador}</div>}
-                            <span style={{ fontWeight: 700, fontSize: 14 }}>
-                              {h.pontos} pts | {h.rebotes} reb | {h.assistencias} ast
-                            </span>
-                          </div>
-                        </div>
-                        <span style={{ fontSize: 11, color: '#64748b' }}>{formatData(h.data_partida)}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-            )}
-
-            {aba === 'historico' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 24 }}>
-                {historico.map(h => (
-                  <div key={h.id} className="card" style={{ position: 'relative' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, paddingRight: 24 }}>
-                      <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{h.nome_jogador || 'Partida Pessoal'}</div>
-                      <div style={{ fontSize: 12, color: '#64748b' }}>{formatData(h.data_partida)}</div>
-                    </div>
-                    
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8, marginBottom: 10 }}>
-                      {[
-                        ['PTS', h.pontos],
-                        ['REB', h.rebotes],
-                        ['AST', h.assistencias],
-                        ['ARR', getPercent(h.arremessos_convertidos, h.arremessos_tentados)]
-                      ].map(([k, v]) => (
-                        <div key={k}>
-                          <div style={{ fontSize: 16, fontWeight: 900, color: '#60a5fa' }}>{v}</div>
-                          <div style={{ fontSize: 10, color: '#64748b', fontWeight: 600 }}>{k}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 11, color: '#64748b', borderTop: '1px solid var(--border)', paddingTop: 6 }}>
-                      <span>Roubos: {h.roubos_bola}</span> • 
-                      <span>Tocos: {h.tocos}</span> • 
-                      <span>Erros: {h.perdas_bola}</span>
-                      {h.lance_livre_tentados > 0 && (
-                        <> • <span>LL: {h.lance_livre_convertidos}/{h.lance_livre_tentados}</span></>
-                      )}
-                      {h.dois_pontos_tentados > 0 && (
-                        <> • <span>2PT: {h.dois_pontos_convertidos}/{h.dois_pontos_tentados}</span></>
-                      )}
-                      {h.tres_pontos_tentados > 0 && (
-                        <> • <span>3PT: {h.tres_pontos_convertidos}/{h.tres_pontos_tentados}</span></>
-                      )}
-                    </div>
-
-                    {/* Botão de Excluir */}
-                    <button
-                      onClick={() => handleExcluir(h.id)}
-                      style={{
-                        position: 'absolute',
-                        top: 10,
-                        right: 10,
-                        background: 'none',
-                        border: 'none',
-                        color: '#f87171',
-                        cursor: 'pointer',
-                        padding: 4,
+                  ) : (
+                    historicoQuadra.map(h => (
+                      <div key={h.id} style={{
+                        background: '#111827',
+                        padding: '10px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(255,255,255,0.03)',
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}
-                      title="Excluir partida"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}>
+                        <div>
+                          <div style={{ fontSize: '12px', fontWeight: 700, color: '#F8FAFC' }}>
+                            {h.timeA} {h.placarA} x {h.placarB} {h.timeB}
+                          </div>
+                          <span style={{ fontSize: '10px', color: '#64748B' }}>
+                            {new Date(h.data).toLocaleDateString('pt-BR')}
+                          </span>
+                        </div>
+                        <span style={{
+                          fontSize: '10px',
+                          fontWeight: 800,
+                          color: h.vencedor === 'Ganhou' ? '#10B981' : '#EF4444',
+                          background: h.vencedor === 'Ganhou' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+                          padding: '2px 6px',
+                          borderRadius: '4px'
+                        }}>
+                          {h.vencedor.toUpperCase()}
+                        </span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
       </div>
 
-      {/* Modal Registrar Partida (Contadores) */}
+      {/* Modal Registrar Partida Pessoal */}
       {showRegistrar && (
-        <div className="modal-overlay" onClick={() => { if (!salvando) setShowRegistrar(false); }}>
+        <div className="modal-overlay" onClick={() => { if (!salvando) setShowRegistrar(false); }} style={{ zIndex: 1000 }}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440, maxHeight: '85vh', overflowY: 'auto' }}>
             <div className="modal-handle" />
             <h3 style={{ fontWeight: 900, fontSize: 20, marginBottom: 4 }}>🏀 Nova Partida</h3>
-            <p style={{ color: '#64748b', fontSize: 12, marginBottom: 16 }}>Grave seus números. Esses dados são privados e não afetam os rankings.</p>
+            <p style={{ color: '#64748b', fontSize: 12, marginBottom: 16 }}>Grave seus números de forma privada.</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome do Jogador</label>
+                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome do Evento / Oponente</label>
                 <input
                   type="text"
                   value={form.nome_jogador || ''}
                   onChange={e => setForm(p => ({ ...p, nome_jogador: e.target.value }))}
-                  placeholder="Ex: Seu Nome, Apelido ou Adversário"
+                  placeholder="Ex: Treino Noite, Adversário..."
                 />
               </div>
 
@@ -536,7 +752,6 @@ export default function Stats() {
                 />
               </div>
 
-              {/* Botão toggle para estatísticas avançadas */}
               <button
                 type="button"
                 className="btn btn-secondary btn-sm"
@@ -544,7 +759,6 @@ export default function Stats() {
                   setShowAvancado(!showAvancado);
                   setForm(prev => ({
                     ...prev,
-                    // Ao abrir ou fechar, inicializa os campos avançados
                     lance_livre_tentados: 0,
                     lance_livre_convertidos: 0,
                     dois_pontos_tentados: 0,
@@ -555,55 +769,32 @@ export default function Stats() {
                 }}
                 style={{ alignSelf: 'flex-start', margin: '4px 0', fontSize: 11 }}
               >
-                {showAvancado ? '← Ocultar Estatísticas Avançadas' : '⚡ Mostrar Estatísticas Avançadas'}
+                {showAvancado ? '← Ocultar Avançados' : '⚡ Mostrar Avançados'}
               </button>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                {/* Seções de contadores */}
                 {showAvancado ? (
                   <>
-                    {/* Contadores Avançados */}
                     {[
                       { l: 'Lances Livres Convertidos', k: 'lance_livre_convertidos' },
                       { l: 'Lances Livres Tentados', k: 'lance_livre_tentados' },
-                      { l: 'Arremessos de 2 Pts Convertidos', k: 'dois_pontos_convertidos' },
-                      { l: 'Arremessos de 2 Pts Tentados', k: 'dois_pontos_tentados' },
-                      { l: 'Arremessos de 3 Pts Convertidos', k: 'tres_pontos_convertidos' },
-                      { l: 'Arremessos de 3 Pts Tentados', k: 'tres_pontos_tentados' },
+                      { l: '2 Pts Convertidos', k: 'dois_pontos_convertidos' },
+                      { l: '2 Pts Tentados', k: 'dois_pontos_tentados' },
+                      { l: '3 Pts Convertidos', k: 'tres_pontos_convertidos' },
+                      { l: '3 Pts Tentados', k: 'tres_pontos_tentados' },
                     ].map(item => (
                       <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{item.l}</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <button
-                            type="button"
-                            onClick={() => ajustarCampo(item.k, -1)}
-                            className="btn btn-secondary"
-                            style={{ width: 28, height: 28, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, fontSize: 16, fontWeight: 700 }}
-                          >
-                            -
-                          </button>
+                          <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 28, height: 28, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, fontSize: 16 }}>-</button>
                           <span style={{ fontWeight: 800, fontSize: 14, minWidth: 20, textAlign: 'center' }}>{form[item.k]}</span>
-                          <button
-                            type="button"
-                            onClick={() => ajustarCampo(item.k, 1)}
-                            className="btn btn-secondary"
-                            style={{ width: 28, height: 28, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, fontSize: 16, fontWeight: 700 }}
-                          >
-                            +
-                          </button>
+                          <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 28, height: 28, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, fontSize: 16 }}>+</button>
                         </div>
                       </div>
                     ))}
-                    
-                    {/* Visualização de calculados em avançado */}
-                    <div style={{ background: 'var(--bg-secondary)', padding: '10px 14px', borderRadius: 8, marginTop: 6, display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-secondary)' }}>
-                      <span>Pontos Calculados: <strong>{form.pontos}</strong></span>
-                      <span>Arremessos de Quadra: <strong>{form.arremessos_convertidos}/{form.arremessos_tentados}</strong></span>
-                    </div>
                   </>
                 ) : (
                   <>
-                    {/* Contadores Básicos */}
                     {[
                       { l: 'Pontos', k: 'pontos' },
                       { l: 'Arremessos Convertidos', k: 'arremessos_convertidos' },
@@ -612,30 +803,15 @@ export default function Stats() {
                       <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
                         <span style={{ fontSize: 14, fontWeight: 600 }}>{item.l}</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <button
-                            type="button"
-                            onClick={() => ajustarCampo(item.k, -1)}
-                            className="btn btn-secondary"
-                            style={{ width: 32, height: 32, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 18, fontWeight: 700 }}
-                          >
-                            -
-                          </button>
+                          <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 32, height: 32, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 18 }}>-</button>
                           <span style={{ fontWeight: 800, fontSize: 15, minWidth: 24, textAlign: 'center' }}>{form[item.k]}</span>
-                          <button
-                            type="button"
-                            onClick={() => ajustarCampo(item.k, 1)}
-                            className="btn btn-secondary"
-                            style={{ width: 32, height: 32, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 18, fontWeight: 700 }}
-                          >
-                            +
-                          </button>
+                          <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 32, height: 32, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 18 }}>+</button>
                         </div>
                       </div>
                     ))}
                   </>
                 )}
 
-                {/* Fundamentos Comuns */}
                 {[
                   { l: 'Rebotes', k: 'rebotes' },
                   { l: 'Assistências', k: 'assistencias' },
@@ -646,34 +822,19 @@ export default function Stats() {
                   <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
                     <span style={{ fontSize: 14, fontWeight: 600 }}>{item.l}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <button
-                        type="button"
-                        onClick={() => ajustarCampo(item.k, -1)}
-                        className="btn btn-secondary"
-                        style={{ width: 32, height: 32, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 18, fontWeight: 700 }}
-                      >
-                        -
-                      </button>
+                      <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 32, height: 32, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 18 }}>-</button>
                       <span style={{ fontWeight: 800, fontSize: 15, minWidth: 24, textAlign: 'center' }}>{form[item.k]}</span>
-                      <button
-                        type="button"
-                        onClick={() => ajustarCampo(item.k, 1)}
-                        className="btn btn-secondary"
-                        style={{ width: 32, height: 32, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 18, fontWeight: 700 }}
-                      >
-                        +
-                      </button>
+                      <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 32, height: 32, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 8, fontSize: 18 }}>+</button>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Ações */}
             <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
               <button className="btn btn-secondary" onClick={() => setShowRegistrar(false)} style={{ flex: 1 }} disabled={salvando}>Cancelar</button>
-              <button className="btn btn-primary" onClick={handleSalvar} disabled={salvando} style={{ flex: 2 }}>
-                {salvando ? <><div className="spinner" /> Salvando...</> : 'Salvar Partida'}
+              <button className="btn btn-primary" onClick={handleSalvar} disabled={salvando} style={{ flex: 2, background: '#2563EB' }}>
+                {salvando ? 'Salvando...' : 'Salvar Partida'}
               </button>
             </div>
           </div>
