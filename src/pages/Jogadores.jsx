@@ -4,10 +4,69 @@ import PlayerProfileModal from '../components/PlayerProfileModal';
 
 function renderBadge(media, totalVotos) {
   if (!totalVotos || totalVotos < 1) return null;
-  if (media >= 4.5) return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(245,158,11,0.15)', color: '#f59e0b', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>🏆 Elite</span>;
-  if (media >= 4.0) return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(96,165,250,0.15)', color: '#60a5fa', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>⭐ Destaque</span>;
-  if (media >= 3.5) return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(16,185,129,0.15)', color: '#10b981', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>📈 Promessa</span>;
-  return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(148,163,184,0.15)', color: '#94a3b8', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>🔄 Em Des.</span>;
+  if (media >= 4.5) return <span className="badge-elite" style={{ marginLeft: 6 }}>🏆 Elite</span>;
+  if (media >= 4.0) return <span className="badge-destaque" style={{ marginLeft: 6 }}>⭐ Destaque</span>;
+  if (media >= 3.5) return <span className="badge-promessa" style={{ marginLeft: 6 }}>📈 Promessa</span>;
+  return <span className="badge-desenvolvimento" style={{ marginLeft: 6 }}>🔄 Em Des.</span>;
+}
+
+function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = false }) {
+  const initial = nome ? nome.charAt(0).toUpperCase() : '?';
+  
+  const getGradientForName = (name) => {
+    const colors = [
+      ['#3b82f6', '#1d4ed8'], // Blue
+      ['#f59e0b', '#d97706'], // Gold
+      ['#10b981', '#047857'], // Emerald
+      ['#8b5cf6', '#6d28d9'], // Violet
+      ['#ec4899', '#be185d'], // Pink
+      ['#f43f5e', '#be123c'], // Rose
+      ['#06b6d4', '#0891b2'], // Cyan
+    ];
+    let hash = 0;
+    for (let i = 0; i < (name || '').length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % colors.length;
+    return `linear-gradient(135deg, ${colors[index][0]} 0%, ${colors[index][1]} 100%)`;
+  };
+
+  const avatarStyle = {
+    width: size,
+    height: size,
+    borderRadius: '50%',
+    objectFit: 'cover',
+    border: border,
+    flexShrink: 0
+  };
+
+  if (fotoUrl) {
+    return (
+      <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
+        {hasCrown && <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
+        <img src={fotoUrl} alt={nome} style={avatarStyle} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
+      {hasCrown && <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
+      <div style={{
+        ...avatarStyle,
+        background: getGradientForName(nome),
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#ffffff',
+        fontWeight: 800,
+        fontSize: size * 0.44,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+      }}>
+        {initial}
+      </div>
+    </div>
+  );
 }
 
 export default function Jogadores({ profile }) {
@@ -16,8 +75,6 @@ export default function Jogadores({ profile }) {
   const [busca, setBusca] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-
-  const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
 
   useEffect(() => {
     loadJogadores();
@@ -59,8 +116,6 @@ export default function Jogadores({ profile }) {
     setFiltrados(data || []);
     setLoading(false);
   }
-
-  const getInitial = (nome) => nome ? nome.charAt(0).toUpperCase() : '?';
 
 
   return (
@@ -106,12 +161,7 @@ export default function Jogadores({ profile }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 20 }}>
             {filtrados.map(j => (
               <div key={j.id} className="card" onClick={() => setSelectedPlayer(j)} style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}>
-                <div className="avatar" style={{ position: 'relative' }}>
-                  {getInitial(j.nome)}
-                  {j.atual_campeao && (
-                    <div style={{ position: 'absolute', top: -6, right: -6, fontSize: 14 }}>👑</div>
-                  )}
-                </div>
+                <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={40} hasCrown={j.atual_campeao} />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                     {j.nome}

@@ -11,6 +11,65 @@ function StarRating({ value }) {
   );
 }
 
+function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = false }) {
+  const initial = nome ? nome.charAt(0).toUpperCase() : '?';
+  
+  const getGradientForName = (name) => {
+    const colors = [
+      ['#3b82f6', '#1d4ed8'], // Blue
+      ['#f59e0b', '#d97706'], // Gold
+      ['#10b981', '#047857'], // Emerald
+      ['#8b5cf6', '#6d28d9'], // Violet
+      ['#ec4899', '#be185d'], // Pink
+      ['#f43f5e', '#be123c'], // Rose
+      ['#06b6d4', '#0891b2'], // Cyan
+    ];
+    let hash = 0;
+    for (let i = 0; i < (name || '').length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const index = Math.abs(hash) % colors.length;
+    return `linear-gradient(135deg, ${colors[index][0]} 0%, ${colors[index][1]} 100%)`;
+  };
+
+  const avatarStyle = {
+    width: size,
+    height: size,
+    borderRadius: '50%',
+    objectFit: 'cover',
+    border: border,
+    flexShrink: 0
+  };
+
+  if (fotoUrl) {
+    return (
+      <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
+        {hasCrown && <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
+        <img src={fotoUrl} alt={nome} style={avatarStyle} />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
+      {hasCrown && <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
+      <div style={{
+        ...avatarStyle,
+        background: getGradientForName(nome),
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#ffffff',
+        fontWeight: 800,
+        fontSize: size * 0.44,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+      }}>
+        {initial}
+      </div>
+    </div>
+  );
+}
+
 export default function Home({ profile, onNavigate }) {
   const [stats, setStats] = useState({ jogadores: 0, avaliados: 0 });
   const [lider, setLider] = useState(null);
@@ -62,8 +121,6 @@ export default function Home({ profile, onNavigate }) {
     }
     setLoading(false);
   }
-
-  const getInitial = (nome) => nome ? nome.charAt(0).toUpperCase() : '?';
 
   if (loading) {
     return (
@@ -139,13 +196,7 @@ export default function Home({ profile, onNavigate }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               {/* Avatar com badge de 1º */}
               <div style={{ position: 'relative', flexShrink: 0 }}>
-                {lider.foto_url ? (
-                  <img src={lider.foto_url} alt={lider.nome} style={{ width: 64, height: 64, borderRadius: '50%', border: '2px solid #f59e0b', objectFit: 'cover' }} />
-                ) : (
-                  <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(245, 158, 11, 0.1)', border: '2px solid #f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 800, color: '#f59e0b' }}>
-                    {getInitial(lider.nome)}
-                  </div>
-                )}
+                <PlayerAvatar fotoUrl={lider.foto_url} nome={lider.nome} size={64} border="2px solid #f59e0b" />
                 <div style={{ position: 'absolute', bottom: -4, right: -4, background: '#f59e0b', color: '#0d0f14', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 900, border: '2px solid var(--bg-card)' }}>
                   1º
                 </div>
