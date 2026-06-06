@@ -6,17 +6,29 @@ import Home from './pages/Home';
 import Ranking from './pages/Ranking';
 import Jogadores from './pages/Jogadores';
 import Votar from './pages/Votar';
+import Torneios from './pages/Torneios';
 import Jogos from './pages/Jogos';
 import Stats from './pages/Stats';
 
 import AuthScreen from './components/AuthScreen';
 import CompleteProfileScreen from './components/CompleteProfileScreen';
 
+const ESTADO_TO_UF = {
+  'acre': 'AC', 'alagoas': 'AL', 'amapá': 'AP', 'amazonas': 'AM', 'bahia': 'BA',
+  'ceará': 'CE', 'distrito federal': 'DF', 'espírito santo': 'ES', 'goiás': 'GO',
+  'maranhão': 'MA', 'mato grosso': 'MT', 'mato grosso do sul': 'MS', 'minas gerais': 'MG',
+  'pará': 'PA', 'paraíba': 'PB', 'paraná': 'PR', 'pernambuco': 'PE', 'piauí': 'PI',
+  'rio de janeiro': 'RJ', 'rio grande do norte': 'RN', 'rio grande do sul': 'RS',
+  'rondônia': 'RO', 'roraima': 'RR', 'santa catarina': 'SC', 'são paulo': 'SP',
+  'sergipe': 'SE', 'tocantins': 'TO'
+};
+
 const PAGES = {
   inicio: { label: 'Início', icon: 'home' },
   ranking: { label: 'Ranking', icon: 'trophy' },
   jogadores: { label: 'Jogadores', icon: 'users' },
   votar: { label: 'Votar', icon: 'star' },
+  torneios: { label: 'Torneios', icon: 'award' },
   jogos: { label: 'Jogos', icon: 'moon' },
   stats: { label: 'Stats', icon: 'bar' },
 };
@@ -29,6 +41,7 @@ function NavIcon({ type, active }) {
   if (type === 'users') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
   if (type === 'star') return <svg {...s} viewBox="0 0 24 24" fill={active ? '#60a5fa' : 'none'} stroke={color} strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
   if (type === 'moon') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>;
+  if (type === 'award') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>;
   if (type === 'bar') return <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>;
   return null;
 }
@@ -41,13 +54,42 @@ export default function App() {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [themePref, setThemePref] = useState('system');
 
   // States para edição do perfil
   const [editApelido, setEditApelido] = useState('');
   const [editAltura, setEditAltura] = useState('');
   const [editIdade, setEditIdade] = useState('');
+  const [editFoto, setEditFoto] = useState('');
+  const [uploadingFoto, setUploadingFoto] = useState(false);
   const [salvandoPerfil, setSalvandoPerfil] = useState(false);
   const [erroPerfil, setErroPerfil] = useState(null);
+
+  const handleEditFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      setErroPerfil('Por favor, selecione uma imagem válida.');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setErroPerfil('A imagem de perfil deve ter no máximo 2MB.');
+      return;
+    }
+    
+    setUploadingFoto(true);
+    setErroPerfil(null);
+    try {
+      const { publicUrl, error } = await profilesAPI.uploadAvatar(profile.id, file);
+      if (error) throw error;
+      setEditFoto(publicUrl);
+    } catch (err) {
+      setErroPerfil('Erro ao carregar imagem: ' + err.message);
+    } finally {
+      setUploadingFoto(false);
+    }
+  };
 
   const handleEditAlturaChange = (e) => {
     const digits = e.target.value.replace(/\D/g, '');
@@ -89,6 +131,115 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (profile && profile.id) {
+      verificarLocalizacao(profile);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.id]);
+
+  async function verificarLocalizacao(prof) {
+    if (!navigator.geolocation) return;
+
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`, {
+          headers: { 'Accept-Language': 'pt-BR' }
+        });
+        const data = await res.json();
+        const address = data.address || {};
+        const detectedCity = address.city || address.town || address.village || address.municipality || 'Altamira';
+        const stateName = (address.state || '').toLowerCase();
+        const detectedUf = ESTADO_TO_UF[stateName] || 'PA';
+
+        const now = new Date();
+        const updates = {
+          latitude_atual: latitude,
+          longitude_atual: longitude,
+          ultima_verificacao_localizacao: now.toISOString()
+        };
+
+        if (detectedCity.toLowerCase() !== (prof.cidade_atual || '').toLowerCase()) {
+          if (!prof.cidade_detectada || prof.cidade_detectada.toLowerCase() !== detectedCity.toLowerCase()) {
+            updates.cidade_detectada = detectedCity;
+            updates.uf_detectada = detectedUf;
+            updates.data_primeira_deteccao = now.toISOString();
+          } else {
+            const primeiraDeteccao = new Date(prof.data_primeira_deteccao);
+            const diffMs = now.getTime() - primeiraDeteccao.getTime();
+            const diffHours = diffMs / (1000 * 60 * 60);
+
+            if (diffHours >= 24) {
+              updates.cidade_atual = detectedCity;
+              updates.cidade = detectedCity;
+              updates.uf = detectedUf;
+              updates.ultima_mudanca_cidade = now.toISOString();
+              updates.cidade_detectada = null;
+              updates.uf_detectada = null;
+              updates.data_primeira_deteccao = null;
+            }
+          }
+        } else {
+          updates.cidade_detectada = null;
+          updates.uf_detectada = null;
+          updates.data_primeira_deteccao = null;
+        }
+
+        const { data: updatedProfile, error } = await profilesAPI.atualizar(prof.id, updates);
+        if (!error && updatedProfile) {
+          setProfile(updatedProfile);
+        }
+      } catch (err) {
+        console.error('Erro na geolocalização / geocodificação:', err);
+      }
+    }, (err) => {
+      console.warn('Erro ao obter coordenadas de geolocalização:', err);
+    });
+  }
+
+  useEffect(() => {
+    const applyTheme = () => {
+      let currentTheme = themePref;
+      if (themePref === 'system') {
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        currentTheme = isDark ? 'dark' : 'light';
+      }
+      
+      if (currentTheme === 'light') {
+        document.body.classList.add('light-theme');
+      } else {
+        document.body.classList.remove('light-theme');
+      }
+    };
+
+    applyTheme();
+
+    if (themePref === 'system') {
+      const media = window.matchMedia('(prefers-color-scheme: dark)');
+      const listener = () => applyTheme();
+      media.addEventListener('change', listener);
+      return () => media.removeEventListener('change', listener);
+    }
+  }, [themePref]);
+
+  async function handleUpdateTheme(theme) {
+    setThemePref(theme);
+    if (profile && profile.id) {
+      try {
+        const { data, error } = await profilesAPI.atualizar(profile.id, {
+          tema_preferido: theme
+        });
+        if (!error && data) {
+          setProfile(data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
   async function loadProfile(uid, retries = 0) {
     try {
       const { data } = await profilesAPI.obterPerfil(uid);
@@ -97,6 +248,7 @@ export default function App() {
         setEditApelido(data.apelido || '');
         setEditAltura(data.altura ? data.altura.toString().replace('.', ',') : '');
         setEditIdade(data.idade || '');
+        setThemePref(data.tema_preferido || 'system');
         setLoadingProfile(false);
       } else if (retries < 3) {
         // Se o trigger do Supabase ainda não completou a inserção, tenta novamente em 1s
@@ -122,6 +274,7 @@ export default function App() {
           setEditApelido(createdData.apelido || '');
           setEditAltura(createdData.altura || '');
           setEditIdade(createdData.idade || '');
+          setThemePref(createdData.tema_preferido || 'system');
         } else {
           setProfile(fallbackProfile);
         }
@@ -152,10 +305,22 @@ export default function App() {
         throw new Error('Por favor, informe uma idade válida.');
       }
 
+      // Validar apelido duplicado no banco
+      const { data: dupApelido } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('apelido', editApelido.trim())
+        .maybeSingle();
+      
+      if (dupApelido && dupApelido.id !== profile.id) {
+        throw new Error('Este apelido já está em uso por outro jogador.');
+      }
+
       const { data, error } = await profilesAPI.atualizar(profile.id, {
         apelido: editApelido.trim(),
         altura: parsedAltura,
-        idade: parsedIdade
+        idade: parsedIdade,
+        foto_perfil: editFoto
       });
 
       if (error) throw error;
@@ -175,13 +340,14 @@ export default function App() {
 
   function renderPage() {
     switch (page) {
-      case 'inicio': return <Home onNavigate={navigate} />;
-      case 'ranking': return <Ranking />;
-      case 'jogadores': return <Jogadores initialOpenAdd={pageProps.openAdd} />;
+      case 'inicio': return <Home profile={profile} onNavigate={navigate} />;
+      case 'ranking': return <Ranking profile={profile} />;
+      case 'jogadores': return <Jogadores profile={profile} initialOpenAdd={pageProps.openAdd} />;
       case 'votar': return <Votar />;
+      case 'torneios': return <Torneios profile={profile} />;
       case 'jogos': return <Jogos />;
       case 'stats': return <Stats />;
-      default: return <Home onNavigate={navigate} />;
+      default: return <Home profile={profile} onNavigate={navigate} />;
     }
   }
 
@@ -224,7 +390,9 @@ export default function App() {
           <div className="header-title">
             Ranks <span>Hoops</span>
           </div>
-          <div className="header-subtitle">ALTAMIRA • PARÁ</div>
+          <div className="header-subtitle">
+            {`${profile.cidade_atual || profile.cidade || 'ALTAMIRA'} • ${profile.uf || 'PA'}`.toUpperCase()}
+          </div>
         </div>
         
         <div 
@@ -291,7 +459,33 @@ export default function App() {
             {isEditingProfile ? (
               <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div>
-                  <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                  <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                    Foto de Perfil
+                  </label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    {editFoto ? (
+                      <img src={editFoto} alt="Preview" style={{ width: 44, height: 44, borderRadius: '50%', border: '1px solid var(--border)', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-blue-light)', fontWeight: 700, fontSize: 18 }}>
+                        {profile.nome_completo?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleEditFileChange}
+                      style={{ display: 'none' }}
+                      id="edit-profile-file"
+                      disabled={uploadingFoto}
+                    />
+                    <label htmlFor="edit-profile-file" className="btn btn-secondary btn-sm" style={{ cursor: 'pointer', margin: 0, width: 'auto' }}>
+                      {uploadingFoto ? <div className="spinner" style={{ width: 12, height: 12 }} /> : 'Alterar Foto'}
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
                     Apelido *
                   </label>
                   <input
@@ -305,7 +499,7 @@ export default function App() {
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <div>
-                    <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                    <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
                       Altura (m) *
                     </label>
                     <input
@@ -318,7 +512,7 @@ export default function App() {
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                    <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
                       Idade *
                     </label>
                     <input
@@ -376,7 +570,7 @@ export default function App() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
                   <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
                     <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>APELIDO</div>
-                    <div style={{ fontWeight: 800, color: '#f1f5f9', fontSize: 14 }}>{profile.apelido}</div>
+                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 14 }}>{profile.apelido}</div>
                   </div>
                   <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
                     <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>ALTURA</div>
@@ -388,10 +582,49 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* Seleção de Tema */}
+                <div style={{ marginTop: 8, marginBottom: 14, borderTop: '1px solid var(--border)', paddingTop: 14 }}>
+                  <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8, textAlign: 'center' }}>
+                    Tema do Aplicativo
+                  </label>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {[
+                      { key: 'light', label: '☀️ Claro' },
+                      { key: 'dark', label: '🌙 Escuro' },
+                      { key: 'system', label: '📱 Sistema' }
+                    ].map(t => (
+                      <button
+                        key={t.key}
+                        type="button"
+                        onClick={() => handleUpdateTheme(t.key)}
+                        style={{
+                          flex: 1,
+                          padding: '8px 4px',
+                          borderRadius: 8,
+                          border: themePref === t.key ? '2px solid var(--accent-blue)' : '1px solid var(--border)',
+                          background: themePref === t.key ? 'rgba(59,130,246,0.15)' : 'none',
+                          color: 'var(--text-primary)',
+                          cursor: 'pointer',
+                          fontSize: 12,
+                          fontWeight: 600
+                        }}
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
                   <button 
                     className="btn btn-secondary"
-                    onClick={() => setIsEditingProfile(true)}
+                    onClick={() => {
+                      setEditApelido(profile.apelido || '');
+                      setEditAltura(profile.altura ? profile.altura.toString().replace('.', ',') : '');
+                      setEditIdade(profile.idade || '');
+                      setEditFoto(profile.foto_perfil || '');
+                      setIsEditingProfile(true);
+                    }}
                     style={{ flex: 1 }}
                   >
                     Editar Perfil

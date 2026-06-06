@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react';
-import { votacaoAPI } from '../lib/supabase';
+import { supabase, votacaoAPI } from '../lib/supabase';
+
+const fundamentos = [
+  { key: 'arremesso', label: 'Arremesso' },
+  { key: 'defesa', label: 'Defesa' },
+  { key: 'passe', label: 'Passe' },
+  { key: 'fisicalidade', label: 'Fisicalidade' },
+  { key: 'mentalidade', label: 'Mentalidade' }
+];
+
+const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
 
 function StarPicker({ value, onChange, disabled }) {
   const [hover, setHover] = useState(0);
@@ -33,13 +43,31 @@ function StarPicker({ value, onChange, disabled }) {
 export default function Votar() {
   const [jogadores, setJogadores] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [estrelas, setEstrelas] = useState({});
+  const [estrelas, setEstrelas] = useState({}); // { [jogadorId]: { arremesso: 0, ... } }
   const [enviando, setEnviando] = useState(false);
   const [toast, setToast] = useState(null);
   const [statusHoje, setStatusHoje] = useState(null);
   const [expandido, setExpandido] = useState(null);
 
   useEffect(() => { loadDados(); }, []);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('votar-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'jogadores' },
+        () => {
+          loadDados();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
 
   async function loadDados() {
     setLoading(true);
@@ -53,19 +81,20 @@ export default function Votar() {
   }
 
   async function handleVotar(jogadorId) {
-    const nota = estrelas[jogadorId];
-    if (!nota) {
-      showToast('Selecione uma nota de 1 a 5 estrelas', 'error');
+    const avaliacao = estrelas[jogadorId] || {};
+    const incompleto = fundamentos.some(f => !avaliacao[f.key]);
+    if (incompleto) {
+      showToast('Selecione uma nota para todos os 5 fundamentos', 'error');
       return;
     }
     setEnviando(true);
-    const { data, error } = await votacaoAPI.votar(jogadorId, nota);
+    const { data, error } = await votacaoAPI.votar(jogadorId, avaliacao);
     if (error || !data?.sucesso) {
-      showToast(data?.erro || error?.message || 'Erro ao registrar voto', 'error');
+      showToast(data?.erro || error?.message || 'Erro ao registrar avaliação', 'error');
     } else {
       showToast(`✓ ${data.mensagem} Média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
       // Recarregar lista e limpar nota
-      setEstrelas(p => ({ ...p, [jogadorId]: 0 }));
+      setEstrelas(p => ({ ...p, [jogadorId]: null }));
       setExpandido(null);
       setTimeout(loadDados, 1500);
     }
@@ -96,7 +125,7 @@ export default function Votar() {
           </div>
           <div>
             <h2 style={{ fontWeight: 800, fontSize: 20 }}>Avaliar Jogadores</h2>
-            <p style={{ color: '#64748b', fontSize: 13 }}>6 categorias · nota de 1 a 5 estrelas</p>
+            <p style={{ color: '#64748b', fontSize: 13 }}>5 fundamentos · nota de 1 a 5 estrelas</p>
           </div>
         </div>
 
@@ -105,7 +134,7 @@ export default function Votar() {
           <div className="card" style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <div>
-              <span style={{ color: '#94a3b8', fontSize: 13 }}>Votos hoje: </span>
+              <span style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Avaliações hoje: </span>
               <span style={{ color: '#60a5fa', fontWeight: 700 }}>{statusHoje.votos_hoje}/20</span>
               <span style={{ color: '#64748b', fontSize: 12, marginLeft: 8 }}>({statusHoje.restantes} restantes)</span>
             </div>
@@ -121,63 +150,86 @@ export default function Votar() {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 20 }}>
-            {jogadores.map(j => (
-              <div key={j.id} className="card" style={{ overflow: 'hidden' }}>
-                {/* Row */}
-                <div
-                  onClick={() => setExpandido(expandido === j.id ? null : j.id)}
-                  style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
-                >
-                  <div className="avatar" style={{ marginRight: 12 }}>{getInitial(j.nome)}</div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700 }}>{j.nome}</div>
-                    {j.ja_votou_hoje && (
-                      <div style={{ fontSize: 12, color: '#f59e0b' }}>✓ Já votou hoje</div>
-                    )}
-                    {!j.ja_votou_hoje && (
-                      <div style={{ fontSize: 12, color: '#60a5fa' }}>Toque para avaliar →</div>
-                    )}
-                  </div>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ transform: expandido === j.id ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>
-                </div>
+            {jogadores.map(j => {
+              const avaliacaoJogador = estrelas[j.id] || {};
+              const formCompleto = fundamentos.every(f => (avaliacaoJogador[f.key] || 0) > 0);
 
-                {/* Expandido - avaliação */}
-                {expandido === j.id && !j.ja_votou_hoje && (
-                  <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-                    <p style={{ textAlign: 'center', fontSize: 13, color: '#94a3b8', marginBottom: 14 }}>
-                      Qual nota você dá para <strong style={{ color: '#f1f5f9' }}>{j.nome}</strong>?
-                    </p>
-                    <StarPicker
-                      value={estrelas[j.id] || 0}
-                      onChange={v => setEstrelas(p => ({ ...p, [j.id]: v }))}
-                      disabled={enviando}
-                    />
-                    {estrelas[j.id] > 0 && (
-                      <div style={{ marginTop: 4, textAlign: 'center', color: '#f59e0b', fontSize: 13, fontWeight: 600 }}>
-                        {['', 'Fraco', 'Regular', 'Bom', 'Muito Bom', 'Excelente'][estrelas[j.id]]}
+              return (
+                <div key={j.id} className="card" style={{ overflow: 'hidden' }}>
+                  {/* Row */}
+                  <div
+                    onClick={() => setExpandido(expandido === j.id ? null : j.id)}
+                    style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                  >
+                    <div className="avatar" style={{ marginRight: 12 }}>{getInitial(j.nome)}</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 700 }}>{j.nome}</div>
+                      {j.ja_votou_hoje && (
+                        <div style={{ fontSize: 12, color: '#f59e0b' }}>✓ Já avaliado</div>
+                      )}
+                      {!j.ja_votou_hoje && (
+                        <div style={{ fontSize: 12, color: '#60a5fa' }}>Toque para avaliar →</div>
+                      )}
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ transform: expandido === j.id ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+
+                  {/* Expandido - avaliação */}
+                  {expandido === j.id && !j.ja_votou_hoje && (
+                    <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--border)' }}>
+                      <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 16 }}>
+                        Dê uma nota de 1 a 5 estrelas para cada fundamento de <strong style={{ color: 'var(--text-primary)' }}>{j.nome}</strong>:
+                      </p>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 20 }}>
+                        {fundamentos.map(f => {
+                          const val = avaliacaoJogador[f.key] || 0;
+                          return (
+                            <div key={f.key} style={{ background: 'var(--bg-secondary)', padding: 12, borderRadius: 8, border: '1px solid var(--border)' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
+                                <span style={{ fontSize: 12, color: '#f59e0b', fontWeight: 600 }}>
+                                  {labelsNota[val]}
+                                </span>
+                              </div>
+                              <StarPicker
+                                value={val}
+                                onChange={v => setEstrelas(p => ({
+                                  ...p,
+                                  [j.id]: {
+                                    ...(p[j.id] || {}),
+                                    [f.key]: v
+                                  }
+                                }))}
+                                disabled={enviando}
+                              />
+                            </div>
+                          );
+                        })}
                       </div>
-                    )}
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => handleVotar(j.id)}
-                      disabled={enviando || !estrelas[j.id]}
-                      style={{ marginTop: 14 }}
-                    >
-                      {enviando ? <><div className="spinner" /> Enviando...</> : <>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                        Confirmar Avaliação
-                      </>}
-                    </button>
-                  </div>
-                )}
 
-                {expandido === j.id && j.ja_votou_hoje && (
-                  <div style={{ marginTop: 12, padding: '12px', background: 'rgba(245,158,11,0.08)', borderRadius: 10, textAlign: 'center', fontSize: 13, color: '#f59e0b' }}>
-                    ✓ Você já avaliou este jogador hoje. Volte amanhã!
-                  </div>
-                )}
-              </div>
-            ))}
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => handleVotar(j.id)}
+                        disabled={enviando || !formCompleto}
+                        style={{ marginTop: 8 }}
+                      >
+                        {enviando ? <><div className="spinner" /> Enviando...</> : <>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                          Confirmar Avaliação
+                        </>}
+                      </button>
+                    </div>
+                  )}
+
+                  {expandido === j.id && j.ja_votou_hoje && (
+                    <div style={{ marginTop: 12, padding: '12px', background: 'rgba(245,158,11,0.08)', borderRadius: 10, textAlign: 'center', fontSize: 13, color: '#f59e0b' }}>
+                      ✓ Você já avaliou este jogador.
+                    </div>
+                  )}
+                </div>
+              );
+            })}
 
             {/* Sortear novos */}
             <button className="btn btn-secondary" onClick={loadDados} style={{ marginTop: 4 }}>

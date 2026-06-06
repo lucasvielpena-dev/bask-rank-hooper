@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { jogadoresAPI, rankingAPI } from '../lib/supabase';
+import { supabase, jogadoresAPI, rankingAPI } from '../lib/supabase';
 
 function StarRating({ value }) {
   return (
@@ -11,7 +11,15 @@ function StarRating({ value }) {
   );
 }
 
-export default function Home({ onNavigate }) {
+function renderBadge(media, totalVotos) {
+  if (!totalVotos || totalVotos < 10) return null;
+  if (media >= 4.5) return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(245,158,11,0.15)', color: '#f59e0b', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>🏆 Elite</span>;
+  if (media >= 4.0) return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(96,165,250,0.15)', color: '#60a5fa', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>⭐ Destaque</span>;
+  if (media >= 3.5) return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(16,185,129,0.15)', color: '#10b981', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>📈 Promessa</span>;
+  return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(148,163,184,0.15)', color: '#94a3b8', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>🔄 Em Des.</span>;
+}
+
+export default function Home({ profile, onNavigate }) {
   const [stats, setStats] = useState({ jogadores: 0, avaliados: 0 });
   const [lider, setLider] = useState(null);
   const [top5, setTop5] = useState([]);
@@ -19,14 +27,35 @@ export default function Home({ onNavigate }) {
 
   useEffect(() => {
     loadData();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.cidade_atual, profile?.cidade]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('home-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'jogadores' },
+        () => {
+          loadData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.cidade_atual, profile?.cidade]);
+
 
   async function loadData() {
     setLoading(true);
+    const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
     try {
       const [{ data: jogadores }, { data: ranking }] = await Promise.all([
-        jogadoresAPI.listar(),
-        rankingAPI.getTop5(),
+        jogadoresAPI.listar(city),
+        rankingAPI.getTop5(city),
       ]);
 
       const total = jogadores?.length || 0;
@@ -36,6 +65,9 @@ export default function Home({ onNavigate }) {
       if (ranking?.length > 0) {
         setLider(ranking[0]);
         setTop5(ranking);
+      } else {
+        setLider(null);
+        setTop5([]);
       }
     } catch (e) {
       console.error(e);
@@ -66,7 +98,7 @@ export default function Home({ onNavigate }) {
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
           <div className="badge">
             <span>⚡</span>
-            ALTAMIRA • PARÁ • BRASIL
+            {`${profile?.cidade_atual || profile?.cidade || 'Altamira'} • ${profile?.uf || 'PA'} • BRASIL`.toUpperCase()}
           </div>
         </div>
 
@@ -94,12 +126,12 @@ export default function Home({ onNavigate }) {
             <div style={{ fontSize: 28, marginBottom: 4 }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2" style={{ display: 'block', margin: '0 auto 6px' }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
-            <div style={{ fontSize: 28, fontWeight: 800, color: '#f1f5f9' }}>{stats.jogadores}</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--text-primary)' }}>{stats.jogadores}</div>
             <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, letterSpacing: '0.05em' }}>JOGADORES</div>
           </div>
           <div className="card" style={{ textAlign: 'center' }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2" style={{ display: 'block', margin: '0 auto 6px' }}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-            <div style={{ fontSize: 28, fontWeight: 800, color: '#f1f5f9' }}>{stats.avaliados}</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--text-primary)' }}>{stats.avaliados}</div>
             <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, letterSpacing: '0.05em' }}>AVALIADOS</div>
           </div>
         </div>
@@ -114,8 +146,11 @@ export default function Home({ onNavigate }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div className="avatar avatar-lg">{getInitial(lider.nome)}</div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, fontSize: 18 }}>{lider.nome}</div>
-                <div style={{ fontSize: 13, color: '#64748b' }}>{lider.total_votos} votos</div>
+                <div style={{ fontWeight: 700, fontSize: 18, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                  {lider.nome}
+                  {renderBadge(lider.media_estrelas, lider.total_votos)}
+                </div>
+                <div style={{ fontSize: 13, color: '#64748b' }}>{lider.total_votos} avaliações</div>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: 28, fontWeight: 800, color: '#60a5fa' }}>{Number(lider.media_estrelas).toFixed(1)}</div>
@@ -136,9 +171,10 @@ export default function Home({ onNavigate }) {
               {top5.map((j, i) => (
                 <div key={j.id}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                       <span style={{ fontSize: 16 }}>{getMedalIcon(i)}</span>
                       <span style={{ fontWeight: 600, fontSize: 14 }}>{j.nome}</span>
+                      {renderBadge(j.media_estrelas, j.total_votos)}
                     </div>
                     <span style={{ color: '#60a5fa', fontWeight: 700, fontSize: 14 }}>★ {Number(j.media_estrelas).toFixed(1)}</span>
                   </div>

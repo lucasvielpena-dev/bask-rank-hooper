@@ -17,29 +17,42 @@ export const supabase = createClient(
 // ============================================================
 
 export const jogadoresAPI = {
-  listar: async () => {
-    const { data, error } = await supabase
+  listar: async (cidade) => {
+    let query = supabase
       .from('jogadores')
       .select('*')
-      .eq('ativo', true)
-      .order('nome');
+      .eq('ativo', true);
+    if (cidade) {
+      query = query.eq('cidade', cidade);
+    }
+    const { data, error } = await query.order('nome');
     return { data, error };
   },
 
-  buscar: async (termo) => {
-    const { data, error } = await supabase
+  buscar: async (termo, cidade) => {
+    let query = supabase
       .from('jogadores')
       .select('*')
       .eq('ativo', true)
-      .ilike('nome', `%${termo}%`)
-      .order('nome');
+      .ilike('nome', `%${termo}%`);
+    if (cidade) {
+      query = query.eq('cidade', cidade);
+    }
+    const { data, error } = await query.order('nome');
     return { data, error };
   },
 
-  adicionar: async (jogador) => {
+  adicionar: async (jogador, profile) => {
+    const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
+    const uf = profile?.uf || 'PA';
     const { data, error } = await supabase
       .from('jogadores')
-      .insert([{ ...jogador, criado_por: (await supabase.auth.getUser()).data.user?.id }])
+      .insert([{
+        ...jogador,
+        cidade: city,
+        uf: uf,
+        criado_por: (await supabase.auth.getUser()).data.user?.id
+      }])
       .select()
       .single();
     return { data, error };
@@ -47,20 +60,29 @@ export const jogadoresAPI = {
 };
 
 export const rankingAPI = {
-  get: async (limit = 20) => {
-    const { data, error } = await supabase.rpc('get_ranking', { p_limit: limit });
+  get: async (cidade, limit = 20) => {
+    const { data, error } = await supabase.rpc('get_ranking', {
+      p_cidade: cidade,
+      p_limit: limit
+    });
     return { data, error };
   },
 
   // Buscar todos para o pódio (top 3)
-  getPodio: async () => {
-    const { data, error } = await supabase.rpc('get_ranking', { p_limit: 3 });
+  getPodio: async (cidade) => {
+    const { data, error } = await supabase.rpc('get_ranking', {
+      p_cidade: cidade,
+      p_limit: 3
+    });
     return { data, error };
   },
 
   // Buscar top 5 para home
-  getTop5: async () => {
-    const { data, error } = await supabase.rpc('get_ranking', { p_limit: 5 });
+  getTop5: async (cidade) => {
+    const { data, error } = await supabase.rpc('get_ranking', {
+      p_cidade: cidade,
+      p_limit: 5
+    });
     return { data, error };
   },
 };
@@ -71,10 +93,17 @@ export const votacaoAPI = {
     return { data, error };
   },
 
-  votar: async (jogadorId, estrelas) => {
-    const { data, error } = await supabase.rpc('registrar_voto', {
+  votar: async (jogadorId, avaliacao, metadata = {}) => {
+    const { data, error } = await supabase.rpc('registrar_avaliacao', {
       p_jogador_id: jogadorId,
-      p_estrelas: estrelas,
+      p_arremesso: avaliacao.arremesso,
+      p_defesa: avaliacao.defesa,
+      p_passe: avaliacao.passe,
+      p_fisicalidade: avaliacao.fisicalidade,
+      p_mentalidade: avaliacao.mentalidade,
+      p_ip: metadata.ip || null,
+      p_device_id: metadata.deviceId || null,
+      p_localizacao: metadata.localizacao || null,
     });
     return { data, error };
   },
@@ -135,6 +164,41 @@ export const statsAPI = {
   },
 };
 
+export const estatisticasPessoaisAPI = {
+  obterMinhas: async () => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: [], error: new Error("Usuário não autenticado") };
+    
+    const { data, error } = await supabase
+      .from('estatisticas_pessoais')
+      .select('*')
+      .eq('usuario_id', user.id)
+      .order('data_partida', { ascending: false })
+      .order('created_at', { ascending: false });
+    return { data, error };
+  },
+
+  registrar: async (stats) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: null, error: new Error("Usuário não autenticado") };
+
+    const { data, error } = await supabase
+      .from('estatisticas_pessoais')
+      .insert([{ ...stats, usuario_id: user.id }])
+      .select()
+      .single();
+    return { data, error };
+  },
+
+  excluir: async (id) => {
+    const { data, error } = await supabase
+      .from('estatisticas_pessoais')
+      .delete()
+      .eq('id', id);
+    return { data, error };
+  }
+};
+
 export const campoesAPI = {
   historico: async () => {
     const { data, error } = await supabase
@@ -162,10 +226,13 @@ export const authAPI = {
   },
 
   loginGoogle: async () => {
+    const redirectUrl = window.location.origin.endsWith('/') 
+      ? window.location.origin 
+      : `${window.location.origin}/`;
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin
+        redirectTo: redirectUrl
       }
     });
     return { data, error };
@@ -179,6 +246,16 @@ export const authAPI = {
   getUser: async () => {
     const { data: { user } } = await supabase.auth.getUser();
     return user;
+  },
+
+  recuperarSenha: async (email) => {
+    const redirectUrl = window.location.origin.endsWith('/') 
+      ? window.location.origin 
+      : `${window.location.origin}/`;
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+    return { data, error };
   },
 };
 
@@ -197,6 +274,48 @@ export const profilesAPI = {
       .from('profiles')
       .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('id', id)
+      .select()
+      .single();
+    return { data, error };
+  },
+
+  listarPorCidade: async (cidade) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('cidade_atual', cidade)
+      .eq('cadastro_completo', true)
+      .order('nome_completo');
+    return { data, error };
+  },
+
+  uploadAvatar: async (userId, file) => {
+    const fileExt = file.name.split('.').pop();
+    const filePath = `avatars/${userId}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file, { upsert: true });
+      
+    if (uploadError) return { error: uploadError };
+    
+    const { data } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+      
+    return { publicUrl: data?.publicUrl, error: null };
+  }
+};
+
+export const denunciasAPI = {
+  criar: async (denuncia) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    const { data, error } = await supabase
+      .from('denuncias')
+      .insert([{
+        ...denuncia,
+        denunciante_id: user?.id
+      }])
       .select()
       .single();
     return { data, error };
@@ -244,6 +363,176 @@ export const partidasAPI = {
       .eq('id', id)
       .select()
       .single();
+    return { data, error };
+  }
+};
+
+export const torneiosAPI = {
+  listar: async (cidade) => {
+    let query = supabase.from('torneios').select('*, organizador:profiles(nome_completo)');
+    if (cidade) {
+      query = query.eq('cidade', cidade);
+    }
+    const { data, error } = await query.order('data_inicio', { ascending: false });
+    return { data, error };
+  },
+
+  obterPorId: async (id) => {
+    const { data, error } = await supabase
+      .from('torneios')
+      .select('*, organizador:profiles(nome_completo)')
+      .eq('id', id)
+      .single();
+    return { data, error };
+  },
+
+  criar: async (torneio) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: null, error: new Error('Usuário não autenticado') };
+    
+    const { data, error } = await supabase
+      .from('torneios')
+      .insert([{ ...torneio, organizador_id: user.id }])
+      .select()
+      .single();
+    return { data, error };
+  },
+
+  atualizarStatus: async (id, status) => {
+    const { data, error } = await supabase
+      .from('torneios')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+    return { data, error };
+  }
+};
+
+export const equipesAPI = {
+  listarPorTorneio: async (torneioId) => {
+    const { data, error } = await supabase
+      .from('equipes')
+      .select('*, capitao:profiles(nome_completo)')
+      .eq('torneio_id', torneioId)
+      .order('nome');
+    return { data, error };
+  },
+
+  criar: async (equipe) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: null, error: new Error('Usuário não autenticado') };
+
+    const { data, error } = await supabase
+      .from('equipes')
+      .insert([{ ...equipe, capitao_id: user.id }])
+      .select()
+      .single();
+    return { data, error };
+  },
+
+  aprovar: async (id, aprovado) => {
+    const { data, error } = await supabase
+      .from('equipes')
+      .update({ aprovado })
+      .eq('id', id)
+      .select()
+      .single();
+    return { data, error };
+  },
+
+  adicionarJogador: async (equipeId, jogadorId, aprovado = false) => {
+    const { data, error } = await supabase
+      .from('equipe_jogadores')
+      .insert([{ equipe_id: equipeId, jogador_id: jogadorId, aprovado }])
+      .select();
+    return { data, error };
+  },
+
+  removerJogador: async (equipeId, jogadorId) => {
+    const { data, error } = await supabase
+      .from('equipe_jogadores')
+      .delete()
+      .eq('equipe_id', equipeId)
+      .eq('jogador_id', jogadorId);
+    return { data, error };
+  },
+
+  obterJogadores: async (equipeId) => {
+    const { data, error } = await supabase
+      .from('equipe_jogadores')
+      .select('*, jogador:profiles(*)')
+      .eq('equipe_id', equipeId);
+    return { data, error };
+  },
+
+  aprovarJogador: async (id, aprovado) => {
+    const { data, error } = await supabase
+      .from('equipe_jogadores')
+      .update({ aprovado })
+      .eq('id', id)
+      .select();
+    return { data, error };
+  }
+};
+
+export const torneioJogosAPI = {
+  listarPorTorneio: async (torneioId) => {
+    const { data, error } = await supabase
+      .from('torneio_jogos')
+      .select('*, equipe_a:equipes!torneio_jogos_equipe_a_id_fkey(nome), equipe_b:equipes!torneio_jogos_equipe_b_id_fkey(nome)')
+      .eq('torneio_id', torneioId)
+      .order('created_at');
+    return { data, error };
+  },
+
+  criarJogo: async (jogo) => {
+    const { data, error } = await supabase
+      .from('torneio_jogos')
+      .insert([jogo])
+      .select()
+      .single();
+    return { data, error };
+  },
+
+  sincronizarJogo: async (id, updates) => {
+    const { data, error } = await supabase
+      .from('torneio_jogos')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+    return { data, error };
+  },
+
+  registrarEstatisticas: async (estatisticas) => {
+    const { data, error } = await supabase
+      .from('torneio_estatisticas_jogadores')
+      .insert(estatisticas)
+      .select();
+    return { data, error };
+  },
+
+  removerEstatisticasJogo: async (jogoId) => {
+    const { data, error } = await supabase
+      .from('torneio_estatisticas_jogadores')
+      .delete()
+      .eq('jogo_id', jogoId);
+    return { data, error };
+  },
+
+  obterEstatisticasJogo: async (jogoId) => {
+    const { data, error } = await supabase
+      .from('torneio_estatisticas_jogadores')
+      .select('*, jogador:profiles(nome_completo, apelido)')
+      .eq('jogo_id', jogoId);
+    return { data, error };
+  },
+
+  obterEstatisticasAcumuladas: async (torneioId) => {
+    const { data, error } = await supabase
+      .from('torneio_estatisticas_jogadores')
+      .select('*, jogador:profiles(nome_completo, apelido), jogo:torneio_jogos(torneio_id)');
     return { data, error };
   }
 };

@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { profilesAPI } from '../lib/supabase';
+import { supabase, profilesAPI } from '../lib/supabase';
 
 export default function CompleteProfileScreen({ profile, onComplete }) {
   const [apelido, setApelido] = useState(profile?.apelido || '');
   const [altura, setAltura] = useState(profile?.altura ? profile.altura.toString().replace('.', ',') : '');
   const [idade, setIdade] = useState(profile?.idade || '');
+  const [avatarUrl, setAvatarUrl] = useState(profile?.foto_perfil || '');
+  const [uploading, setUploading] = useState(false);
 
   const handleAlturaChange = (e) => {
     const digits = e.target.value.replace(/\D/g, '');
@@ -20,6 +22,33 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
     }
     setAltura(formatted);
   };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      setErro('Por favor, selecione uma imagem válida.');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setErro('A imagem de perfil deve ter no máximo 2MB.');
+      return;
+    }
+    
+    setUploading(true);
+    setErro(null);
+    try {
+      const { publicUrl, error } = await profilesAPI.uploadAvatar(profile.id, file);
+      if (error) throw error;
+      setAvatarUrl(publicUrl);
+    } catch (err) {
+      setErro('Erro ao carregar imagem: ' + err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
 
@@ -42,10 +71,22 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
         throw new Error('Por favor, informe uma idade válida.');
       }
 
+      // Validar apelido duplicado no banco
+      const { data: dupApelido } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('apelido', apelido.trim())
+        .maybeSingle();
+      
+      if (dupApelido && dupApelido.id !== profile.id) {
+        throw new Error('Este apelido já está em uso por outro jogador.');
+      }
+
       const { data, error } = await profilesAPI.atualizar(profile.id, {
         apelido: apelido.trim(),
         altura: parsedAltura,
         idade: parsedIdade,
+        foto_perfil: avatarUrl,
         cadastro_completo: true
       });
 
@@ -63,36 +104,71 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
       <div style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 12 }}>
-          {profile?.foto_perfil ? (
-            <img 
-              src={profile.foto_perfil} 
-              alt="Avatar" 
-              style={{ 
-                width: 72, 
-                height: 72, 
+          <div style={{ position: 'relative', width: 80, height: 80, margin: '0 auto 16px' }}>
+            {avatarUrl ? (
+              <img 
+                src={avatarUrl} 
+                alt="Avatar" 
+                style={{ 
+                  width: 80, 
+                  height: 80, 
+                  borderRadius: '50%', 
+                  border: '2px solid var(--accent-blue)', 
+                  display: 'block',
+                  objectFit: 'cover'
+                }} 
+              />
+            ) : (
+              <div style={{ 
+                width: 80, 
+                height: 80, 
+                background: 'var(--accent-blue-dim)', 
                 borderRadius: '50%', 
-                border: '2px solid var(--accent-blue)', 
-                margin: '0 auto 16px',
-                display: 'block' 
-              }} 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                fontSize: 32, 
+                color: '#60a5fa',
+                fontWeight: 800
+              }}>
+                {profile?.nome_completo?.charAt(0).toUpperCase()}
+              </div>
+            )}
+            
+            <input 
+              type="file" 
+              accept="image/*" 
+              id="avatar-upload-file" 
+              onChange={handleFileChange} 
+              style={{ display: 'none' }}
+              disabled={uploading}
             />
-          ) : (
-            <div style={{ 
-              width: 72, 
-              height: 72, 
-              background: 'var(--accent-blue-dim)', 
-              borderRadius: '50%', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              fontSize: 28, 
-              color: '#60a5fa',
-              margin: '0 auto 16px',
-              fontWeight: 800
-            }}>
-              {profile?.nome_completo?.charAt(0).toUpperCase()}
-            </div>
-          )}
+            <label 
+              htmlFor="avatar-upload-file" 
+              style={{ 
+                position: 'absolute', 
+                bottom: 0, 
+                right: 0, 
+                background: '#3b82f6', 
+                color: 'white', 
+                width: 26, 
+                height: 26, 
+                borderRadius: '50%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                cursor: 'pointer', 
+                border: '2px solid var(--bg-primary)' 
+              }}
+              title="Carregar Foto"
+            >
+              {uploading ? (
+                <div className="spinner" style={{ width: 12, height: 12, borderTopColor: 'white' }} />
+              ) : (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              )}
+            </label>
+          </div>
           <h2 style={{ fontWeight: 800, fontSize: 24, marginBottom: 6 }}>Complete seu perfil</h2>
           <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.5 }}>
             Falta pouco! Preencha as informações obrigatórias para ter acesso completo ao Ranks Hoops.
@@ -122,7 +198,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               disabled
               type="text"
               value={profile?.nome_completo || ''}
-              style={{ background: 'rgba(255,255,255,0.03)', color: '#64748b', cursor: 'not-allowed' }}
+              style={{ opacity: 0.6, cursor: 'not-allowed' }}
             />
           </div>
 
@@ -134,12 +210,12 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               disabled
               type="text"
               value={profile?.email || ''}
-              style={{ background: 'rgba(255,255,255,0.03)', color: '#64748b', cursor: 'not-allowed' }}
+              style={{ opacity: 0.6, cursor: 'not-allowed' }}
             />
           </div>
 
           <div>
-            <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
               Apelido *
             </label>
             <input
@@ -153,7 +229,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
                 Altura (m) *
               </label>
               <input
@@ -166,7 +242,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               />
             </div>
             <div>
-              <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
                 Idade *
               </label>
               <input

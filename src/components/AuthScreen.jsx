@@ -20,7 +20,7 @@ export default function AuthScreen() {
       if (tab === 'login') {
         const { error } = await authAPI.login(email, senha);
         if (error) throw error;
-      } else {
+      } else if (tab === 'register') {
         if (!nome.trim()) {
           throw new Error('Por favor, informe seu nome completo.');
         }
@@ -30,6 +30,14 @@ export default function AuthScreen() {
         if (data && !data.session) {
           setSuccessMsg('Cadastro realizado! Um e-mail de confirmação foi enviado. Por favor, confirme seu e-mail antes de entrar.');
         }
+      } else if (tab === 'forgot') {
+        if (!email.trim()) {
+          throw new Error('Por favor, informe seu e-mail.');
+        }
+        const { error } = await authAPI.recuperarSenha(email);
+        if (error) throw error;
+        setSuccessMsg('E-mail de recuperação enviado com sucesso! Verifique sua caixa de entrada.');
+        setTab('login');
       }
     } catch (err) {
       setErro(err.message || 'Ocorreu um erro ao processar a autenticação.');
@@ -72,7 +80,7 @@ export default function AuthScreen() {
           <h1 style={{ fontFamily: 'DM Sans', fontWeight: 900, fontSize: 32, lineHeight: 1.1, marginBottom: 8 }}>
             Ranks <span style={{ color: '#60a5fa' }}>Hoops</span>
           </h1>
-          <p style={{ color: '#94a3b8', fontSize: 13, lineHeight: 1.5 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.5 }}>
             Sistema de ranking de basquete de Altamira, Pará.
           </p>
         </div>
@@ -138,25 +146,34 @@ export default function AuthScreen() {
         </div>
 
         {/* Tabs */}
-        <div className="tabs">
-          <button
-            className={`tab ${tab === 'login' ? 'active' : ''}`}
-            onClick={() => { setTab('login'); setErro(null); }}
-          >
-            Entrar
-          </button>
-          <button
-            className={`tab ${tab === 'register' ? 'active' : ''}`}
-            onClick={() => { setTab('register'); setErro(null); }}
-          >
-            Criar Conta
-          </button>
-        </div>
+        {tab === 'forgot' ? (
+          <div style={{ textAlign: 'center', marginBottom: 6 }}>
+            <h3 style={{ fontWeight: 800, fontSize: 18 }}>Recuperar Senha</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginTop: 4 }}>
+              Digite seu e-mail para receber as instruções de recuperação
+            </p>
+          </div>
+        ) : (
+          <div className="tabs">
+            <button
+              className={`tab ${tab === 'login' ? 'active' : ''}`}
+              onClick={() => { setTab('login'); setErro(null); setSuccessMsg(null); }}
+            >
+              Entrar
+            </button>
+            <button
+              className={`tab ${tab === 'register' ? 'active' : ''}`}
+              onClick={() => { setTab('register'); setErro(null); setSuccessMsg(null); }}
+            >
+              Criar Conta
+            </button>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {tab === 'register' && (
             <div>
-              <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
                 Nome completo *
               </label>
               <input
@@ -170,7 +187,7 @@ export default function AuthScreen() {
           )}
 
           <div>
-            <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
               E-mail *
             </label>
             <input
@@ -182,19 +199,32 @@ export default function AuthScreen() {
             />
           </div>
 
-          <div>
-            <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-              Senha *
-            </label>
-            <input
-              required
-              type="password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              placeholder="Mínimo 6 caracteres"
-              minLength={6}
-            />
-          </div>
+          {tab !== 'forgot' && (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600 }}>
+                  Senha *
+                </label>
+                {tab === 'login' && (
+                  <button
+                    type="button"
+                    onClick={() => { setTab('forgot'); setErro(null); setSuccessMsg(null); }}
+                    style={{ background: 'none', border: 'none', color: '#60a5fa', cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: 0 }}
+                  >
+                    Esqueci minha senha
+                  </button>
+                )}
+              </div>
+              <input
+                required
+                type="password"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+                placeholder="Mínimo 6 caracteres"
+                minLength={6}
+              />
+            </div>
+          )}
 
           <button
             type="submit"
@@ -208,10 +238,23 @@ export default function AuthScreen() {
               </>
             ) : tab === 'login' ? (
               'Entrar'
-            ) : (
+            ) : tab === 'register' ? (
               'Cadastrar'
+            ) : (
+              'Enviar E-mail de Recuperação'
             )}
           </button>
+          
+          {tab === 'forgot' && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => { setTab('login'); setErro(null); setSuccessMsg(null); }}
+              disabled={carregando}
+            >
+              Voltar ao Login
+            </button>
+          )}
         </form>
       </div>
     </div>

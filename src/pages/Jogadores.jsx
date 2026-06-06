@@ -1,18 +1,47 @@
 import { useState, useEffect } from 'react';
-import { jogadoresAPI } from '../lib/supabase';
+import { supabase, jogadoresAPI } from '../lib/supabase';
+import PlayerProfileModal from '../components/PlayerProfileModal';
 
-export default function Jogadores({ initialOpenAdd = false }) {
+function renderBadge(media, totalVotos) {
+  if (!totalVotos || totalVotos < 10) return null;
+  if (media >= 4.5) return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(245,158,11,0.15)', color: '#f59e0b', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>🏆 Elite</span>;
+  if (media >= 4.0) return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(96,165,250,0.15)', color: '#60a5fa', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>⭐ Destaque</span>;
+  if (media >= 3.5) return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(16,185,129,0.15)', color: '#10b981', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>📈 Promessa</span>;
+  return <span style={{ marginLeft: 6, padding: '2px 6px', background: 'rgba(148,163,184,0.15)', color: '#94a3b8', borderRadius: 6, fontSize: 10, fontWeight: 700, whiteSpace: 'nowrap' }}>🔄 Em Des.</span>;
+}
+
+export default function Jogadores({ profile }) {
   const [jogadores, setJogadores] = useState([]);
   const [filtrados, setFiltrados] = useState([]);
   const [busca, setBusca] = useState('');
   const [loading, setLoading] = useState(true);
-  const [showAdd, setShowAdd] = useState(initialOpenAdd);
-  const [novoJogador, setNovoJogador] = useState({ nome: '', apelido: '', posicao: '' });
-  const [salvando, setSalvando] = useState(false);
-  const [toast, setToast] = useState(null);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
-  useEffect(() => { loadJogadores(); }, []);
-  useEffect(() => { if (initialOpenAdd) setShowAdd(true); }, [initialOpenAdd]);
+  const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
+
+  useEffect(() => {
+    loadJogadores();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.cidade_atual, profile?.cidade]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('jogadores-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'jogadores' },
+        () => {
+          loadJogadores();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [city]);
+
 
   useEffect(() => {
     if (busca.trim() === '') {
@@ -27,38 +56,14 @@ export default function Jogadores({ initialOpenAdd = false }) {
 
   async function loadJogadores() {
     setLoading(true);
-    const { data } = await jogadoresAPI.listar();
+    const { data } = await jogadoresAPI.listar(city);
     setJogadores(data || []);
     setFiltrados(data || []);
     setLoading(false);
   }
 
-  async function handleAdicionarJogador() {
-    if (!novoJogador.nome.trim()) {
-      showToast('Digite o nome do jogador', 'error');
-      return;
-    }
-    setSalvando(true);
-    const { error } = await jogadoresAPI.adicionar(novoJogador);
-    if (error) {
-      showToast(error.message || 'Erro ao adicionar jogador', 'error');
-    } else {
-      showToast('Jogador adicionado com sucesso!', 'success');
-      setShowAdd(false);
-      setNovoJogador({ nome: '', apelido: '', posicao: '' });
-      loadJogadores();
-    }
-    setSalvando(false);
-  }
-
-  function showToast(msg, type = 'success') {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 3000);
-  }
-
   const getInitial = (nome) => nome ? nome.charAt(0).toUpperCase() : '?';
 
-  const posicoes = ['Armador', 'Ala-armador', 'Ala', 'Ala-pivô', 'Pivô'];
 
   return (
     <div className="page-content">
@@ -75,8 +80,8 @@ export default function Jogadores({ initialOpenAdd = false }) {
               <p style={{ color: '#64748b', fontSize: 13 }}>{jogadores.length} cadastrados</p>
             </div>
           </div>
-
         </div>
+
 
         {/* Busca */}
         <div style={{ position: 'relative', marginBottom: 16 }}>
@@ -102,7 +107,7 @@ export default function Jogadores({ initialOpenAdd = false }) {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 20 }}>
             {filtrados.map(j => (
-              <div key={j.id} className="card" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div key={j.id} className="card" onClick={() => setSelectedPlayer(j)} style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}>
                 <div className="avatar" style={{ position: 'relative' }}>
                   {getInitial(j.nome)}
                   {j.atual_campeao && (
@@ -110,21 +115,24 @@ export default function Jogadores({ initialOpenAdd = false }) {
                   )}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: 15 }}>{j.nome}</div>
+                  <div style={{ fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                    {j.nome}
+                    {renderBadge(j.media_estrelas, j.total_votos)}
+                  </div>
                   <div style={{ fontSize: 12, color: '#64748b' }}>
                     {j.apelido && <span style={{ marginRight: 8 }}>"{j.apelido}"</span>}
                     {j.posicao && <span>{j.posicao}</span>}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  {j.total_votos >= 5 ? (
+                  {j.total_votos >= 10 ? (
                     <>
                       <div style={{ color: '#60a5fa', fontWeight: 700, fontSize: 14 }}>★ {Number(j.media_estrelas).toFixed(1)}</div>
-                      <div style={{ fontSize: 11, color: '#64748b' }}>{j.total_votos} votos</div>
+                      <div style={{ fontSize: 11, color: '#64748b' }}>{j.total_votos} av.</div>
                     </>
                   ) : (
                     <div style={{ fontSize: 11, color: '#475569' }}>
-                      {j.total_votos}/5 votos
+                      {j.total_votos}/10 av.
                     </div>
                   )}
                 </div>
@@ -134,59 +142,13 @@ export default function Jogadores({ initialOpenAdd = false }) {
         )}
       </div>
 
-      {/* Modal Adicionar */}
-      {showAdd && (
-        <div className="modal-overlay" onClick={() => setShowAdd(false)}>
-          <div className="modal-sheet" onClick={e => e.stopPropagation()}>
-            <div className="modal-handle" />
-            <h3 style={{ fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Adicionar Jogador</h3>
-            <p style={{ color: '#64748b', fontSize: 13, marginBottom: 20 }}>Cadastre um novo jogador no ranking</p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div>
-                <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome completo *</label>
-                <input
-                  value={novoJogador.nome}
-                  onChange={e => setNovoJogador(p => ({ ...p, nome: e.target.value }))}
-                  placeholder="Ex: Felipe Santos"
-                />
-              </div>
-              <div>
-                <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>Apelido</label>
-                <input
-                  value={novoJogador.apelido}
-                  onChange={e => setNovoJogador(p => ({ ...p, apelido: e.target.value }))}
-                  placeholder="Ex: dd, viel..."
-                />
-              </div>
-              <div>
-                <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>Posição</label>
-                <select
-                  value={novoJogador.posicao}
-                  onChange={e => setNovoJogador(p => ({ ...p, posicao: e.target.value }))}
-                  style={{ background: '#242938', color: novoJogador.posicao ? '#f1f5f9' : '#64748b' }}
-                >
-                  <option value="">Selecionar posição...</option>
-                  {posicoes.map(p => <option key={p} value={p}>{p}</option>)}
-                </select>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
-              <button className="btn btn-secondary" onClick={() => setShowAdd(false)} style={{ flex: 1 }}>Cancelar</button>
-              <button className="btn btn-primary" onClick={handleAdicionarJogador} disabled={salvando} style={{ flex: 2 }}>
-                {salvando ? <><div className="spinner" /> Salvando...</> : <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
-                  Adicionar
-                </>}
-              </button>
-            </div>
-          </div>
-        </div>
+      {selectedPlayer && (
+        <PlayerProfileModal
+          jogador={selectedPlayer}
+          onClose={() => setSelectedPlayer(null)}
+        />
       )}
 
-      {/* Toast */}
-      {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
     </div>
   );
 }

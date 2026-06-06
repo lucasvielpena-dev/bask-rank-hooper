@@ -51,6 +51,17 @@ export default function Jogos() {
     return () => clearInterval(interval);
   }, [timerAtivo]);
 
+  // Salvar estado do cronômetro no localStorage para suportar reloads, troca de tela e abas fechadas
+  useEffect(() => {
+    if (partidaAtiva?.id) {
+      localStorage.setItem(`timer_${partidaAtiva.id}`, JSON.stringify({
+        tempo,
+        timerAtivo,
+        lastUpdated: Date.now()
+      }));
+    }
+  }, [tempo, timerAtivo, partidaAtiva?.id]);
+
   async function loadDados() {
     setLoading(true);
     try {
@@ -76,12 +87,37 @@ export default function Jogos() {
         setPlacarB(active.placar_time_b || 0);
         setPeriodo(active.periodos || 1);
         
-        // Carrega tempo a partir do banco se estiver no formato MM:SS
-        if (active.tempo_total) {
-          const parts = active.tempo_total.split(':');
-          if (parts.length === 2) {
-            setTempo(parseInt(parts[0]) * 60 + parseInt(parts[1]));
+        // Carrega tempo a partir do local storage se existir, senão a partir do banco
+        let restoredSuccess = false;
+        try {
+          const localStateStr = localStorage.getItem(`timer_${active.id}`);
+          if (localStateStr) {
+            const localState = JSON.parse(localStateStr);
+            let currentTempo = localState.tempo;
+            let currentTimerAtivo = localState.timerAtivo;
+            
+            // Se o timer estava rodando, calcula o tempo que passou desde que o navegador foi fechado/atualizado
+            if (currentTimerAtivo && localState.lastUpdated) {
+              const elapsedSeconds = Math.floor((Date.now() - localState.lastUpdated) / 1000);
+              currentTempo += elapsedSeconds;
+            }
+            
+            setTempo(currentTempo);
+            setTimerAtivo(currentTimerAtivo);
+            restoredSuccess = true;
           }
+        } catch (e) {
+          console.warn('Erro ao restaurar cronômetro do localStorage:', e);
+        }
+
+        if (!restoredSuccess) {
+          if (active.tempo_total) {
+            const parts = active.tempo_total.split(':');
+            if (parts.length === 2) {
+              setTempo(parseInt(parts[0]) * 60 + parseInt(parts[1]));
+            }
+          }
+          setTimerAtivo(false);
         }
 
         // Carrega escalação do banco
@@ -258,6 +294,9 @@ export default function Jogos() {
       const { error } = await partidasAPI.atualizar(partidaAtiva.id, finalScore);
       if (error) throw error;
 
+      // Limpar estado do localStorage
+      localStorage.removeItem(`timer_${partidaAtiva.id}`);
+
       showToast('Partida finalizada com sucesso e salva no histórico!', 'success');
       setShowFinalizarModal(false);
       setPartidaAtiva(null);
@@ -366,12 +405,12 @@ export default function Jogos() {
                       <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'center', gap: 24, margin: '10px 0' }}>
                         <div style={{ textAlign: 'center', flex: 1 }}>
                           <div style={{ fontWeight: 800, fontSize: 18 }}>{p.time_a}</div>
-                          <div style={{ fontSize: 32, fontWeight: 900, color: '#f1f5f9', marginTop: 4 }}>{p.placar_time_a}</div>
+                          <div style={{ fontSize: 32, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_a}</div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', fontSize: 20, color: '#64748b', fontWeight: 800 }}>x</div>
                         <div style={{ textAlign: 'center', flex: 1 }}>
                           <div style={{ fontWeight: 800, fontSize: 18 }}>{p.time_b}</div>
-                          <div style={{ fontSize: 32, fontWeight: 900, color: '#f1f5f9', marginTop: 4 }}>{p.placar_time_b}</div>
+                          <div style={{ fontSize: 32, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_b}</div>
                         </div>
                       </div>
                       <button className="btn btn-primary" onClick={() => {
@@ -409,18 +448,18 @@ export default function Jogos() {
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '6px 0' }}>
                           <div style={{ flex: 1 }}>
-                            <span style={{ fontWeight: venceA ? 800 : 500, color: venceA ? '#f1f5f9' : '#94a3b8' }}>{p.time_a}</span>
+                            <span style={{ fontWeight: venceA ? 800 : 500, color: venceA ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_a}</span>
                           </div>
-                          <div style={{ display: 'flex', gap: 8, padding: '4px 10px', background: 'rgba(255,255,255,0.04)', borderRadius: 8, fontWeight: 800, fontSize: 15 }}>
-                            <span style={{ color: venceA ? '#4ade80' : '#f1f5f9' }}>{p.placar_time_a}</span>
-                            <span style={{ color: '#475569' }}>x</span>
-                            <span style={{ color: venceB ? '#4ade80' : '#f1f5f9' }}>{p.placar_time_b}</span>
+                          <div style={{ display: 'flex', gap: 8, padding: '4px 10px', background: 'var(--bg-secondary)', borderRadius: 8, fontWeight: 800, fontSize: 15 }}>
+                            <span style={{ color: venceA ? '#22c55e' : 'var(--text-primary)' }}>{p.placar_time_a}</span>
+                            <span style={{ color: 'var(--text-muted)' }}>x</span>
+                            <span style={{ color: venceB ? '#22c55e' : 'var(--text-primary)' }}>{p.placar_time_b}</span>
                           </div>
                           <div style={{ flex: 1, textAlign: 'right' }}>
-                            <span style={{ fontWeight: venceB ? 800 : 500, color: venceB ? '#f1f5f9' : '#94a3b8' }}>{p.time_b}</span>
+                            <span style={{ fontWeight: venceB ? 800 : 500, color: venceB ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_b}</span>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#64748b', borderTop: '1px solid rgba(255,255,255,0.04)', marginTop: 8, paddingTop: 6 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#64748b', borderTop: '1px solid var(--border)', marginTop: 8, paddingTop: 6 }}>
                           <span>Duração: {p.tempo_total}</span>
                           <span>Períodos: {p.periodos}</span>
                         </div>
@@ -438,13 +477,13 @@ export default function Jogos() {
       {tela === 'novo' && (
         <div style={{ padding: '20px' }}>
           <h3 style={{ fontWeight: 800, fontSize: 22, marginBottom: 4 }}>Configurar Partida</h3>
-          <p style={{ color: '#64748b', fontSize: 13, marginBottom: 20 }}>Configure as equipes e a lista de atletas antes de iniciar o cronômetro.</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>Configure as equipes e a lista de atletas antes de iniciar o cronômetro.</p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {/* Input nomes dos times */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div>
-                <label style={{ fontSize: 12, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome Time A *</label>
+                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome Time A *</label>
                 <input
                   value={timeANome}
                   onChange={e => setTimeANome(e.target.value)}
@@ -452,7 +491,7 @@ export default function Jogos() {
                 />
               </div>
               <div>
-                <label style={{ fontSize: 12, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome Time B *</label>
+                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome Time B *</label>
                 <input
                   value={timeBNome}
                   onChange={e => setTimeBNome(e.target.value)}
@@ -463,28 +502,28 @@ export default function Jogos() {
 
             {/* Listagem de jogadores e seleção rápida */}
             <div>
-              <label style={{ fontSize: 13, color: '#f1f5f9', fontWeight: 700, display: 'block', marginBottom: 4 }}>Escalar Jogadores</label>
-              <p style={{ fontSize: 12, color: '#64748b', marginBottom: 12 }}>Distribua os jogadores entre as duas equipes:</p>
+              <label style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700, display: 'block', marginBottom: 4 }}>Escalar Jogadores</label>
+              <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>Distribua os jogadores entre as duas equipes:</p>
               
-              <div style={{ maxHeight: '50vh', overflowY: 'auto', background: 'var(--card-bg, rgba(255,255,255,0.02))', border: '1px solid var(--border)', borderRadius: 12, padding: '0 16px' }}>
+              <div style={{ maxHeight: '50vh', overflowY: 'auto', background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 12, padding: '0 16px' }}>
                 {jogadores.length === 0 ? (
-                  <p style={{ textAlign: 'center', padding: '20px 0', color: '#64748b', fontSize: 13 }}>Cadastre jogadores na aba Jogadores antes.</p>
+                  <p style={{ textAlign: 'center', padding: '20px 0', color: 'var(--text-secondary)', fontSize: 13 }}>Cadastre jogadores na aba Jogadores antes.</p>
                 ) : (
                   jogadores.map(j => {
                     const noA = timeAJogadores.includes(j.id);
                     const noB = timeBJogadores.includes(j.id);
                     return (
-                      <div key={j.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <div key={j.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
                         <div>
-                          <div style={{ fontWeight: 600, color: '#f1f5f9', fontSize: 14 }}>{j.nome}</div>
-                          {j.apelido && <div style={{ fontSize: 11, color: '#64748b' }}>"{j.apelido}" • {j.posicao}</div>}
+                          <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 14 }}>{j.nome}</div>
+                          {j.apelido && <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>"{j.apelido}" • {j.posicao}</div>}
                         </div>
                         <div style={{ display: 'flex', gap: 6 }}>
                           <button
                             type="button"
                             onClick={() => togglePlayer(j.id, 'A')}
                             className={`btn btn-sm ${noA ? 'btn-primary' : 'btn-secondary'}`}
-                            style={{ fontSize: 11, padding: '4px 10px', background: noA ? '#3b82f6' : 'transparent', color: noA ? '#fff' : '#94a3b8', border: noA ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.1)' }}
+                            style={{ fontSize: 11, padding: '4px 10px', background: noA ? '#3b82f6' : 'transparent', color: noA ? '#fff' : 'var(--text-secondary)', border: noA ? '1px solid #3b82f6' : '1px solid var(--border)' }}
                           >
                             Time A
                           </button>
@@ -492,7 +531,7 @@ export default function Jogos() {
                             type="button"
                             onClick={() => togglePlayer(j.id, 'B')}
                             className={`btn btn-sm ${noB ? 'btn-primary' : 'btn-secondary'}`}
-                            style={{ fontSize: 11, padding: '4px 10px', background: noB ? '#ef4444' : 'transparent', color: noB ? '#fff' : '#94a3b8', border: noB ? '1px solid #ef4444' : '1px solid rgba(255,255,255,0.1)' }}
+                            style={{ fontSize: 11, padding: '4px 10px', background: noB ? '#ef4444' : 'transparent', color: noB ? '#fff' : 'var(--text-secondary)', border: noB ? '1px solid #ef4444' : '1px solid var(--border)' }}
                           >
                             Time B
                           </button>
@@ -505,7 +544,7 @@ export default function Jogos() {
             </div>
 
             {/* Contadores da Roster */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#64748b', padding: '0 4px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-secondary)', padding: '0 4px' }}>
               <span>{timeANome}: <strong>{timeAJogadores.length} jogadores</strong></span>
               <span>{timeBNome}: <strong>{timeBJogadores.length} jogadores</strong></span>
             </div>
@@ -528,23 +567,23 @@ export default function Jogos() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
             <div>
               <span style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa', padding: '3px 10px', borderRadius: 50, fontSize: 11, fontWeight: 700, letterSpacing: '0.05em' }}>JOGO EM ANDAMENTO</span>
-              <h4 style={{ fontWeight: 800, fontSize: 15, marginTop: 4, color: '#94a3b8' }}>Período Atual: {periodo}º Volta</h4>
+              <h4 style={{ fontWeight: 800, fontSize: 15, marginTop: 4, color: 'var(--text-secondary)' }}>Período Atual: {periodo}º Volta</h4>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <span style={{ fontSize: 12, color: '#64748b' }}>Altamira - PA</span>
+              <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Altamira - PA</span>
             </div>
           </div>
 
           {/* Placar Central Gigante */}
-          <div className="card" style={{ padding: '24px 16px', background: 'var(--bg-elevated, rgba(255,255,255,0.02))', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+          <div className="card" style={{ padding: '24px 16px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 16 }}>
             <div style={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ flex: 1, textBreak: 'break-word', textAlign: 'center' }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: '#94a3b8', display: 'block', textTransform: 'uppercase' }}>{timeANome}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase' }}>{timeANome}</span>
                 <span style={{ fontSize: 56, fontWeight: 900, color: '#3b82f6', display: 'block', marginTop: 4 }}>{String(placarA).padStart(2, '0')}</span>
               </div>
               <span style={{ fontSize: 24, fontWeight: 800, color: '#475569' }}>x</span>
               <div style={{ flex: 1, textBreak: 'break-word', textAlign: 'center' }}>
-                <span style={{ fontSize: 14, fontWeight: 700, color: '#94a3b8', display: 'block', textTransform: 'uppercase' }}>{timeBNome}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase' }}>{timeBNome}</span>
                 <span style={{ fontSize: 56, fontWeight: 900, color: '#ef4444', display: 'block', marginTop: 4 }}>{String(placarB).padStart(2, '0')}</span>
               </div>
             </div>
@@ -586,8 +625,8 @@ export default function Jogos() {
             {/* Cronômetro visor */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <span style={{ fontSize: 12, color: '#64748b', fontWeight: 600, display: 'block' }}>TEMPO DE JOGO</span>
-                <span style={{ fontSize: 36, fontFamily: 'monospace', fontWeight: 700, color: '#f1f5f9' }}>{formatTempo(tempo)}</span>
+                <span style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block' }}>TEMPO DE JOGO</span>
+                <span style={{ fontSize: 36, fontFamily: 'monospace', fontWeight: 700, color: 'var(--text-primary)' }}>{formatTempo(tempo)}</span>
               </div>
               {/* Botões do Timer */}
               <div style={{ display: 'flex', gap: 8 }}>
@@ -607,11 +646,11 @@ export default function Jogos() {
             </div>
 
             {/* Divisor */}
-            <div style={{ height: 1, background: 'rgba(255,255,255,0.04)' }} />
+            <div style={{ height: 1, background: 'var(--border)' }} />
 
             {/* Controle de períodos */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 14, color: '#94a3b8' }}>Voltas jogadas: <strong>{periodo}</strong></span>
+              <span style={{ fontSize: 14, color: 'var(--text-secondary)' }}>Voltas jogadas: <strong>{periodo}</strong></span>
               <button className="btn btn-secondary btn-sm" onClick={avancarPeriodo}>
                 Próximo Período
               </button>
@@ -643,12 +682,12 @@ export default function Jogos() {
           <div className="modal-sheet" onClick={e => e.stopPropagation()}>
             <div className="modal-handle" />
             <h3 style={{ fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Finalizar Jogo</h3>
-            <p style={{ color: '#64748b', fontSize: 13, marginBottom: 20 }}>Deseja mesmo encerrar a partida? O placar acumulado e estatísticas serão registrados de forma definitiva.</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>Deseja mesmo encerrar a partida? O placar acumulado e estatísticas serão registrados de forma definitiva.</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
-                <label style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: 6 }}>Eleger MVP da Partida (Opcional)</label>
-                <select value={mvpId} onChange={e => setMvpId(e.target.value)} style={{ background: '#242938', color: mvpId ? '#f1f5f9' : '#64748b' }}>
+                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Eleger MVP da Partida (Opcional)</label>
+                <select value={mvpId} onChange={e => setMvpId(e.target.value)} style={{ color: mvpId ? 'var(--text-primary)' : 'var(--text-muted)' }}>
                   <option value="">Selecione o MVP...</option>
                   {getEscalados().map(j => (
                     <option key={j.id} value={j.id}>{j.nome} ({timeAJogadores.includes(j.id) ? timeANome : timeBNome})</option>
