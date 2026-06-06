@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ranks-hoops-cache-v2';
+const CACHE_NAME = 'ranks-hoops-cache-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -33,24 +33,44 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
+  const url = new URL(event.request.url);
+  const isHTML = event.request.headers.get('accept')?.includes('text/html') || url.pathname === '/' || url.pathname.endsWith('.html');
+
+  if (isHTML) {
+    // Network-First para HTML para garantir que o usuário sempre carregue o index.html atualizado
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+          }
           return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+  } else {
+    // Cache-First para assets (JS, CSS, imagens) pois eles possuem hash único
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
         }
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
+        return fetch(event.request).then((response) => {
+          if (!response || response.status !== 200 || response.type !== 'basic') {
+            return response;
+          }
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+          return response;
+        }).catch(() => {
+          return caches.match('/');
         });
-        return response;
-      }).catch(() => {
-        // Fallback offline
-        return caches.match('/index.html');
-      });
-    })
-  );
+      })
+    );
+  }
 });
