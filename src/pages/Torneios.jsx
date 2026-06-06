@@ -1141,98 +1141,283 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         </div>
       </div>
 
-      {/* Placar Central e Controles de Pontuação (Side-by-Side) */}
-      <div style={{ position: 'relative', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
-        {/* Team A Card */}
+      {/* Placar Centralizado (Unified Scoreboard Card) */}
+      <div className="card" style={{
+        padding: '20px 16px',
+        background: 'rgba(26, 30, 40, 0.65)',
+        border: '1px solid var(--border)',
+        borderRadius: '16px',
+        display: 'grid',
+        gridTemplateColumns: '1fr auto 1fr',
+        alignItems: 'center',
+        gap: 12,
+        marginBottom: 24,
+        backdropFilter: 'blur(12px)',
+        webkitBackdropFilter: 'blur(12px)',
+        position: 'relative'
+      }}>
+        {/* Floating Feedbacks Time A */}
+        <div style={{ position: 'absolute', left: '25%', top: '35%', pointerEvents: 'none' }}>
+          {feedbacksA.map(f => (
+            <div key={f.id} className="floating-feedback" style={{ color: f.color, fontSize: '32px' }}>
+              {f.text}
+            </div>
+          ))}
+        </div>
+
+        {/* Floating Feedbacks Time B */}
+        <div style={{ position: 'absolute', right: '25%', top: '35%', pointerEvents: 'none' }}>
+          {feedbacksB.map(f => (
+            <div key={f.id} className="floating-feedback" style={{ color: f.color, fontSize: '32px' }}>
+              {f.text}
+            </div>
+          ))}
+        </div>
+
+        {/* Time A Name & Score */}
+        <div style={{ textAlign: 'center', minWidth: 0 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {jogo.equipe_a?.nome}
+          </span>
+          <span key={placarA} className="number-animate" style={{
+            fontSize: '90px',
+            fontWeight: 'bold',
+            color: '#3b82f6',
+            fontFamily: "'Bebas Neue', 'Oswald', sans-serif",
+            display: 'block',
+            marginTop: 6,
+            lineHeight: 1
+          }}>
+            {String(placarA).padStart(2, '0')}
+          </span>
+        </div>
+
+        {/* Vertical Line Separator */}
+        <div style={{
+          width: '1px',
+          height: '80px',
+          background: 'rgba(255, 255, 255, 0.15)',
+          alignSelf: 'center',
+          margin: '0 8px'
+        }} />
+
+        {/* Time B Name & Score */}
+        <div style={{ textAlign: 'center', minWidth: 0 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {jogo.equipe_b?.nome}
+          </span>
+          <span key={placarB} className="number-animate" style={{
+            fontSize: '90px',
+            fontWeight: 'bold',
+            color: '#ef4444',
+            fontFamily: "'Bebas Neue', 'Oswald', sans-serif",
+            display: 'block',
+            marginTop: 6,
+            lineHeight: 1
+          }}>
+            {String(placarB).padStart(2, '0')}
+          </span>
+        </div>
+      </div>
+
+      <hr style={{ border: 'none', borderTop: '1px solid rgba(255, 255, 255, 0.08)', margin: '20px 0' }} />
+
+      {/* Controles de Pontuação (Side-by-Side) */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
+        {/* Controles Time A */}
         <div className="card" style={{
-          position: 'relative',
-          padding: '24px 14px',
+          padding: '16px 12px',
           background: 'var(--card-team-a-bg)',
           border: 'var(--card-team-a-border)',
-          borderTop: '4px solid #3b82f6',
-          borderRadius: '16px',
+          borderRadius: '14px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          minHeight: '235px',
-          backdropFilter: 'blur(12px)',
-          webkitBackdropFilter: 'blur(12px)'
+          gap: 12
         }}>
-          {feedbacksA.map(f => (
-            <div key={f.id} className="floating-feedback" style={{ color: f.color, top: '25%', left: '50%', transform: 'translateX(-50%)', fontSize: '28px' }}>
-              {f.text}
-            </div>
-          ))}
-          <div style={{ width: '100%', textAlign: 'center' }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{jogo.equipe_a?.nome}</span>
-            <span key={placarA} className="number-animate" style={{ fontSize: 96, fontWeight: 900, color: '#3b82f6', fontFamily: 'monospace', display: 'block', marginTop: 10, lineHeight: 1, letterSpacing: '-0.02em' }}>{String(placarA).padStart(2, '0')}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pontuar {jogo.equipe_a?.nome}</span>
+          
+          {/* Botões Positivos */}
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, width: '100%', justifyContent: 'center' }}>
+            <button className="btn-counter" onClick={() => ajustarPlacar('A', 1)} style={{
+              flex: 1.0,
+              height: '38px',
+              background: 'rgba(59, 130, 246, 0.1)',
+              border: '1px solid rgba(59, 130, 246, 0.3)',
+              color: '#60a5fa',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}>+1</button>
+            <button className="btn-counter" onClick={() => ajustarPlacar('A', 2)} style={{
+              flex: 1.2,
+              height: '44px',
+              background: '#3b82f6',
+              border: 'none',
+              color: '#ffffff',
+              borderRadius: '8px',
+              fontSize: '18px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+            }}>+2</button>
+            <button className="btn-counter" onClick={() => ajustarPlacar('A', 3)} style={{
+              flex: 1.4,
+              height: '50px',
+              background: 'rgba(245, 158, 11, 0.2)',
+              border: '2px solid #f59e0b',
+              color: '#f59e0b',
+              borderRadius: '8px',
+              fontSize: '22px',
+              fontWeight: 900,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              boxShadow: '0 0 10px rgba(245, 158, 11, 0.4)'
+            }}>+3</button>
           </div>
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr 1fr', gap: 6, alignItems: 'center' }}>
-              <button className="btn-counter" onClick={() => ajustarPlacar('A', 1)} style={{ border: '1px solid rgba(59, 130, 246, 0.3)', background: 'rgba(59, 130, 246, 0.05)', color: 'var(--counter-btn-a-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
-              <button className="btn-counter" onClick={() => ajustarPlacar('A', 2)} style={{ border: 'none', background: '#3b82f6', color: '#ffffff', borderRadius: '8px', padding: '12px 0', fontSize: '18px', fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.08)', boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)' }}>+2</button>
-              <button className="btn-counter" onClick={() => ajustarPlacar('A', 3)} style={{ border: '1.5px solid var(--gold-color)', background: 'var(--accent-gold-dim)', color: 'var(--gold-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
-            </div>
-            <button className="btn-counter" onClick={() => ajustarPlacar('A', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(255, 255, 255, 0.02)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
+
+          {/* Botões Negativos */}
+          <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center', marginTop: 4 }}>
+            <button className="btn-counter" onClick={() => ajustarPlacar('A', -1)} style={{
+              flex: 1,
+              padding: '5px 0',
+              fontSize: '10px',
+              fontWeight: 600,
+              color: 'rgba(255, 255, 255, 0.4)',
+              background: 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}>-1</button>
+            <button className="btn-counter" onClick={() => ajustarPlacar('A', -2)} style={{
+              flex: 1,
+              padding: '5px 0',
+              fontSize: '10px',
+              fontWeight: 600,
+              color: 'rgba(255, 255, 255, 0.4)',
+              background: 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}>-2</button>
+            <button className="btn-counter" onClick={() => ajustarPlacar('A', -3)} style={{
+              flex: 1,
+              padding: '5px 0',
+              fontSize: '10px',
+              fontWeight: 600,
+              color: 'rgba(255, 255, 255, 0.4)',
+              background: 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}>-3</button>
           </div>
         </div>
 
-        {/* VS Badge */}
-        <div style={{
-          position: 'absolute',
-          left: '50%',
-          top: '30%',
-          transform: 'translate(-50%, -50%)',
-          background: 'var(--vs-badge-bg)',
-          border: '2.5px solid var(--border)',
-          borderRadius: '50%',
-          width: '40px',
-          height: '40px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 10,
-          boxShadow: '0 0 15px rgba(0,0,0,0.8), 0 0 6px rgba(255,255,255,0.05)'
-        }}>
-          <span style={{ fontSize: '12px', fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '0.05em' }}>VS</span>
-        </div>
-
-        {/* Team B Card */}
+        {/* Controles Time B */}
         <div className="card" style={{
-          position: 'relative',
-          padding: '24px 14px',
+          padding: '16px 12px',
           background: 'var(--card-team-b-bg)',
           border: 'var(--card-team-b-border)',
-          borderTop: '4px solid #ef4444',
-          borderRadius: '16px',
+          borderRadius: '14px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          minHeight: '235px',
-          backdropFilter: 'blur(12px)',
-          webkitBackdropFilter: 'blur(12px)'
+          gap: 12
         }}>
-          {feedbacksB.map(f => (
-            <div key={f.id} className="floating-feedback" style={{ color: f.color, top: '25%', left: '50%', transform: 'translateX(-50%)', fontSize: '28px' }}>
-              {f.text}
-            </div>
-          ))}
-          <div style={{ width: '100%', textAlign: 'center' }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{jogo.equipe_b?.nome}</span>
-            <span key={placarB} className="number-animate" style={{ fontSize: 96, fontWeight: 900, color: '#ef4444', fontFamily: 'monospace', display: 'block', marginTop: 10, lineHeight: 1, letterSpacing: '-0.02em' }}>{String(placarB).padStart(2, '0')}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pontuar {jogo.equipe_b?.nome}</span>
+          
+          {/* Botões Positivos */}
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, width: '100%', justifyContent: 'center' }}>
+            <button className="btn-counter" onClick={() => ajustarPlacar('B', 1)} style={{
+              flex: 1.0,
+              height: '38px',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              color: '#f87171',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}>+1</button>
+            <button className="btn-counter" onClick={() => ajustarPlacar('B', 2)} style={{
+              flex: 1.2,
+              height: '44px',
+              background: '#ef4444',
+              border: 'none',
+              color: '#ffffff',
+              borderRadius: '8px',
+              fontSize: '18px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)'
+            }}>+2</button>
+            <button className="btn-counter" onClick={() => ajustarPlacar('B', 3)} style={{
+              flex: 1.4,
+              height: '50px',
+              background: 'rgba(245, 158, 11, 0.2)',
+              border: '2px solid #f59e0b',
+              color: '#f59e0b',
+              borderRadius: '8px',
+              fontSize: '22px',
+              fontWeight: 900,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              boxShadow: '0 0 10px rgba(245, 158, 11, 0.4)'
+            }}>+3</button>
           </div>
-          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr 1fr', gap: 6, alignItems: 'center' }}>
-              <button className="btn-counter" onClick={() => ajustarPlacar('B', 1)} style={{ border: '1px solid rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.05)', color: 'var(--counter-btn-b-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+1</button>
-              <button className="btn-counter" onClick={() => ajustarPlacar('B', 2)} style={{ border: 'none', background: '#ef4444', color: '#ffffff', borderRadius: '8px', padding: '12px 0', fontSize: '18px', fontWeight: 900, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'scale(1.08)', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)' }}>+2</button>
-              <button className="btn-counter" onClick={() => ajustarPlacar('B', 3)} style={{ border: '1.5px solid var(--gold-color)', background: 'var(--accent-gold-dim)', color: 'var(--gold-color)', borderRadius: '8px', padding: '10px 0', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+3</button>
-            </div>
-            <button className="btn-counter" onClick={() => ajustarPlacar('B', -1)} style={{ border: '1px solid var(--border)', background: 'rgba(255, 255, 255, 0.02)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 0', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', width: '100%' }}>Corrigir (-1)</button>
+
+          {/* Botões Negativos */}
+          <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center', marginTop: 4 }}>
+            <button className="btn-counter" onClick={() => ajustarPlacar('B', -1)} style={{
+              flex: 1,
+              padding: '5px 0',
+              fontSize: '10px',
+              fontWeight: 600,
+              color: 'rgba(255, 255, 255, 0.4)',
+              background: 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}>-1</button>
+            <button className="btn-counter" onClick={() => ajustarPlacar('B', -2)} style={{
+              flex: 1,
+              padding: '5px 0',
+              fontSize: '10px',
+              fontWeight: 600,
+              color: 'rgba(255, 255, 255, 0.4)',
+              background: 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}>-2</button>
+            <button className="btn-counter" onClick={() => ajustarPlacar('B', -3)} style={{
+              flex: 1,
+              padding: '5px 0',
+              fontSize: '10px',
+              fontWeight: 600,
+              color: 'rgba(255, 255, 255, 0.4)',
+              background: 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontFamily: 'inherit'
+            }}>-3</button>
           </div>
         </div>
       </div>
+
+      <hr style={{ border: 'none', borderTop: '1px solid rgba(255, 255, 255, 0.08)', margin: '20px 0' }} />
 
       {/* Cronômetro visor */}
       <div className={`card ${timerAtivo ? 'timer-active-pulse' : ''}`} style={{
@@ -1242,22 +1427,25 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         gap: 16,
         marginBottom: 20,
         transition: 'all 0.3s ease',
-        border: timerAtivo ? '1px solid #22c55e' : '1px solid var(--border)',
+        border: timerAtivo ? '1px solid rgba(255, 255, 255, 0.4)' : '1px solid var(--border)',
         padding: '24px',
         background: 'var(--timer-bg)',
         backdropFilter: 'blur(12px)',
-        webkitBackdropFilter: 'blur(12px)'
+        webkitBackdropFilter: 'blur(12px)',
+        width: '100%',
+        minWidth: '40%'
       }}>
         <div style={{ textAlign: 'center' }}>
           <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>TEMPO DE JOGO</span>
-          <span style={{
-            fontSize: '60px',
+          <span className={timerAtivo ? 'timer-active-pulse-text' : ''} style={{
+            fontSize: '72px',
             fontFamily: 'monospace',
             fontWeight: 800,
-            color: timerAtivo ? '#4ade80' : 'var(--text-primary)',
-            textShadow: timerAtivo ? '0 0 12px rgba(74, 222, 128, 0.25)' : 'none',
+            color: '#ffffff',
+            textShadow: timerAtivo ? '0 0 16px rgba(255, 255, 255, 0.4)' : 'none',
             transition: 'color 0.3s ease, text-shadow 0.3s ease',
-            lineHeight: 1
+            lineHeight: 1,
+            display: 'inline-block'
           }}>{formatTempo(tempo)}</span>
         </div>
         
@@ -1272,10 +1460,44 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
               ⏸ Pausar
             </button>
           )}
-          <button onClick={() => setPeriodo(p => p + 1)} style={{ background: 'rgba(99, 102, 241, 0.08)', color: '#818cf8', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '8px', padding: '10px 16px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
-            Período: {periodo}º
+          <button onClick={() => { setTimerAtivo(false); setTempo(0); }} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'rgba(100, 116, 139, 0.06)', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
+            🔄 Reiniciar
           </button>
         </div>
+      </div>
+
+      <hr style={{ border: 'none', borderTop: '1px solid rgba(255, 255, 255, 0.08)', margin: '20px 0' }} />
+
+      {/* Seção Próximo Período Isolada e Destacada */}
+      <div className="card" style={{
+        padding: '16px 20px',
+        background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(26, 30, 40, 0.4) 100%)',
+        border: '1px solid rgba(245, 158, 11, 0.3)',
+        borderRadius: '14px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 24
+      }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(245, 158, 11, 0.85)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Controle de Período</span>
+          <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>Fim do {periodo}º período da partida</span>
+        </div>
+        <button onClick={() => setPeriodo(p => p + 1)} style={{
+          background: '#f59e0b',
+          color: '#0d0f14',
+          border: 'none',
+          borderRadius: '8px',
+          padding: '10px 18px',
+          fontSize: '13px',
+          fontWeight: 800,
+          cursor: 'pointer',
+          fontFamily: 'inherit',
+          boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
+          transition: 'all 0.2s'
+        }}>
+          Próximo Período
+        </button>
       </div>
 
       {/* Formulário de Estatísticas Individuais */}

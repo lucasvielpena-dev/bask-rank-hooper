@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&family=Oswald:wght@400;700;900&display=swap');
 
 :root {
   --bg-primary: #0d0f14;
@@ -885,4 +885,27 @@ input:focus { border-color: var(--accent-blue); }
 .page-content {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Animação pulsante para o timer de jogo ativo */
+@keyframes timerPulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 0.95;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+  }
+}
+
+.timer-active-pulse-text {
+  animation: timerPulse 2s infinite ease-in-out;
 }
