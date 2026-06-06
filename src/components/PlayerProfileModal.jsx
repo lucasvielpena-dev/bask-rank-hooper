@@ -425,7 +425,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     <span style={{ color: '#94A3B8', fontSize: '11px', marginLeft: 4 }}>Nota média</span>
                   </div>
                   <div style={{ fontSize: '11px', color: '#94A3B8' }}>
-                    📍 {rank ? `#${rank} ` : ''}{localJogador.cidade} - {localJogador.uf}
+                    {rank ? `#${rank} ` : ''}{localJogador.cidade} - {localJogador.uf}
                   </div>
                 </div>
               </div>

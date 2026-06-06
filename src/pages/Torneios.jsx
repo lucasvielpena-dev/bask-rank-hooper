@@ -132,7 +132,7 @@ export default function Torneios({ profile, isNested = false }) {
                     </div>
                     <h3 style={{ fontWeight: 800, fontSize: 17, color: 'var(--text-primary)', marginBottom: 6 }}>{t.nome}</h3>
                     <p style={{ fontSize: 13, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <span>📍</span> {t.local_quadra} {t.cidade && `(${t.cidade})`}
+                      {t.local_quadra} {t.cidade && `(${t.cidade})`}
                     </p>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12, fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
                       <span>Formato: {t.formato === 'eliminatoria_simples' ? 'Mata-Mata' : 'Pontos Corridos'}</span>
@@ -615,7 +615,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
         }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#94A3B8', fontSize: '11px' }}>
-              <span>📍</span> {torneio.local_quadra}
+              {torneio.local_quadra}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#94A3B8', fontSize: '11px' }}>
               <span>📅</span> {new Date(torneio.data_inicio).toLocaleDateString('pt-BR')} • {torneio.horario_inicio.substring(0,5)}
@@ -2431,7 +2431,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
                       <div style={{ fontSize: 11, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
                         {p.apelido && <span>"{p.apelido}"</span>}
                         {p.apelido && <span>•</span>}
-                        <span>📍 {p.cidade_atual || p.cidade || 'Altamira'} - {p.uf || 'PA'}</span>
+                        <span>{p.cidade_atual || p.cidade || 'Altamira'} - {p.uf || 'PA'}</span>
                       </div>
                     </div>
                   </div>

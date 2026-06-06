@@ -958,7 +958,12 @@ export default function App() {
       {cityPrompt && (
         <div className="modal-overlay" style={{ zIndex: 2000 }}>
           <div className="modal-sheet" style={{ maxWidth: 400, padding: 24, textAlign: 'center' }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>📍</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </div>
             <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 10 }}>Mudar cidade de competição?</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
               Detectamos que você está em <strong>{cityPrompt.city} - {cityPrompt.uf}</strong>. Deseja atualizar sua cidade de competição?

@@ -421,7 +421,7 @@ export default function Stats({ profile, onNavigate }) {
                 <span style={{ color: '#94A3B8', fontSize: '11px', marginLeft: 4 }}>Nota média</span>
               </div>
               <div style={{ fontSize: '11px', color: '#94A3B8' }}>
-                📍 {myRank !== '--' ? `${myRank} ` : ''}{city} - {uf}
+                {myRank !== '--' ? `${myRank} ` : ''}{city} - {uf}
               </div>
             </div>
           </div>

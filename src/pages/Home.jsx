@@ -136,7 +136,7 @@ export default function Home({ profile, onNavigate }) {
             Boa noite, <span style={{ color: '#2563EB' }}>{greetingName}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#94A3B8', fontSize: '12px', marginTop: 4 }}>
-            <span>📍</span> Ranking de {city} - {uf}
+            Ranking de {city} - {uf}
           </div>
         </div>
 
