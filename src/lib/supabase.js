@@ -1,16 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL || 'https://rmqloznmfalxhujvwywl.supabase.co';
+const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY || 'sb_publishable_6sC3nyq5WABhB3Jmf8tYQg_K8HT_lTs';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('⚠️ Variáveis de ambiente do Supabase não configuradas. Verifique .env.local');
-}
-
-export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key'
-);
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ============================================================
 // API helpers
