@@ -59,16 +59,6 @@ function PlayerAvatar({ fotoUrl, nome, size = 40, border = 'none' }) {
   );
 }
 
-// Deterministic position evolution calculation
-const getEvolucaoValue = (id) => {
-  if (!id) return 0;
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = id.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const val = (Math.abs(hash) % 7) - 3; // range -3 to +3
-  return val;
-};
 
 export default function Ranking({ profile }) {
   const [ranking, setRanking] = useState([]);
@@ -179,59 +169,6 @@ export default function Ranking({ profile }) {
           </p>
         </div>
 
-        {/* Tab Bar Categorias */}
-        <div style={{
-          display: 'flex',
-          gap: 16,
-          overflowX: 'auto',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-          paddingBottom: 8,
-          marginBottom: 16,
-          scrollbarWidth: 'none',
-          webkitOverflowScrolling: 'touch'
-        }}>
-          {[
-            { key: 'geral', label: 'GERAL' },
-            { key: 'pontos', label: 'PONTOS' },
-            { key: 'rebotes', label: 'REBOTES' },
-            { key: 'assist', label: 'ASSIST.' },
-            { key: 'defesa', label: 'DEFESA' }
-          ].map(tab => {
-            const isActive = categoria === tab.key;
-            return (
-              <button
-                key={tab.key}
-                onClick={() => setCategoria(tab.key)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: isActive ? '#60A5FA' : '#64748B',
-                  fontSize: '12px',
-                  fontWeight: isActive ? 800 : 600,
-                  cursor: 'pointer',
-                  padding: '6px 4px',
-                  position: 'relative',
-                  whiteSpace: 'nowrap',
-                  fontFamily: 'inherit'
-                }}
-              >
-                {tab.label}
-                {isActive && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: -9,
-                    left: 0,
-                    right: 0,
-                    height: '2px',
-                    background: '#2563EB',
-                    borderRadius: '1px'
-                  }} />
-                )}
-              </button>
-            );
-          })}
-        </div>
-
         {/* Listagem */}
         {sortedRanking.length === 0 ? (
           <div className="empty-state">
@@ -242,9 +179,6 @@ export default function Ranking({ profile }) {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
             {sortedRanking.map((jogador, index) => {
-              const evolVal = getEvolucaoValue(jogador.id);
-              const isUp = evolVal > 0;
-              const isDown = evolVal < 0;
               
               return (
                 <div 
@@ -304,12 +238,6 @@ export default function Ranking({ profile }) {
 
                   {/* Lado Direito: Nota e Tendência */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    {/* Evolução de Posição Semanal */}
-                    <div style={{ fontSize: '10px', fontWeight: 800 }}>
-                      {isUp && <span style={{ color: '#10B981' }}>▲ {evolVal}</span>}
-                      {isDown && <span style={{ color: '#EF4444' }}>▼ {Math.abs(evolVal)}</span>}
-                      {!isUp && !isDown && <span style={{ color: '#64748B' }}>➖</span>}
-                    </div>
 
                     {/* Nota Estrelas */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
