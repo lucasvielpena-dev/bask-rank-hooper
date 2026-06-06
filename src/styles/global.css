@@ -50,7 +50,11 @@ body {
   height: 100dvh;
   max-width: 480px;
   margin: 0 auto;
-  background: var(--bg-primary);
+  background-color: var(--bg-primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='800' viewBox='0 0 400 800'%3E%3Cpath d='M 20 20 L 380 20 L 380 780 L 20 780 Z' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.04'/%3E%3Ccircle cx='200' cy='400' r='60' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.04'/%3E%3Cline x1='20' y1='400' x2='380' y2='400' stroke='%23ffffff' stroke-width='1.5' opacity='0.04'/%3E%3Cpath d='M 20 150 A 180 180 0 0 0 380 150' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.04'/%3E%3Cpath d='M 20 650 A 180 180 0 0 1 380 650' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.04'/%3E%3Cg transform='translate(50, 250) scale(0.7)' opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='25' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3Cpath d='M 5 30 A 25 25 0 0 0 55 30' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3Cpath d='M 30 5 A 25 25 0 0 0 30 55' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3Cpath d='M 12 12 Q 30 20 48 12' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3Cpath d='M 12 48 Q 30 40 48 48' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3C/g%3E%3Cg transform='translate(300, 500) scale(0.7)' opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='25' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3Cpath d='M 5 30 A 25 25 0 0 0 55 30' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3Cpath d='M 30 5 A 25 25 0 0 0 30 55' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3Cpath d='M 12 12 Q 30 20 48 12' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3Cpath d='M 12 48 Q 30 40 48 48' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3C/g%3E%3Cg transform='translate(320, 220) scale(0.5)' opacity='0.04'%3E%3Cpolygon points='25,1 32,15 47,18 36,28 39,43 25,36 11,43 14,28 3,18 18,15' fill='%23ffffff'/%3E%3C/g%3E%3Cg transform='translate(40, 550) scale(0.5)' opacity='0.04'%3E%3Cpolygon points='25,1 32,15 47,18 36,28 39,43 25,36 11,43 14,28 3,18 18,15' fill='%23ffffff'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   position: relative;
   overflow: hidden;
 }
@@ -62,12 +66,15 @@ body {
   gap: 10px;
   padding: 12px 20px;
   height: var(--header-height);
-  background: var(--bg-primary);
+  background: rgba(13, 15, 20, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 50;
   flex-shrink: 0;
+  transition: background-color 0.3s;
 }
 
 .header-logo-icon {
@@ -115,7 +122,9 @@ body {
   left: 0;
   right: 0;
   height: var(--nav-height);
-  background: var(--bg-secondary);
+  background: rgba(21, 24, 32, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -123,6 +132,7 @@ body {
   flex-shrink: 0;
   overflow-x: auto;
   scrollbar-width: none;
+  transition: background-color 0.3s;
 }
 .bottom-nav::-webkit-scrollbar { display: none; }
 
@@ -153,14 +163,22 @@ body {
   background: var(--bg-card);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  padding: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, border-color 0.3s;
+}
+
+.card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  transform: translateY(-2px);
 }
 
 .card-elevated {
   background: var(--bg-elevated);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  padding: 16px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
 }
 
 /* Buttons */
@@ -483,4 +501,25 @@ input:focus { border-color: var(--accent-blue); }
   --border: #E2E8F0;
   --border-active: rgba(59, 130, 246, 0.3);
   --shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
+}
+
+.light-theme.app-shell, .light-theme .app-shell {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='800' viewBox='0 0 400 800'%3E%3Cpath d='M 20 20 L 380 20 L 380 780 L 20 780 Z' fill='none' stroke='%230f172a' stroke-width='1.5' opacity='0.03'/%3E%3Ccircle cx='200' cy='400' r='60' fill='none' stroke='%230f172a' stroke-width='1.5' opacity='0.03'/%3E%3Cline x1='20' y1='400' x2='380' y2='400' stroke='%230f172a' stroke-width='1.5' opacity='0.03'/%3E%3Cpath d='M 20 150 A 180 180 0 0 0 380 150' fill='none' stroke='%230f172a' stroke-width='1.5' opacity='0.03'/%3E%3Cpath d='M 20 650 A 180 180 0 0 1 380 650' fill='none' stroke='%230f172a' stroke-width='1.5' opacity='0.03'/%3E%3Cg transform='translate(50, 250) scale(0.7)' opacity='0.02'%3E%3Ccircle cx='30' cy='30' r='25' fill='none' stroke='%230f172a' stroke-width='1.5'/%3E%3Cpath d='M 5 30 A 25 25 0 0 0 55 30' fill='none' stroke='%230f172a' stroke-width='1.5'/%3E%3Cpath d='M 30 5 A 25 25 0 0 0 30 55' fill='none' stroke='%230f172a' stroke-width='1.5'/%3E%3Cpath d='M 12 12 Q 30 20 48 12' fill='none' stroke='%230f172a' stroke-width='1.5'/%3E%3Cpath d='M 12 48 Q 30 40 48 48' fill='none' stroke='%230f172a' stroke-width='1.5'/%3E%3C/g%3E%3Cg transform='translate(300, 500) scale(0.7)' opacity='0.02'%3E%3Ccircle cx='30' cy='30' r='25' fill='none' stroke='%230f172a' stroke-width='1.5'/%3E%3Cpath d='M 5 30 A 25 25 0 0 0 55 30' fill='none' stroke='%230f172a' stroke-width='1.5'/%3E%3Cpath d='M 30 5 A 25 25 0 0 0 30 55' fill='none' stroke='%230f172a' stroke-width='1.5'/%3E%3Cpath d='M 12 12 Q 30 20 48 12' fill='none' stroke='%230f172a' stroke-width='1.5'/%3E%3Cpath d='M 12 48 Q 30 40 48 48' fill='none' stroke='%230f172a' stroke-width='1.5'/%3E%3C/g%3E%3Cg transform='translate(320, 220) scale(0.5)' opacity='0.03'%3E%3Cpolygon points='25,1 32,15 47,18 36,28 39,43 25,36 11,43 14,28 3,18 18,15' fill='%230f172a'/%3E%3C/g%3E%3Cg transform='translate(40, 550) scale(0.5)' opacity='0.03'%3E%3Cpolygon points='25,1 32,15 47,18 36,28 39,43 25,36 11,43 14,28 3,18 18,15' fill='%230f172a'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.light-theme .app-header {
+  background: rgba(248, 250, 252, 0.82);
+}
+
+.light-theme .bottom-nav {
+  background: rgba(241, 245, 249, 0.82);
+}
+
+.light-theme .card {
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  border-color: #e2e8f0;
+}
+
+.light-theme .card:hover {
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
 }
