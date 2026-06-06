@@ -47,27 +47,22 @@ export const jogadoresAPI = {
 };
 
 export const rankingAPI = {
-  get: async (cidade, limit = 20) => {
+  get: async (limit = 50) => {
     const { data, error } = await supabase.rpc('get_ranking', {
-      p_cidade: cidade,
       p_limit: limit
     });
     return { data, error };
   },
 
-  // Buscar todos para o pódio (top 3)
-  getPodio: async (cidade) => {
+  getPodio: async () => {
     const { data, error } = await supabase.rpc('get_ranking', {
-      p_cidade: cidade,
       p_limit: 3
     });
     return { data, error };
   },
 
-  // Buscar top 5 para home
-  getTop5: async (cidade) => {
+  getTop5: async () => {
     const { data, error } = await supabase.rpc('get_ranking', {
-      p_cidade: cidade,
       p_limit: 5
     });
     return { data, error };

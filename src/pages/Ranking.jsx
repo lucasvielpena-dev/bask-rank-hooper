@@ -18,8 +18,7 @@ export default function Ranking({ profile }) {
 
   useEffect(() => {
     loadRanking();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile?.cidade_atual, profile?.cidade]);
+  }, []);
 
   useEffect(() => {
     const channel = supabase
@@ -36,13 +35,12 @@ export default function Ranking({ profile }) {
     return () => {
       supabase.removeChannel(channel);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [city]);
+  }, []);
 
 
   async function loadRanking() {
     setLoading(true);
-    const { data } = await rankingAPI.get(city, 50);
+    const { data } = await rankingAPI.get(50);
     setRanking(data || []);
     setLoading(false);
   }

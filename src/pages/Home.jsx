@@ -27,8 +27,7 @@ export default function Home({ profile, onNavigate }) {
 
   useEffect(() => {
     loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile?.cidade_atual, profile?.cidade]);
+  }, []);
 
   useEffect(() => {
     const channel = supabase
@@ -45,17 +44,15 @@ export default function Home({ profile, onNavigate }) {
     return () => {
       supabase.removeChannel(channel);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile?.cidade_atual, profile?.cidade]);
+  }, []);
 
 
   async function loadData() {
     setLoading(true);
-    const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
     try {
       const [{ data: jogadores }, { data: ranking }] = await Promise.all([
-        jogadoresAPI.listar(city),
-        rankingAPI.getTop5(city),
+        jogadoresAPI.listar(),
+        rankingAPI.getTop5(),
       ]);
 
       const total = jogadores?.length || 0;

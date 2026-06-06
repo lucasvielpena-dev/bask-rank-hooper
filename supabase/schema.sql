@@ -534,9 +534,8 @@ DROP FUNCTION IF EXISTS public.get_ranking(INTEGER);
 DROP FUNCTION IF EXISTS public.get_ranking(TEXT, TEXT, INTEGER);
 DROP FUNCTION IF EXISTS public.get_ranking(TEXT, INTEGER);
 
--- Nova Função: buscar ranking municipal (mínimo 10 avaliações para aparecer)
+-- Função: buscar ranking global (mínimo 10 avaliações para aparecer)
 CREATE OR REPLACE FUNCTION public.get_ranking(
-  p_cidade TEXT,
   p_limit INTEGER DEFAULT 20
 )
 RETURNS TABLE (
@@ -585,14 +584,13 @@ BEGIN
     )::INTEGER AS posicao
   FROM public.jogadores j
   WHERE j.ativo = TRUE
-    AND j.total_votos >= 10  -- Filtro de relevância estatística (mínimo 10 avaliações)
-    AND LOWER(j.cidade) = LOWER(p_cidade)
+    AND j.total_votos >= 10
   ORDER BY j.media_estrelas DESC, j.total_votos DESC
   LIMIT p_limit;
 END;
 $$;
 
--- Função: sortear 2 jogadores aleatórios da mesma cidade para votação (excluindo o próprio usuário e já avaliados)
+-- Função: sortear jogadores aleatórios para votação (excluindo o próprio usuário e já avaliados)
 CREATE OR REPLACE FUNCTION public.sortear_jogadores_para_voto()
 RETURNS TABLE (
   id UUID,
@@ -606,18 +604,7 @@ RETURNS TABLE (
 LANGUAGE plpgsql
 STABLE
 AS $$
-DECLARE
-  v_cidade TEXT;
 BEGIN
-  -- Obter a cidade atual do usuário logado
-  SELECT cidade_atual INTO v_cidade
-  FROM public.profiles
-  WHERE id = auth.uid();
-
-  IF v_cidade IS NULL THEN
-    v_cidade := 'Altamira';
-  END IF;
-
   RETURN QUERY
   WITH meu_player AS (
     SELECT player_id FROM public.profiles WHERE id = auth.uid()
@@ -636,10 +623,9 @@ BEGIN
     (j.id IN (SELECT jogador_id FROM avaliacoes_existentes)) AS ja_votou_hoje
   FROM public.jogadores j
   WHERE j.ativo = TRUE
-    AND LOWER(j.cidade) = LOWER(v_cidade) -- Filtrar apenas jogadores da mesma cidade
     AND (SELECT player_id FROM meu_player) IS DISTINCT FROM j.id
   ORDER BY RANDOM()
-  LIMIT 2;
+  LIMIT 5;
 END;
 $$;
 
