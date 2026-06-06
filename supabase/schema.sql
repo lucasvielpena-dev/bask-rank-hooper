@@ -45,6 +45,10 @@ CREATE TABLE public.profiles (
 -- Garantir colunas para bancos de dados já existentes
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cidade TEXT DEFAULT 'Altamira';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS uf TEXT DEFAULT 'PA';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS pais TEXT DEFAULT 'Brasil';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS latitude NUMERIC;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS longitude NUMERIC;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS reputacao NUMERIC DEFAULT 1.0;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cidade_atual TEXT DEFAULT 'Altamira';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS latitude_atual NUMERIC;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS longitude_atual NUMERIC;
