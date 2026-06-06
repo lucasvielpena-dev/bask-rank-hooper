@@ -13,6 +13,7 @@ const ESTADO_TO_UF = {
 
 export default function CompleteProfileScreen({ profile, onComplete }) {
   const [apelido, setApelido] = useState(profile?.apelido || '');
+  const [posicao, setPosicao] = useState(profile?.posicao || 'Ala');
   const [altura, setAltura] = useState(profile?.altura ? profile.altura.toString().replace('.', ',') : '');
   const [idade, setIdade] = useState(profile?.idade || '');
   const [avatarUrl, setAvatarUrl] = useState(profile?.foto_perfil || '');
@@ -165,7 +166,8 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               apelido: apelido.trim(),
               foto_url: avatarUrl || null,
               cidade: cidade,
-              uf: uf
+              uf: uf,
+              posicao: posicao
             })
             .eq('id', player_id);
         } else {
@@ -180,6 +182,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               cidade: cidade,
               uf: uf,
               pais: pais,
+              posicao: posicao,
               ativo: true,
               total_votos: 0,
               media_estrelas: 0.00
@@ -203,6 +206,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
         altura: parsedAltura,
         idade: parsedIdade,
         foto_perfil: avatarUrl,
+        posicao: posicao,
         cadastro_completo: true,
         player_id: player_id,
         is_player: is_player,
@@ -351,6 +355,23 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               onChange={(e) => setApelido(e.target.value)}
               placeholder="Ex: DD, Viel, etc."
             />
+          </div>
+
+          <div>
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+              Posição de Jogo *
+            </label>
+            <select
+              required
+              value={posicao}
+              onChange={(e) => setPosicao(e.target.value)}
+            >
+              <option value="Armador">Armador</option>
+              <option value="Ala-Armador">Ala-Armador</option>
+              <option value="Ala">Ala</option>
+              <option value="Ala-Pivô">Ala-Pivô</option>
+              <option value="Pivô">Pivô</option>
+            </select>
           </div>
 
           {/* Status da Localização Automática */}

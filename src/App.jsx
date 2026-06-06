@@ -97,6 +97,7 @@ export default function App() {
 
   // States para edição do perfil
   const [editApelido, setEditApelido] = useState('');
+  const [editPosicao, setEditPosicao] = useState('');
   const [editAltura, setEditAltura] = useState('');
   const [editIdade, setEditIdade] = useState('');
   const [editFoto, setEditFoto] = useState('');
@@ -424,6 +425,7 @@ export default function App() {
         setEditApelido(data.apelido || '');
         setEditAltura(data.altura ? data.altura.toString().replace('.', ',') : '');
         setEditIdade(data.idade || '');
+        setEditPosicao(data.posicao || 'Ala');
         setThemePref(data.tema_preferido || 'system');
         setLoadingProfile(false);
       } else if (retries < 3) {
@@ -450,6 +452,7 @@ export default function App() {
           setEditApelido(createdData.apelido || '');
           setEditAltura(createdData.altura || '');
           setEditIdade(createdData.idade || '');
+          setEditPosicao(createdData.posicao || 'Ala');
           setThemePref(createdData.tema_preferido || 'system');
         } else {
           setProfile(fallbackProfile);
@@ -496,7 +499,8 @@ export default function App() {
         apelido: editApelido.trim(),
         altura: parsedAltura,
         idade: parsedIdade,
-        foto_perfil: editFoto
+        foto_perfil: editFoto,
+        posicao: editPosicao
       });
 
       if (error) throw error;
@@ -507,7 +511,8 @@ export default function App() {
           .from('jogadores')
           .update({
             apelido: editApelido.trim(),
-            foto_url: editFoto
+            foto_url: editFoto,
+            posicao: editPosicao
           })
           .eq('id', data.player_id);
       }
@@ -777,6 +782,23 @@ export default function App() {
                     placeholder="Ex: DD, Viel..."
                   />
                 </div>
+
+                <div>
+                  <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                    Posição de Jogo *
+                  </label>
+                  <select
+                    required
+                    value={editPosicao}
+                    onChange={(e) => setEditPosicao(e.target.value)}
+                  >
+                    <option value="Armador">Armador</option>
+                    <option value="Ala-Armador">Ala-Armador</option>
+                    <option value="Ala">Ala</option>
+                    <option value="Ala-Pivô">Ala-Pivô</option>
+                    <option value="Pivô">Pivô</option>
+                  </select>
+                </div>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <div>
@@ -904,6 +926,7 @@ export default function App() {
                       setEditAltura(profile.altura ? profile.altura.toString().replace('.', ',') : '');
                       setEditIdade(profile.idade || '');
                       setEditFoto(profile.foto_perfil || '');
+                      setEditPosicao(profile.posicao || 'Ala');
                       setIsEditingProfile(true);
                     }}
                     style={{ flex: 1 }}

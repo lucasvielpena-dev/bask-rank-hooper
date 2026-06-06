@@ -303,6 +303,13 @@ export const profilesAPI = {
     const fileExt = file.name.split('.').pop();
     const filePath = `avatars/${userId}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
     
+    // Tenta criar o bucket 'avatars' caso ele não exista (fallback de segurança)
+    try {
+      await supabase.storage.createBucket('avatars', { public: true });
+    } catch (e) {
+      console.warn('Erro ou permissão insuficiente para criar bucket:', e);
+    }
+    
     const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(filePath, file, { upsert: true });

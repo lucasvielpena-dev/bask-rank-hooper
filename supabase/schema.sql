@@ -23,6 +23,7 @@ CREATE TABLE public.profiles (
   cadastro_completo BOOLEAN DEFAULT FALSE,
   is_player BOOLEAN DEFAULT FALSE,
   player_id UUID,
+  posicao TEXT,
   cidade TEXT DEFAULT 'Altamira',
   uf TEXT DEFAULT 'PA',
   pais TEXT DEFAULT 'Brasil',
@@ -44,6 +45,7 @@ CREATE TABLE public.profiles (
 
 -- Garantir colunas para bancos de dados já existentes
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS cidade TEXT DEFAULT 'Altamira';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS posicao TEXT;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS uf TEXT DEFAULT 'PA';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS pais TEXT DEFAULT 'Brasil';
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS latitude NUMERIC;
@@ -489,7 +491,8 @@ BEGIN
         apelido = NEW.apelido,
         foto_url = NEW.foto_perfil,
         cidade = NEW.cidade_atual, 
-        uf = NEW.uf
+        uf = NEW.uf,
+        posicao = NEW.posicao
       WHERE id = NEW.player_id;
     END IF;
   END IF;
@@ -517,6 +520,7 @@ BEGIN
       criado_por,
       cidade,
       uf,
+      posicao,
       total_votos,
       media_estrelas
     ) VALUES (
@@ -526,6 +530,7 @@ BEGIN
       NEW.id,
       NEW.cidade_atual,
       NEW.uf,
+      NEW.posicao,
       0,
       0.00
     ) RETURNING id INTO v_jogador_id;
@@ -912,3 +917,32 @@ CREATE INDEX IF NOT EXISTS idx_avaliacoes_avaliador_id ON public.avaliacoes(aval
 CREATE INDEX IF NOT EXISTS idx_partida_jogadores_partida_id ON public.partida_jogadores(partida_id);
 CREATE INDEX IF NOT EXISTS idx_partida_jogadores_jogador_id ON public.partida_jogadores(jogador_id);
 CREATE INDEX IF NOT EXISTS idx_votos_jogador_id ON public.votos(jogador_id);
+
+-- ============================================================
+-- STORAGE BUCKETS & POLICIES (Avatars)
+-- ============================================================
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('avatars', 'avatars', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Garantir que RLS está habilitado para storage.objects
+ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+
+-- Permite leitura pública de avatares
+DROP POLICY IF EXISTS "Leitura publica de avatares" ON storage.objects;
+CREATE POLICY "Leitura publica de avatares" ON storage.objects
+  FOR SELECT USING (bucket_id = 'avatars');
+
+-- Permite inserção de avatares por usuários autenticados
+DROP POLICY IF EXISTS "Insercao de avatares por autenticados" ON storage.objects;
+CREATE POLICY "Insercao de avatares por autenticados" ON storage.objects
+  FOR INSERT WITH CHECK (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+
+-- Permite atualização/deleção do próprio avatar
+DROP POLICY IF EXISTS "Atualizacao de avatares pelo dono" ON storage.objects;
+CREATE POLICY "Atualizacao de avatares pelo dono" ON storage.objects
+  FOR UPDATE USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Delecao de avatares pelo dono" ON storage.objects;
+CREATE POLICY "Delecao de avatares pelo dono" ON storage.objects
+  FOR DELETE USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');

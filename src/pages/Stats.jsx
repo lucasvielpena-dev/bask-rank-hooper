@@ -409,7 +409,7 @@ export default function Stats({ profile, onNavigate }) {
               }}>
                 {badgeText}
               </span>
-              <span style={{ color: '#94A3B8', fontSize: '11px' }}>{myPlayerInfo?.posicao || 'Ala'}</span>
+              <span style={{ color: '#94A3B8', fontSize: '11px' }}>{profile.posicao || myPlayerInfo?.posicao || 'Ala'}</span>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -521,7 +521,7 @@ export default function Stats({ profile, onNavigate }) {
                 { label: 'Cidade', val: `${city} - ${uf}` },
                 { label: 'Idade', val: profile?.idade ? `${profile.idade} anos` : 'A definir' },
                 { label: 'Altura', val: profile?.altura ? `${Number(profile.altura).toFixed(2)} m` : 'A definir' },
-                { label: 'Posição', val: myPlayerInfo?.posicao || 'Ala' },
+                { label: 'Posição', val: profile.posicao || myPlayerInfo?.posicao || 'Ala' },
                 { label: 'Equipe', val: myPlayerInfo?.equipe || `${city} Hoops` },
               ].map(item => (
                 <div key={item.label} style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', paddingBottom: 6, borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
