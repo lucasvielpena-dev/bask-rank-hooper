@@ -100,16 +100,12 @@ export default function Ranking({ profile }) {
   const stateUf = profile?.uf || 'PA';
 
   const [selectedCity, setSelectedCity] = useState(city);
-  const [citiesInState, setCitiesInState] = useState([city]);
 
-  // Sincronizar selectedCity e buscar cidades quando o perfil for carregado
+  // Sincronizar selectedCity quando o perfil for carregado
   useEffect(() => {
     if (profile) {
       const userCity = profile.cidade_atual || profile.cidade || 'Altamira';
-      const userUf = profile.uf || 'PA';
       setSelectedCity(userCity);
-      setCitiesInState([userCity]);
-      loadStateCities(userUf, userCity);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
@@ -139,26 +135,6 @@ export default function Ranking({ profile }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCity, profile]);
-
-  async function loadStateCities(ufVal = stateUf, cityVal = selectedCity) {
-    try {
-      const { data } = await supabase
-        .from('jogadores')
-        .select('cidade')
-        .eq('ativo', true)
-        .eq('uf', ufVal);
-      const cities = [...new Set(data?.map(j => j.cidade).filter(Boolean) || [])].sort();
-      if (cities.length > 0) {
-        let newList = [...cities];
-        if (!newList.includes(cityVal)) {
-          newList.push(cityVal);
-        }
-        setCitiesInState(newList.sort());
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
 
   async function loadRanking(cityVal = selectedCity, ufVal = stateUf) {
     setLoading(true);
@@ -214,28 +190,6 @@ export default function Ranking({ profile }) {
               <h2 style={{ fontWeight: 800, fontSize: 20 }}>🏀 Ranking de {selectedCity}</h2>
               <p style={{ color: '#64748b', fontSize: 13, marginTop: 2 }}>Ranking municipal de {selectedCity}</p>
             </div>
-          </div>
-          <div style={{ width: 150 }}>
-            <select
-              value={selectedCity}
-              onChange={e => setSelectedCity(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px 10px',
-                borderRadius: '12px',
-                border: '1px solid var(--border)',
-                background: 'var(--bg-card)',
-                color: 'var(--text-primary)',
-                fontWeight: 700,
-                fontSize: 13,
-                outline: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              {citiesInState.map(c => (
-                <option key={c} value={c}>📍 {c}</option>
-              ))}
-            </select>
           </div>
         </div>
 

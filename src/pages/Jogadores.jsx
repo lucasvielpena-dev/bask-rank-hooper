@@ -119,8 +119,7 @@ export default function Jogadores({ profile }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   // Filtros geográficos
-  const [selectedCity, setSelectedCity] = useState('todos');
-  const [cidadesDoEstado, setCidadesDoEstado] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(profile?.cidade_atual || profile?.cidade || 'Altamira');
 
   // Ranks e MVPs
   const [ranks, setRanks] = useState({});
@@ -141,6 +140,8 @@ export default function Jogadores({ profile }) {
   useEffect(() => {
     if (profile) {
       loadJogadores();
+      const userCity = profile.cidade_atual || profile.cidade || 'Altamira';
+      setSelectedCity(userCity);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
@@ -236,9 +237,7 @@ export default function Jogadores({ profile }) {
       setJogadores(players);
       setVotosStatus(votesStatus);
 
-      // Extrair cidades únicas do estado
-      const playerCities = [...new Set(players.map(j => j.cidade).filter(Boolean))].sort();
-      setCidadesDoEstado(playerCities);
+
 
       // Calcular Ranks locais para os jogadores de cada cidade
       const playerRanks = {};
@@ -340,48 +339,22 @@ export default function Jogadores({ profile }) {
             </div>
             <div>
               <h2 style={{ fontWeight: 800, fontSize: 20 }}>Jogadores</h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{jogadores.length} atletas em {profile?.uf || 'PA'}</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{filtrados.length} atletas em {selectedCity} - {profile?.uf || 'PA'}</p>
             </div>
           </div>
         </div>
 
-        {/* Busca e Filtro de Município */}
-        <div style={{ display: 'flex', gap: 10, marginBottom: 16 }}>
-          <div style={{ position: 'relative', flex: 1 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input
-              value={busca}
-              onChange={e => setBusca(e.target.value)}
-              placeholder="Buscar jogador..."
-              style={{ paddingLeft: 40, width: '100%' }}
-            />
-          </div>
-          <div style={{ width: 150, flexShrink: 0 }}>
-            <select
-              value={selectedCity}
-              onChange={e => setSelectedCity(e.target.value)}
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                borderRadius: '12px', 
-                border: '1px solid var(--border)', 
-                background: 'var(--bg-card)', 
-                color: 'var(--text-primary)', 
-                fontWeight: 600,
-                fontSize: 13,
-                padding: '0 8px',
-                outline: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              <option value="todos">📍 Cidades</option>
-              {cidadesDoEstado.map(c => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-          </div>
+        {/* Busca */}
+        <div style={{ position: 'relative', marginBottom: 16 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input
+            value={busca}
+            onChange={e => setBusca(e.target.value)}
+            placeholder="Buscar jogador..."
+            style={{ paddingLeft: 40, width: '100%' }}
+          />
         </div>
 
         {/* Filtros Pílulas Deslizantes */}
