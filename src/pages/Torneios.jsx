@@ -9,13 +9,13 @@ const FORMATOS = {
 };
 
 const STATUS_TORNEIO = {
-  inscricoes_abertas: { label: 'Inscrições Abertas', color: '#22c55e', bg: 'rgba(34,197,94,0.12)' },
-  inscricoes_encerradas: { label: 'Inscrições Encerradas', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  em_andamento: { label: 'Em Andamento', color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
-  finalizado: { label: 'Finalizado', color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' }
+  inscricoes_abertas: { label: '🟢 Inscrições Abertas', color: '#22c55e', bg: 'rgba(34,197,94,0.12)' },
+  inscricoes_encerradas: { label: '🟡 Aguardando Início', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  em_andamento: { label: '🔵 Em Andamento', color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
+  finalizado: { label: '🏆 Finalizado', color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' }
 };
 
-export default function Torneios({ profile }) {
+export default function Torneios({ profile, isNested = false }) {
   const [torneios, setTorneios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedTorneio, setSelectedTorneio] = useState(null);
@@ -55,7 +55,7 @@ export default function Torneios({ profile }) {
   }
 
   return (
-    <div className="page-content">
+    <div className={isNested ? "" : "page-content"} style={isNested ? { padding: 0 } : {}}>
       {selectedTorneio ? (
         <TorneioDetalhes 
           torneio={selectedTorneio} 
@@ -63,26 +63,35 @@ export default function Torneios({ profile }) {
           onBack={() => { setSelectedTorneio(null); carregarTorneios(); }} 
         />
       ) : (
-        <div style={{ padding: '20px 20px 0' }}>
+        <div style={{ padding: isNested ? '0' : '20px 20px 0' }}>
           {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2">
-                  <circle cx="12" cy="8" r="7"/>
-                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
-                </svg>
+          {!isNested ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2">
+                    <circle cx="12" cy="8" r="7"/>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                  </svg>
+                </div>
+                <div>
+                  <h2 style={{ fontWeight: 800, fontSize: 20 }}>Torneios Online</h2>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Competições e campeonatos ativos</p>
+                </div>
               </div>
-              <div>
-                <h2 style={{ fontWeight: 800, fontSize: 20 }}>Torneios Online</h2>
-                <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Competições e campeonatos ativos</p>
-              </div>
+              
+              <button className="btn btn-primary btn-sm" onClick={() => setShowCriar(true)}>
+                Criar Torneio
+              </button>
             </div>
-            
-            <button className="btn btn-primary btn-sm" onClick={() => setShowCriar(true)}>
-              Criar Torneio
-            </button>
-          </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+              <h3 style={{ fontWeight: 800, fontSize: 16 }}>Torneios Regionais</h3>
+              <button className="btn btn-primary btn-sm" onClick={() => setShowCriar(true)}>
+                Criar Torneio
+              </button>
+            </div>
+          )}
 
           {/* Listagem */}
           {loading ? (
@@ -283,6 +292,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
   const [showInscricao, setShowInscricao] = useState(false);
   const [activeConsoleJogo, setActiveConsoleJogo] = useState(null);
   const [expandedTeamId, setExpandedTeamId] = useState(null);
+  const [totalJogadores, setTotalJogadores] = useState(0);
 
   const isOrganizador = profile.id === torneio.organizador_id;
 
@@ -314,6 +324,18 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
       ]);
       setEquipes(eqs || []);
       setJogos(matches || []);
+
+      const ids = (eqs || []).map(e => e.id);
+      if (ids.length > 0) {
+        const { count } = await supabase
+          .from('equipe_jogadores')
+          .select('*', { count: 'exact', head: true })
+          .in('equipe_id', ids)
+          .eq('aprovado', true);
+        setTotalJogadores(count || 0);
+      } else {
+        setTotalJogadores(0);
+      }
 
       if (aba === 'destaques') {
         const { data: st } = await torneioJogosAPI.obterEstatisticasAcumuladas(torneio.id);
@@ -514,83 +536,429 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
   }
 
   return (
-    <div style={{ padding: '20px 20px 24px', height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* Header com botão voltar */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-        <button onClick={onBack} style={{ background: 'none', border: 'none', color: 'var(--accent-blue-light)', cursor: 'pointer', display: 'flex', alignItems: 'center', fontSize: 13, fontWeight: 700, padding: 0 }}>
-          ← Voltar
-        </button>
-        <span style={{ marginLeft: 'auto', background: STATUS_TORNEIO[torneio.status]?.bg, color: STATUS_TORNEIO[torneio.status]?.color, padding: '3px 8px', borderRadius: 4, fontSize: 10, fontWeight: 800 }}>
-          {STATUS_TORNEIO[torneio.status]?.label.toUpperCase()}
-        </span>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      background: '#0B0F14',
+      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='800' viewBox='0 0 400 800'%3E%3Cpath d='M 30 30 L 370 30 L 370 770 L 30 770 Z' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.03'/%3E%3Ccircle cx='200' cy='400' r='55' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.03'/%3E%3Cline x1='30' y1='400' x2='370' y2='400' stroke='%23ffffff' stroke-width='1.5' opacity='0.03'/%3E%3Cpath d='M 30 160 A 170 170 0 0 0 370 160' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.03'/%3E%3Cpath d='M 30 640 A 170 170 0 0 1 370 640' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.03'/%3E%3Cpath d='M 50 100 Q 150 150 200 300 T 350 700' fill='none' stroke='%23ffffff' stroke-dasharray='4,4' stroke-width='1.2' opacity='0.03'/%3E%3C/svg%3E")`,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      backgroundSize: 'cover',
+      overflow: 'hidden'
+    }}>
+      {/* Hero Header Section */}
+      <div style={{
+        height: '220px',
+        background: 'linear-gradient(180deg, rgba(11,15,20,0.5) 0%, rgba(17,24,30,0.95) 100%)',
+        padding: '16px 20px 20px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+        flexShrink: 0
+      }}>
+        {/* Row 1: Botão Voltar & Status Badge */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px' }}>
+          <button onClick={onBack} style={{
+            background: 'rgba(255, 255, 255, 0.08)',
+            border: 'none',
+            color: '#F8FAFC',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            fontSize: '12px',
+            fontWeight: 700,
+            padding: '6px 12px',
+            borderRadius: '50px',
+            fontFamily: 'inherit'
+          }}>
+            ← Voltar
+          </button>
+          
+          <span style={{
+            background: STATUS_TORNEIO[torneio.status]?.bg || 'rgba(0,0,0,0.2)',
+            color: STATUS_TORNEIO[torneio.status]?.color || '#fff',
+            padding: '4px 12px',
+            borderRadius: '50px',
+            fontSize: '11px',
+            fontWeight: 800,
+            letterSpacing: '0.02em',
+            textTransform: 'uppercase'
+          }}>
+            {STATUS_TORNEIO[torneio.status]?.label || torneio.status}
+          </span>
+        </div>
+
+        {/* Row 2: Nome e Formato */}
+        <div style={{ marginTop: 'auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '20px' }}>🏆</span>
+            <h2 style={{ fontWeight: 900, fontSize: '22px', color: '#F8FAFC', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
+              {torneio.nome}
+            </h2>
+          </div>
+          <p style={{ color: '#94A3B8', fontSize: '13px', fontWeight: 600, marginTop: '4px' }}>
+            {FORMATOS[torneio.formato] || torneio.formato}
+          </p>
+        </div>
+
+        {/* Row 3: Meta local/data e organizador */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: '12px',
+          borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+          paddingTop: '10px'
+        }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#94A3B8', fontSize: '11px' }}>
+              <span>📍</span> {torneio.local_quadra}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#94A3B8', fontSize: '11px' }}>
+              <span>📅</span> {new Date(torneio.data_inicio).toLocaleDateString('pt-BR')} • {torneio.horario_inicio.substring(0,5)}
+            </div>
+          </div>
+          <div style={{ color: '#94A3B8', fontSize: '11px' }}>
+            Organizado por <strong style={{ color: '#F8FAFC' }}>{torneio.organizador?.nome_completo || 'Lucas Viel'}</strong>
+          </div>
+        </div>
       </div>
 
-      <h2 style={{ fontWeight: 900, fontSize: 22, color: 'var(--text-primary)', marginBottom: 2 }}>{torneio.nome}</h2>
-      <p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 14 }}>Organizado por: {torneio.organizador?.nome_completo}</p>
-
-      {/* Tabs */}
-      <div className="tabs" style={{ marginBottom: 14, overflowX: 'auto', flexShrink: 0 }}>
-        <button className={`tab ${aba === 'info' ? 'active' : ''}`} onClick={() => setAba('info')}>Info</button>
-        <button className={`tab ${aba === 'equipes' ? 'active' : ''}`} onClick={() => setAba('equipes')}>Equipes</button>
-        {torneio.formato === 'todos_contra_todos' && (
-          <button className={`tab ${aba === 'tabela' ? 'active' : ''}`} onClick={() => setAba('tabela')}>Classificação</button>
-        )}
-        {torneio.formato === 'eliminatoria_simples' && (
-          <button className={`tab ${aba === 'tabela' ? 'active' : ''}`} onClick={() => setAba('tabela')}>Chaveamento</button>
-        )}
-        <button className={`tab ${aba === 'jogos' ? 'active' : ''}`} onClick={() => setAba('jogos')}>Confrontos</button>
-        <button className={`tab ${aba === 'destaques' ? 'active' : ''}`} onClick={() => setAba('destaques')}>Estatísticas</button>
+      {/* Resumo do Torneio / Métricas */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr 1fr',
+        gap: '8px',
+        padding: '16px 20px 0',
+        flexShrink: 0
+      }}>
+        {[
+          { label: 'Equipes', value: equipes.length },
+          { label: 'Jogadores', value: totalJogadores },
+          { label: 'Jogos', value: jogos.length },
+          { label: 'Prêmio', value: torneio.premiacao || 'R$0' }
+        ].map((item, idx) => (
+          <div key={idx} className="card" style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '12px 6px',
+            borderRadius: '20px',
+            background: '#111827',
+            border: '1px solid rgba(255, 255, 255, 0.06)',
+            boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+          }}>
+            <span style={{ fontSize: '10px', color: '#94A3B8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '4px' }}>
+              {item.label}
+            </span>
+            <span style={{
+              fontSize: item.label === 'Prêmio' ? '13px' : '22px',
+              fontWeight: 900,
+              color: item.label === 'Prêmio' ? '#F97316' : '#F8FAFC',
+              fontFamily: "'Bebas Neue', sans-serif",
+              textAlign: 'center',
+              wordBreak: 'break-word',
+              maxWidth: '100%'
+            }}>
+              {item.value}
+            </span>
+          </div>
+        ))}
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', paddingBottom: 60 }}>
+      {/* Abas Esportivas (Scroll Horizontal) */}
+      <div style={{
+        display: 'flex',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+        padding: '0 20px',
+        overflowX: 'auto',
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+        gap: '20px',
+        marginTop: '12px',
+        flexShrink: 0
+      }}>
+        {[
+          { key: 'info', label: 'Informações' },
+          { key: 'equipes', label: 'Equipes' },
+          { key: 'tabela', label: torneio.formato === 'todos_contra_todos' ? 'Classificação' : 'Chaves' },
+          { key: 'jogos', label: 'Jogos' },
+          { key: 'destaques', label: 'Estatísticas' }
+        ].map(t => {
+          const isActive = aba === t.key;
+          return (
+            <button
+              key={t.key}
+              onClick={() => setAba(t.key)}
+              style={{
+                background: 'none',
+                border: 'none',
+                borderBottom: isActive ? '3px solid #2563EB' : '3px solid transparent',
+                color: isActive ? '#F8FAFC' : '#94A3B8',
+                fontWeight: isActive ? 800 : 600,
+                fontSize: '13px',
+                padding: '8px 4px 12px',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap',
+                fontFamily: 'inherit'
+              }}
+            >
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Tab Content Panel */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '20px 20px 60px' }}>
         {/* TAB 1: INFORMAÇÕES */}
         {aba === 'info' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div style={{ display: 'flex', gap: 8 }}><span style={{ opacity: 0.7 }}>📍</span> <strong>Quadra/Local:</strong> {torneio.local_quadra}</div>
-              <div style={{ display: 'flex', gap: 8 }}><span style={{ opacity: 0.7 }}>📅</span> <strong>Início:</strong> {new Date(torneio.data_inicio).toLocaleDateString('pt-BR')} às {torneio.horario_inicio.substring(0,5)}</div>
-              <div style={{ display: 'flex', gap: 8 }}><span style={{ opacity: 0.7 }}>🏆</span> <strong>Premiação:</strong> {torneio.premiacao || 'A definir'}</div>
-              <div style={{ display: 'flex', gap: 8 }}><span style={{ opacity: 0.7 }}>💰</span> <strong>Taxa:</strong> {torneio.taxa_inscricao > 0 ? `R$ ${torneio.taxa_inscricao}` : 'Gratuito'}</div>
-              <div style={{ display: 'flex', gap: 8 }}><span style={{ opacity: 0.7 }}>🏀</span> <strong>Formato:</strong> {FORMATOS[torneio.formato]}</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '12px'
+            }}>
+              {[
+                { label: 'LOCAL', value: torneio.local_quadra },
+                { label: 'DATA', value: new Date(torneio.data_inicio).toLocaleDateString('pt-BR') },
+                { label: 'HORÁRIO', value: torneio.horario_inicio.substring(0,5) },
+                { label: 'FORMATO', value: FORMATOS[torneio.formato] || torneio.formato },
+                { label: 'PREMIAÇÃO', value: torneio.premiacao || 'A definir', highlight: true },
+                { label: 'INSCRIÇÃO', value: torneio.taxa_inscricao > 0 ? `R$ ${torneio.taxa_inscricao}` : 'Gratuito' }
+              ].map((info, idx) => (
+                <div key={idx} className="card" style={{
+                  padding: '16px',
+                  borderRadius: '16px',
+                  background: '#111827',
+                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px'
+                }}>
+                  <span style={{ fontSize: '10px', color: '#94A3B8', fontWeight: 700, letterSpacing: '0.05em' }}>
+                    {info.label}
+                  </span>
+                  <span style={{
+                    fontSize: '14px',
+                    fontWeight: 800,
+                    color: info.highlight ? '#F97316' : '#F8FAFC'
+                  }}>
+                    {info.value}
+                  </span>
+                </div>
+              ))}
             </div>
 
             {torneio.descricao && (
-              <div className="card">
-                <h4 style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 700, marginBottom: 6 }}>Descrição do Evento</h4>
-                <p style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--text-muted)' }}>{torneio.descricao}</p>
+              <div className="card" style={{
+                padding: '16px',
+                borderRadius: '16px',
+                background: '#111827',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+              }}>
+                <h4 style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '8px' }}>
+                  Descrição do Evento
+                </h4>
+                <p style={{ fontSize: '13px', lineHeight: 1.5, color: '#F8FAFC' }}>
+                  {torneio.descricao}
+                </p>
               </div>
             )}
 
-            {/* Ações do Organizador */}
+            {/* Painel do Organizador (Central de Controle) */}
             {isOrganizador && (
-              <div className="card" style={{ border: '1px dashed var(--accent-blue)', background: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <h4 style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700 }}>Painel do Organizador</h4>
+              <div className="card" style={{
+                padding: '20px',
+                borderRadius: '20px',
+                background: '#1A2330',
+                border: '1px solid rgba(255,255,255,0.06)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+                boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+              }}>
+                <h4 style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '4px' }}>
+                  GERENCIAMENTO
+                </h4>
+
                 {torneio.status === 'inscricoes_abertas' && (
-                  <button className="btn btn-primary" onClick={handleIniciarTorneio}>
-                    ▶ Iniciar Torneio e Gerar Chaves
+                  <button 
+                    onClick={handleIniciarTorneio}
+                    style={{
+                      background: '#2563EB',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      height: '56px',
+                      borderRadius: '16px',
+                      fontWeight: 800,
+                      fontSize: '15px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      width: '100%',
+                      boxShadow: '0 4px 14px rgba(37, 99, 235, 0.2)',
+                      fontFamily: 'inherit'
+                    }}
+                  >
+                    ▶ Iniciar Torneio
                   </button>
                 )}
+
                 {torneio.status === 'em_andamento' && (
-                  <button className="btn btn-secondary" onClick={handleFinalizarTorneio} style={{ color: '#ef4444', borderColor: 'rgba(239,68,68,0.2)' }}>
-                    🛑 Finalizar Torneio Definitivamente
+                  <button 
+                    onClick={handleFinalizarTorneio}
+                    style={{
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      color: '#f87171',
+                      border: '1px solid rgba(239, 68, 68, 0.2)',
+                      height: '50px',
+                      borderRadius: '16px',
+                      fontWeight: 800,
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      width: '100%',
+                      fontFamily: 'inherit'
+                    }}
+                  >
+                    🛑 Finalizar Torneio
                   </button>
                 )}
-                <button className="btn btn-secondary" onClick={handleExcluirTorneio} style={{ color: '#ef4444', borderColor: 'rgba(239,68,68,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                  🗑️ Excluir Torneio Definitivamente
-                </button>
-                <small style={{ color: 'var(--text-muted)', fontSize: 11 }}>Como organizador, você pode gerenciar jogos, placares, aprovar inscrições ou excluir este torneio.</small>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '4px' }}>
+                  <button onClick={() => setAba('equipes')} style={{
+                    background: '#111827',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: '12px',
+                    padding: '12px 10px',
+                    color: '#F8FAFC',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    fontFamily: 'inherit'
+                  }}>
+                    ⚙️ Gerenciar Equipes
+                  </button>
+                  <button onClick={() => setAba('jogos')} style={{
+                    background: '#111827',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: '12px',
+                    padding: '12px 10px',
+                    color: '#F8FAFC',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    fontFamily: 'inherit'
+                  }}>
+                    🏀 Gerenciar Jogos
+                  </button>
+                  <button onClick={() => setAba('destaques')} style={{
+                    background: '#111827',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: '12px',
+                    padding: '12px 10px',
+                    color: '#F8FAFC',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    fontFamily: 'inherit'
+                  }}>
+                    📊 Estatísticas
+                  </button>
+                  <button onClick={() => setAba('equipes')} style={{
+                    background: '#111827',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: '12px',
+                    padding: '12px 10px',
+                    color: '#F8FAFC',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    fontFamily: 'inherit'
+                  }}>
+                    📋 Aprovar Inscrições
+                  </button>
+                </div>
               </div>
+            )}
+
+            {/* Botão Excluir (no final da aba info para organizadores) */}
+            {isOrganizador && (
+              <button 
+                onClick={handleExcluirTorneio}
+                style={{
+                  background: 'none',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  color: '#EF4444',
+                  borderRadius: '16px',
+                  padding: '14px 20px',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  width: '100%',
+                  marginTop: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  fontFamily: 'inherit'
+                }}
+              >
+                🗑️ Encerrar Torneio
+              </button>
             )}
           </div>
         )}
 
         {/* TAB 2: EQUIPES */}
         {aba === 'equipes' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ fontSize: 14, fontWeight: 700 }}>Equipes Inscritas ({equipes.length})</h3>
+              <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#F8FAFC' }}>Equipes Inscritas ({equipes.length})</h3>
               {torneio.status === 'inscricoes_abertas' && (
-                <button className="btn btn-primary btn-sm" onClick={() => setShowInscricao(true)}>
+                <button 
+                  onClick={() => setShowInscricao(true)}
+                  style={{
+                    background: '#2563EB',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    borderRadius: '12px',
+                    padding: '8px 16px',
+                    fontSize: '12px',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    fontFamily: 'inherit'
+                  }}
+                >
                   Inscrever Equipe
                 </button>
               )}
@@ -602,28 +970,50 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 <p>Inscreva sua equipe e convide seus amigos para disputar!</p>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {equipes.map(e => {
                   const isExpanded = expandedTeamId === e.id;
                   const isCapitao = e.capitao_id === profile.id;
                   return (
-                    <div key={e.id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '12px 14px' }}>
+                    <div key={e.id} className="card" style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '12px',
+                      padding: '16px',
+                      background: '#111827',
+                      border: '1px solid rgba(255, 255, 255, 0.06)',
+                      borderRadius: '16px',
+                      boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+                    }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div style={{ cursor: 'pointer', flex: 1 }} onClick={() => setExpandedTeamId(isExpanded ? null : e.id)}>
-                          <h4 style={{ fontWeight: 700, fontSize: 15, display: 'flex', alignItems: 'center', gap: 6 }}>
-                            {e.nome} <span style={{ fontSize: 10, color: 'var(--text-secondary)' }}>{isExpanded ? '▼' : '▶'}</span>
+                          <h4 style={{ fontWeight: 800, fontSize: '15px', color: '#F8FAFC', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            {e.nome} <span style={{ fontSize: '10px', color: '#94A3B8' }}>{isExpanded ? '▼' : '▶'}</span>
                           </h4>
-                          <small style={{ color: 'var(--text-secondary)' }}>Capitão: {e.capitao?.nome_completo}</small>
+                          <small style={{ color: '#94A3B8' }}>Capitão: {e.capitao?.nome_completo}</small>
                         </div>
                         <div>
                           {e.aprovado ? (
-                            <span style={{ color: '#22c55e', fontSize: 12, fontWeight: 700 }}>✓ Confirmada</span>
+                            <span style={{ color: '#22c55e', fontSize: '12px', fontWeight: 800 }}>✓ Confirmada</span>
                           ) : isOrganizador ? (
-                            <button className="btn btn-primary btn-sm" onClick={async () => { await equipesAPI.aprovar(e.id, true); carregarDados(); }}>
+                            <button 
+                              onClick={async () => { await equipesAPI.aprovar(e.id, true); carregarDados(); }}
+                              style={{
+                                background: '#2563EB',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                borderRadius: '8px',
+                                padding: '6px 12px',
+                                fontSize: '12px',
+                                fontWeight: 800,
+                                cursor: 'pointer',
+                                fontFamily: 'inherit'
+                              }}
+                            >
                               Aprovar
                             </button>
                           ) : (
-                            <span style={{ color: '#f59e0b', fontSize: 12, fontWeight: 600 }}>Pendente</span>
+                            <span style={{ color: '#f59e0b', fontSize: '12px', fontWeight: 700 }}>Pendente</span>
                           )}
                         </div>
                       </div>
@@ -647,29 +1037,38 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
 
         {/* TAB 3: CLASSIFICAÇÃO / CHAVEAMENTO */}
         {aba === 'tabela' && (
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {torneio.formato === 'todos_contra_todos' ? (
-              <div className="card" style={{ overflowX: 'auto', padding: 0 }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+              <div className="card" style={{
+                overflowX: 'auto',
+                padding: 0,
+                background: '#111827',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '16px',
+                boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+              }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', color: '#F8FAFC' }}>
                   <thead>
-                    <tr style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)' }}>
-                      <th style={{ padding: '10px 12px', textAlign: 'left' }}>EQUIPE</th>
-                      <th style={{ padding: 10, textAlign: 'center' }}>P</th>
-                      <th style={{ padding: 10, textAlign: 'center' }}>V</th>
-                      <th style={{ padding: 10, textAlign: 'center' }}>D</th>
-                      <th style={{ padding: 10, textAlign: 'center' }}>SG</th>
-                      <th style={{ padding: 10, textAlign: 'center' }}>PRO</th>
+                    <tr style={{ background: '#1A2330', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                      <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, color: '#94A3B8' }}>EQUIPE</th>
+                      <th style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 700, color: '#94A3B8' }}>P</th>
+                      <th style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 700, color: '#94A3B8' }}>V</th>
+                      <th style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 700, color: '#94A3B8' }}>D</th>
+                      <th style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 700, color: '#94A3B8' }}>SG</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 700, color: '#94A3B8' }}>PRO</th>
                     </tr>
                   </thead>
                   <tbody>
                     {classificacao.map((c, i) => (
-                      <tr key={c.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                        <td style={{ padding: '12px', fontWeight: 600 }}>{i + 1}. {c.nome}</td>
-                        <td style={{ padding: 10, textAlign: 'center', fontWeight: 700 }}>{c.pts}</td>
-                        <td style={{ padding: 10, textAlign: 'center' }}>{c.v}</td>
-                        <td style={{ padding: 10, textAlign: 'center' }}>{c.d}</td>
-                        <td style={{ padding: 10, textAlign: 'center', color: c.sg >= 0 ? '#22c55e' : '#ef4444' }}>{c.sg >= 0 ? `+${c.sg}` : c.sg}</td>
-                        <td style={{ padding: 10, textAlign: 'center' }}>{c.pts_pro}</td>
+                      <tr key={c.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                        <td style={{ padding: '12px 16px', fontWeight: 800 }}>{i + 1}. {c.nome}</td>
+                        <td style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 900, color: '#2563EB' }}>{c.pts}</td>
+                        <td style={{ padding: '12px 10px', textAlign: 'center' }}>{c.v}</td>
+                        <td style={{ padding: '12px 10px', textAlign: 'center' }}>{c.d}</td>
+                        <td style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 700, color: c.sg >= 0 ? '#22c55e' : '#ef4444' }}>
+                          {c.sg >= 0 ? `+${c.sg}` : c.sg}
+                        </td>
+                        <td style={{ padding: '12px 16px', textAlign: 'center' }}>{c.pts_pro}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -677,29 +1076,52 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
               </div>
             ) : (
               // Mata-Mata Visual Bracket
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                <h4 style={{ fontSize: 14, fontWeight: 700 }}>Árvore de Playoffs</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#F8FAFC' }}>Árvore de Playoffs</h4>
                 {jogos.length === 0 ? (
-                  <p style={{ color: 'var(--text-muted)', fontSize: 13, textAlign: 'center' }}>A chave será gerada quando o torneio for iniciado.</p>
+                  <p style={{ color: '#94A3B8', fontSize: '13px', textAlign: 'center' }}>A chave será gerada quando o torneio for iniciado.</p>
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     {['Quartas de Final', 'Semifinal', 'Final'].map(fase => {
                       const faseMatches = jogos.filter(j => j.fase === fase);
                       if (faseMatches.length === 0) return null;
                       return (
-                        <div key={fase}>
-                          <div style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 800, marginBottom: 8, letterSpacing: '0.05em' }}>{fase.toUpperCase()}</div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <div key={fase} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <div style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                            {fase}
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             {faseMatches.map(j => (
-                              <div key={j.id} className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px' }}>
+                              <div key={j.id} className="card" style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '12px 16px',
+                                background: '#111827',
+                                border: '1px solid rgba(255, 255, 255, 0.06)',
+                                borderRadius: '16px',
+                                boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+                              }}>
                                 <div style={{ flex: 1 }}>
                                   <div style={{ display: 'flex', justifyContent: 'space-between', margin: '2px 0' }}>
-                                    <span style={{ fontWeight: j.placar_a > j.placar_b && j.status === 'finalizado' ? 800 : 500 }}>{j.equipe_a?.nome || 'A definir'}</span>
-                                    <span style={{ fontWeight: 800 }}>{j.status === 'finalizado' || j.status === 'em_andamento' ? j.placar_a : '--'}</span>
+                                    <span style={{
+                                      fontSize: '13px',
+                                      fontWeight: j.placar_a > j.placar_b && j.status === 'finalizado' ? 800 : 500,
+                                      color: j.placar_a > j.placar_b && j.status === 'finalizado' ? '#F8FAFC' : '#94A3B8'
+                                    }}>{j.equipe_a?.nome || 'A definir'}</span>
+                                    <span style={{ fontWeight: 800, color: '#F8FAFC', fontSize: '13px' }}>
+                                      {j.status === 'finalizado' || j.status === 'em_andamento' ? j.placar_a : '--'}
+                                    </span>
                                   </div>
                                   <div style={{ display: 'flex', justifyContent: 'space-between', margin: '2px 0' }}>
-                                    <span style={{ fontWeight: j.placar_b > j.placar_a && j.status === 'finalizado' ? 800 : 500 }}>{j.equipe_b?.nome || 'A definir'}</span>
-                                    <span style={{ fontWeight: 800 }}>{j.status === 'finalizado' || j.status === 'em_andamento' ? j.placar_b : '--'}</span>
+                                    <span style={{
+                                      fontSize: '13px',
+                                      fontWeight: j.placar_b > j.placar_a && j.status === 'finalizado' ? 800 : 500,
+                                      color: j.placar_b > j.placar_a && j.status === 'finalizado' ? '#F8FAFC' : '#94A3B8'
+                                    }}>{j.equipe_b?.nome || 'A definir'}</span>
+                                    <span style={{ fontWeight: 800, color: '#F8FAFC', fontSize: '13px' }}>
+                                      {j.status === 'finalizado' || j.status === 'em_andamento' ? j.placar_b : '--'}
+                                    </span>
                                   </div>
                                 </div>
                               </div>
@@ -717,35 +1139,71 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
 
         {/* TAB 4: CONFRONTOS / JOGOS */}
         {aba === 'jogos' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {jogos.length === 0 ? (
-              <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: 13, padding: 20 }}>Os confrontos estarão disponíveis após o início das partidas.</p>
+              <p style={{ textAlign: 'center', color: '#94A3B8', fontSize: '13px', padding: '20px 0' }}>
+                Os confrontos estarão disponíveis após o início das partidas.
+              </p>
             ) : (
               jogos.map(j => {
                 const emProgresso = j.status === 'em_andamento';
                 return (
-                  <div key={j.id} className="card" style={{ borderLeft: emProgresso ? '4px solid #3b82f6' : 'none' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--text-muted)', marginBottom: 8 }}>
-                      <span>{j.fase} {j.grupo ? `· ${j.grupo}` : ''}</span>
+                  <div key={j.id} className="card" style={{
+                    background: '#111827',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    borderRadius: '16px',
+                    boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                    padding: '16px',
+                    borderLeft: emProgresso ? '4px solid #2563EB' : '1px solid rgba(255, 255, 255, 0.06)'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#94A3B8', marginBottom: '8px', fontWeight: 600 }}>
+                      <span>{j.fase.toUpperCase()} {j.grupo ? `· ${j.grupo.toUpperCase()}` : ''}</span>
                       {emProgresso ? (
-                        <span style={{ color: '#3b82f6', fontWeight: 800, animation: 'pulse 1.5s infinite' }}>AO VIVO ({j.tempo_total})</span>
+                        <span style={{ color: '#2563EB', fontWeight: 800 }}>AO VIVO ({j.tempo_total})</span>
                       ) : j.status === 'finalizado' ? (
-                        <span style={{ color: '#94a3b8', fontWeight: 700 }}>FINALIZADO</span>
+                        <span style={{ color: '#94A3B8', fontWeight: 700 }}>FINALIZADO</span>
                       ) : (
                         <span>AGENDADO</span>
                       )}
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, margin: '6px 0' }}>
-                      <div style={{ flex: 1, textAlign: 'right', fontWeight: 700, fontSize: 14 }}>{j.equipe_a?.nome || 'A definir'}</div>
-                      <div style={{ background: 'var(--bg-secondary)', padding: '6px 12px', borderRadius: 8, fontWeight: 900, fontSize: 16 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', margin: '8px 0' }}>
+                      <div style={{ flex: 1, textAlign: 'right', fontWeight: 800, fontSize: '14px', color: '#F8FAFC' }}>
+                        {j.equipe_a?.nome || 'A definir'}
+                      </div>
+                      <div style={{
+                        background: '#1A2330',
+                        padding: '6px 16px',
+                        borderRadius: '10px',
+                        fontWeight: 900,
+                        fontSize: '15px',
+                        color: '#F8FAFC',
+                        letterSpacing: '0.05em'
+                      }}>
                         {j.status !== 'agendado' ? `${j.placar_a} x ${j.placar_b}` : 'VS'}
                       </div>
-                      <div style={{ flex: 1, textAlign: 'left', fontWeight: 700, fontSize: 14 }}>{j.equipe_b?.nome || 'A definir'}</div>
+                      <div style={{ flex: 1, textAlign: 'left', fontWeight: 800, fontSize: '14px', color: '#F8FAFC' }}>
+                        {j.equipe_b?.nome || 'A definir'}
+                      </div>
                     </div>
 
                     {isOrganizador && j.equipe_a_id && j.equipe_b_id && j.status !== 'finalizado' && (
-                      <button className="btn btn-secondary btn-sm" onClick={() => setActiveConsoleJogo(j)} style={{ width: '100%', marginTop: 10 }}>
+                      <button 
+                        onClick={() => setActiveConsoleJogo(j)}
+                        style={{
+                          width: '100%',
+                          marginTop: '12px',
+                          background: 'rgba(255,255,255,0.05)',
+                          border: '1px solid rgba(255,255,255,0.08)',
+                          color: '#F8FAFC',
+                          padding: '10px 14px',
+                          borderRadius: '12px',
+                          fontWeight: 700,
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                          fontFamily: 'inherit'
+                        }}
+                      >
                         ⚙️ Console do Placar ao Vivo
                       </button>
                     )}
@@ -758,54 +1216,100 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
 
         {/* TAB 5: ESTATÍSTICAS / LÍDERES */}
         {aba === 'destaques' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <h3 style={{ fontSize: 14, fontWeight: 700 }}>Líderes Individuais</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#F8FAFC' }}>Líderes Individuais</h3>
             
             {statsAcumuladas.length === 0 ? (
-              <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: 13, padding: 20 }}>As estatísticas individuais serão geradas quando os jogos começarem.</p>
+              <p style={{ textAlign: 'center', color: '#94A3B8', fontSize: '13px', padding: '20px 0' }}>
+                As estatísticas individuais serão geradas quando os jogos começarem.
+              </p>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {lideres.cestinha && (
-                  <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ fontSize: 24 }}>🏀</div>
+                  <div className="card" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    background: '#111827',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    borderRadius: '16px',
+                    boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                    padding: '16px'
+                  }}>
+                    <div style={{ fontSize: '24px' }}>🏀</div>
                     <div style={{ flex: 1 }}>
-                      <strong style={{ display: 'block', fontSize: 14 }}>{lideres.cestinha.nome}</strong>
-                      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Cestinha do Torneio</span>
+                      <strong style={{ display: 'block', fontSize: '14px', color: '#F8FAFC', fontWeight: 800 }}>{lideres.cestinha.nome}</strong>
+                      <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Cestinha do Torneio</span>
                     </div>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: '#f59e0b' }}>{lideres.cestinha.pts} pts</div>
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: '#F97316', fontFamily: "'Bebas Neue', sans-serif" }}>
+                      {lideres.cestinha.pts} PTS
+                    </div>
                   </div>
                 )}
 
                 {lideres.assistencias && (
-                  <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ fontSize: 24 }}>🤝</div>
+                  <div className="card" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    background: '#111827',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    borderRadius: '16px',
+                    boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                    padding: '16px'
+                  }}>
+                    <div style={{ fontSize: '24px' }}>🤝</div>
                     <div style={{ flex: 1 }}>
-                      <strong style={{ display: 'block', fontSize: 14 }}>{lideres.assistencias.nome}</strong>
-                      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Líder em Assistências</span>
+                      <strong style={{ display: 'block', fontSize: '14px', color: '#F8FAFC', fontWeight: 800 }}>{lideres.assistencias.nome}</strong>
+                      <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Líder em Assistências</span>
                     </div>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: '#3b82f6' }}>{lideres.assistencias.ast} ast</div>
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: '#F97316', fontFamily: "'Bebas Neue', sans-serif" }}>
+                      {lideres.assistencias.ast} AST
+                    </div>
                   </div>
                 )}
 
                 {lideres.rebotes && (
-                  <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ fontSize: 24 }}>💪</div>
+                  <div className="card" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    background: '#111827',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    borderRadius: '16px',
+                    boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                    padding: '16px'
+                  }}>
+                    <div style={{ fontSize: '24px' }}>💪</div>
                     <div style={{ flex: 1 }}>
-                      <strong style={{ display: 'block', fontSize: 14 }}>{lideres.rebotes.nome}</strong>
-                      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Líder em Rebotes</span>
+                      <strong style={{ display: 'block', fontSize: '14px', color: '#F8FAFC', fontWeight: 800 }}>{lideres.rebotes.nome}</strong>
+                      <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Líder em Rebotes</span>
                     </div>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: '#10b981' }}>{lideres.rebotes.reb} reb</div>
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: '#F97316', fontFamily: "'Bebas Neue', sans-serif" }}>
+                      {lideres.rebotes.reb} REB
+                    </div>
                   </div>
                 )}
 
                 {lideres.tocos && (
-                  <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ fontSize: 24 }}>🚫</div>
+                  <div className="card" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    background: '#111827',
+                    border: '1px solid rgba(255, 255, 255, 0.06)',
+                    borderRadius: '16px',
+                    boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                    padding: '16px'
+                  }}>
+                    <div style={{ fontSize: '24px' }}>🚫</div>
                     <div style={{ flex: 1 }}>
-                      <strong style={{ display: 'block', fontSize: 14 }}>{lideres.tocos.nome}</strong>
-                      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Líder em Tocos (Blocks)</span>
+                      <strong style={{ display: 'block', fontSize: '14px', color: '#F8FAFC', fontWeight: 800 }}>{lideres.tocos.nome}</strong>
+                      <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Líder em Tocos (Blocks)</span>
                     </div>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: '#818cf8' }}>{lideres.tocos.tocos} blk</div>
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: '#F97316', fontFamily: "'Bebas Neue', sans-serif" }}>
+                      {lideres.tocos.tocos} BLK
+                    </div>
                   </div>
                 )}
               </div>
