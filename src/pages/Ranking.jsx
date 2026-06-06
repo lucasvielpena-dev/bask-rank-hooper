@@ -97,10 +97,18 @@ export default function Ranking({ profile }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
+  const stateUf = profile?.uf || 'PA';
+
+  const [selectedCity, setSelectedCity] = useState(city);
+  const [citiesInState, setCitiesInState] = useState([city]);
+
+  useEffect(() => {
+    loadStateCities();
+  }, []);
 
   useEffect(() => {
     loadRanking();
-  }, []);
+  }, [selectedCity]);
 
   useEffect(() => {
     const channel = supabase
@@ -117,11 +125,31 @@ export default function Ranking({ profile }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [selectedCity]);
+
+  async function loadStateCities() {
+    try {
+      const { data } = await supabase
+        .from('jogadores')
+        .select('cidade')
+        .eq('ativo', true)
+        .eq('uf', stateUf);
+      const cities = [...new Set(data?.map(j => j.cidade).filter(Boolean) || [])].sort();
+      if (cities.length > 0) {
+        setCitiesInState(cities);
+        // Garante que a cidade atual está na lista
+        if (!cities.includes(selectedCity)) {
+          setCitiesInState(prev => [...prev, selectedCity].sort());
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   async function loadRanking() {
     setLoading(true);
-    const { data } = await rankingAPI.get(50);
+    const { data } = await rankingAPI.get(selectedCity, stateUf, 50);
     setRanking(data || []);
     setLoading(false);
   }
@@ -164,13 +192,37 @@ export default function Ranking({ profile }) {
       <div style={{ padding: '20px 20px 0' }}>
 
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 20 }}>
-          <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            </div>
+            <div>
+              <h2 style={{ fontWeight: 800, fontSize: 20 }}>🏀 Ranking de {selectedCity}</h2>
+              <p style={{ color: '#64748b', fontSize: 13, marginTop: 2 }}>Ranking municipal de {selectedCity}</p>
+            </div>
           </div>
-          <div>
-            <h2 style={{ fontWeight: 800, fontSize: 20 }}>🏀 Ranking de {city}</h2>
-            <p style={{ color: '#64748b', fontSize: 13, marginTop: 2 }}>Ranking municipal atualizado</p>
+          <div style={{ width: 150 }}>
+            <select
+              value={selectedCity}
+              onChange={e => setSelectedCity(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 10px',
+                borderRadius: '12px',
+                border: '1px solid var(--border)',
+                background: 'var(--bg-card)',
+                color: 'var(--text-primary)',
+                fontWeight: 700,
+                fontSize: 13,
+                outline: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              {citiesInState.map(c => (
+                <option key={c} value={c}>📍 {c}</option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -221,7 +273,7 @@ export default function Ranking({ profile }) {
 
                   {/* 2º lugar - esquerda */}
                   {top3[1] ? (
-                    <div onClick={() => setSelectedPlayer(top3[1])} className="podium-2" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, cursor: 'pointer', transition: 'transform 0.2s' }}>
+                    <div onClick={() => setSelectedPlayer({ ...top3[1], rank: top3[1].posicao_ranking })} className="podium-2" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, cursor: 'pointer', transition: 'transform 0.2s' }}>
                       <PlayerAvatar fotoUrl={top3[1].foto_url} nome={top3[1].nome} size={52} border="2px solid var(--silver-color)" />
                       <div style={{
                         height: 75,
@@ -254,7 +306,7 @@ export default function Ranking({ profile }) {
 
                   {/* 1º lugar - centro */}
                   {top3[0] && (
-                    <div onClick={() => setSelectedPlayer(top3[0])} className="podium-1" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1.1, cursor: 'pointer', zIndex: 2, transition: 'transform 0.2s' }}>
+                    <div onClick={() => setSelectedPlayer({ ...top3[0], rank: top3[0].posicao_ranking })} className="podium-1" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1.1, cursor: 'pointer', zIndex: 2, transition: 'transform 0.2s' }}>
                       <PlayerAvatar fotoUrl={top3[0].foto_url} nome={top3[0].nome} size={68} border="3px solid var(--gold-color)" hasCrown={true} />
                       <div className="leader-active-glow" style={{
                         height: 105,
@@ -285,7 +337,7 @@ export default function Ranking({ profile }) {
 
                   {/* 3º lugar - direita */}
                   {top3[2] ? (
-                    <div onClick={() => setSelectedPlayer(top3[2])} className="podium-3" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 0.9, cursor: 'pointer', transition: 'transform 0.2s' }}>
+                    <div onClick={() => setSelectedPlayer({ ...top3[2], rank: top3[2].posicao_ranking })} className="podium-3" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 0.9, cursor: 'pointer', transition: 'transform 0.2s' }}>
                       <PlayerAvatar fotoUrl={top3[2].foto_url} nome={top3[2].nome} size={46} border="2px solid var(--bronze-color)" />
                       <div style={{
                         height: 55,
@@ -329,7 +381,7 @@ export default function Ranking({ profile }) {
                   {ranking.map((j, i) => {
                     const evolVal = getEvolucao(j.id);
                     return (
-                      <div key={j.id} className="card card-enter" onClick={() => setSelectedPlayer(j)} style={{
+                      <div key={j.id} className="card card-enter" onClick={() => setSelectedPlayer({ ...j, rank: j.posicao_ranking })} style={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: 12,
@@ -353,7 +405,7 @@ export default function Ranking({ profile }) {
                             {renderBadge(j.media_estrelas)}
                           </div>
                           <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-                            {j.posicao || 'Ala'}
+                            {j.posicao || 'Ala'} • 📍 {j.cidade} - {j.uf}
                           </div>
                         </div>
                         <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 2 }}>
@@ -380,6 +432,7 @@ export default function Ranking({ profile }) {
       {selectedPlayer && (
         <PlayerProfileModal
           jogador={selectedPlayer}
+          rank={selectedPlayer.rank || selectedPlayer.posicao_ranking}
           onClose={() => setSelectedPlayer(null)}
         />
       )}

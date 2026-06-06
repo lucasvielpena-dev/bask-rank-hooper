@@ -20,6 +20,17 @@ export const jogadoresAPI = {
     return { data, error };
   },
 
+  listarPorEstado: async (uf) => {
+    const { data, error } = await supabase
+      .from('jogadores')
+      .select('*')
+      .eq('ativo', true)
+      .eq('uf', uf)
+      .order('media_estrelas', { ascending: false })
+      .order('total_votos', { ascending: false });
+    return { data, error };
+  },
+
   buscar: async (termo) => {
     const { data, error } = await supabase
       .from('jogadores')
@@ -47,22 +58,28 @@ export const jogadoresAPI = {
 };
 
 export const rankingAPI = {
-  get: async (limit = 50) => {
+  get: async (cidade, uf, limit = 50) => {
     const { data, error } = await supabase.rpc('get_ranking', {
+      p_cidade: cidade || null,
+      p_uf: uf || null,
       p_limit: limit
     });
     return { data, error };
   },
 
-  getPodio: async () => {
+  getPodio: async (cidade, uf) => {
     const { data, error } = await supabase.rpc('get_ranking', {
+      p_cidade: cidade || null,
+      p_uf: uf || null,
       p_limit: 3
     });
     return { data, error };
   },
 
-  getTop5: async () => {
+  getTop5: async (cidade, uf) => {
     const { data, error } = await supabase.rpc('get_ranking', {
+      p_cidade: cidade || null,
+      p_uf: uf || null,
       p_limit: 5
     });
     return { data, error };
@@ -267,6 +284,16 @@ export const profilesAPI = {
       .from('profiles')
       .select('*')
       .eq('cidade_atual', cidade)
+      .eq('cadastro_completo', true)
+      .order('nome_completo');
+    return { data, error };
+  },
+
+  listarPorEstado: async (uf) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('uf', uf)
       .eq('cadastro_completo', true)
       .order('nome_completo');
     return { data, error };

@@ -73,7 +73,6 @@ function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = fa
 export default function Home({ profile, onNavigate }) {
   const [stats, setStats] = useState({ jogadores: 0, avaliados: 0 });
   const [lider, setLider] = useState(null);
-  const [jogadoresList, setJogadoresList] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -101,15 +100,16 @@ export default function Home({ profile, onNavigate }) {
   async function loadData() {
     setLoading(true);
     try {
+      const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
+      const uf = profile?.uf || 'PA';
       const [{ data: jogs }, { data: ranking }] = await Promise.all([
-        jogadoresAPI.listar(),
-        rankingAPI.getTop5(),
+        jogadoresAPI.listarPorEstado(uf),
+        rankingAPI.getTop5(city, uf),
       ]);
 
       const total = jogs?.length || 0;
       const avaliados = jogs?.filter(j => j.total_votos > 0).length || 0;
       setStats({ jogadores: total, avaliados });
-      setJogadoresList(jogs || []);
 
       if (ranking?.length > 0) {
         setLider(ranking[0]);
@@ -149,7 +149,7 @@ export default function Home({ profile, onNavigate }) {
             Ranks <span style={{ color: '#60a5fa' }}>Hoops</span>
           </h1>
           <p style={{ color: '#94a3b8', fontSize: 14, lineHeight: 1.5 }}>
-            Os melhores jogadores da cidade, avaliados<br/>pelos próprios jogadores.
+            Os melhores jogadores do estado, avaliados<br/>pelos próprios jogadores.
           </p>
         </div>
 
@@ -189,7 +189,7 @@ export default function Home({ profile, onNavigate }) {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
               <span style={{ fontSize: '11px', fontWeight: 800, color: '#f59e0b', letterSpacing: '0.05em', background: 'rgba(245, 158, 11, 0.1)', padding: '4px 8px', borderRadius: '6px', textTransform: 'uppercase' }}>
-                🔥 #1 Destaque da Cidade
+                🔥 #1 Líder de {profile?.cidade_atual || profile?.cidade || 'Altamira'}
               </span>
             </div>
 
@@ -208,7 +208,11 @@ export default function Home({ profile, onNavigate }) {
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                   <span style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600 }}>
-                    {jogadoresList?.find(j => j.id === lider.id)?.posicao || 'Ala-Armador'}
+                    {lider.posicao || 'Ala'}
+                  </span>
+                  <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--text-muted)' }} />
+                  <span style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500 }}>
+                    📍 {lider.cidade} - {lider.uf}
                   </span>
                   <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--text-muted)' }} />
                   <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>

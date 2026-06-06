@@ -22,9 +22,8 @@ export default function Torneios({ profile }) {
   
   // View states
   const [showCriar, setShowCriar] = useState(false);
-  
   // Realtime subscriptions
-  const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
+
 
   useEffect(() => {
     carregarTorneios();
@@ -40,11 +39,11 @@ export default function Torneios({ profile }) {
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [city]);
+  }, []);
 
   async function carregarTorneios() {
     setLoading(true);
-    const { data } = await torneiosAPI.listar(city);
+    const { data } = await torneiosAPI.listar();
     setTorneios(data || []);
     
     // Se um torneio estiver selecionado, recarrega seus dados em tempo real
@@ -76,7 +75,7 @@ export default function Torneios({ profile }) {
               </div>
               <div>
                 <h2 style={{ fontWeight: 800, fontSize: 20 }}>Torneios Online</h2>
-                <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Competições locais em {city}</p>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Competições e campeonatos ativos</p>
               </div>
             </div>
             
@@ -98,7 +97,7 @@ export default function Torneios({ profile }) {
                 <circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
               </svg>
               <h3>Nenhum torneio ativo</h3>
-              <p>Crie o primeiro torneio da sua cidade e organize as equipes!</p>
+              <p>Crie o primeiro torneio e organize as equipes!</p>
               <button className="btn btn-primary" onClick={() => setShowCriar(true)} style={{ marginTop: 14 }}>
                 Cadastrar Torneio
               </button>
@@ -124,7 +123,7 @@ export default function Torneios({ profile }) {
                     </div>
                     <h3 style={{ fontWeight: 800, fontSize: 17, color: 'var(--text-primary)', marginBottom: 6 }}>{t.nome}</h3>
                     <p style={{ fontSize: 13, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <span>📍</span> {t.local_quadra}
+                      <span>📍</span> {t.local_quadra} {t.cidade && `(${t.cidade})`}
                     </p>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12, fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
                       <span>Formato: {t.formato === 'eliminatoria_simples' ? 'Mata-Mata' : 'Pontos Corridos'}</span>
@@ -1393,8 +1392,8 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
   async function openAddPlayer() {
     setShowAddModal(true);
     setLoadingPlayers(true);
-    const city = profile.cidade_atual || profile.cidade || 'Altamira';
-    const { data } = await profilesAPI.listarPorCidade(city);
+    const stateUf = profile.uf || 'PA';
+    const { data } = await profilesAPI.listarPorEstado(stateUf);
     // Filtrar jogadores que já estão no time
     const rosterIds = roster.map(r => r.jogador_id);
     const filtered = (data || []).filter(p => !rosterIds.includes(p.id));
@@ -1503,7 +1502,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
               {loadingPlayers ? (
                 <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>Carregando atletas...</div>
               ) : filteredPlayers.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>Nenhum atleta encontrado na cidade.</div>
+                <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>Nenhum atleta encontrado no estado.</div>
               ) : (
                 filteredPlayers.map(p => (
                   <div key={p.id} onClick={() => handleAdicionarJogador(p.id)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 8, borderRadius: 8, background: 'var(--bg-secondary)', cursor: 'pointer' }}>
@@ -1514,9 +1513,13 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
                         {p.nome_completo?.charAt(0).toUpperCase()}
                       </div>
                     )}
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{p.nome_completo}</div>
-                      {p.apelido && <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>"{p.apelido}"</div>}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.nome_completo}</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                        {p.apelido && <span>"{p.apelido}"</span>}
+                        {p.apelido && <span>•</span>}
+                        <span>📍 {p.cidade_atual || p.cidade || 'Altamira'} - {p.uf || 'PA'}</span>
+                      </div>
                     </div>
                   </div>
                 ))

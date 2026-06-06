@@ -41,7 +41,7 @@ function StarPicker({ value, onChange, disabled }) {
   );
 }
 
-export default function PlayerProfileModal({ jogador, onClose }) {
+export default function PlayerProfileModal({ jogador, rank, onClose }) {
   const [localJogador, setLocalJogador] = useState(jogador);
   const [profileData, setProfileData] = useState(null);
   const [communityStats, setCommunityStats] = useState(null);
@@ -259,8 +259,15 @@ export default function PlayerProfileModal({ jogador, onClose }) {
           <p style={{ color: 'var(--text-secondary)', fontSize: 14, fontWeight: 500 }}>
             {localJogador.apelido ? `"${localJogador.apelido}"` : ''} {localJogador.posicao ? `· ${localJogador.posicao}` : ''}
           </p>
-          <div className="badge" style={{ marginTop: 8 }}>
-            <span>📍</span> {localJogador.cidade} • {localJogador.uf}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center', marginTop: 8 }}>
+            <div className="badge">
+              <span>📍</span> {localJogador.cidade} • {localJogador.uf}
+            </div>
+            {rank && (
+              <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--accent-gold)', marginTop: 2 }}>
+                🏆 #{rank} em {localJogador.cidade}
+              </div>
+            )}
           </div>
         </div>
 

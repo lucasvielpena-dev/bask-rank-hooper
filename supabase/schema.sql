@@ -546,9 +546,12 @@ CREATE TRIGGER trg_criar_jogador_ao_completar_perfil
 DROP FUNCTION IF EXISTS public.get_ranking(INTEGER);
 DROP FUNCTION IF EXISTS public.get_ranking(TEXT, TEXT, INTEGER);
 DROP FUNCTION IF EXISTS public.get_ranking(TEXT, INTEGER);
+DROP FUNCTION IF EXISTS public.get_ranking();
 
--- Função: buscar ranking global (mínimo 10 avaliações para aparecer)
+-- Função: buscar ranking por município/estado (mínimo 1 avaliação para aparecer)
 CREATE OR REPLACE FUNCTION public.get_ranking(
+  p_cidade TEXT DEFAULT NULL,
+  p_uf TEXT DEFAULT NULL,
   p_limit INTEGER DEFAULT 20
 )
 RETURNS TABLE (
@@ -568,7 +571,8 @@ RETURNS TABLE (
   cidade TEXT,
   uf TEXT,
   pais TEXT,
-  posicao INTEGER
+  posicao TEXT,
+  posicao_ranking INTEGER
 )
 LANGUAGE plpgsql
 STABLE
@@ -592,18 +596,21 @@ BEGIN
     j.cidade,
     j.uf,
     j.pais,
+    j.posicao,
     ROW_NUMBER() OVER (
       ORDER BY j.media_estrelas DESC, j.total_votos DESC
-    )::INTEGER AS posicao
+    )::INTEGER AS posicao_ranking
   FROM public.jogadores j
   WHERE j.ativo = TRUE
     AND j.total_votos >= 1
+    AND (p_cidade IS NULL OR j.cidade = p_cidade)
+    AND (p_uf IS NULL OR j.uf = p_uf)
   ORDER BY j.media_estrelas DESC, j.total_votos DESC
   LIMIT p_limit;
 END;
 $$;
 
--- Função: sortear jogadores aleatórios para votação (excluindo o próprio usuário e já avaliados)
+-- Função: sortear jogadores aleatórios para votação do mesmo estado (excluindo o próprio usuário e já avaliados)
 CREATE OR REPLACE FUNCTION public.sortear_jogadores_para_voto()
 RETURNS TABLE (
   id UUID,
@@ -620,7 +627,7 @@ AS $$
 BEGIN
   RETURN QUERY
   WITH meu_player AS (
-    SELECT player_id FROM public.profiles WHERE id = auth.uid()
+    SELECT player_id, uf FROM public.profiles WHERE id = auth.uid()
   ),
   avaliacoes_existentes AS (
     SELECT jogador_id FROM public.avaliacoes
@@ -637,10 +644,12 @@ BEGIN
   FROM public.jogadores j
   WHERE j.ativo = TRUE
     AND (SELECT player_id FROM meu_player) IS DISTINCT FROM j.id
+    AND j.uf = (SELECT COALESCE(uf, 'PA') FROM public.profiles WHERE id = auth.uid())
   ORDER BY RANDOM()
   LIMIT 5;
 END;
 $$;
+
 
 -- Função: verificar status de voto do usuário hoje
 CREATE OR REPLACE FUNCTION public.get_status_voto_hoje()

@@ -118,6 +118,10 @@ export default function Jogadores({ profile }) {
   const [loading, setLoading] = useState(true);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
+  // Filtros geográficos
+  const [selectedCity, setSelectedCity] = useState('todos');
+  const [cidadesDoEstado, setCidadesDoEstado] = useState([]);
+
   // Ranks e MVPs
   const [ranks, setRanks] = useState({});
   const [mvpPlayerIds, setMvpPlayerIds] = useState(new Set());
@@ -132,12 +136,12 @@ export default function Jogadores({ profile }) {
   // Toast feedback
   const [toast, setToast] = useState(null);
 
-  const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
+
 
   useEffect(() => {
     loadJogadores();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [city]);
+  }, []);
 
   useEffect(() => {
     const channel = supabase
@@ -155,7 +159,7 @@ export default function Jogadores({ profile }) {
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [city]);
+  }, []);
 
   // Aplicar busca e filtros combinados
   useEffect(() => {
@@ -167,6 +171,11 @@ export default function Jogadores({ profile }) {
         j.nome.toLowerCase().includes(busca.toLowerCase()) ||
         (j.apelido || '').toLowerCase().includes(busca.toLowerCase())
       );
+    }
+
+    // 1.5. Filtrar por município selecionado
+    if (selectedCity !== 'todos') {
+      result = result.filter(j => j.cidade === selectedCity);
     }
 
     // 2. Filtrar por categoria ativa
@@ -187,29 +196,40 @@ export default function Jogadores({ profile }) {
     }
 
     setFiltrados(result);
-  }, [busca, jogadores, filtroAtivo, mvpPlayerIds]);
+  }, [busca, jogadores, filtroAtivo, selectedCity, mvpPlayerIds]);
 
   async function loadJogadores() {
     setLoading(true);
     try {
+      const stateUfVal = profile?.uf || 'PA';
       const [{ data: jogs }, { data: partidasData }, { data: votesStatus }] = await Promise.all([
-        jogadoresAPI.listar(),
+        jogadoresAPI.listarPorEstado(stateUfVal),
         supabase.from('partidas').select('mvp_id'),
         votacaoAPI.getStatusHoje()
       ]);
 
       const players = jogs || [];
-      // Filtrar jogadores da cidade atual
-      const cityPlayers = players.filter(j => (j.cidade || '').toLowerCase() === city.toLowerCase());
       
-      setJogadores(cityPlayers);
+      setJogadores(players);
       setVotosStatus(votesStatus);
 
-      // Calcular Ranks baseado no ordenamento de nota
-      const sortedByRank = [...cityPlayers].sort((a, b) => b.media_estrelas - a.media_estrelas || b.total_votos - a.total_votos);
+      // Extrair cidades únicas do estado
+      const playerCities = [...new Set(players.map(j => j.cidade).filter(Boolean))].sort();
+      setCidadesDoEstado(playerCities);
+
+      // Calcular Ranks locais para os jogadores de cada cidade
       const playerRanks = {};
-      sortedByRank.forEach((j, index) => {
-        playerRanks[j.id] = index + 1;
+      const playersByCity = {};
+      players.forEach(j => {
+        const cityKey = j.cidade || 'Altamira';
+        if (!playersByCity[cityKey]) playersByCity[cityKey] = [];
+        playersByCity[cityKey].push(j);
+      });
+      Object.keys(playersByCity).forEach(cityKey => {
+        const sorted = [...playersByCity[cityKey]].sort((a, b) => b.media_estrelas - a.media_estrelas || b.total_votos - a.total_votos);
+        sorted.forEach((j, index) => {
+          playerRanks[j.id] = index + 1;
+        });
       });
       setRanks(playerRanks);
 
@@ -297,22 +317,48 @@ export default function Jogadores({ profile }) {
             </div>
             <div>
               <h2 style={{ fontWeight: 800, fontSize: 20 }}>Jogadores</h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{jogadores.length} atletas em {city}</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{jogadores.length} atletas em {profile?.uf || 'PA'}</p>
             </div>
           </div>
         </div>
 
-        {/* Busca e Barra de Pesquisa */}
-        <div style={{ position: 'relative', marginBottom: 16 }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <input
-            value={busca}
-            onChange={e => setBusca(e.target.value)}
-            placeholder="Buscar jogador..."
-            style={{ paddingLeft: 40 }}
-          />
+        {/* Busca e Filtro de Município */}
+        <div style={{ display: 'flex', gap: 10, marginBottom: 16 }}>
+          <div style={{ position: 'relative', flex: 1 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input
+              value={busca}
+              onChange={e => setBusca(e.target.value)}
+              placeholder="Buscar jogador..."
+              style={{ paddingLeft: 40, width: '100%' }}
+            />
+          </div>
+          <div style={{ width: 150, flexShrink: 0 }}>
+            <select
+              value={selectedCity}
+              onChange={e => setSelectedCity(e.target.value)}
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                borderRadius: '12px', 
+                border: '1px solid var(--border)', 
+                background: 'var(--bg-card)', 
+                color: 'var(--text-primary)', 
+                fontWeight: 600,
+                fontSize: 13,
+                padding: '0 8px',
+                outline: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="todos">📍 Cidades</option>
+              {cidadesDoEstado.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Filtros Pílulas Deslizantes */}
@@ -377,12 +423,14 @@ export default function Jogadores({ profile }) {
                         </span>
                         {j.apelido && <span style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }}>"{j.apelido}"</span>}
                       </div>
-                      <div style={{ fontSize: 11, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                      <div style={{ fontSize: 11, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, flexWrap: 'wrap' }}>
                         <span style={{ fontWeight: 800, color: rankVal <= 3 ? 'var(--accent-gold)' : 'var(--text-muted)' }}>
-                          {getRankIndicator(rankVal)}
+                          {getRankIndicator(rankVal)} em {j.cidade}
                         </span>
                         <span style={{ color: 'var(--text-muted)' }}>•</span>
                         <span>{j.posicao || 'Ala'}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>•</span>
+                        <span>📍 {j.cidade} - {j.uf}</span>
                       </div>
                     </div>
 
@@ -416,7 +464,7 @@ export default function Jogadores({ profile }) {
                   <div style={{ display: 'flex', gap: 8, marginTop: 14, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
                     <button 
                       className="btn btn-secondary btn-sm" 
-                      onClick={() => setSelectedPlayer(j)} 
+                      onClick={() => setSelectedPlayer({ ...j, rank: rankVal })} 
                       style={{ flex: 1, margin: 0, padding: '8px 14px' }}
                     >
                       Ver Perfil
