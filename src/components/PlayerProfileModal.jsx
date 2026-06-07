@@ -363,7 +363,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
           </div>
         ) : (
           // Tela Principal de Perfil Estilo Mockup
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', overflowX: 'hidden' }}>
+          <>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', overflowX: 'hidden', flex: 1 }}>
             
             {/* Header com Foto Desvanecida e Dados */}
             <div style={{
@@ -516,7 +517,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             </div>
 
             {/* Conteúdo das Tabs */}
-            <div style={{ minHeight: '100px' }}>
+            <div style={{ minHeight: '100px', paddingBottom: 8 }}>
               {perfilTab === 'sobre' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: '13px' }}>
                   {[
@@ -604,60 +605,61 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 </div>
               )}
             </div>
-
-            {/* Ações inferiores - Botões Proporcionais */}
-            {!isMe && (
-              <div style={{ display: 'flex', gap: '10px', marginTop: '8px', paddingBottom: '8px' }}>
-                <button 
-                  type="button"
-                  className="btn btn-primary" 
-                  onClick={() => setShowAvaliar(true)}
-                  style={{
-                    flex: 2,
-                    background: '#2563EB',
-                    height: '46px',
-                    borderRadius: '12px',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    fontFamily: 'inherit',
-                    border: 'none',
-                    color: '#FFFFFF',
-                    padding: '0 16px'
-                  }}
-                >
-                  {jaAvaliou ? '⚙️ Editar Voto' : '★ Avaliar Atleta'}
-                </button>
-                <button 
-                  className="btn btn-secondary" 
-                  onClick={() => setShowDenunciar(true)}
-                  style={{
-                    flex: 1,
-                    color: '#EF4444',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    background: 'none',
-                    height: '46px',
-                    borderRadius: '12px',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '6px',
-                    fontFamily: 'inherit',
-                    padding: '0 12px'
-                  }}
-                >
-                  Denunciar
-                </button>
-              </div>
-            )}
           </div>
+
+          {/* Botões fixos no rodapé do modal, FORA do scroll */}
+          {!isMe && (
+            <div style={{ 
+              display: 'flex', 
+              gap: '10px', 
+              padding: '12px 0 4px',
+              borderTop: '1px solid rgba(255,255,255,0.06)',
+              flexShrink: 0
+            }}>
+              <button 
+                type="button"
+                onClick={() => setShowAvaliar(true)}
+                style={{
+                  flex: 2,
+                  background: '#2563EB',
+                  height: '44px',
+                  borderRadius: '12px',
+                  fontWeight: 700,
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontFamily: 'inherit',
+                  border: 'none',
+                  color: '#FFFFFF'
+                }}
+              >
+                {jaAvaliou ? 'Editar Voto' : 'Avaliar Atleta'}
+              </button>
+              <button 
+                onClick={() => setShowDenunciar(true)}
+                style={{
+                  flex: 1,
+                  color: '#EF4444',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  background: 'none',
+                  height: '44px',
+                  borderRadius: '12px',
+                  fontWeight: 700,
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontFamily: 'inherit'
+                }}
+              >
+                Denunciar
+              </button>
+            </div>
+          )}
+          </>
         )}
 
         {/* Modal de Denúncias */}
