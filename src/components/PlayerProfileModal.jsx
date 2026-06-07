@@ -363,12 +363,11 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
           </div>
         ) : (
           // Tela Principal de Perfil Estilo Mockup
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, overflowY: 'auto', overflowX: 'hidden', width: '100%', boxSizing: 'border-box' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', overflowX: 'hidden' }}>
             
             {/* Header com Foto Desvanecida e Dados */}
             <div style={{
               position: 'relative',
-              width: '100%',
               height: '220px',
               borderRadius: '16px',
               overflow: 'hidden',
@@ -376,7 +375,6 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               alignItems: 'flex-end',
               background: '#0D1527',
               border: '1px solid rgba(255,255,255,0.06)',
-              boxSizing: 'border-box',
               flexShrink: 0
             }}>
               {localJogador.foto_url ? (
@@ -399,8 +397,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 zIndex: 1
               }} />
 
-
-              <div style={{ zIndex: 2, padding: '16px', width: '100%' }}>
+              <div style={{ zIndex: 2, padding: '16px', width: '100%', boxSizing: 'border-box' }}>
                 <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#F8FAFC', marginBottom: 2 }}>{localJogador.nome}</h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
                   <span style={{
@@ -426,7 +423,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     <span style={{ color: '#F97316', fontSize: '15px' }}>★</span>
                     <span style={{ color: '#94A3B8', fontSize: '11px', marginLeft: 4 }}>Nota média</span>
                   </div>
-                  <div style={{ fontSize: '11px', color: '#94A3B8' }}>
+                  <div style={{ fontSize: '11px', color: '#94A3B8', flexShrink: 0 }}>
                     {rank ? `#${rank} ` : ''}{localJogador.cidade} - {localJogador.uf}
                   </div>
                 </div>
@@ -437,15 +434,12 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(5, 1fr)',
-              gap: 4,
+              gap: 2,
               background: '#111827',
-              padding: '12px 4px',
+              padding: '12px 8px',
               borderRadius: '12px',
               border: '1px solid rgba(255,255,255,0.06)',
-              textAlign: 'center',
-              boxSizing: 'border-box',
-              width: '100%',
-              minWidth: 0
+              textAlign: 'center'
             }}>
               {[
                 { label: 'PPJ', val: ppj },
@@ -454,7 +448,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 { label: 'STL', val: stl },
                 { label: 'BLK', val: blk },
               ].map(item => (
-                <div key={item.label}>
+                <div key={item.label} style={{ minWidth: 0 }}>
                   <div style={{ fontSize: '16px', fontWeight: 800, color: '#F8FAFC' }}>{item.val}</div>
                   <div style={{ fontSize: '9px', color: '#64748B', fontWeight: 600, marginTop: 2 }}>{item.label}</div>
                 </div>
@@ -462,7 +456,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             </div>
 
             {/* Linha de Evolução */}
-            <div className="card" style={{ background: '#111827', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '14px 12px', boxSizing: 'border-box', width: '100%' }}>
+            <div style={{ background: '#111827', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '14px 12px' }}>
               <div style={{ fontSize: '9px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                 LINHA DE EVOLUÇÃO
               </div>
@@ -491,9 +485,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               background: '#0D1527',
               borderRadius: '8px',
               padding: '3px',
-              gap: 2,
-              width: '100%',
-              boxSizing: 'border-box'
+              gap: 2
             }}>
               {[
                 { key: 'sobre', label: 'SOBRE' },
@@ -506,7 +498,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                   onClick={() => setPerfilTab(t.key)}
                   style={{
                     flex: 1,
-                    padding: '8px 2px',
+                    padding: '8px 4px',
                     borderRadius: '6px',
                     border: 'none',
                     background: perfilTab === t.key ? '#1A233D' : 'none',
@@ -515,8 +507,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     fontWeight: 700,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
-                    minWidth: 0,
-                    whiteSpace: 'nowrap'
+                    minWidth: 0
                   }}
                 >
                   {t.label}
@@ -525,9 +516,9 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             </div>
 
             {/* Conteúdo das Tabs */}
-            <div style={{ minHeight: '120px', width: '100%', boxSizing: 'border-box' }}>
+            <div style={{ minHeight: '100px' }}>
               {perfilTab === 'sobre' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: '13px', width: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: '13px' }}>
                   {[
                     { label: 'Cidade', val: `${localJogador.cidade} - ${localJogador.uf}` },
                     { label: 'Idade', val: profileData?.idade ? `${profileData.idade} anos` : 'A definir' },
@@ -535,9 +526,9 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     { label: 'Posição', val: localJogador.posicao || 'Ala' },
                     { label: 'Equipe', val: localJogador.equipe || `${localJogador.cidade} Hoops` },
                   ].map(item => (
-                    <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 6, borderBottom: '1px solid rgba(255,255,255,0.03)', gap: 12 }}>
-                      <span style={{ color: '#94A3B8', flexShrink: 0 }}>{item.label}</span>
-                      <span style={{ fontWeight: 600, color: '#F8FAFC', textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.val}</span>
+                    <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 6, borderBottom: '1px solid rgba(255,255,255,0.03)', gap: 16 }}>
+                      <span style={{ color: '#94A3B8', flexShrink: 0, fontSize: '13px' }}>{item.label}</span>
+                      <span style={{ fontWeight: 600, color: '#F8FAFC', fontSize: '13px', textAlign: 'right', wordBreak: 'break-word' }}>{item.val}</span>
                     </div>
                   ))}
                 </div>
@@ -614,20 +605,20 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               )}
             </div>
 
-            {/* Ações inferiores */}
+            {/* Ações inferiores - Botões Proporcionais */}
             {!isMe && (
-              <div style={{ display: 'flex', gap: '10px', marginTop: '16px', width: '100%', boxSizing: 'border-box' }}>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '8px', paddingBottom: '8px' }}>
                 <button 
                   type="button"
                   className="btn btn-primary" 
                   onClick={() => setShowAvaliar(true)}
                   style={{
-                    flex: 1,
+                    flex: 2,
                     background: '#2563EB',
-                    height: '44px',
+                    height: '46px',
                     borderRadius: '12px',
                     fontWeight: 700,
-                    fontSize: '12px',
+                    fontSize: '13px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -636,9 +627,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     fontFamily: 'inherit',
                     border: 'none',
                     color: '#FFFFFF',
-                    minWidth: 0,
-                    whiteSpace: 'nowrap',
-                    padding: '0 12px'
+                    padding: '0 16px'
                   }}
                 >
                   {jaAvaliou ? '⚙️ Editar Voto' : '★ Avaliar Atleta'}
@@ -651,22 +640,20 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     color: '#EF4444',
                     border: '1px solid rgba(239, 68, 68, 0.3)',
                     background: 'none',
-                    height: '44px',
+                    height: '46px',
                     borderRadius: '12px',
                     fontWeight: 700,
-                    fontSize: '12px',
+                    fontSize: '13px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '6px',
                     fontFamily: 'inherit',
-                    minWidth: 0,
-                    whiteSpace: 'nowrap',
                     padding: '0 12px'
                   }}
                 >
-                  ⚠️ Denunciar
+                  Denunciar
                 </button>
               </div>
             )}
