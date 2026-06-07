@@ -208,79 +208,60 @@ export default function Stats({ profile, onNavigate }) {
     setTimeout(() => setToast(null), 3000);
   }
 
-  // Lógica de incrementos e sincronização de campos privados
+  // Lógica de incrementos de campos privados (totalmente independentes no formulário)
   function ajustarCampo(campo, valor) {
     setForm(prev => {
       const updates = { ...prev };
-      
-      if (showAvancado) {
-        if (campo === 'dois_pontos_convertidos') {
-          const newVal = Math.max(0, prev.dois_pontos_convertidos + valor);
-          const diff = newVal - prev.dois_pontos_convertidos;
-          updates.dois_pontos_convertidos = newVal;
-          updates.dois_pontos_tentados = Math.max(prev.dois_pontos_tentados + diff, newVal);
-          updates.arremessos_convertidos = Math.max(0, prev.arremessos_convertidos + diff);
-          updates.arremessos_tentados = Math.max(updates.arremessos_convertidos, prev.arremessos_tentados + diff);
-          updates.pontos = Math.max(0, prev.pontos + diff * 2);
-        } else if (campo === 'dois_pontos_tentados') {
-          const newVal = Math.max(prev.dois_pontos_convertidos, prev.dois_pontos_tentados + valor);
-          const diff = newVal - prev.dois_pontos_tentados;
-          updates.dois_pontos_tentados = newVal;
-          updates.arremessos_tentados = Math.max(prev.arremessos_convertidos, prev.arremessos_tentados + diff);
-        } else if (campo === 'tres_pontos_convertidos') {
-          const newVal = Math.max(0, prev.tres_pontos_convertidos + valor);
-          const diff = newVal - prev.tres_pontos_convertidos;
-          updates.tres_pontos_convertidos = newVal;
-          updates.tres_pontos_tentados = Math.max(prev.tres_pontos_tentados + diff, newVal);
-          updates.arremessos_convertidos = Math.max(0, prev.arremessos_convertidos + diff);
-          updates.arremessos_tentados = Math.max(updates.arremessos_convertidos, prev.arremessos_tentados + diff);
-          updates.pontos = Math.max(0, prev.pontos + diff * 3);
-        } else if (campo === 'tres_pontos_tentados') {
-          const newVal = Math.max(prev.tres_pontos_convertidos, prev.tres_pontos_tentados + valor);
-          const diff = newVal - prev.tres_pontos_tentados;
-          updates.tres_pontos_tentados = newVal;
-          updates.arremessos_tentados = Math.max(prev.arremessos_convertidos, prev.arremessos_tentados + diff);
-        } else if (campo === 'lance_livre_convertidos') {
-          const newVal = Math.max(0, prev.lance_livre_convertidos + valor);
-          const diff = newVal - prev.lance_livre_convertidos;
-          updates.lance_livre_convertidos = newVal;
-          updates.lance_livre_tentados = Math.max(prev.lance_livre_tentados + diff, newVal);
-          updates.pontos = Math.max(0, prev.pontos + diff);
-        } else if (campo === 'lance_livre_tentados') {
-          updates.lance_livre_tentados = Math.max(prev.lance_livre_convertidos, prev.lance_livre_tentados + valor);
-        } else {
-          updates[campo] = Math.max(0, (prev[campo] || 0) + valor);
-        }
-      } else {
-        if (campo === 'arremessos_convertidos') {
-          const newVal = Math.max(0, prev.arremessos_convertidos + valor);
-          const diff = newVal - prev.arremessos_convertidos;
-          updates.arremessos_convertidos = newVal;
-          updates.arremessos_tentados = Math.max(prev.arremessos_tentados, newVal);
-          updates.pontos = Math.max(0, prev.pontos + diff * 2);
-        } else if (campo === 'arremessos_tentados') {
-          updates.arremessos_tentados = Math.max(prev.arremessos_convertidos, prev.arremessos_tentados + valor);
-        } else {
-          updates[campo] = Math.max(0, (prev[campo] || 0) + valor);
-        }
-      }
-
+      updates[campo] = Math.max(0, (prev[campo] || 0) + valor);
       return updates;
     });
   }
 
   async function handleSalvar() {
-    const tentados = parseInt(form.arremessos_tentados) || 0;
-    const convertidos = parseInt(form.arremessos_convertidos) || 0;
-    
-    if (convertidos > tentados) {
-      showToast('Arremessos convertidos não podem superar os tentados.', 'error');
-      return;
+    let tentados = parseInt(form.arremessos_tentados) || 0;
+    let convertidos = parseInt(form.arremessos_convertidos) || 0;
+    let pontos = parseInt(form.pontos) || 0;
+
+    if (showAvancado) {
+      const ll_conv = parseInt(form.lance_livre_convertidos) || 0;
+      const ll_tent = parseInt(form.lance_livre_tentados) || 0;
+      const d_conv = parseInt(form.dois_pontos_convertidos) || 0;
+      const d_tent = parseInt(form.dois_pontos_tentados) || 0;
+      const t_conv = parseInt(form.tres_pontos_convertidos) || 0;
+      const t_tent = parseInt(form.tres_pontos_tentados) || 0;
+
+      if (ll_conv > ll_tent) {
+        showToast('Lances livres convertidos não podem superar os tentados.', 'error');
+        return;
+      }
+      if (d_conv > d_tent) {
+        showToast('2 Pts convertidos não podem superar os tentados.', 'error');
+        return;
+      }
+      if (t_conv > t_tent) {
+        showToast('3 Pts convertidos não podem superar os tentados.', 'error');
+        return;
+      }
+
+      // Em modo avançado, calculamos os totais automaticamente
+      convertidos = d_conv + t_conv;
+      tentados = d_tent + t_tent;
+      pontos = d_conv * 2 + t_conv * 3 + ll_conv;
+    } else {
+      if (convertidos > tentados) {
+        showToast('Arremessos convertidos não podem superar os tentados.', 'error');
+        return;
+      }
     }
 
     setSalvando(true);
     try {
-      const payload = { ...form };
+      const payload = { 
+        ...form,
+        arremessos_tentados: tentados,
+        arremessos_convertidos: convertidos,
+        pontos: pontos
+      };
       if (!showAvancado) {
         payload.lance_livre_tentados = 0;
         payload.lance_livre_convertidos = 0;
@@ -776,12 +757,12 @@ export default function Stats({ profile, onNavigate }) {
                 {showAvancado ? (
                   <>
                     {[
-                      { l: 'Lances Livres Convertidos', k: 'lance_livre_convertidos' },
                       { l: 'Lances Livres Tentados', k: 'lance_livre_tentados' },
-                      { l: '2 Pts Convertidos', k: 'dois_pontos_convertidos' },
+                      { l: 'Lances Livres Convertidos', k: 'lance_livre_convertidos' },
                       { l: '2 Pts Tentados', k: 'dois_pontos_tentados' },
-                      { l: '3 Pts Convertidos', k: 'tres_pontos_convertidos' },
+                      { l: '2 Pts Convertidos', k: 'dois_pontos_convertidos' },
                       { l: '3 Pts Tentados', k: 'tres_pontos_tentados' },
+                      { l: '3 Pts Convertidos', k: 'tres_pontos_convertidos' },
                     ].map(item => (
                       <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{item.l}</span>
@@ -796,9 +777,9 @@ export default function Stats({ profile, onNavigate }) {
                 ) : (
                   <>
                     {[
-                      { l: 'Pontos', k: 'pontos' },
-                      { l: 'Arremessos Convertidos', k: 'arremessos_convertidos' },
                       { l: 'Arremessos Tentados', k: 'arremessos_tentados' },
+                      { l: 'Arremessos Convertidos', k: 'arremessos_convertidos' },
+                      { l: 'Pontos', k: 'pontos' },
                     ].map(item => (
                       <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
                         <span style={{ fontSize: 14, fontWeight: 600 }}>{item.l}</span>
