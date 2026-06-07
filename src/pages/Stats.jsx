@@ -102,7 +102,13 @@ export default function Stats({ profile, onNavigate }) {
           roubos: (t.roubos / qtd).toFixed(1),
           tocos: (t.tocos / qtd).toFixed(1),
           perdas: (t.perdas / qtd).toFixed(1),
-          aproveitamento: t.arremessos_tentados > 0 ? ((t.arremessos_convertidos / t.arremessos_tentados) * 100).toFixed(1) : '0.0',
+          aproveitamento: t.arremessos_tentados > 0 ? ((t.arremessos_convertidos / t.arremessos_tentados) * 100).toFixed(0) : '0',
+          lf_aproveitamento: t.lf_tentados > 0 ? ((t.lf_convertidos / t.lf_tentados) * 100).toFixed(0) : '0',
+          dois_aproveitamento: t.dois_tentados > 0 ? ((t.dois_convertidos / t.dois_tentados) * 100).toFixed(0) : '0',
+          tres_aproveitamento: t.tres_tentados > 0 ? ((t.tres_convertidos / t.tres_tentados) * 100).toFixed(0) : '0',
+          lf_detalhe: `${t.lf_convertidos}/${t.lf_tentados}`,
+          dois_detalhe: `${t.dois_convertidos}/${t.dois_tentados}`,
+          tres_detalhe: `${t.tres_convertidos}/${t.tres_tentados}`,
         };
         setMediasPrivadas(m);
       } else {
@@ -543,32 +549,151 @@ export default function Stats({ profile, onNavigate }) {
 
               {/* Registro Privado */}
               <div className="card" style={{ background: '#111827', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '12px', padding: '16px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#F97316' }}>ESTATÍSTICAS PRIVADAS (JOGOS DA NOITE)</span>
-                  <span style={{ fontSize: '12px', fontWeight: 700 }}>{historicoPrivado.length} jogos</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#F97316', letterSpacing: '0.05em' }}>ESTATÍSTICAS PRIVADAS (JOGOS DA NOITE)</span>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#F8FAFC' }}>{historicoPrivado.length} jogos</span>
                 </div>
-                <p style={{ fontSize: '11px', color: '#94A3B8', marginBottom: 14 }}>
+                <p style={{ fontSize: '11px', color: '#94A3B8', marginBottom: 16 }}>
                   Registre seus números de forma privada. Esses dados não afetam os rankings e servem para seu controle pessoal.
                 </p>
 
                 {mediasPrivadas ? (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 14, textAlign: 'center' }}>
-                    <div style={{ background: '#0D1527', padding: '8px 4px', borderRadius: '6px' }}>
-                      <div style={{ fontSize: '14px', fontWeight: 800, color: '#F97316' }}>{mediasPrivadas.pontos}</div>
-                      <div style={{ fontSize: '9px', color: '#64748B' }}>PPJ</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    
+                    {/* Linha Principal de Médias */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, textAlign: 'center' }}>
+                      <div style={{ background: '#0D1527', padding: '10px 4px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                        <div style={{ fontSize: '18px', fontWeight: 900, color: '#F97316' }}>{mediasPrivadas.pontos}</div>
+                        <div style={{ fontSize: '9px', color: '#64748B', fontWeight: 700, marginTop: 2 }}>PPJ</div>
+                      </div>
+                      <div style={{ background: '#0D1527', padding: '10px 4px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                        <div style={{ fontSize: '18px', fontWeight: 900, color: '#F8FAFC' }}>{mediasPrivadas.rebotes}</div>
+                        <div style={{ fontSize: '9px', color: '#64748B', fontWeight: 700, marginTop: 2 }}>REB</div>
+                      </div>
+                      <div style={{ background: '#0D1527', padding: '10px 4px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                        <div style={{ fontSize: '18px', fontWeight: 900, color: '#F8FAFC' }}>{mediasPrivadas.assistencias}</div>
+                        <div style={{ fontSize: '9px', color: '#64748B', fontWeight: 700, marginTop: 2 }}>AST</div>
+                      </div>
                     </div>
-                    <div style={{ background: '#0D1527', padding: '8px 4px', borderRadius: '6px' }}>
-                      <div style={{ fontSize: '14px', fontWeight: 800, color: '#F8FAFC' }}>{mediasPrivadas.rebotes}</div>
-                      <div style={{ fontSize: '9px', color: '#64748B' }}>REB</div>
+
+                    {/* Painel de Aproveitamento de Arremessos */}
+                    <div style={{ 
+                      background: '#0D1527', 
+                      borderRadius: '10px', 
+                      padding: '14px', 
+                      border: '1px solid rgba(255,255,255,0.03)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 16
+                    }}>
+                      {/* Círculo de Aproveitamento Geral */}
+                      <div style={{ 
+                        position: 'relative', 
+                        width: '74px', 
+                        height: '74px', 
+                        borderRadius: '50%', 
+                        background: `conic-gradient(#F97316 0% ${mediasPrivadas.aproveitamento}%, #1E293B ${mediasPrivadas.aproveitamento}% 100%)`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}>
+                        <div style={{ 
+                          width: '60px', 
+                          height: '60px', 
+                          borderRadius: '50%', 
+                          background: '#0D1527', 
+                          display: 'flex', 
+                          flexDirection: 'column',
+                          alignItems: 'center', 
+                          justifyContent: 'center' 
+                        }}>
+                          <span style={{ fontSize: '16px', fontWeight: 900, color: '#F8FAFC', lineHeight: '1' }}>{mediasPrivadas.aproveitamento}%</span>
+                          <span style={{ fontSize: '8px', color: '#64748B', fontWeight: 700, marginTop: 2 }}>GERAL</span>
+                        </div>
+                      </div>
+
+                      {/* Aproveitamento Individual por Categoria */}
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        {[
+                          { label: 'Lance Livre', pct: mediasPrivadas.lf_aproveitamento, vol: mediasPrivadas.lf_detalhe },
+                          { label: 'Arremesso de 2', pct: mediasPrivadas.dois_aproveitamento, vol: mediasPrivadas.dois_detalhe },
+                          { label: 'Arremesso de 3', pct: mediasPrivadas.tres_aproveitamento, vol: mediasPrivadas.tres_detalhe },
+                        ].map(item => (
+                          <div key={item.label}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', fontWeight: 700, color: '#94A3B8', marginBottom: 2 }}>
+                              <span>{item.label}</span>
+                              <span style={{ color: '#F8FAFC' }}>{item.pct}% <span style={{ color: '#64748B', fontWeight: 500 }}>({item.vol})</span></span>
+                            </div>
+                            <div style={{ height: '4px', background: '#1E293B', borderRadius: '2px', overflow: 'hidden' }}>
+                              <div style={{ height: '100%', background: '#F97316', width: `${item.pct}%`, borderRadius: '2px' }} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div style={{ background: '#0D1527', padding: '8px 4px', borderRadius: '6px' }}>
-                      <div style={{ fontSize: '14px', fontWeight: 800, color: '#F8FAFC' }}>{mediasPrivadas.assistencias}</div>
-                      <div style={{ fontSize: '9px', color: '#64748B' }}>AST</div>
-                    </div>
+
+                    {/* Gráfico de Evolução (Últimos 5 Jogos) */}
+                    {historicoPrivado.length > 0 && (
+                      <div style={{ 
+                        background: '#0D1527', 
+                        borderRadius: '10px', 
+                        padding: '14px', 
+                        border: '1px solid rgba(255,255,255,0.03)'
+                      }}>
+                        <div style={{ fontSize: '10px', fontWeight: 800, color: '#94A3B8', letterSpacing: '0.05em', marginBottom: 12, textTransform: 'uppercase' }}>
+                          Evolução de Pontos (Últimos 5 Jogos)
+                        </div>
+                        
+                        {(() => {
+                          const ultimasPartidasParaGrafico = [...historicoPrivado].slice(0, 5).reverse();
+                          const maxPontos = Math.max(...ultimasPartidasParaGrafico.map(p => p.pontos || 0), 10);
+                          
+                          return (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '80px', padding: '0 8px', marginTop: 10 }}>
+                              {ultimasPartidasParaGrafico.map((partida, idx) => {
+                                const alturaPct = Math.max(8, ((partida.pontos || 0) / maxPontos) * 100);
+                                return (
+                                  <div key={partida.id || idx} style={{ 
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    alignItems: 'center', 
+                                    flex: 1, 
+                                    height: '100%', 
+                                    justifyContent: 'flex-end',
+                                    position: 'relative'
+                                  }}>
+                                    {/* Pontuação no topo da barra */}
+                                    <span style={{ fontSize: '9px', fontWeight: 900, color: '#F8FAFC', marginBottom: 4 }}>
+                                      {partida.pontos}
+                                    </span>
+                                    {/* Barra vertical com gradiente */}
+                                    <div style={{ 
+                                      width: '18px', 
+                                      height: `${alturaPct}%`, 
+                                      background: 'linear-gradient(to top, rgba(249, 115, 22, 0.1) 0%, #F97316 100%)',
+                                      borderRadius: '4px 4px 0 0',
+                                      boxShadow: '0 0 10px rgba(249, 115, 22, 0.15)',
+                                      transition: 'height 0.3s ease'
+                                    }} />
+                                    {/* Data ou número da partida embaixo */}
+                                    <span style={{ fontSize: '7px', color: '#64748B', fontWeight: 700, marginTop: 6 }}>
+                                      {new Date(partida.data_partida + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    )}
+
                   </div>
                 ) : null}
 
-                <button className="btn btn-primary btn-sm" onClick={() => setShowRegistrar(true)} style={{ background: '#F97316', color: '#080F1A', border: 'none', width: '100%', fontSize: '12px' }}>
+                <button className="btn btn-primary btn-sm" onClick={() => setShowRegistrar(true)} style={{ background: '#F97316', color: '#080F1A', border: 'none', width: '100%', fontSize: '12px', marginTop: 14 }}>
                   ➕ Registrar Partida Pessoal
                 </button>
               </div>
