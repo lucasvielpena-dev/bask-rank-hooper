@@ -305,8 +305,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
 
 
   return (
-    <div className="modal-overlay" style={{ alignItems: 'center', padding: '16px' }}>
-      <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440, borderRadius: '24px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="modal-overlay" style={{ alignItems: 'center', padding: '12px' }}>
+      <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440, borderRadius: '24px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', overflowX: 'hidden', width: '100%' }}>
         <div className="modal-handle" />
 
         {loading ? (
@@ -363,7 +363,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
           </div>
         ) : (
           // Tela Principal de Perfil Estilo Mockup
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, overflowY: 'auto' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, overflowY: 'auto', overflowX: 'hidden', width: '100%', boxSizing: 'border-box' }}>
             
             {/* Header com Foto Desvanecida e Dados */}
             <div style={{
@@ -375,7 +375,9 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               display: 'flex',
               alignItems: 'flex-end',
               background: '#0D1527',
-              border: '1px solid rgba(255,255,255,0.06)'
+              border: '1px solid rgba(255,255,255,0.06)',
+              boxSizing: 'border-box',
+              flexShrink: 0
             }}>
               {localJogador.foto_url ? (
                 <img 
@@ -435,12 +437,15 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(5, 1fr)',
-              gap: 8,
+              gap: 4,
               background: '#111827',
-              padding: '12px 6px',
+              padding: '12px 4px',
               borderRadius: '12px',
               border: '1px solid rgba(255,255,255,0.06)',
-              textAlign: 'center'
+              textAlign: 'center',
+              boxSizing: 'border-box',
+              width: '100%',
+              minWidth: 0
             }}>
               {[
                 { label: 'PPJ', val: ppj },
@@ -457,7 +462,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             </div>
 
             {/* Linha de Evolução */}
-            <div className="card" style={{ background: '#111827', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '14px 16px' }}>
+            <div className="card" style={{ background: '#111827', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '14px 12px', boxSizing: 'border-box', width: '100%' }}>
               <div style={{ fontSize: '9px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                 LINHA DE EVOLUÇÃO
               </div>
@@ -486,7 +491,9 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               background: '#0D1527',
               borderRadius: '8px',
               padding: '3px',
-              gap: 2
+              gap: 2,
+              width: '100%',
+              boxSizing: 'border-box'
             }}>
               {[
                 { key: 'sobre', label: 'SOBRE' },
@@ -499,15 +506,17 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                   onClick={() => setPerfilTab(t.key)}
                   style={{
                     flex: 1,
-                    padding: '8px 4px',
+                    padding: '8px 2px',
                     borderRadius: '6px',
                     border: 'none',
                     background: perfilTab === t.key ? '#1A233D' : 'none',
                     color: perfilTab === t.key ? '#F8FAFC' : '#64748B',
-                    fontSize: '11px',
+                    fontSize: '10px',
                     fontWeight: 700,
                     cursor: 'pointer',
-                    fontFamily: 'inherit'
+                    fontFamily: 'inherit',
+                    minWidth: 0,
+                    whiteSpace: 'nowrap'
                   }}
                 >
                   {t.label}
@@ -516,9 +525,9 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             </div>
 
             {/* Conteúdo das Tabs */}
-            <div style={{ minHeight: '120px' }}>
+            <div style={{ minHeight: '120px', width: '100%', boxSizing: 'border-box' }}>
               {perfilTab === 'sobre' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: '13px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: '13px', width: '100%' }}>
                   {[
                     { label: 'Cidade', val: `${localJogador.cidade} - ${localJogador.uf}` },
                     { label: 'Idade', val: profileData?.idade ? `${profileData.idade} anos` : 'A definir' },
@@ -526,9 +535,9 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     { label: 'Posição', val: localJogador.posicao || 'Ala' },
                     { label: 'Equipe', val: localJogador.equipe || `${localJogador.cidade} Hoops` },
                   ].map(item => (
-                    <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: 6, borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                      <span style={{ color: '#94A3B8' }}>{item.label}</span>
-                      <span style={{ fontWeight: 600, color: '#F8FAFC' }}>{item.val}</span>
+                    <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 6, borderBottom: '1px solid rgba(255,255,255,0.03)', gap: 12 }}>
+                      <span style={{ color: '#94A3B8', flexShrink: 0 }}>{item.label}</span>
+                      <span style={{ fontWeight: 600, color: '#F8FAFC', textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.val}</span>
                     </div>
                   ))}
                 </div>
@@ -607,7 +616,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
 
             {/* Ações inferiores */}
             {!isMe && (
-              <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '16px', width: '100%', boxSizing: 'border-box' }}>
                 <button 
                   type="button"
                   className="btn btn-primary" 
@@ -615,18 +624,21 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                   style={{
                     flex: 1,
                     background: '#2563EB',
-                    height: '48px',
+                    height: '44px',
                     borderRadius: '12px',
                     fontWeight: 700,
-                    fontSize: '14px',
+                    fontSize: '12px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '8px',
+                    gap: '6px',
                     fontFamily: 'inherit',
                     border: 'none',
-                    color: '#FFFFFF'
+                    color: '#FFFFFF',
+                    minWidth: 0,
+                    whiteSpace: 'nowrap',
+                    padding: '0 12px'
                   }}
                 >
                   {jaAvaliou ? '⚙️ Editar Voto' : '★ Avaliar Atleta'}
@@ -639,16 +651,19 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     color: '#EF4444',
                     border: '1px solid rgba(239, 68, 68, 0.3)',
                     background: 'none',
-                    height: '48px',
+                    height: '44px',
                     borderRadius: '12px',
                     fontWeight: 700,
-                    fontSize: '14px',
+                    fontSize: '12px',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '8px',
-                    fontFamily: 'inherit'
+                    gap: '6px',
+                    fontFamily: 'inherit',
+                    minWidth: 0,
+                    whiteSpace: 'nowrap',
+                    padding: '0 12px'
                   }}
                 >
                   ⚠️ Denunciar
