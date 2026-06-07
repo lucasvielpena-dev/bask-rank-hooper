@@ -134,7 +134,7 @@ export default function Ranking({ profile }) {
     if (index === 0) return { border: '2px solid #F97316', background: 'rgba(249, 115, 22, 0.15)', color: '#F97316' };
     if (index === 1) return { border: '2px solid #94A3B8', background: 'rgba(148, 163, 184, 0.15)', color: '#CBD5E1' };
     if (index === 2) return { border: '2px solid #CD7C2F', background: 'rgba(205, 124, 47, 0.15)', color: '#CD7C2F' };
-    return { border: '1px solid rgba(255,255,255,0.06)', background: 'none', color: '#94A3B8' };
+    return { border: '1px solid var(--border)', background: 'none', color: 'var(--text-secondary)' };
   };
 
   if (loading) return (
@@ -156,15 +156,15 @@ export default function Ranking({ profile }) {
   );
 
   return (
-    <div className="page-content" style={{ background: '#080F1A' }}>
+    <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
       <div style={{ padding: '20px 20px 0' }}>
         
         {/* Cabeçalho */}
         <div style={{ textAlign: 'center', marginBottom: 20 }}>
-          <h2 style={{ fontWeight: 800, fontSize: '18px', color: '#F8FAFC', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <h2 style={{ fontWeight: 800, fontSize: '18px', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             RANKING
           </h2>
-          <p style={{ color: '#94A3B8', fontSize: '12px', marginTop: 2 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: 2 }}>
             {city} - {uf}
           </p>
         </div>

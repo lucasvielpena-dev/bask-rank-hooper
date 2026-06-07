@@ -30,7 +30,7 @@ const PAGES = {
 };
 
 function NavIcon({ type, active }) {
-  const color = active ? '#60a5fa' : '#64748b';
+  const color = active ? 'var(--nav-active-color)' : 'var(--nav-inactive-color)';
   const s = { width: 22, height: 22 };
   if (type === 'court') return (
     <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
@@ -64,7 +64,7 @@ function NavIcon({ type, active }) {
 export default function App() {
   // Garantir a limpeza de cache do Service Worker na mudança de versão do app
   useEffect(() => {
-    const swVersion = 'v12';
+    const swVersion = 'v13';
     const currentVersion = localStorage.getItem('sw_version');
     if (currentVersion !== swVersion) {
       if ('serviceWorker' in navigator) {
@@ -632,8 +632,8 @@ export default function App() {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '12px 16px',
-        background: '#080F1A',
-        borderBottom: '1px solid rgba(255,255,255,0.06)'
+        background: 'var(--bg-primary)',
+        borderBottom: '1px solid var(--border)'
       }}>
         {/* Hamburger Menu Icon */}
         <button 
@@ -641,7 +641,7 @@ export default function App() {
           style={{
             background: 'none',
             border: 'none',
-            color: '#F8FAFC',
+            color: 'var(--text-primary)',
             fontSize: '22px',
             cursor: 'pointer',
             padding: 4,
@@ -660,7 +660,7 @@ export default function App() {
             fontWeight: 900,
             fontSize: '15px',
             letterSpacing: '0.08em',
-            color: '#F8FAFC',
+            color: 'var(--text-primary)',
             textTransform: 'uppercase'
           }}>
             RANKS <span style={{ color: '#60A5FA' }}>HOOPS</span>
@@ -1086,7 +1086,7 @@ export default function App() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 16 }}>
               {notificacoes.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px 20px', color: '#64748B' }}>
+                <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ marginBottom: 12, opacity: 0.5 }}>
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
@@ -1123,13 +1123,13 @@ export default function App() {
                     )}
 
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: '13px', fontWeight: 800, color: '#F8FAFC', marginBottom: 2 }}>
+                      <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 2 }}>
                         {n.titulo}
                       </div>
-                      <p style={{ fontSize: '11px', color: '#94A3B8', lineHeight: '1.4', marginBottom: 8 }}>
+                      <p style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: '1.4', marginBottom: 8 }}>
                         {n.mensagem}
                       </p>
-                      <span style={{ fontSize: '9px', color: '#64748B', fontWeight: 600 }}>
+                      <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600 }}>
                         {new Date(n.created_at).toLocaleDateString('pt-BR')} às {new Date(n.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>

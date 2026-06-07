@@ -442,7 +442,7 @@ export default function Jogadores({ profile }) {
                         flex: 1, 
                         margin: 0, 
                         padding: '8px 14px',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        border: '1px solid var(--border)',
                         background: 'rgba(255, 255, 255, 0.02)',
                         color: 'var(--text-primary)'
                       }}

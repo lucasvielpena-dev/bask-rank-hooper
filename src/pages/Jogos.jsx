@@ -721,7 +721,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               ← PLACAR AO VIVO
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#94A3B8' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 {periodo >= 5 ? 'PRORROGAÇÃO' : `${periodo}º QUARTO`}
               </span>
               <span style={{ background: '#EF4444', color: '#FFF', padding: '2px 6px', borderRadius: '4px', fontSize: '9px', fontWeight: 800 }}>
@@ -752,8 +752,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           {/* Placar Central (Unified Scoreboard Card) */}
           <div className="card" style={{
             padding: '20px 16px',
-            background: '#111827',
-            border: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
             borderRadius: '16px',
             display: 'grid',
             gridTemplateColumns: '1fr auto 1fr',
@@ -799,13 +799,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <path d="M2 12h20" />
                 </svg>
               </div>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
                 {timeANome}
               </span>
               <span key={placarA} className="number-animate" style={{
                 fontSize: '48px',
                 fontWeight: 900,
-                color: '#F8FAFC',
+                color: 'var(--text-primary)',
                 display: 'block',
                 marginTop: 4,
                 lineHeight: 1
@@ -815,7 +815,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             </div>
 
             {/* Center VS */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#64748B', fontSize: '12px', fontWeight: 700 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'var(--text-muted)', fontSize: '12px', fontWeight: 700 }}>
               VS
             </div>
 
@@ -838,13 +838,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <path d="M2 12h20" />
                 </svg>
               </div>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
                 {timeBNome}
               </span>
               <span key={placarB} className="number-animate" style={{
                 fontSize: '48px',
                 fontWeight: 900,
-                color: '#F8FAFC',
+                color: 'var(--text-primary)',
                 display: 'block',
                 marginTop: 4,
                 lineHeight: 1
@@ -856,8 +856,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
           {/* Tabela de Parciais por Quarto */}
           <div style={{
-            background: '#111827',
-            border: '1px solid rgba(255, 255, 255, 0.06)',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
             borderRadius: '12px',
             padding: '12px 14px',
             marginBottom: 20,
@@ -865,19 +865,19 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'center' }}>
               <thead>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', color: '#64748B' }}>
+                <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }}>
                   <th style={{ padding: '6px 4px', textAlign: 'left', fontWeight: 600 }}>TIME</th>
                   <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q1</th>
                   <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q2</th>
                   <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q3</th>
                   <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q4</th>
                   {periodo >= 5 && <th style={{ padding: '6px 4px', fontWeight: 600 }}>PR</th>}
-                  <th style={{ padding: '6px 4px', fontWeight: 800, color: '#F8FAFC' }}>T</th>
+                  <th style={{ padding: '6px 4px', fontWeight: 800, color: 'var(--text-primary)' }}>T</th>
                 </tr>
               </thead>
               <tbody>
                 {/* Linha Time A */}
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', color: '#F8FAFC', fontWeight: 600 }}>
+                <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-primary)', fontWeight: 600 }}>
                   <td style={{ padding: '8px 4px', textAlign: 'left', color: '#60A5FA', fontWeight: 700 }}>
                     {timeANome.substring(0, 3).toUpperCase()}
                   </td>
@@ -889,7 +889,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <td style={{ padding: '8px 4px', fontWeight: 800, color: '#3B82F6' }}>{placarA}</td>
                 </tr>
                 {/* Linha Time B */}
-                <tr style={{ color: '#F8FAFC', fontWeight: 600 }}>
+                <tr style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
                   <td style={{ padding: '8px 4px', textAlign: 'left', color: '#F87171', fontWeight: 700 }}>
                     {timeBNome.substring(0, 3).toUpperCase()}
                   </td>
@@ -915,7 +915,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   borderRadius: '12px',
                   textAlign: 'center'
                 }}>
-                  <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#F8FAFC', marginBottom: 4 }}>
+                  <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
                     Fim do {periodo}º Quarto
                   </h3>
                   <button onClick={comecarProximoPeriodo} style={{
@@ -941,7 +941,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   borderRadius: '12px',
                   textAlign: 'center'
                 }}>
-                  <h3 style={{ fontSize: '14px', fontWeight: 800, color: '#F8FAFC', marginBottom: 4 }}>
+                  <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
                     Jogo Empatado!
                   </h3>
                   <button onClick={comecarProximoPeriodo} style={{
@@ -970,7 +970,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#EF4444', marginBottom: 2 }}>
                     Partida Encerrada
                   </h3>
-                  <p style={{ fontSize: '11px', color: '#94A3B8' }}>
+                  <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
                     O tempo regulamentar acabou. Registre o MVP e encerre no botão abaixo.
                   </p>
                 </div>
@@ -983,7 +983,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             {/* Controles Time A */}
             <div style={{
               padding: '12px',
-              background: '#111827',
+              background: 'var(--bg-card)',
               border: '1px solid rgba(37, 99, 235, 0.2)',
               borderRadius: '12px',
               display: 'flex',
@@ -991,24 +991,24 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               alignItems: 'center',
               gap: 8
             }}>
-              <span style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                 + Pontuar {timeANome.substring(0,6)}
               </span>
               <div style={{ display: 'flex', gap: 6, width: '100%' }}>
-                <button onClick={() => ajustarPlacar('A', 1)} style={{ flex: 1, padding: '6px 0', background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(37,99,235,0.2)', color: '#60A5FA', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
-                <button onClick={() => ajustarPlacar('A', 2)} style={{ flex: 1.2, padding: '8px 0', background: '#2563EB', border: 'none', color: '#FFF', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
-                <button onClick={() => ajustarPlacar('A', 3)} style={{ flex: 1, padding: '6px 0', background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
+                <button onClick={() => ajustarPlacar('A', 1)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-a-bg-1)', border: '1px solid var(--time-a-border-1)', color: 'var(--time-a-color-1)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
+                <button onClick={() => ajustarPlacar('A', 2)} style={{ flex: 1.2, padding: '8px 0', background: 'var(--time-a-bg-2)', border: 'var(--time-a-border-2)', color: 'var(--time-a-color-2)', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
+                <button onClick={() => ajustarPlacar('A', 3)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-a-bg-3)', border: '1px solid var(--time-a-border-3)', color: 'var(--time-a-color-3)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
               </div>
               <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center' }}>
-                <button onClick={() => ajustarPlacar('A', -1)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: '#64748B', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-1</button>
-                <button onClick={() => ajustarPlacar('A', -2)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: '#64748B', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-2</button>
+                <button onClick={() => ajustarPlacar('A', -1)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-a-color-neg)', background: 'var(--time-a-bg-neg)', border: 'var(--time-a-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-1</button>
+                <button onClick={() => ajustarPlacar('A', -2)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-a-color-neg)', background: 'var(--time-a-bg-neg)', border: 'var(--time-a-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-2</button>
               </div>
             </div>
 
             {/* Controles Time B */}
             <div style={{
               padding: '12px',
-              background: '#111827',
+              background: 'var(--bg-card)',
               border: '1px solid rgba(249, 115, 22, 0.2)',
               borderRadius: '12px',
               display: 'flex',
@@ -1016,17 +1016,17 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               alignItems: 'center',
               gap: 8
             }}>
-              <span style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                 + Pontuar {timeBNome.substring(0,6)}
               </span>
               <div style={{ display: 'flex', gap: 6, width: '100%' }}>
-                <button onClick={() => ajustarPlacar('B', 1)} style={{ flex: 1, padding: '6px 0', background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', color: '#F97316', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
-                <button onClick={() => ajustarPlacar('B', 2)} style={{ flex: 1.2, padding: '8px 0', background: '#F97316', border: 'none', color: '#080F1A', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
-                <button onClick={() => ajustarPlacar('B', 3)} style={{ flex: 1, padding: '6px 0', background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.3)', color: '#60A5FA', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
+                <button onClick={() => ajustarPlacar('B', 1)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-b-bg-1)', border: '1px solid var(--time-b-border-1)', color: 'var(--time-b-color-1)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
+                <button onClick={() => ajustarPlacar('B', 2)} style={{ flex: 1.2, padding: '8px 0', background: 'var(--time-b-bg-2)', border: 'var(--time-b-border-2)', color: 'var(--time-b-color-2)', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
+                <button onClick={() => ajustarPlacar('B', 3)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-b-bg-3)', border: '1px solid var(--time-b-border-3)', color: 'var(--time-b-color-3)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
               </div>
               <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center' }}>
-                <button onClick={() => ajustarPlacar('B', -1)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: '#64748B', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-1</button>
-                <button onClick={() => ajustarPlacar('B', -2)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: '#64748B', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-2</button>
+                <button onClick={() => ajustarPlacar('B', -1)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-a-color-neg)', background: 'var(--time-a-bg-neg)', border: 'var(--time-a-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-1</button>
+                <button onClick={() => ajustarPlacar('B', -2)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-a-color-neg)', background: 'var(--time-a-bg-neg)', border: 'var(--time-a-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-2</button>
               </div>
             </div>
           </div>
@@ -1036,8 +1036,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            background: '#111827',
-            border: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
             borderRadius: '16px',
             padding: '12px 20px',
             marginBottom: 20
@@ -1053,7 +1053,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#64748B',
+                color: 'var(--text-muted)',
                 fontSize: '20px',
                 cursor: 'pointer',
                 fontFamily: 'inherit',
@@ -1101,7 +1101,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#64748B',
+                color: 'var(--text-muted)',
                 fontSize: '20px',
                 cursor: 'pointer',
                 fontFamily: 'inherit',

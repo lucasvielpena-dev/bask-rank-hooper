@@ -127,23 +127,23 @@ export default function Home({ profile, onNavigate }) {
   }
 
   return (
-    <div className="page-content" style={{ background: '#080F1A' }}>
+    <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
       <div style={{ padding: '20px 20px 0' }}>
         
         {/* Saudação e Localização */}
         <div style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: '#F8FAFC' }}>
+          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-primary)' }}>
             Boa noite, <span style={{ color: '#2563EB' }}>{greetingName}</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#94A3B8', fontSize: '12px', marginTop: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--text-secondary)', fontSize: '12px', marginTop: 4 }}>
             Ranking de {city} - {uf}
           </div>
         </div>
 
         {/* Card: Sua Posição */}
         <div className="card" style={{
-          background: '#111827',
-          border: '1px solid rgba(255, 255, 255, 0.06)',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border)',
           borderRadius: '16px',
           padding: '20px',
           display: 'flex',
@@ -154,13 +154,13 @@ export default function Home({ profile, onNavigate }) {
           overflow: 'hidden'
         }}>
           <div>
-            <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 6 }}>
+            <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 6 }}>
               SUA POSIÇÃO
             </div>
             <div style={{ fontSize: '36px', fontWeight: 900, color: '#F97316', lineHeight: 1, marginBottom: 4 }}>
               {myRank}
             </div>
-            <div style={{ fontSize: '11px', color: '#94A3B8', marginBottom: 12 }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: 12 }}>
               Entre {stats.jogadores} jogadores
             </div>
             <span style={{
@@ -200,7 +200,7 @@ export default function Home({ profile, onNavigate }) {
         {/* Seção Destaques */}
         <div style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <div style={{ fontSize: '11px', fontWeight: 800, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
               DESTAQUES
             </div>
             <button 
@@ -214,8 +214,8 @@ export default function Home({ profile, onNavigate }) {
           <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 6, scrollbarWidth: 'none' }}>
             {/* Card 1: Posição Semanal */}
             <div className="card" style={{
-              background: '#111827',
-              border: '1px solid rgba(255, 255, 255, 0.06)',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border)',
               borderRadius: '12px',
               padding: '16px',
               minWidth: '135px',
@@ -226,15 +226,15 @@ export default function Home({ profile, onNavigate }) {
               height: '110px'
             }}>
               <div style={{ fontSize: '20px', color: '#F97316' }}>📈</div>
-              <div style={{ fontSize: '11px', color: '#F8FAFC', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-primary)', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
                 Você subiu <span style={{ color: '#F97316', fontWeight: 700 }}>3 posições</span> esta semana
               </div>
             </div>
 
             {/* Card 2: MVP da Semana */}
             <div className="card" style={{
-              background: '#111827',
-              border: '1px solid rgba(255, 255, 255, 0.06)',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border)',
               borderRadius: '12px',
               padding: '16px',
               minWidth: '135px',
@@ -245,7 +245,7 @@ export default function Home({ profile, onNavigate }) {
               height: '110px'
             }}>
               <div style={{ fontSize: '20px', color: '#F97316' }}>🏆</div>
-              <div style={{ fontSize: '11px', color: '#F8FAFC', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-primary)', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
                 <span style={{ color: '#F97316', fontWeight: 700 }}>MVP</span> da semana<br />
                 {lider ? lider.nome.split(' ')[0] : 'João Silva'} {(lider?.media_estrelas || 4.9).toFixed(1)} ★
               </div>
@@ -253,8 +253,8 @@ export default function Home({ profile, onNavigate }) {
 
             {/* Card 3: Torneio Municipal */}
             <div className="card" style={{
-              background: '#111827',
-              border: '1px solid rgba(255, 255, 255, 0.06)',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border)',
               borderRadius: '12px',
               padding: '16px',
               minWidth: '135px',
@@ -265,9 +265,9 @@ export default function Home({ profile, onNavigate }) {
               height: '110px'
             }}>
               <div style={{ fontSize: '20px', color: '#F97316' }}>📅</div>
-              <div style={{ fontSize: '11px', color: '#F8FAFC', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-primary)', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
                 Torneio Municipal<br />
-                <span style={{ color: '#94A3B8' }}>Inscrições abertas</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Inscrições abertas</span>
               </div>
             </div>
           </div>
@@ -275,39 +275,39 @@ export default function Home({ profile, onNavigate }) {
 
         {/* Card: Estatísticas Gerais */}
         <div className="card" style={{
-          background: '#111827',
-          border: '1px solid rgba(255, 255, 255, 0.06)',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border)',
           borderRadius: '16px',
           padding: '20px',
           marginBottom: 20
         }}>
-          <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 16 }}>
+          <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 16 }}>
             ESTATÍSTICAS GERAIS
           </div>
           
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8 }}>
-              <div style={{ fontSize: '24px', fontWeight: 800, color: '#F8FAFC' }}>{stats.jogadores}</div>
-              <div style={{ fontSize: '10px', color: '#94A3B8', marginTop: 2 }}>Jogadores</div>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.jogadores}</div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Jogadores</div>
             </div>
             <div style={{ paddingLeft: 8 }}>
-              <div style={{ fontSize: '24px', fontWeight: 800, color: '#F8FAFC' }}>{stats.torneios}</div>
-              <div style={{ fontSize: '10px', color: '#94A3B8', marginTop: 2 }}>Torneios</div>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.torneios}</div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Torneios</div>
             </div>
             <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <div style={{ fontSize: '24px', fontWeight: 800, color: '#F8FAFC' }}>{stats.avaliacoes}</div>
-              <div style={{ fontSize: '10px', color: '#94A3B8', marginTop: 2 }}>Avaliações</div>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.avaliacoes}</div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Avaliações</div>
             </div>
             <div style={{ paddingLeft: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
               <div style={{ fontSize: '24px', fontWeight: 800, color: '#F97316' }}>{stats.mediaGeral.toFixed(1)}</div>
-              <div style={{ fontSize: '10px', color: '#94A3B8', marginTop: 2 }}>Média Geral</div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Média Geral</div>
             </div>
           </div>
         </div>
 
         {/* Ações Rápidas */}
         <div style={{ marginBottom: 28 }}>
-          <div style={{ fontSize: '10px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 12 }}>
+          <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 12 }}>
             AÇÕES RÁPIDAS
           </div>
 
@@ -335,8 +335,8 @@ export default function Home({ profile, onNavigate }) {
             <button 
               onClick={() => onNavigate('jogos')}
               style={{
-                background: '#1A233D',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--border)',
                 borderRadius: '12px',
                 padding: '16px',
                 display: 'flex',
@@ -347,15 +347,15 @@ export default function Home({ profile, onNavigate }) {
               }}
             >
               <div style={{ fontSize: '20px', color: '#60A5FA', marginBottom: 12 }}>🏀</div>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#F8FAFC' }}>Meus<br />jogos</div>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>Meus<br />jogos</div>
             </button>
 
             {/* Ranking */}
             <button 
               onClick={() => onNavigate('ranking')}
               style={{
-                background: '#1A233D',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--border)',
                 borderRadius: '12px',
                 padding: '16px',
                 display: 'flex',
@@ -366,15 +366,15 @@ export default function Home({ profile, onNavigate }) {
               }}
             >
               <div style={{ fontSize: '20px', color: '#60A5FA', marginBottom: 12 }}>📊</div>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#F8FAFC' }}>Ver<br />Ranking</div>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>Ver<br />Ranking</div>
             </button>
 
             {/* Torneios */}
             <button 
               onClick={() => onNavigate('jogos', { aba: 'torneios' })}
               style={{
-                background: '#1A233D',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--border)',
                 borderRadius: '12px',
                 padding: '16px',
                 display: 'flex',
@@ -385,7 +385,7 @@ export default function Home({ profile, onNavigate }) {
               }}
             >
               <div style={{ fontSize: '20px', color: '#60A5FA', marginBottom: 12 }}>🏆</div>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#F8FAFC' }}>Ver<br />Torneios</div>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>Ver<br />Torneios</div>
             </button>
           </div>
         </div>
