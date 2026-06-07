@@ -127,6 +127,101 @@ html, body, #root {
 
 body {
   font-family: 'Inter', sans-serif;
+  --podium-first-star-border: rgba(249, 115, 22, 0.25);
+
+  /* Time A and B buttons */
+  --time-a-bg-1: rgba(37,99,235,0.1);
+  --time-a-border-1: rgba(37,99,235,0.2);
+  --time-a-color-1: #60A5FA;
+
+  --time-a-bg-2: #2563EB;
+  --time-a-border-2: none;
+  --time-a-color-2: #FFF;
+
+  --time-a-bg-3: rgba(249,115,22,0.15);
+  --time-a-border-3: rgba(249,115,22,0.3);
+  --time-a-color-3: #F97316;
+
+  --time-b-bg-1: rgba(249,115,22,0.1);
+  --time-b-border-1: rgba(249,115,22,0.2);
+  --time-b-color-1: #F97316;
+
+  --time-b-bg-2: #F97316;
+  --time-b-border-2: none;
+  --time-b-color-2: #080F1A;
+
+  --time-b-bg-3: rgba(37,99,235,0.15);
+  --time-b-border-3: rgba(37,99,235,0.3);
+  --time-b-color-3: #60A5FA;
+
+  --time-a-bg-neg: none;
+  --time-a-border-neg: 1px solid rgba(255,255,255,0.1);
+  --time-a-color-neg: #64748B;
+
+  --time-b-bg-neg: none;
+  --time-b-border-neg: 1px solid rgba(255,255,255,0.1);
+  --time-b-color-neg: #64748B;
+
+  /* Console de Partida Controles */
+  --counter-btn-a-color: #60a5fa;
+  --counter-btn-b-color: #fca5a5;
+  --vs-badge-bg: #080F1A;
+  --text-danger: #ef4444;
+  --border-danger: rgba(239, 68, 68, 0.2);
+
+  /* Medalhas e Pódio */
+  --gold-color: #F97316;
+  --silver-color: #94a3b8;
+  --bronze-color: #cd7c2f;
+  --podium-wrapper-bg: rgba(13, 21, 39, 0.4);
+  --podium-bg-1st: linear-gradient(180deg, rgba(249, 115, 22, 0.18) 0%, rgba(17, 24, 39, 0.9) 100%);
+  --podium-border-1st: 1.5px solid rgba(249, 115, 22, 0.5);
+  --podium-bg-2nd: linear-gradient(180deg, rgba(148, 163, 184, 0.12) 0%, rgba(17, 24, 39, 0.85) 100%);
+  --podium-border-2nd: 1.5px solid rgba(148, 163, 184, 0.4);
+  --podium-bg-3rd: linear-gradient(180deg, rgba(205, 124, 47, 0.12) 0%, rgba(17, 24, 39, 0.85) 100%);
+  --podium-border-3rd: 1.5px solid rgba(205, 124, 47, 0.4);
+
+  /* Console de Partida */
+  --card-team-a-bg: linear-gradient(180deg, rgba(37, 99, 235, 0.06) 0%, rgba(17, 24, 39, 0.5) 100%);
+  --card-team-b-bg: linear-gradient(180deg, rgba(239, 68, 68, 0.06) 0%, rgba(17, 24, 39, 0.5) 100%);
+  --card-team-a-border: 1.5px solid rgba(37, 99, 235, 0.25);
+  --card-team-b-border: 1.5px solid rgba(239, 68, 68, 0.25);
+  --timer-bg: rgba(17, 24, 39, 0.5);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+/* Custom scrollbar styling to prevent white tracks on mobile/desktop browsers */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
   overscroll-behavior: none;
@@ -138,7 +233,8 @@ body {
   display: flex;
   flex-direction: column;
   height: 100dvh;
-  max-width: 480px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
   background-color: var(--bg-primary);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='800' viewBox='0 0 400 800'%3E%3Cpath d='M 30 30 L 370 30 L 370 770 L 30 770 Z' fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.02'/%3E%3Ccircle cx='200' cy='400' r='55' fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.02'/%3E%3Cline x1='30' y1='400' x2='370' y2='400' stroke='%23ffffff' stroke-width='1' opacity='0.02'/%3E%3Cpath d='M 30 160 A 170 170 0 0 0 370 160' fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.02'/%3E%3Cpath d='M 30 640 A 170 170 0 0 1 370 640' fill='none' stroke='%23ffffff' stroke-width='1' opacity='0.02'/%3E%3C/svg%3E");
@@ -655,7 +751,7 @@ input:focus { border-color: var(--accent-blue); }
 .medal-3 { color: #cd7c2f; }
 
 /* Responsive desktop */
-@media (min-width: 480px) {
+@media (min-width: 1024px) {
   .app-shell {
     border-left: 1px solid var(--border);
     border-right: 1px solid var(--border);
@@ -1119,3 +1215,150 @@ input:focus { border-color: var(--accent-blue); }
   margin-top: 2px;
 }
 
+
+/* Responsive Grid & Layout Utilities */
+
+.responsive-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.home-top-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .responsive-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .first-place-card {
+    grid-column: span 2;
+  }
+
+  .home-top-row {
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .home-top-row > .card {
+    flex: 1;
+    margin-bottom: 0 !important;
+  }
+
+  .destaques-row {
+    overflow-x: visible !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    padding-bottom: 0 !important;
+  }
+
+  .destaques-row > .card {
+    min-width: 0 !important;
+    flex: 1 !important;
+    height: auto !important;
+    margin-bottom: 0 !important;
+  }
+
+  .acoes-rapidas-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 16px !important;
+  }
+
+  /* Bottom nav layout for tablets and desktops */
+  .bottom-nav {
+    justify-content: center !important;
+    gap: 16px !important;
+  }
+  
+  .nav-item {
+    flex: 0 1 120px !important;
+  }
+
+  /* Centered modals for larger screens */
+  .modal-overlay {
+    align-items: center !important;
+    padding: 20px !important;
+  }
+  
+  .modal-sheet {
+    border-radius: 24px !important;
+    max-height: 90vh !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+  }
+
+  /* Playoff brackets side-by-side */
+  .playoff-bracket-container {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    overflow-x: auto !important;
+    gap: 24px !important;
+    padding-bottom: 12px !important;
+  }
+  
+  .playoff-bracket-container > div {
+    flex: 1 !important;
+    min-width: 260px !important;
+  }
+
+  .hide-scrollbar {
+    overflow-x: visible !important;
+    flex-wrap: wrap !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-card-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .first-place-card {
+    grid-column: span 3;
+  }
+}
+
+/* Live Game responsive classes */
+.live-game-controls-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .live-game-controls-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+}
+
+.live-scoreboard-card {
+  max-width: 100%;
+  margin: 0 auto 20px;
+}
+
+@media (min-width: 768px) {
+  .live-scoreboard-card {
+    max-width: 600px;
+  }
+}
+
+.btn-back-ranking {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .btn-back-ranking {
+    max-width: 320px;
+    margin: 16px auto 24px !important;
+    display: block !important;
+  }
+}

@@ -177,7 +177,7 @@ export default function Ranking({ profile }) {
             <p>Os jogadores aparecerão aqui quando forem avaliados.</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
+          <div className="responsive-card-grid" style={{ marginBottom: 20 }}>
             {sortedRanking.map((jogador, index) => {
               const isFirst = index === 0;
               
@@ -336,8 +336,8 @@ export default function Ranking({ profile }) {
         {/* Botão de Rodapé para fechar/voltar */}
         <button 
           onClick={() => window.history.back()}
+          className="btn-back-ranking"
           style={{
-            width: '100%',
             background: 'none',
             border: '1px solid var(--accent-blue)',
             borderRadius: '50px',
@@ -346,8 +346,6 @@ export default function Ranking({ profile }) {
             fontSize: '13px',
             fontWeight: 700,
             cursor: 'pointer',
-            marginTop: 10,
-            marginBottom: 24,
             fontFamily: 'inherit'
           }}
         >

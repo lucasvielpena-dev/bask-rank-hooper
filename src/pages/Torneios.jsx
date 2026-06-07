@@ -95,7 +95,7 @@ export default function Torneios({ profile, isNested = false }) {
 
           {/* Listagem */}
           {loading ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 24 }}>
+            <div className="responsive-card-grid" style={{ paddingBottom: 24 }}>
               {[1, 2, 3].map(idx => (
                 <div key={idx} className="skeleton" style={{ height: 130, borderRadius: '16px' }} />
               ))}
@@ -112,7 +112,7 @@ export default function Torneios({ profile, isNested = false }) {
               </button>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 24 }}>
+            <div className="responsive-card-grid" style={{ paddingBottom: 24 }}>
               {torneios.map((t, i) => {
                 const stat = STATUS_TORNEIO[t.status] || { label: t.status, color: '#94a3b8', bg: 'rgba(0,0,0,0.1)' };
                 return (
@@ -970,7 +970,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 <p>Inscreva sua equipe e convide seus amigos para disputar!</p>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div className="responsive-card-grid" style={{ marginBottom: 12 }}>
                 {equipes.map(e => {
                   const isExpanded = expandedTeamId === e.id;
                   const isCapitao = e.capitao_id === profile.id;
@@ -1081,7 +1081,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 {jogos.length === 0 ? (
                   <p style={{ color: 'var(--text-secondary)', fontSize: '13px', textAlign: 'center' }}>A chave será gerada quando o torneio for iniciado.</p>
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  <div className="playoff-bracket-container" style={{ gap: '20px' }}>
                     {['Quartas de Final', 'Semifinal', 'Final'].map(fase => {
                       const faseMatches = jogos.filter(j => j.fase === fase);
                       if (faseMatches.length === 0) return null;
@@ -1139,7 +1139,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
 
         {/* TAB 4: CONFRONTOS / JOGOS */}
         {aba === 'jogos' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div className="responsive-card-grid" style={{ paddingBottom: 12 }}>
             {jogos.length === 0 ? (
               <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '13px', padding: '20px 0' }}>
                 Os confrontos estarão disponíveis após o início das partidas.
@@ -1799,7 +1799,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
       </div>
 
       {/* Placar Central (Unified Scoreboard Card) */}
-      <div className="card" style={{
+      <div className="card live-scoreboard-card" style={{
         padding: '20px 16px',
         background: 'var(--bg-card)',
         border: '1px solid var(--border)',
@@ -1808,7 +1808,6 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         gridTemplateColumns: '1fr auto 1fr',
         alignItems: 'center',
         gap: 12,
-        marginBottom: 20,
         position: 'relative'
       }}>
         {/* Floating Feedbacks Time A */}
@@ -2028,7 +2027,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
       )}
 
       {/* Controles de Pontuação Rápidos (Botoes + / -) */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+      <div className="live-game-controls-grid">
         {/* Controles Time A */}
         <div style={{
           padding: '12px',
@@ -2164,7 +2163,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
       {/* Formulário de Estatísticas Individuais */}
       <div style={{ flex: 1, overflowY: 'auto', marginBottom: 20 }}>
         <h4 style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>Estatísticas Individuais</h4>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div className="responsive-card-grid" style={{ marginBottom: 10 }}>
           {allPlayers.map(p => {
             const st = statsJogo[p.jogador_id] || { pontos: 0, rebotes: 0, assistencias: 0, tocos: 0, roubos: 0 };
             const isTeamA = rosterA.some(r => r.jogador_id === p.jogador_id);

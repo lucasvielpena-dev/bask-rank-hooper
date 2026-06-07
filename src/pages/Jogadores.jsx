@@ -372,7 +372,7 @@ export default function Jogadores({ profile }) {
 
         {/* Lista de Jogadores */}
         {loading ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 20 }}>
+          <div className="responsive-card-grid" style={{ paddingBottom: 20 }}>
             {[1, 2, 3, 4].map(idx => (
               <div key={idx} className="skeleton" style={{ height: 120, borderRadius: '16px' }} />
             ))}
@@ -384,7 +384,7 @@ export default function Jogadores({ profile }) {
             <p>Selecione outro filtro ou altere sua busca por nome/apelido.</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 30 }}>
+          <div className="responsive-card-grid" style={{ paddingBottom: 30 }}>
             {filtrados.map((j, i) => {
               const rankVal = ranks[j.id] || 0;
               const hasVoted = j.ja_votou_hoje;

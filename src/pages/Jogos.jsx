@@ -484,11 +484,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <Torneios profile={profile} isNested={true} />
           ) : loading ? (
             aba === 'jogos' ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div className="responsive-card-grid">
                 <div className="skeleton" style={{ height: 170, borderRadius: '16px' }} />
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div className="responsive-card-grid">
                 {[1, 2, 3].map(idx => (
                   <div key={idx} className="skeleton" style={{ height: 96, borderRadius: '16px' }} />
                 ))}
@@ -506,7 +506,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   </button>
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div className="responsive-card-grid">
                   {partidas.map((p, i) => (
                     <div key={p.id} className="card card-enter" style={{ display: 'flex', flexDirection: 'column', gap: 12, animationDelay: `${i * 30}ms` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -547,7 +547,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <p>Partidas finalizadas aparecerão aqui.</p>
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 20 }}>
+                <div className="responsive-card-grid" style={{ paddingBottom: 20 }}>
                   {historico.map((p, i) => {
                     const venceA = p.placar_time_a > p.placar_time_b;
                     const venceB = p.placar_time_b > p.placar_time_a;
@@ -750,7 +750,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           </div>
 
           {/* Placar Central (Unified Scoreboard Card) */}
-          <div className="card" style={{
+          <div className="card live-scoreboard-card" style={{
             padding: '20px 16px',
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
@@ -759,7 +759,6 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             gridTemplateColumns: '1fr auto 1fr',
             alignItems: 'center',
             gap: 12,
-            marginBottom: 20,
             position: 'relative'
           }}>
             {/* Floating Feedbacks Time A */}
@@ -979,7 +978,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           )}
 
           {/* Controles de Pontuação Rápidos (Botoes + / -) */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+          <div className="live-game-controls-grid">
             {/* Controles Time A */}
             <div style={{
               padding: '12px',

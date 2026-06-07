@@ -140,62 +140,93 @@ export default function Home({ profile, onNavigate }) {
           </div>
         </div>
 
-        {/* Card: Sua Posição */}
-        <div className="card" style={{
-          background: 'var(--bg-card)',
-          border: '1px solid var(--border)',
-          borderRadius: '16px',
-          padding: '20px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 20,
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div>
-            <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 6 }}>
-              SUA POSIÇÃO
+        <div className="home-top-row">
+          {/* Card: Sua Posição */}
+          <div className="card" style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
+            borderRadius: '16px',
+            padding: '20px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 6 }}>
+                SUA POSIÇÃO
+              </div>
+              <div style={{ fontSize: '36px', fontWeight: 900, color: '#F97316', lineHeight: 1, marginBottom: 4 }}>
+                {myRank}
+              </div>
+              <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: 12 }}>
+                Entre {stats.jogadores} jogadores
+              </div>
+              <span style={{
+                background: 'rgba(37, 99, 235, 0.15)',
+                color: '#60A5FA',
+                border: '1px solid rgba(37, 99, 235, 0.3)',
+                borderRadius: '6px',
+                padding: '3px 8px',
+                fontSize: '10px',
+                fontWeight: 800,
+                letterSpacing: '0.02em',
+                textTransform: 'uppercase'
+              }}>
+                {myBadge}
+              </span>
             </div>
-            <div style={{ fontSize: '36px', fontWeight: 900, color: '#F97316', lineHeight: 1, marginBottom: 4 }}>
-              {myRank}
+
+            {/* Gráfico Linear e Avatar com Linha de Tendência */}
+            <div style={{ position: 'relative', width: '100px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="100" height="60" viewBox="0 0 100 60" style={{ position: 'absolute', right: 0, bottom: 0, opacity: 0.75 }}>
+                <path d="M0,50 Q20,38 40,43 T80,18 T100,10" fill="none" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" />
+                <circle cx="100" cy="10" r="3.5" fill="#F97316" />
+              </svg>
+              <div style={{ zIndex: 2, border: '3px solid #111827', borderRadius: '50%', overflow: 'hidden', width: '64px', height: '64px', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
+                {profile?.foto_perfil ? (
+                  <img src={profile.foto_perfil} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ width: '100%', height: '100%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', fontWeight: 800, fontSize: '20px' }}>
+                    {greetingName.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: 12 }}>
-              Entre {stats.jogadores} jogadores
-            </div>
-            <span style={{
-              background: 'rgba(37, 99, 235, 0.15)',
-              color: '#60A5FA',
-              border: '1px solid rgba(37, 99, 235, 0.3)',
-              borderRadius: '6px',
-              padding: '3px 8px',
-              fontSize: '10px',
-              fontWeight: 800,
-              letterSpacing: '0.02em',
-              textTransform: 'uppercase'
-            }}>
-              {myBadge}
-            </span>
           </div>
 
-          {/* Gráfico Linear e Avatar com Linha de Tendência */}
-          <div style={{ position: 'relative', width: '100px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="100" height="60" viewBox="0 0 100 60" style={{ position: 'absolute', right: 0, bottom: 0, opacity: 0.75 }}>
-              <path d="M0,50 Q20,38 40,43 T80,18 T100,10" fill="none" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" />
-              <circle cx="100" cy="10" r="3.5" fill="#F97316" />
-            </svg>
-            <div style={{ zIndex: 2, border: '3px solid #111827', borderRadius: '50%', overflow: 'hidden', width: '64px', height: '64px', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
-              {profile?.foto_perfil ? (
-                <img src={profile.foto_perfil} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : (
-                <div style={{ width: '100%', height: '100%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', fontWeight: 800, fontSize: '20px' }}>
-                  {greetingName.charAt(0).toUpperCase()}
-                </div>
-              )}
+          {/* Card: Estatísticas Gerais */}
+          <div className="card" style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
+            borderRadius: '16px',
+            padding: '20px'
+          }}>
+            <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 16 }}>
+              ESTATÍSTICAS GERAIS
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8 }}>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.jogadores}</div>
+                <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Jogadores</div>
+              </div>
+              <div style={{ paddingLeft: 8 }}>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.torneios}</div>
+                <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Torneios</div>
+              </div>
+              <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.avaliacoes}</div>
+                <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Avaliações</div>
+              </div>
+              <div style={{ paddingLeft: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ fontSize: '24px', fontWeight: 800, color: '#F97316' }}>{stats.mediaGeral.toFixed(1)}</div>
+                <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Média Geral</div>
+              </div>
             </div>
           </div>
         </div>
-
 
         {/* Seção Destaques */}
         <div style={{ marginBottom: 20 }}>
@@ -211,7 +242,7 @@ export default function Home({ profile, onNavigate }) {
             </button>
           </div>
 
-          <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 6, scrollbarWidth: 'none' }}>
+          <div className="destaques-row">
             {/* Card 1: Posição Semanal */}
             <div className="card" style={{
               background: 'var(--bg-card)',
@@ -273,45 +304,13 @@ export default function Home({ profile, onNavigate }) {
           </div>
         </div>
 
-        {/* Card: Estatísticas Gerais */}
-        <div className="card" style={{
-          background: 'var(--bg-card)',
-          border: '1px solid var(--border)',
-          borderRadius: '16px',
-          padding: '20px',
-          marginBottom: 20
-        }}>
-          <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 16 }}>
-            ESTATÍSTICAS GERAIS
-          </div>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-            <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8 }}>
-              <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.jogadores}</div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Jogadores</div>
-            </div>
-            <div style={{ paddingLeft: 8 }}>
-              <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.torneios}</div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Torneios</div>
-            </div>
-            <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.avaliacoes}</div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Avaliações</div>
-            </div>
-            <div style={{ paddingLeft: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-              <div style={{ fontSize: '24px', fontWeight: 800, color: '#F97316' }}>{stats.mediaGeral.toFixed(1)}</div>
-              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Média Geral</div>
-            </div>
-          </div>
-        </div>
-
         {/* Ações Rápidas */}
         <div style={{ marginBottom: 28 }}>
           <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 12 }}>
             AÇÕES RÁPIDAS
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="acoes-rapidas-grid">
             {/* Avaliar Jogador */}
             <button 
               onClick={() => onNavigate('jogadores')}
