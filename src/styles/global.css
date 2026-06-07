@@ -480,6 +480,7 @@ body {
   justify-content: center;
   padding: 0 0 0 0;
   animation: fadeIn 0.2s ease;
+  overflow: hidden;
 }
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -490,11 +491,12 @@ body {
   background: var(--bg-secondary);
   border-radius: 24px 24px 0 0;
   border: 1px solid var(--border);
-  padding: 24px 20px;
+  padding: 20px 16px;
   width: 100%;
   max-width: 480px;
   max-height: 85dvh;
   overflow-y: auto;
+  overflow-x: hidden;
   animation: slideSheet 0.3s ease;
 }
 @keyframes slideSheet {

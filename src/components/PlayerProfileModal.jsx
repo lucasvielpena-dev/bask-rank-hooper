@@ -305,8 +305,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
 
 
   return (
-    <div className="modal-overlay" style={{ alignItems: 'center', padding: '12px' }}>
-      <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440, borderRadius: '24px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxSizing: 'border-box', overflowX: 'hidden', width: '100%' }}>
+    <div className="modal-overlay" style={{ alignItems: 'flex-end', padding: 0 }}>
+      <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 480, borderRadius: '24px 24px 0 0', maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
         <div className="modal-handle" />
 
         {loading ? (
