@@ -382,7 +382,7 @@ export default function Stats({ profile, onNavigate }) {
           }} />
 
           <div style={{ zIndex: 2, padding: '16px', width: '100%' }}>
-            <h3 style={{ fontSize: '20px', fontWeight: 900, color: 'var(--text-primary)', marginBottom: 2 }}>{profile.nome_completo}</h3>
+            <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#F8FAFC', marginBottom: 2 }} >{profile.nome_completo}</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
               <span style={{
                 background: 'rgba(37, 99, 235, 0.2)',
@@ -396,7 +396,7 @@ export default function Stats({ profile, onNavigate }) {
               }}>
                 {badgeText}
               </span>
-              <span style={{ color: 'var(--text-secondary)', fontSize: '11px' }}>{profile.posicao || myPlayerInfo?.posicao || 'Ala'}</span>
+              <span style={{ color: '#94A3B8', fontSize: '11px' }}>{profile.posicao || myPlayerInfo?.posicao || 'Ala'}</span>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -405,9 +405,9 @@ export default function Stats({ profile, onNavigate }) {
                   {starsVal > 0 ? Number(starsVal).toFixed(1) : '0.0'}
                 </span>
                 <span style={{ color: '#F97316', fontSize: '15px' }}>★</span>
-                <span style={{ color: 'var(--text-secondary)', fontSize: '11px', marginLeft: 4 }}>Nota média</span>
+                <span style={{ color: '#94A3B8', fontSize: '11px', marginLeft: 4 }}>Nota média</span>
               </div>
-              <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+              <div style={{ fontSize: '11px', color: '#94A3B8' }}>
                 {myRank !== '--' ? `${myRank} ` : ''}{city} - {uf}
               </div>
             </div>

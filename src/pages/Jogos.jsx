@@ -710,7 +710,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 alignItems: 'center',
                 background: 'none',
                 border: 'none',
-                color: '#60A5FA',
+                color: 'var(--accent-blue)',
                 cursor: 'pointer',
                 fontSize: '14px',
                 fontWeight: 700,
@@ -741,7 +741,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               fontSize: '84px',
               fontFamily: 'monospace',
               fontWeight: 800,
-              color: '#FFFFFF',
+              color: 'var(--text-primary)',
               lineHeight: 1,
               letterSpacing: '-0.02em'
             }}>
@@ -878,7 +878,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               <tbody>
                 {/* Linha Time A */}
                 <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-primary)', fontWeight: 600 }}>
-                  <td style={{ padding: '8px 4px', textAlign: 'left', color: '#60A5FA', fontWeight: 700 }}>
+                  <td style={{ padding: '8px 4px', textAlign: 'left', color: 'var(--counter-btn-a-color)', fontWeight: 700 }}>
                     {timeANome.substring(0, 3).toUpperCase()}
                   </td>
                   <td style={{ padding: '8px 4px' }}>{getQuarterScore(1, 'A')}</td>
@@ -886,11 +886,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <td style={{ padding: '8px 4px' }}>{getQuarterScore(3, 'A')}</td>
                   <td style={{ padding: '8px 4px' }}>{getQuarterScore(4, 'A')}</td>
                   {periodo >= 5 && <td style={{ padding: '8px 4px' }}>{getQuarterScore(5, 'A')}</td>}
-                  <td style={{ padding: '8px 4px', fontWeight: 800, color: '#3B82F6' }}>{placarA}</td>
+                  <td style={{ padding: '8px 4px', fontWeight: 800, color: 'var(--counter-btn-a-color)' }}>{placarA}</td>
                 </tr>
                 {/* Linha Time B */}
                 <tr style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
-                  <td style={{ padding: '8px 4px', textAlign: 'left', color: '#F87171', fontWeight: 700 }}>
+                  <td style={{ padding: '8px 4px', textAlign: 'left', color: 'var(--counter-btn-b-color)', fontWeight: 700 }}>
                     {timeBNome.substring(0, 3).toUpperCase()}
                   </td>
                   <td style={{ padding: '8px 4px' }}>{getQuarterScore(1, 'B')}</td>
@@ -898,7 +898,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <td style={{ padding: '8px 4px' }}>{getQuarterScore(3, 'B')}</td>
                   <td style={{ padding: '8px 4px' }}>{getQuarterScore(4, 'B')}</td>
                   {periodo >= 5 && <td style={{ padding: '8px 4px' }}>{getQuarterScore(5, 'B')}</td>}
-                  <td style={{ padding: '8px 4px', fontWeight: 800, color: '#EF4444' }}>{placarB}</td>
+                  <td style={{ padding: '8px 4px', fontWeight: 800, color: 'var(--counter-btn-b-color)' }}>{placarB}</td>
                 </tr>
               </tbody>
             </table>
@@ -910,8 +910,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               {periodo < 4 ? (
                 <div className="card" style={{
                   padding: '16px',
-                  background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(17, 24, 39, 0.8) 100%)',
-                  border: '1px solid rgba(37, 99, 235, 0.3)',
+                  background: 'var(--card-team-a-bg)',
+                  border: '1px solid var(--border)',
                   borderRadius: '12px',
                   textAlign: 'center'
                 }}>
@@ -936,8 +936,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               ) : (placarA === placarB) ? (
                 <div className="card" style={{
                   padding: '16px',
-                  background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(17, 24, 39, 0.8) 100%)',
-                  border: '1px solid rgba(249, 115, 22, 0.3)',
+                  background: 'var(--card-team-b-bg)',
+                  border: '1px solid var(--border)',
                   borderRadius: '12px',
                   textAlign: 'center'
                 }}>

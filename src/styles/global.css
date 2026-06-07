@@ -27,6 +27,13 @@
   --nav-inactive-color: #64748b;
   --header-bg: #080F1A;
 
+  /* Podium first place colors */
+  --podium-first-name: #FDE68A;
+  --podium-first-sub: #D4A853;
+  --podium-first-star-color: #FBBF24;
+  --podium-first-star-bg: rgba(249, 115, 22, 0.15);
+  --podium-first-star-border: rgba(249, 115, 22, 0.25);
+
   /* Time A and B buttons */
   --time-a-bg-1: rgba(37,99,235,0.1);
   --time-a-border-1: rgba(37,99,235,0.2);
@@ -682,6 +689,13 @@ input:focus { border-color: var(--accent-blue); }
   --nav-inactive-color: #9CA3AF;
   --header-bg: #FFFFFF;
 
+  /* Podium first place colors */
+  --podium-first-name: #B45309;
+  --podium-first-sub: #D97706;
+  --podium-first-star-color: #B45309;
+  --podium-first-star-bg: #FEF3C7;
+  --podium-first-star-border: rgba(180, 83, 9, 0.2);
+
   /* Time A and B buttons */
   --time-a-bg-1: #EFF6FF;
   --time-a-border-1: 1px solid rgba(37, 99, 235, 0.15);
@@ -1057,7 +1071,7 @@ input:focus { border-color: var(--accent-blue); }
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #080F1A;
+  background: var(--bg-card);
   border: 2px solid var(--border);
   display: flex;
   align-items: center;
@@ -1069,7 +1083,7 @@ input:focus { border-color: var(--accent-blue); }
 
 .evolution-step.completed .evolution-dot {
   border-color: var(--accent-blue);
-  background: #080F1A;
+  background: var(--bg-card);
   color: var(--accent-blue-light);
 }
 

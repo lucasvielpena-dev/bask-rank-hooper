@@ -132,7 +132,7 @@ export default function Ranking({ profile }) {
 
   const getRankBadgeStyle = (index) => {
     if (index === 0) return { border: '2px solid #F97316', background: 'rgba(249, 115, 22, 0.15)', color: '#F97316' };
-    if (index === 1) return { border: '2px solid #94A3B8', background: 'rgba(148, 163, 184, 0.15)', color: '#CBD5E1' };
+    if (index === 1) return { border: '2px solid #94A3B8', background: 'rgba(148, 163, 184, 0.15)', color: 'var(--text-secondary)' };
     if (index === 2) return { border: '2px solid #CD7C2F', background: 'rgba(205, 124, 47, 0.15)', color: '#CD7C2F' };
     return { border: '1px solid var(--border)', background: 'none', color: 'var(--text-secondary)' };
   };
@@ -187,12 +187,8 @@ export default function Ranking({ profile }) {
                   className={`card card-enter${isFirst ? ' first-place-card' : ''}`}
                   onClick={() => setSelectedPlayer({ ...jogador, rank: index + 1 })}
                   style={{
-                    background: isFirst 
-                      ? 'linear-gradient(135deg, rgba(249,115,22,0.12) 0%, rgba(234,179,8,0.08) 50%, rgba(249,115,22,0.12) 100%)'
-                      : '#111827',
-                    border: isFirst 
-                      ? '1.5px solid rgba(249,115,22,0.5)' 
-                      : '1px solid rgba(255,255,255,0.06)',
+                    background: isFirst ? 'var(--podium-bg-1st)' : 'var(--bg-card)',
+                    border: isFirst ? 'var(--podium-border-1st)' : '1px solid var(--border)',
                     borderRadius: isFirst ? '16px' : '12px',
                     padding: isFirst ? '16px 16px' : '12px 14px',
                     display: 'flex',
@@ -286,7 +282,7 @@ export default function Ranking({ profile }) {
                       <div style={{
                         fontSize: isFirst ? '15px' : '14px',
                         fontWeight: isFirst ? 800 : 700,
-                        color: isFirst ? '#FDE68A' : '#F8FAFC',
+                        color: isFirst ? 'var(--podium-first-name)' : 'var(--text-primary)',
                         display: 'flex',
                         alignItems: 'center',
                         gap: 6
@@ -295,7 +291,7 @@ export default function Ranking({ profile }) {
                       </div>
                       <div style={{ 
                         fontSize: '11px', 
-                        color: isFirst ? '#D4A853' : '#94A3B8', 
+                        color: isFirst ? 'var(--podium-first-sub)' : 'var(--text-secondary)', 
                         marginTop: 2,
                         fontWeight: isFirst ? 600 : 400
                       }}>
@@ -313,21 +309,21 @@ export default function Ranking({ profile }) {
                       alignItems: 'center', 
                       gap: 3,
                       ...(isFirst ? {
-                        background: 'rgba(249,115,22,0.15)',
+                        background: 'var(--podium-first-star-bg)',
                         padding: '4px 10px',
                         borderRadius: '20px',
-                        border: '1px solid rgba(249,115,22,0.25)'
+                        border: '1px solid var(--podium-first-star-border)'
                       } : {})
                     }}>
                       <span style={{ 
                         fontSize: isFirst ? '17px' : '15px', 
                         fontWeight: 900, 
-                        color: isFirst ? '#FBBF24' : '#F97316', 
+                        color: isFirst ? 'var(--podium-first-star-color)' : '#F97316', 
                         fontFamily: 'monospace' 
                       }}>
                         {Number(getMetricValue(jogador)).toFixed(1)}
                       </span>
-                      <span style={{ color: isFirst ? '#FBBF24' : '#F97316', fontSize: isFirst ? '14px' : '12px' }}>★</span>
+                      <span style={{ color: isFirst ? 'var(--podium-first-star-color)' : '#F97316', fontSize: isFirst ? '14px' : '12px' }}>★</span>
                     </div>
                   </div>
 
@@ -343,9 +339,9 @@ export default function Ranking({ profile }) {
           style={{
             width: '100%',
             background: 'none',
-            border: '1px solid #2563EB',
+            border: '1px solid var(--accent-blue)',
             borderRadius: '50px',
-            color: '#60A5FA',
+            color: 'var(--accent-blue)',
             padding: '12px',
             fontSize: '13px',
             fontWeight: 700,

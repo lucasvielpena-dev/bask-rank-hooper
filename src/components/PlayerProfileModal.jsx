@@ -323,7 +323,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               {fundamentos.map(f => {
                 const val = estrelas[f.key] || 0;
                 return (
-                  <div key={f.key} style={{ background: '#0D1527', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)' }}>
+                  <div key={f.key} style={{ background: 'var(--bg-secondary)', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                       <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
                       <span style={{ fontSize: 11, color: '#F97316', fontWeight: 600 }}>
@@ -374,8 +374,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               overflow: 'hidden',
               display: 'flex',
               alignItems: 'flex-end',
-              background: '#0D1527',
-              border: '1px solid rgba(255,255,255,0.06)',
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--border)',
               flexShrink: 0
             }}>
               {localJogador.foto_url ? (
@@ -399,7 +399,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               }} />
 
               <div style={{ zIndex: 2, padding: '16px', width: '100%', boxSizing: 'border-box' }}>
-                <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#F8FAFC', marginBottom: 2 }}>{localJogador.nome}</h3>
+                <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#F8FAFC', marginBottom: 2 }} >{localJogador.nome}</h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
                   <span style={{
                     background: 'rgba(37, 99, 235, 0.2)',
@@ -436,10 +436,10 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               display: 'grid',
               gridTemplateColumns: 'repeat(5, 1fr)',
               gap: 2,
-              background: '#111827',
+              background: 'var(--bg-card)',
               padding: '12px 8px',
               borderRadius: '12px',
-              border: '1px solid rgba(255,255,255,0.06)',
+              border: '1px solid var(--border)',
               textAlign: 'center'
             }}>
               {[
@@ -450,15 +450,15 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 { label: 'BLK', val: blk },
               ].map(item => (
                 <div key={item.label} style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: '16px', fontWeight: 800, color: '#F8FAFC' }}>{item.val}</div>
-                  <div style={{ fontSize: '9px', color: '#64748B', fontWeight: 600, marginTop: 2 }}>{item.label}</div>
+                  <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>{item.val}</div>
+                  <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, marginTop: 2 }}>{item.label}</div>
                 </div>
               ))}
             </div>
 
             {/* Linha de Evolução */}
-            <div style={{ background: '#111827', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: '14px', padding: '14px 12px' }}>
-              <div style={{ fontSize: '9px', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '14px', padding: '14px 12px' }}>
+              <div style={{ fontSize: '9px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                 LINHA DE EVOLUÇÃO
               </div>
               <div className="evolution-timeline" style={{ margin: '18px 0 6px' }}>
@@ -483,7 +483,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             {/* Tab Bar interna (SOBRE, ESTATÍSTICAS, HISTÓRICO) */}
             <div style={{
               display: 'flex',
-              background: '#0D1527',
+              background: 'var(--bg-secondary)',
               borderRadius: '8px',
               padding: '3px',
               gap: 2
@@ -502,8 +502,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     padding: '8px 4px',
                     borderRadius: '6px',
                     border: 'none',
-                    background: perfilTab === t.key ? '#1A233D' : 'none',
-                    color: perfilTab === t.key ? '#F8FAFC' : '#64748B',
+                    background: perfilTab === t.key ? 'var(--bg-elevated)' : 'none',
+                    color: perfilTab === t.key ? 'var(--text-primary)' : 'var(--text-muted)',
                     fontSize: '10px',
                     fontWeight: 700,
                     cursor: 'pointer',
@@ -528,8 +528,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     { label: 'Equipe', val: localJogador.equipe || `${localJogador.cidade} Hoops` },
                   ].map(item => (
                     <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 6, borderBottom: '1px solid rgba(255,255,255,0.03)', gap: 16 }}>
-                      <span style={{ color: '#94A3B8', flexShrink: 0, fontSize: '13px' }}>{item.label}</span>
-                      <span style={{ fontWeight: 600, color: '#F8FAFC', fontSize: '13px', textAlign: 'right', wordBreak: 'break-word' }}>{item.val}</span>
+                      <span style={{ color: 'var(--text-secondary)', flexShrink: 0, fontSize: '13px' }}>{item.label}</span>
+                      <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '13px', textAlign: 'right', wordBreak: 'break-word' }}>{item.val}</span>
                     </div>
                   ))}
                 </div>
@@ -542,12 +542,12 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     return (
                       <div key={f.key}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: 4 }}>
-                          <span style={{ fontWeight: 600, color: '#F8FAFC' }}>{f.label}</span>
+                          <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{f.label}</span>
                           <span style={{ color: '#60A5FA', fontWeight: 700 }}>
                             {localJogador.total_votos >= 1 ? `★ ${Number(mediaAspecto).toFixed(1)}` : '--'}
                           </span>
                         </div>
-                        <div className="progress-bar" style={{ height: '6px', background: '#0D1527' }}>
+                        <div className="progress-bar" style={{ height: '6px', background: 'var(--bg-secondary)' }}>
                           <div 
                             className="progress-fill bar-grow-fill" 
                             style={{ width: localJogador.total_votos >= 1 ? `${(mediaAspecto / 5) * 100}%` : '0%', background: '#2563EB' }} 
@@ -557,7 +557,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     );
                   })}
                   {localJogador.total_votos < 1 && (
-                    <div style={{ fontSize: '10px', color: '#64748B', textAlign: 'center', marginTop: 4 }}>
+                    <div style={{ fontSize: '10px', color: 'var(--text-muted)', textAlign: 'center', marginTop: 4 }}>
                       * Média dos fundamentos oculta até atingir pelo menos 1 voto.
                     </div>
                   )}
@@ -567,25 +567,25 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               {perfilTab === 'historico' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {historicoJogos.length === 0 ? (
-                    <div style={{ fontSize: '12px', color: '#64748B', textAlign: 'center', padding: '20px 0' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
                       Nenhuma partida finalizada no histórico deste atleta.
                     </div>
                   ) : (
                     historicoJogos.map(h => (
                       <div key={h.id} style={{
-                        background: '#111827',
+                        background: 'var(--bg-card)',
                         padding: '10px 12px',
                         borderRadius: '8px',
-                        border: '1px solid rgba(255,255,255,0.03)',
+                        border: '1px solid var(--border)',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center'
                       }}>
                         <div>
-                          <div style={{ fontSize: '12px', fontWeight: 700, color: '#F8FAFC' }}>
+                          <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
                             {h.timeA} {h.placarA} x {h.placarB} {h.timeB}
                           </div>
-                          <span style={{ fontSize: '10px', color: '#64748B' }}>
+                          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
                             {new Date(h.data).toLocaleDateString('pt-BR')}
                           </span>
                         </div>
@@ -642,7 +642,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 style={{
                   flex: 1,
                   color: '#EF4444',
-                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  border: '1px solid var(--border-danger)',
                   background: 'none',
                   height: '44px',
                   borderRadius: '12px',

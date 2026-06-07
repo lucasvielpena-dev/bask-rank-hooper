@@ -540,7 +540,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
-      background: '#0B0F14',
+      background: 'var(--bg-primary)',
       backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='800' viewBox='0 0 400 800'%3E%3Cpath d='M 30 30 L 370 30 L 370 770 L 30 770 Z' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.03'/%3E%3Ccircle cx='200' cy='400' r='55' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.03'/%3E%3Cline x1='30' y1='400' x2='370' y2='400' stroke='%23ffffff' stroke-width='1.5' opacity='0.03'/%3E%3Cpath d='M 30 160 A 170 170 0 0 0 370 160' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.03'/%3E%3Cpath d='M 30 640 A 170 170 0 0 1 370 640' fill='none' stroke='%23ffffff' stroke-width='1.5' opacity='0.03'/%3E%3Cpath d='M 50 100 Q 150 150 200 300 T 350 700' fill='none' stroke='%23ffffff' stroke-dasharray='4,4' stroke-width='1.2' opacity='0.03'/%3E%3C/svg%3E")`,
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
@@ -563,7 +563,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
           <button onClick={onBack} style={{
             background: 'rgba(255, 255, 255, 0.08)',
             border: 'none',
-            color: 'var(--text-primary)',
+            color: '#F8FAFC',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -595,11 +595,11 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
         <div style={{ marginTop: 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '20px' }}>🏆</span>
-            <h2 style={{ fontWeight: 900, fontSize: '22px', color: 'var(--text-primary)', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
+            <h2 style={{ fontWeight: 900, fontSize: '22px', color: '#F8FAFC', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
               {torneio.nome}
             </h2>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 600, marginTop: '4px' }}>
+          <p style={{ color: '#94A3B8', fontSize: '13px', fontWeight: 600, marginTop: '4px' }}>
             {FORMATOS[torneio.formato] || torneio.formato}
           </p>
         </div>
@@ -614,15 +614,15 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
           paddingTop: '10px'
         }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '11px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#94A3B8', fontSize: '11px' }}>
               {torneio.local_quadra}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)', fontSize: '11px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#94A3B8', fontSize: '11px' }}>
               <span>📅</span> {new Date(torneio.data_inicio).toLocaleDateString('pt-BR')} • {torneio.horario_inicio.substring(0,5)}
             </div>
           </div>
-          <div style={{ color: 'var(--text-secondary)', fontSize: '11px' }}>
-            Organizado por <strong style={{ color: 'var(--text-primary)' }}>{torneio.organizador?.nome_completo || 'Lucas Viel'}</strong>
+          <div style={{ color: '#94A3B8', fontSize: '11px' }}>
+            Organizado por <strong style={{ color: '#F8FAFC' }}>{torneio.organizador?.nome_completo || 'Lucas Viel'}</strong>
           </div>
         </div>
       </div>
@@ -1725,7 +1725,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             alignItems: 'center',
             background: 'none',
             border: 'none',
-            color: '#60A5FA',
+            color: 'var(--accent-blue)',
             cursor: 'pointer',
             fontSize: '14px',
             fontWeight: 700,
@@ -1790,7 +1790,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           fontSize: '84px',
           fontFamily: 'monospace',
           fontWeight: 800,
-          color: '#FFFFFF',
+          color: 'var(--text-primary)',
           lineHeight: 1,
           letterSpacing: '-0.02em'
         }}>
@@ -1927,7 +1927,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           <tbody>
             {/* Linha Time A */}
             <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-primary)', fontWeight: 600 }}>
-              <td style={{ padding: '8px 4px', textAlign: 'left', color: '#60A5FA', fontWeight: 700 }}>
+              <td style={{ padding: '8px 4px', textAlign: 'left', color: 'var(--counter-btn-a-color)', fontWeight: 700 }}>
                 {(jogo.equipe_a?.nome || 'TMA').substring(0, 3).toUpperCase()}
               </td>
               <td style={{ padding: '8px 4px' }}>{getQuarterScore(1, 'A')}</td>
@@ -1935,11 +1935,11 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
               <td style={{ padding: '8px 4px' }}>{getQuarterScore(3, 'A')}</td>
               <td style={{ padding: '8px 4px' }}>{getQuarterScore(4, 'A')}</td>
               {periodo >= 5 && <td style={{ padding: '8px 4px' }}>{getQuarterScore(5, 'A')}</td>}
-              <td style={{ padding: '8px 4px', fontWeight: 800, color: '#3B82F6' }}>{placarA}</td>
+              <td style={{ padding: '8px 4px', fontWeight: 800, color: 'var(--counter-btn-a-color)' }}>{placarA}</td>
             </tr>
             {/* Linha Time B */}
             <tr style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
-              <td style={{ padding: '8px 4px', textAlign: 'left', color: '#F87171', fontWeight: 700 }}>
+              <td style={{ padding: '8px 4px', textAlign: 'left', color: 'var(--counter-btn-b-color)', fontWeight: 700 }}>
                 {(jogo.equipe_b?.nome || 'TMB').substring(0, 3).toUpperCase()}
               </td>
               <td style={{ padding: '8px 4px' }}>{getQuarterScore(1, 'B')}</td>
@@ -1947,7 +1947,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
               <td style={{ padding: '8px 4px' }}>{getQuarterScore(3, 'B')}</td>
               <td style={{ padding: '8px 4px' }}>{getQuarterScore(4, 'B')}</td>
               {periodo >= 5 && <td style={{ padding: '8px 4px' }}>{getQuarterScore(5, 'B')}</td>}
-              <td style={{ padding: '8px 4px', fontWeight: 800, color: '#EF4444' }}>{placarB}</td>
+              <td style={{ padding: '8px 4px', fontWeight: 800, color: 'var(--counter-btn-b-color)' }}>{placarB}</td>
             </tr>
           </tbody>
         </table>
@@ -1959,8 +1959,8 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           {periodo < 4 ? (
             <div className="card" style={{
               padding: '16px',
-              background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(17, 24, 39, 0.8) 100%)',
-              border: '1px solid rgba(37, 99, 235, 0.3)',
+              background: 'var(--card-team-a-bg)',
+              border: '1px solid var(--border)',
               borderRadius: '12px',
               textAlign: 'center'
             }}>
@@ -1985,8 +1985,8 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           ) : (placarA === placarB) ? (
             <div className="card" style={{
               padding: '16px',
-              background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(17, 24, 39, 0.8) 100%)',
-              border: '1px solid rgba(249, 115, 22, 0.3)',
+              background: 'var(--card-team-b-bg)',
+              border: '1px solid var(--border)',
               borderRadius: '12px',
               textAlign: 'center'
             }}>
