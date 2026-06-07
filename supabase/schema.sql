@@ -946,3 +946,84 @@ CREATE POLICY "Atualizacao de avatares pelo dono" ON storage.objects
 DROP POLICY IF EXISTS "Delecao de avatares pelo dono" ON storage.objects;
 CREATE POLICY "Delecao de avatares pelo dono" ON storage.objects
   FOR DELETE USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+
+-- ============================================================
+-- SISTEMA DE NOTIFICAÇÕES
+-- ============================================================
+
+-- Criar tabela de notificações
+CREATE TABLE IF NOT EXISTS public.notificacoes (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  usuario_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  titulo TEXT NOT NULL,
+  mensagem TEXT NOT NULL,
+  lida BOOLEAN DEFAULT FALSE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- Habilitar RLS
+ALTER TABLE public.notificacoes ENABLE ROW LEVEL SECURITY;
+
+-- Políticas de RLS
+DROP POLICY IF EXISTS "notificacoes_select_owner" ON public.notificacoes;
+CREATE POLICY "notificacoes_select_owner" ON public.notificacoes
+  FOR SELECT USING (auth.uid() = usuario_id);
+
+DROP POLICY IF EXISTS "notificacoes_update_owner" ON public.notificacoes;
+CREATE POLICY "notificacoes_update_owner" ON public.notificacoes
+  FOR UPDATE USING (auth.uid() = usuario_id);
+
+DROP POLICY IF EXISTS "notificacoes_delete_owner" ON public.notificacoes;
+CREATE POLICY "notificacoes_delete_owner" ON public.notificacoes
+  FOR DELETE USING (auth.uid() = usuario_id);
+
+-- Índices de performance
+CREATE INDEX IF NOT EXISTS idx_notificacoes_usuario_id ON public.notificacoes(usuario_id);
+CREATE INDEX IF NOT EXISTS idx_notificacoes_lida ON public.notificacoes(lida);
+
+-- Função de trigger para criar notificação no recebimento de avaliação
+CREATE OR REPLACE FUNCTION public.criar_notificacao_voto()
+RETURNS TRIGGER AS $$
+DECLARE
+  v_usuario_id UUID;
+BEGIN
+  -- Obter o id do usuário que é dono do jogador avaliado
+  SELECT id INTO v_usuario_id
+  FROM public.profiles
+  WHERE player_id = NEW.jogador_id;
+
+  -- Se houver um usuário associado e não for o próprio avaliador avaliando a si mesmo
+  IF v_usuario_id IS NOT NULL AND v_usuario_id <> NEW.avaliador_id THEN
+    INSERT INTO public.notificacoes (usuario_id, titulo, mensagem, lida)
+    VALUES (
+      v_usuario_id,
+      'Nova avaliação recebida',
+      'Você foi avaliado por outro jogador no Ranks Hoops.',
+      FALSE
+    );
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Criar o trigger
+DROP TRIGGER IF EXISTS trg_criar_notificacao_voto ON public.avaliacoes;
+CREATE TRIGGER trg_criar_notificacao_voto
+AFTER INSERT ON public.avaliacoes
+FOR EACH ROW
+EXECUTE FUNCTION public.criar_notificacao_voto();
+
+-- Adicionar notificacoes ao canal de realtime
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_rel pr 
+    JOIN pg_publication p ON pr.prpubid = p.oid 
+    JOIN pg_class c ON pr.prrelid = c.oid 
+    WHERE p.pubname = 'supabase_realtime' AND c.relname = 'notificacoes'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.notificacoes;
+  END IF;
+END $$;
+

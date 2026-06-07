@@ -561,3 +561,39 @@ export const torneioJogosAPI = {
     return { data, error };
   }
 };
+
+export const notificacoesAPI = {
+  listar: async () => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: [], error: new Error('Usuário não autenticado') };
+    
+    const { data, error } = await supabase
+      .from('notificacoes')
+      .select('*')
+      .eq('usuario_id', user.id)
+      .order('created_at', { ascending: false });
+    return { data, error };
+  },
+
+  marcarComoLida: async (id) => {
+    const { data, error } = await supabase
+      .from('notificacoes')
+      .update({ lida: true })
+      .eq('id', id)
+      .select();
+    return { data, error };
+  },
+
+  marcarTodasComoLidas: async () => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: null, error: new Error('Usuário não autenticado') };
+    
+    const { data, error } = await supabase
+      .from('notificacoes')
+      .update({ lida: true })
+      .eq('usuario_id', user.id)
+      .eq('lida', false)
+      .select();
+    return { data, error };
+  }
+};

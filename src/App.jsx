@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase, authAPI, profilesAPI } from './lib/supabase';
+import { supabase, authAPI, profilesAPI, notificacoesAPI } from './lib/supabase';
 import './styles/global.css';
 
 import Home from './pages/Home';
@@ -64,7 +64,7 @@ function NavIcon({ type, active }) {
 export default function App() {
   // Garantir a limpeza de cache do Service Worker na mudança de versão do app
   useEffect(() => {
-    const swVersion = 'v7';
+    const swVersion = 'v12';
     const currentVersion = localStorage.getItem('sw_version');
     if (currentVersion !== swVersion) {
       if ('serviceWorker' in navigator) {
@@ -94,6 +94,10 @@ export default function App() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [themePref, setThemePref] = useState('system');
   const [cityPrompt, setCityPrompt] = useState(null);
+
+  // States de notificações
+  const [notificacoes, setNotificacoes] = useState([]);
+  const [showNotificacoes, setShowNotificacoes] = useState(false);
 
   // States para edição do perfil
   const [editApelido, setEditApelido] = useState('');
@@ -376,6 +380,53 @@ export default function App() {
     });
   }
 
+  async function carregarNotificacoes() {
+    const { data } = await notificacoesAPI.listar();
+    if (data) {
+      setNotificacoes(data);
+    }
+  }
+
+  async function handleMarcarLida(id) {
+    const { error } = await notificacoesAPI.marcarComoLida(id);
+    if (!error) {
+      setNotificacoes(prev => prev.map(n => n.id === id ? { ...n, lida: true } : n));
+    }
+  }
+
+  async function handleMarcarTodasLidas() {
+    const { error } = await notificacoesAPI.marcarTodasComoLidas();
+    if (!error) {
+      setNotificacoes(prev => prev.map(n => ({ ...n, lida: true })));
+    }
+  }
+
+  useEffect(() => {
+    if (user) {
+      carregarNotificacoes();
+
+      const channel = supabase
+        .channel(`notificacoes_user_${user.id}`)
+        .on('postgres_changes', {
+          event: '*',
+          schema: 'public',
+          table: 'notificacoes'
+        }, (payload) => {
+          if ((payload.new && payload.new.usuario_id === user.id) || (payload.old && payload.old.usuario_id === user.id)) {
+            carregarNotificacoes();
+          }
+        })
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    } else {
+      setNotificacoes([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   useEffect(() => {
     const applyTheme = () => {
       let currentTheme = themePref;
@@ -619,29 +670,31 @@ export default function App() {
         {/* Right Actions: Notification Bell + Profile Avatar */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           {/* Bell Icon with Badge */}
-          <div style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => alert('Nenhuma notificação nova no momento!')}>
+          <div style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setShowNotificacoes(true)}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F8FAFC" strokeWidth="2">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
               <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
-            <span style={{
-              position: 'absolute',
-              top: -2,
-              right: -2,
-              background: '#F97316',
-              color: '#FFF',
-              fontSize: '8px',
-              fontWeight: 800,
-              width: 13,
-              height: 13,
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '1.5px solid #080F1A'
-            }}>
-              3
-            </span>
+            {notificacoes.filter(n => !n.lida).length > 0 && (
+              <span style={{
+                position: 'absolute',
+                top: -2,
+                right: -2,
+                background: '#F97316',
+                color: '#FFF',
+                fontSize: '8px',
+                fontWeight: 800,
+                width: 13,
+                height: 13,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1.5px solid #080F1A'
+              }}>
+                {notificacoes.filter(n => !n.lida).length}
+              </span>
+            )}
           </div>
 
           {/* Profile Avatar */}
@@ -1000,6 +1053,117 @@ export default function App() {
                 Manter Atual
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Notificações */}
+      {showNotificacoes && (
+        <div className="modal-overlay" onClick={() => setShowNotificacoes(false)} style={{ zIndex: 1000 }}>
+          <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440, maxHeight: '80vh', overflowY: 'auto' }}>
+            <div className="modal-handle" />
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <h3 style={{ fontWeight: 900, fontSize: 20 }}>🔔 Notificações</h3>
+              {notificacoes.filter(n => !n.lida).length > 0 && (
+                <button 
+                  onClick={handleMarcarTodasLidas}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#60A5FA',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    padding: 0
+                  }}
+                >
+                  Marcar todas como lidas
+                </button>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 16 }}>
+              {notificacoes.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px 20px', color: '#64748B' }}>
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ marginBottom: 12, opacity: 0.5 }}>
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                  </svg>
+                  <p style={{ fontSize: '13px', fontWeight: 600 }}>Nenhuma notificação por aqui</p>
+                  <p style={{ fontSize: '11px', marginTop: 4 }}>Você será avisado sempre que receber avaliações de outros jogadores.</p>
+                </div>
+              ) : (
+                notificacoes.map(n => (
+                  <div 
+                    key={n.id} 
+                    style={{
+                      background: n.lida ? 'rgba(255,255,255,0.01)' : 'rgba(249, 115, 22, 0.04)',
+                      border: n.lida ? '1px solid rgba(255,255,255,0.03)' : '1px solid rgba(249, 115, 22, 0.15)',
+                      borderRadius: '12px',
+                      padding: '14px',
+                      display: 'flex',
+                      gap: 12,
+                      position: 'relative',
+                      alignItems: 'flex-start',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {!n.lida && (
+                      <span style={{
+                        width: '8px',
+                        height: '8px',
+                        background: '#F97316',
+                        borderRadius: '50%',
+                        position: 'absolute',
+                        top: '16px',
+                        right: '16px'
+                      }} />
+                    )}
+
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '13px', fontWeight: 800, color: '#F8FAFC', marginBottom: 2 }}>
+                        {n.titulo}
+                      </div>
+                      <p style={{ fontSize: '11px', color: '#94A3B8', lineHeight: '1.4', marginBottom: 8 }}>
+                        {n.mensagem}
+                      </p>
+                      <span style={{ fontSize: '9px', color: '#64748B', fontWeight: 600 }}>
+                        {new Date(n.created_at).toLocaleDateString('pt-BR')} às {new Date(n.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+
+                    {!n.lida && (
+                      <button
+                        onClick={() => handleMarcarLida(n.id)}
+                        style={{
+                          background: 'rgba(249, 115, 22, 0.12)',
+                          color: '#F97316',
+                          border: 'none',
+                          borderRadius: '6px',
+                          padding: '4px 8px',
+                          fontSize: '9px',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          alignSelf: 'center'
+                        }}
+                      >
+                        Lida
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+
+            <button 
+              className="btn btn-secondary" 
+              onClick={() => setShowNotificacoes(false)} 
+              style={{ width: '100%', marginTop: 10 }}
+            >
+              Fechar
+            </button>
           </div>
         </div>
       )}
