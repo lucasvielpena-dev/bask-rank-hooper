@@ -1,18 +1,42 @@
 import { useState, useEffect } from 'react';
 import { supabase, jogadoresAPI, rankingAPI } from '../lib/supabase';
-import { IconCrescimento, IconTrofeu, IconCalendario, IconAvaliar, IconBasquete, IconRanking } from '../components/Icons';
+import { IconAvaliar, IconBasquete, IconRanking, IconTrofeu } from '../components/Icons';
 
-// Deterministic position evolution calculation
-// eslint-disable-next-line no-unused-vars
 const getEvolucaoValue = (id) => {
   if (!id) return 0;
   let hash = 0;
   for (let i = 0; i < id.length; i++) {
     hash = id.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const val = (Math.abs(hash) % 7) - 3; // range -3 to +3
-  return val;
+  return (Math.abs(hash) % 7) - 3;
 };
+
+function BasketballHoopSVG() {
+  return (
+    <svg viewBox="0 0 200 220" fill="none" style={{
+      position: 'absolute',
+      right: -20,
+      top: -30,
+      width: 'clamp(140px, 35vw, 200px)',
+      height: 'auto',
+      opacity: 0.18,
+      pointerEvents: 'none'
+    }}>
+      <circle cx="100" cy="110" r="50" stroke="#F97316" strokeWidth="4" />
+      <line x1="100" y1="60" x2="100" y2="10" stroke="#F97316" strokeWidth="3" strokeLinecap="round" />
+      <line x1="60" y1="60" x2="140" y2="60" stroke="#F97316" strokeWidth="3" strokeLinecap="round" />
+      <path d="M60 60 Q60 90 80 110" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" fill="none" />
+      <path d="M140 60 Q140 90 120 110" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" fill="none" />
+      <path d="M70 60 Q75 85 90 105" stroke="rgba(255,255,255,0.12)" strokeWidth="1" fill="none" />
+      <path d="M130 60 Q125 85 110 105" stroke="rgba(255,255,255,0.12)" strokeWidth="1" fill="none" />
+      <path d="M80 60 Q82 80 95 100" stroke="rgba(255,255,255,0.1)" strokeWidth="1" fill="none" />
+      <path d="M120 60 Q118 80 105 100" stroke="rgba(255,255,255,0.1)" strokeWidth="1" fill="none" />
+      <circle cx="90" cy="30" r="20" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" fill="none" />
+      <path d="M70 30 Q90 20 110 30" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" />
+      <line x1="90" y1="10" x2="90" y2="50" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+    </svg>
+  );
+}
 
 export default function Home({ profile, onNavigate }) {
   const [stats, setStats] = useState({ jogadores: 0, torneios: 0, avaliacoes: 0, mediaGeral: 0.0 });
@@ -25,9 +49,7 @@ export default function Home({ profile, onNavigate }) {
   const uf = profile?.uf || 'PA';
 
   useEffect(() => {
-    if (profile) {
-      loadData(city, uf);
-    }
+    if (profile) loadData(city, uf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
@@ -35,18 +57,9 @@ export default function Home({ profile, onNavigate }) {
     if (!profile) return;
     const channel = supabase
       .channel('home-realtime')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'jogadores' },
-        () => {
-          loadData(city, uf);
-        }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores' }, () => loadData(city, uf))
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
@@ -64,39 +77,17 @@ export default function Home({ profile, onNavigate }) {
       const averageStarsSum = jogs?.reduce((acc, curr) => acc + (curr.media_estrelas || 0), 0) || 0;
       const generalAvg = total > 0 ? (averageStarsSum / total) : 4.8;
 
-      setStats({
-        jogadores: total,
-        torneios: tCount || 0,
-        avaliacoes: totalVotes,
-        mediaGeral: generalAvg
-      });
-
-      if (ranking?.length > 0) {
-        setLider(ranking[0]);
-      } else {
-        setLider(null);
-      }
+      setStats({ jogadores: total, torneios: tCount || 0, avaliacoes: totalVotes, mediaGeral: generalAvg });
+      setLider(ranking?.length > 0 ? ranking[0] : null);
 
       if (profile?.player_id) {
-        // Obter jogador atual
-        const { data: pInfo } = await supabase
-          .from('jogadores')
-          .select('*')
-          .eq('id', profile.player_id)
-          .maybeSingle();
-        if (pInfo) {
-          setMyPlayerInfo(pInfo);
-        }
+        const { data: pInfo } = await supabase.from('jogadores').select('*').eq('id', profile.player_id).maybeSingle();
+        if (pInfo) setMyPlayerInfo(pInfo);
 
-        // Calcular rank do usuario na cidade
         const { data: rankList } = await rankingAPI.get(cityVal, ufVal, 200);
         if (rankList) {
           const myIndex = rankList.findIndex(j => j.id === profile.player_id);
-          if (myIndex !== -1) {
-            setMyRank(`#${myIndex + 1}`);
-          } else {
-            setMyRank('--');
-          }
+          setMyRank(myIndex !== -1 ? `#${myIndex + 1}` : '--');
         }
       }
     } catch (e) {
@@ -105,7 +96,6 @@ export default function Home({ profile, onNavigate }) {
     setLoading(false);
   }
 
-  // Obter Badge com base na media de estrelas
   const getBadgeText = (media) => {
     if (media >= 4.5) return 'ELITE';
     if (media >= 4.0) return 'DESTAQUE';
@@ -113,11 +103,15 @@ export default function Home({ profile, onNavigate }) {
     return 'EM DEV.';
   };
 
-  const myStars = myPlayerInfo?.media_estrelas || 0;
-  const myBadge = getBadgeText(myStars);
-
-
+  const myBadge = getBadgeText(myPlayerInfo?.media_estrelas || 0);
   const greetingName = profile?.apelido || profile?.nome_completo?.split(' ')[0] || 'Atleta';
+
+  const getGreeting = () => {
+    const h = new Date().getHours();
+    if (h < 12) return 'Bom dia';
+    if (h < 18) return 'Boa tarde';
+    return 'Boa noite';
+  };
 
   if (loading) {
     return (
@@ -130,203 +124,205 @@ export default function Home({ profile, onNavigate }) {
   return (
     <div className="page-content home-page">
       <div className="home-container">
-        
-        {/* Saudacao e Localizacao */}
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 'clamp(16px, 4vw, 20px)', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 }}>
-            Boa noite, <span style={{ color: '#2563EB' }}>{greetingName}</span>
+
+        {/* Saudacao */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{
+            fontSize: 'clamp(22px, 6vw, 28px)',
+            fontWeight: 800,
+            color: '#FFFFFF',
+            lineHeight: 1.2
+          }}>
+            {getGreeting()}, <span style={{ color: '#2563EB' }}>{greetingName}</span> {'\u{1F44B}'}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--text-secondary)', fontSize: 'clamp(11px, 2.5vw, 12px)', marginTop: 4 }}>
-            Ranking de {city} - {uf}
+          <div style={{ color: '#94A3B8', fontSize: 'clamp(12px, 3vw, 14px)', marginTop: 6 }}>
+            Voce esta entre os melhores jogadores de {city}.
           </div>
         </div>
 
-        <div className="home-top-row">
-          {/* Card: Sua Posicao */}
-          <div className="card" style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            borderRadius: '16px',
-            padding: 'clamp(14px, 3vw, 20px)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            position: 'relative',
-            overflow: 'hidden'
-          }}>
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 6 }}>
-                SUA POSICAO
-              </div>
-              <div style={{ fontSize: 'clamp(28px, 8vw, 36px)', fontWeight: 900, color: '#F97316', lineHeight: 1, marginBottom: 4 }}>
-                {myRank}
-              </div>
-              <div style={{ fontSize: 'clamp(10px, 2.5vw, 11px)', color: 'var(--text-secondary)', marginBottom: 10 }}>
-                Entre {stats.jogadores} jogadores
-              </div>
-              <span style={{
-                background: 'rgba(37, 99, 235, 0.15)',
-                color: '#60A5FA',
-                border: '1px solid rgba(37, 99, 235, 0.3)',
-                borderRadius: '6px',
-                padding: '3px 8px',
-                fontSize: 'clamp(9px, 2vw, 10px)',
-                fontWeight: 800,
-                letterSpacing: '0.02em',
-                textTransform: 'uppercase'
-              }}>
-                {myBadge}
-              </span>
+        {/* Card Sua Posicao */}
+        <div style={{
+          background: 'linear-gradient(135deg, #111827 0%, rgba(37,99,235,0.12) 100%)',
+          border: '1px solid rgba(37,99,235,0.2)',
+          borderRadius: '20px',
+          padding: 'clamp(20px, 5vw, 28px)',
+          position: 'relative',
+          overflow: 'hidden',
+          marginBottom: 28,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.35)'
+        }}>
+          <BasketballHoopSVG />
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <div style={{
+              fontSize: 'clamp(10px, 2.5vw, 12px)',
+              fontWeight: 700,
+              color: '#94A3B8',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              marginBottom: 8
+            }}>
+              SUA POSICAO
             </div>
-
-            {/* Grafico Linear e Avatar com Linha de Tendencia */}
-            <div style={{ position: 'relative', width: 'clamp(80px, 20vw, 100px)', height: 'clamp(65px, 16vw, 80px)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginLeft: 8 }}>
-              <svg width="100" height="60" viewBox="0 0 100 60" style={{ position: 'absolute', right: 0, bottom: 0, opacity: 0.75, width: '100%', height: 'auto' }}>
-                <path d="M0,50 Q20,38 40,43 T80,18 T100,10" fill="none" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" />
-                <circle cx="100" cy="10" r="3.5" fill="#F97316" />
+            <div style={{
+              fontSize: 'clamp(56px, 16vw, 80px)',
+              fontWeight: 900,
+              color: '#F97316',
+              lineHeight: 1,
+              marginBottom: 6,
+              letterSpacing: '-0.02em'
+            }}>
+              {myRank}
+            </div>
+            <div style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#94A3B8', marginBottom: 14 }}>
+              Ranking de {city} - {uf}
+            </div>
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 5,
+              background: 'rgba(37, 99, 235, 0.15)',
+              color: '#60A5FA',
+              border: '1px solid rgba(37, 99, 235, 0.25)',
+              borderRadius: '8px',
+              padding: '5px 12px',
+              fontSize: 'clamp(10px, 2.5vw, 11px)',
+              fontWeight: 800,
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase'
+            }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#60A5FA" stroke="none">
+                <path d="M2.5 18.5l2-9 5 4.5L12 7l2.5 7 5-4.5 2 9h-19z"/>
               </svg>
-              <div style={{ zIndex: 2, border: '3px solid #111827', borderRadius: '50%', overflow: 'hidden', width: 'clamp(52px, 14vw, 64px)', height: 'clamp(52px, 14vw, 64px)', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
-                {profile?.foto_perfil ? (
-                  <img src={profile.foto_perfil} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                  <div style={{ width: '100%', height: '100%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', fontWeight: 800, fontSize: 'clamp(16px, 4vw, 20px)' }}>
-                    {greetingName.charAt(0).toUpperCase()}
-                  </div>
-                )}
-              </div>
-            </div>
+              {myBadge}
+            </span>
           </div>
+        </div>
 
-          {/* Card: Estatisticas Gerais */}
-          <div className="card" style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            borderRadius: '16px',
-            padding: 'clamp(14px, 3vw, 20px)'
-          }}>
-            <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 14 }}>
+        {/* Estatisticas Gerais */}
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ fontSize: 'clamp(11px, 2.5vw, 12px)', fontWeight: 800, color: '#94A3B8', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
               ESTATISTICAS GERAIS
             </div>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(10px, 2.5vw, 16px)' }}>
-              <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8 }}>
-                <div style={{ fontSize: 'clamp(18px, 5vw, 24px)', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.jogadores}</div>
-                <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', color: 'var(--text-secondary)', marginTop: 2 }}>Jogadores</div>
-              </div>
-              <div style={{ paddingLeft: 8 }}>
-                <div style={{ fontSize: 'clamp(18px, 5vw, 24px)', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.torneios}</div>
-                <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', color: 'var(--text-secondary)', marginTop: 2 }}>Torneios</div>
-              </div>
-              <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ fontSize: 'clamp(18px, 5vw, 24px)', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.avaliacoes}</div>
-                <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', color: 'var(--text-secondary)', marginTop: 2 }}>Avaliacoes</div>
-              </div>
-              <div style={{ paddingLeft: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ fontSize: 'clamp(18px, 5vw, 24px)', fontWeight: 800, color: '#F97316' }}>{stats.mediaGeral.toFixed(1)}</div>
-                <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', color: 'var(--text-secondary)', marginTop: 2 }}>Media Geral</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Secao Destaques */}
-        <div className="home-section">
-          <div className="home-section-header">
-            <div className="home-section-title">
-              DESTAQUES
-            </div>
-            <button
-              className="home-section-link"
-              onClick={() => onNavigate('jogos', { aba: 'torneios' })}
-            >
-              Ver tudo
+            <button style={{ background: 'none', border: 0, color: '#2563EB', cursor: 'pointer', fontSize: 12, fontWeight: 700, padding: 0 }}>
+              Ver todas
             </button>
           </div>
 
-          <div className="destaques-row">
-            <div className="home-highlight-card">
-              <div className="home-highlight-icon" style={{ background: 'rgba(37, 99, 235, 0.08)' }}>
-                <IconCrescimento size={24} color="#2563EB" />
-              </div>
-              <div style={{ minWidth: 0 }}>
-                <div className="home-highlight-label">Evolucao semanal</div>
-                <div className="home-highlight-text" style={{ fontSize: 'clamp(12px, 3vw, 13px)' }}>
-                  Voce subiu <span>3 posicoes</span> esta semana
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 0,
+            background: '#111827',
+            border: '1px solid rgba(255,255,255,0.06)',
+            borderRadius: '20px',
+            overflow: 'hidden',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.25)'
+          }}>
+            {[
+              { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, value: stats.jogadores, label: 'Jogadores' },
+              { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="#F97316" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>, value: stats.mediaGeral.toFixed(1), label: 'Media geral' },
+              { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>, value: stats.avaliacoes, label: 'Avaliacoes' },
+              { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>, value: stats.torneios, label: 'Torneios' }
+            ].map((item, i) => (
+              <div key={item.label} style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 8,
+                padding: 'clamp(14px, 3vw, 20px) clamp(6px, 1.5vw, 10px)',
+                borderRight: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none'
+              }}>
+                <div style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 14,
+                  background: i % 2 === 0 ? 'rgba(37,99,235,0.1)' : 'rgba(249,115,22,0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  {item.icon}
+                </div>
+                <div style={{
+                  fontSize: 'clamp(20px, 5vw, 28px)',
+                  fontWeight: 800,
+                  color: '#FFFFFF'
+                }}>
+                  {item.value}
+                </div>
+                <div style={{
+                  fontSize: 'clamp(10px, 2.5vw, 11px)',
+                  color: '#64748B',
+                  fontWeight: 600,
+                  textAlign: 'center'
+                }}>
+                  {item.label}
                 </div>
               </div>
-            </div>
-
-            <div className="home-highlight-card">
-              <div className="home-highlight-icon" style={{ background: 'rgba(242, 138, 46, 0.08)' }}>
-                <IconTrofeu size={24} color="#F28A2E" />
-              </div>
-              <div style={{ minWidth: 0 }}>
-                <div className="home-highlight-label">MVP da semana</div>
-                <div className="home-highlight-text" style={{ fontSize: 'clamp(12px, 3vw, 13px)' }}>
-                  <span>{lider ? lider.nome.split(' ')[0] : 'Joao Silva'}</span> {(lider?.media_estrelas || 4.9).toFixed(1)} estrelas
-                </div>
-              </div>
-            </div>
-
-            <div className="home-highlight-card">
-              <div className="home-highlight-icon" style={{ background: 'rgba(37, 99, 235, 0.08)' }}>
-                <IconCalendario size={24} color="#2563EB" />
-              </div>
-              <div style={{ minWidth: 0 }}>
-                <div className="home-highlight-label">Torneio municipal</div>
-                <div className="home-highlight-text" style={{ fontSize: 'clamp(12px, 3vw, 13px)' }}>
-                  <span>Inscricoes abertas</span> para novas equipes
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        <div className="home-section home-actions-section">
-          <div className="home-section-title">
+        {/* Acoes Rapidas */}
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ fontSize: 'clamp(11px, 2.5vw, 12px)', fontWeight: 800, color: '#94A3B8', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 14 }}>
             ACOES RAPIDAS
           </div>
 
           <div className="acoes-rapidas-grid">
-            <button
-              className="quick-action-card quick-action-card-primary"
-              onClick={() => onNavigate('jogadores')}
-            >
-              <div className="quick-action-icon" style={{ background: 'rgba(255, 255, 255, 0.16)' }}>
+            <button className="quick-action-card quick-action-card-primary" onClick={() => onNavigate('jogadores')}>
+              <div className="quick-action-icon" style={{ background: 'rgba(255,255,255,0.16)' }}>
                 <IconAvaliar size={24} color="#fff" />
               </div>
               <div className="quick-action-text">Avaliar jogador</div>
+              <svg style={{ marginTop: 'auto' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round"><path d="m9 18 6-6-6-6"/></svg>
             </button>
 
-            <button
-              className="quick-action-card"
-              onClick={() => onNavigate('jogos')}
-            >
-              <div className="quick-action-icon" style={{ background: 'rgba(242, 138, 46, 0.08)' }}>
-                <IconBasquete size={24} color="#F28A2E" />
+            <button className="quick-action-card" onClick={() => onNavigate('jogos')}>
+              <div className="quick-action-icon" style={{ background: 'rgba(249,115,22,0.1)' }}>
+                <IconBasquete size={24} color="#F97316" />
               </div>
               <div className="quick-action-text">Meus jogos</div>
+              <svg style={{ marginTop: 'auto' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round"><path d="m9 18 6-6-6-6"/></svg>
             </button>
 
-            <button
-              className="quick-action-card"
-              onClick={() => onNavigate('ranking')}
-            >
-              <div className="quick-action-icon" style={{ background: 'rgba(37, 99, 235, 0.08)' }}>
+            <button className="quick-action-card" onClick={() => onNavigate('ranking')}>
+              <div className="quick-action-icon" style={{ background: 'rgba(37,99,235,0.1)' }}>
                 <IconRanking size={24} color="#2563EB" />
               </div>
               <div className="quick-action-text">Ver ranking</div>
+              <svg style={{ marginTop: 'auto' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round"><path d="m9 18 6-6-6-6"/></svg>
             </button>
 
-            <button
-              className="quick-action-card"
-              onClick={() => onNavigate('jogos', { aba: 'torneios' })}
-            >
-              <div className="quick-action-icon" style={{ background: 'rgba(242, 138, 46, 0.08)' }}>
-                <IconTrofeu size={24} color="#F28A2E" />
+            <button className="quick-action-card" onClick={() => onNavigate('jogos', { aba: 'torneios' })}>
+              <div className="quick-action-icon" style={{ background: 'rgba(249,115,22,0.1)' }}>
+                <IconTrofeu size={24} color="#F97316" />
               </div>
               <div className="quick-action-text">Ver torneios</div>
+              <svg style={{ marginTop: 'auto' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round"><path d="m9 18 6-6-6-6"/></svg>
             </button>
+          </div>
+        </div>
+
+        {/* Frase motivacional */}
+        <div style={{
+          background: 'linear-gradient(135deg, #111827 0%, rgba(37,99,235,0.08) 100%)',
+          border: '1px solid rgba(255,255,255,0.06)',
+          borderRadius: '20px',
+          padding: 'clamp(18px, 4vw, 24px)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <div style={{ fontSize: 'clamp(16px, 4vw, 20px)', fontWeight: 700, color: '#FFFFFF', lineHeight: 1.4 }}>
+              <span style={{ color: '#94A3B8', fontSize: '1.5em', lineHeight: 0 }}>"</span>{' '}
+              Disciplina hoje, <span style={{ color: '#2563EB' }}>vitoria</span> amanha.{' '}
+              <span style={{ color: '#94A3B8', fontSize: '1.5em', lineHeight: 0 }}>"</span>
+            </div>
+            <div style={{ fontSize: 'clamp(11px, 2.5vw, 13px)', color: '#64748B', marginTop: 8 }}>
+              Mantenha o foco e siga evoluindo!
+            </div>
           </div>
         </div>
 
