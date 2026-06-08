@@ -77,9 +77,9 @@ CREATE TABLE IF NOT EXISTS public.jogadores (
   -- Fundamentos individuais
   media_arremesso NUMERIC(3,2) DEFAULT 0,
   media_defesa NUMERIC(3,2) DEFAULT 0,
-  media_passe NUMERIC(3,2) DEFAULT 0,
-  media_fisicalidade NUMERIC(3,2) DEFAULT 0,
-  media_mentalidade NUMERIC(3,2) DEFAULT 0,
+  media_controle_de_bola NUMERIC(3,2) DEFAULT 0,
+  media_explosao_fisica NUMERIC(3,2) DEFAULT 0,
+  media_visao_de_jogo NUMERIC(3,2) DEFAULT 0,
   -- Localização
   cidade TEXT DEFAULT 'Altamira',
   uf TEXT DEFAULT 'PA',
@@ -94,9 +94,9 @@ CREATE TABLE IF NOT EXISTS public.jogadores (
 -- Garantir colunas de cidade e fundamentos caso a tabela já existisse
 ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS media_arremesso NUMERIC(3,2) DEFAULT 0;
 ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS media_defesa NUMERIC(3,2) DEFAULT 0;
-ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS media_passe NUMERIC(3,2) DEFAULT 0;
-ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS media_fisicalidade NUMERIC(3,2) DEFAULT 0;
-ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS media_mentalidade NUMERIC(3,2) DEFAULT 0;
+ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS media_controle_de_bola NUMERIC(3,2) DEFAULT 0;
+ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS media_explosao_fisica NUMERIC(3,2) DEFAULT 0;
+ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS media_visao_de_jogo NUMERIC(3,2) DEFAULT 0;
 ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS cidade TEXT DEFAULT 'Altamira';
 ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS uf TEXT DEFAULT 'PA';
 ALTER TABLE public.jogadores ADD COLUMN IF NOT EXISTS pais TEXT DEFAULT 'Brasil';
@@ -131,9 +131,9 @@ CREATE TABLE IF NOT EXISTS public.avaliacoes (
   jogador_id UUID REFERENCES public.jogadores(id) ON DELETE CASCADE NOT NULL,
   arremesso INTEGER NOT NULL CHECK (arremesso BETWEEN 1 AND 5),
   defesa INTEGER NOT NULL CHECK (defesa BETWEEN 1 AND 5),
-  passe INTEGER NOT NULL CHECK (passe BETWEEN 1 AND 5),
-  fisicalidade INTEGER NOT NULL CHECK (fisicalidade BETWEEN 1 AND 5),
-  mentalidade INTEGER NOT NULL CHECK (mentalidade BETWEEN 1 AND 5),
+  controle_de_bola INTEGER NOT NULL CHECK (controle_de_bola BETWEEN 1 AND 5),
+  explosao_fisica INTEGER NOT NULL CHECK (explosao_fisica BETWEEN 1 AND 5),
+  visao_de_jogo INTEGER NOT NULL CHECK (visao_de_jogo BETWEEN 1 AND 5),
   peso_voto NUMERIC DEFAULT 1.0 NOT NULL,
   comentario TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -284,9 +284,9 @@ DECLARE
   v_peso_total NUMERIC;
   v_arremesso NUMERIC(3,2);
   v_defesa NUMERIC(3,2);
-  v_passe NUMERIC(3,2);
-  v_fisicalidade NUMERIC(3,2);
-  v_mentalidade NUMERIC(3,2);
+  v_controle_de_bola NUMERIC(3,2);
+  v_explosao_fisica NUMERIC(3,2);
+  v_visao_de_jogo NUMERIC(3,2);
   v_media_estrelas NUMERIC(3,2);
 BEGIN
   IF TG_OP = 'DELETE' THEN
@@ -295,62 +295,40 @@ BEGIN
     v_jogador_id := NEW.jogador_id;
   END IF;
 
-  -- Obter a contagem total de avaliações exclusivas
   SELECT COUNT(*) INTO v_total_votos
-  FROM public.avaliacoes
-  WHERE jogador_id = v_jogador_id;
+  FROM public.avaliacoes WHERE jogador_id = v_jogador_id;
 
   IF v_total_votos = 0 THEN
-    UPDATE public.jogadores
-    SET
-      total_votos = 0,
-      media_estrelas = 0.00,
-      media_arremesso = 0.00,
-      media_defesa = 0.00,
-      media_passe = 0.00,
-      media_fisicalidade = 0.00,
-      media_mentalidade = 0.00,
-      updated_at = NOW()
+    UPDATE public.jogadores SET
+      total_votos = 0, media_estrelas = 0.00,
+      media_arremesso = 0.00, media_defesa = 0.00,
+      media_controle_de_bola = 0.00, media_explosao_fisica = 0.00,
+      media_visao_de_jogo = 0.00, updated_at = NOW()
     WHERE id = v_jogador_id;
   ELSE
-    -- Calcular a soma dos pesos
     SELECT SUM(peso_voto) INTO v_peso_total
-    FROM public.avaliacoes
-    WHERE jogador_id = v_jogador_id;
+    FROM public.avaliacoes WHERE jogador_id = v_jogador_id;
 
     IF v_peso_total IS NULL OR v_peso_total = 0 THEN
       v_peso_total := 1.0;
     END IF;
 
-    -- Calcular médias ponderadas de cada fundamento
     SELECT
       ROUND(SUM(arremesso * peso_voto)::NUMERIC / v_peso_total, 2),
       ROUND(SUM(defesa * peso_voto)::NUMERIC / v_peso_total, 2),
-      ROUND(SUM(passe * peso_voto)::NUMERIC / v_peso_total, 2),
-      ROUND(SUM(fisicalidade * peso_voto)::NUMERIC / v_peso_total, 2),
-      ROUND(SUM(mentalidade * peso_voto)::NUMERIC / v_peso_total, 2)
-    INTO
-      v_arremesso,
-      v_defesa,
-      v_passe,
-      v_fisicalidade,
-      v_mentalidade
-    FROM public.avaliacoes
-    WHERE jogador_id = v_jogador_id;
+      ROUND(SUM(controle_de_bola * peso_voto)::NUMERIC / v_peso_total, 2),
+      ROUND(SUM(explosao_fisica * peso_voto)::NUMERIC / v_peso_total, 2),
+      ROUND(SUM(visao_de_jogo * peso_voto)::NUMERIC / v_peso_total, 2)
+    INTO v_arremesso, v_defesa, v_controle_de_bola, v_explosao_fisica, v_visao_de_jogo
+    FROM public.avaliacoes WHERE jogador_id = v_jogador_id;
 
-    -- Calcular a média geral como a média simples das cinco médias de fundamentos
-    v_media_estrelas := ROUND((v_arremesso + v_defesa + v_passe + v_fisicalidade + v_mentalidade) / 5.0, 2);
+    v_media_estrelas := ROUND((v_arremesso + v_defesa + v_controle_de_bola + v_explosao_fisica + v_visao_de_jogo) / 5.0, 2);
 
-    UPDATE public.jogadores
-    SET
-      total_votos = v_total_votos,
-      media_estrelas = v_media_estrelas,
-      media_arremesso = v_arremesso,
-      media_defesa = v_defesa,
-      media_passe = v_passe,
-      media_fisicalidade = v_fisicalidade,
-      media_mentalidade = v_mentalidade,
-      updated_at = NOW()
+    UPDATE public.jogadores SET
+      total_votos = v_total_votos, media_estrelas = v_media_estrelas,
+      media_arremesso = v_arremesso, media_defesa = v_defesa,
+      media_controle_de_bola = v_controle_de_bola, media_explosao_fisica = v_explosao_fisica,
+      media_visao_de_jogo = v_visao_de_jogo, updated_at = NOW()
     WHERE id = v_jogador_id;
   END IF;
 
@@ -368,9 +346,9 @@ CREATE OR REPLACE FUNCTION public.registrar_avaliacao(
   p_jogador_id UUID,
   p_arremesso INTEGER,
   p_defesa INTEGER,
-  p_passe INTEGER,
-  p_fisicalidade INTEGER,
-  p_mentalidade INTEGER,
+  p_controle_de_bola INTEGER,
+  p_explosao_fisica INTEGER,
+  p_visao_de_jogo INTEGER,
   p_ip TEXT DEFAULT NULL,
   p_device_id TEXT DEFAULT NULL,
   p_localizacao TEXT DEFAULT NULL,
@@ -389,35 +367,29 @@ DECLARE
   v_novo_total INTEGER;
   v_nova_media NUMERIC(3,2);
 BEGIN
-  -- Verificar autenticação
   IF v_avaliador_id IS NULL THEN
     RETURN jsonb_build_object('sucesso', FALSE, 'erro', 'Você precisa estar logado para avaliar.');
   END IF;
 
-  -- Verificar notas
   IF p_arremesso < 1 OR p_arremesso > 5 OR
      p_defesa < 1 OR p_defesa > 5 OR
-     p_passe < 1 OR p_passe > 5 OR
-     p_fisicalidade < 1 OR p_fisicalidade > 5 OR
-     p_mentalidade < 1 OR p_mentalidade > 5 THEN
+     p_controle_de_bola < 1 OR p_controle_de_bola > 5 OR
+     p_explosao_fisica < 1 OR p_explosao_fisica > 5 OR
+     p_visao_de_jogo < 1 OR p_visao_de_jogo > 5 THEN
     RETURN jsonb_build_object('sucesso', FALSE, 'erro', 'Todas as notas devem ser de 1 a 5.');
   END IF;
 
-  -- Verificar se o jogador existe
   IF NOT EXISTS (SELECT 1 FROM public.jogadores WHERE id = p_jogador_id AND ativo = TRUE) THEN
     RETURN jsonb_build_object('sucesso', FALSE, 'erro', 'Jogador não encontrado.');
   END IF;
 
-  -- Verificar se o jogador é o próprio usuário (antifraude)
   SELECT player_id INTO v_jogador_player_id
-  FROM public.profiles
-  WHERE id = v_avaliador_id;
+  FROM public.profiles WHERE id = v_avaliador_id;
 
   IF v_jogador_player_id = p_jogador_id THEN
     RETURN jsonb_build_object('sucesso', FALSE, 'erro', 'Você não pode avaliar a si mesmo.');
   END IF;
 
-  -- Verificar limite diário de 20 votos (antifraude)
   SELECT total_votos INTO v_votos_hoje
   FROM public.votos_diarios
   WHERE votante_id = v_avaliador_id AND data = CURRENT_DATE;
@@ -426,31 +398,27 @@ BEGIN
     RETURN jsonb_build_object('sucesso', FALSE, 'erro', 'Você atingiu o limite de 20 avaliações por dia.');
   END IF;
 
-  -- Obter reputação do avaliador
   SELECT COALESCE(reputacao, 1.0) INTO v_reputacao
-  FROM public.profiles
-  WHERE id = v_avaliador_id;
+  FROM public.profiles WHERE id = v_avaliador_id;
 
-  -- Inserir ou atualizar avaliação
   INSERT INTO public.avaliacoes (
-    avaliador_id, jogador_id, arremesso, defesa, passe, fisicalidade, mentalidade, peso_voto, comentario
+    avaliador_id, jogador_id, arremesso, defesa, controle_de_bola, explosao_fisica, visao_de_jogo, peso_voto, comentario
   )
   VALUES (
-    v_avaliador_id, p_jogador_id, p_arremesso, p_defesa, p_passe, p_fisicalidade, p_mentalidade, v_reputacao, p_comentario
+    v_avaliador_id, p_jogador_id, p_arremesso, p_defesa, p_controle_de_bola, p_explosao_fisica, p_visao_de_jogo, v_reputacao, p_comentario
   )
   ON CONFLICT (avaliador_id, jogador_id)
   DO UPDATE SET
     arremesso = EXCLUDED.arremesso,
     defesa = EXCLUDED.defesa,
-    passe = EXCLUDED.passe,
-    fisicalidade = EXCLUDED.fisicalidade,
-    mentalidade = EXCLUDED.mentalidade,
+    controle_de_bola = EXCLUDED.controle_de_bola,
+    explosao_fisica = EXCLUDED.explosao_fisica,
+    visao_de_jogo = EXCLUDED.visao_de_jogo,
     peso_voto = EXCLUDED.peso_voto,
     comentario = EXCLUDED.comentario,
     updated_at = NOW()
   RETURNING id INTO v_avaliacao_id;
 
-  --/-- Atualizar contador diário de votos se for uma avaliação nova hoje
   IF NOT EXISTS (
     SELECT 1 FROM public.avaliacoes
     WHERE id = v_avaliacao_id AND created_at::DATE = CURRENT_DATE AND updated_at::DATE <> CURRENT_DATE
@@ -461,14 +429,11 @@ BEGIN
     DO UPDATE SET total_votos = votos_diarios.total_votos + 1;
   END IF;
 
-  -- Inserir registro de auditoria
   INSERT INTO public.auditoria_votos (avaliacao_id, ip, device_id, localizacao, status)
   VALUES (v_avaliacao_id, p_ip, p_device_id, p_localizacao, 'aprovado');
 
-  -- Obter novos valores do jogador (recalculados via trigger)
   SELECT total_votos, media_estrelas INTO v_novo_total, v_nova_media
-  FROM public.jogadores
-  WHERE id = p_jogador_id;
+  FROM public.jogadores WHERE id = p_jogador_id;
 
   RETURN jsonb_build_object(
     'sucesso', TRUE,
@@ -570,9 +535,9 @@ RETURNS TABLE (
   atual_campeao BOOLEAN,
   media_arremesso NUMERIC,
   media_defesa NUMERIC,
-  media_passe NUMERIC,
-  media_fisicalidade NUMERIC,
-  media_mentalidade NUMERIC,
+  media_controle_de_bola NUMERIC,
+  media_explosao_fisica NUMERIC,
+  media_visao_de_jogo NUMERIC,
   cidade TEXT,
   uf TEXT,
   pais TEXT,
@@ -595,9 +560,9 @@ BEGIN
     j.atual_campeao,
     j.media_arremesso,
     j.media_defesa,
-    j.media_passe,
-    j.media_fisicalidade,
-    j.media_mentalidade,
+    j.media_controle_de_bola,
+    j.media_explosao_fisica,
+    j.media_visao_de_jogo,
     j.cidade,
     j.uf,
     j.pais,

@@ -294,9 +294,9 @@ export default function Jogadores({ profile }) {
       const { data, error } = await votacaoAPI.votar(votingPlayer.id, {
         arremesso: notaVoto,
         defesa: notaVoto,
-        passe: notaVoto,
-        fisicalidade: notaVoto,
-        mentalidade: notaVoto,
+        controle_de_bola: notaVoto,
+        explosao_fisica: notaVoto,
+        visao_de_jogo: notaVoto,
         comentario: comentarioVoto.trim() || null
       });
 

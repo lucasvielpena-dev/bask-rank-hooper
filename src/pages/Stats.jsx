@@ -3,10 +3,10 @@ import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
 
 const fundamentos = [
   { key: 'arremesso', label: 'Arremesso' },
+  { key: 'controle_de_bola', label: 'Controle de Bola' },
   { key: 'defesa', label: 'Defesa' },
-  { key: 'passe', label: 'Passe' },
-  { key: 'fisicalidade', label: 'Fisicalidade' },
-  { key: 'mentalidade', label: 'Mentalidade' }
+  { key: 'visao_de_jogo', label: 'Visão de Jogo' },
+  { key: 'explosao_fisica', label: 'Explosão Física' }
 ];
 
 export default function Stats({ profile, onNavigate }) {

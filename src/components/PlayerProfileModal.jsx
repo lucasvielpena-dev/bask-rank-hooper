@@ -3,10 +3,10 @@ import { supabase, denunciasAPI, votacaoAPI } from '../lib/supabase';
 
 const fundamentos = [
   { key: 'arremesso', label: 'Arremesso' },
+  { key: 'controle_de_bola', label: 'Controle de Bola' },
   { key: 'defesa', label: 'Defesa' },
-  { key: 'passe', label: 'Passe' },
-  { key: 'fisicalidade', label: 'Fisicalidade' },
-  { key: 'mentalidade', label: 'Mentalidade' }
+  { key: 'visao_de_jogo', label: 'Visão de Jogo' },
+  { key: 'explosao_fisica', label: 'Explosão Física' }
 ];
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
@@ -59,7 +59,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   // Avaliação Direta
   const [minhaId, setMinhaId] = useState(null);
   const [showAvaliar, setShowAvaliar] = useState(false);
-  const [estrelas, setEstrelas] = useState({ arremesso: 0, defesa: 0, passe: 0, fisicalidade: 0, mentalidade: 0 });
+  const [estrelas, setEstrelas] = useState({ arremesso: 0, defesa: 0, controle_de_bola: 0, explosao_fisica: 0, visao_de_jogo: 0 });
   const [enviandoAvaliacao, setEnviandoAvaliacao] = useState(false);
   const [jaAvaliou, setJaAvaliou] = useState(false);
 
@@ -209,9 +209,9 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
           setEstrelas({
             arremesso: av.arremesso,
             defesa: av.defesa,
-            passe: av.passe,
-            fisicalidade: av.fisicalidade,
-            mentalidade: av.mentalidade
+            controle_de_bola: av.controle_de_bola,
+            explosao_fisica: av.explosao_fisica,
+            visao_de_jogo: av.visao_de_jogo
           });
           setJaAvaliou(true);
         }

@@ -109,10 +109,10 @@ export default function Ranking({ profile }) {
       return sorted.sort((a, b) => (b.media_arremesso || 0) - (a.media_arremesso || 0));
     }
     if (categoria === 'rebotes') {
-      return sorted.sort((a, b) => (b.media_fisicalidade || 0) - (a.media_fisicalidade || 0));
+      return sorted.sort((a, b) => (b.media_explosao_fisica || 0) - (a.media_explosao_fisica || 0));
     }
     if (categoria === 'assist') {
-      return sorted.sort((a, b) => (b.media_passe || 0) - (a.media_passe || 0));
+      return sorted.sort((a, b) => (b.media_controle_de_bola || 0) - (a.media_controle_de_bola || 0));
     }
     if (categoria === 'defesa') {
       return sorted.sort((a, b) => (b.media_defesa || 0) - (a.media_defesa || 0));
@@ -124,8 +124,8 @@ export default function Ranking({ profile }) {
 
   const getMetricValue = (player) => {
     if (categoria === 'pontos') return player.media_arremesso || 0;
-    if (categoria === 'rebotes') return player.media_fisicalidade || 0;
-    if (categoria === 'assist') return player.media_passe || 0;
+    if (categoria === 'rebotes') return player.media_explosao_fisica || 0;
+    if (categoria === 'assist') return player.media_controle_de_bola || 0;
     if (categoria === 'defesa') return player.media_defesa || 0;
     return player.media_estrelas || 0;
   };
