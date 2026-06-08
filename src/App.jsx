@@ -209,53 +209,60 @@ export default function App() {
   }, [profile?.id]);
 
   async function verificarEAutoCriarJogador(prof) {
-    if (prof.cadastro_completo && !prof.player_id) {
-      console.log('Detectado perfil completo sem player_id. Iniciando auto-correção...');
-      try {
+    if (!prof.cadastro_completo) return;
+
+    try {
+      // Se tem player_id, verificar se o jogador ainda existe
+      if (prof.player_id) {
         const { data: existingJogador } = await supabase
           .from('jogadores')
           .select('id')
-          .eq('criado_por', prof.id)
+          .eq('id', prof.player_id)
           .maybeSingle();
 
-        let player_id = existingJogador?.id;
+        if (existingJogador) return; // Jogador existe, tudo OK
 
-        if (!player_id) {
-          const { data: newJogador, error: jogError } = await supabase
-            .from('jogadores')
-            .insert([{
-              nome: prof.nome_completo || 'Jogador',
-              apelido: prof.apelido || 'Jogador',
-              foto_url: prof.foto_perfil || null,
-              criado_por: prof.id,
-              cidade: prof.cidade_atual || prof.cidade || 'Altamira',
-              uf: prof.uf || 'PA',
-              ativo: true,
-              total_votos: 0,
-              media_estrelas: 0.00
-            }])
-            .select()
-            .single();
+        // Jogador não existe mais — limpar player_id e criar novo
+        console.log('Jogador referenciado não existe mais. Recriando...');
+        await profilesAPI.atualizar(prof.id, { player_id: null });
+        prof.player_id = null;
+      }
 
-          if (jogError) throw jogError;
-          if (newJogador) {
-            player_id = newJogador.id;
-          }
-        }
+      // Criar jogador se não tem player_id
+      if (!prof.player_id) {
+        console.log('Criando jogador para perfil...');
+        const { data: newJogador, error: jogError } = await supabase
+          .from('jogadores')
+          .insert([{
+            nome: prof.nome_completo || 'Jogador',
+            apelido: prof.apelido || 'Jogador',
+            foto_url: prof.foto_perfil || null,
+            criado_por: prof.id,
+            cidade: prof.cidade_atual || prof.cidade || 'Altamira',
+            uf: prof.uf || 'PA',
+            posicao: prof.posicao || 'Ala',
+            ativo: true,
+            total_votos: 0,
+            media_estrelas: 0.00
+          }])
+          .select()
+          .single();
 
-        if (player_id) {
+        if (jogError) throw jogError;
+
+        if (newJogador) {
           const { data: updatedProfile, error: profError } = await profilesAPI.atualizar(prof.id, {
-            player_id: player_id,
+            player_id: newJogador.id,
             is_player: true
           });
           if (!profError && updatedProfile) {
             setProfile(updatedProfile);
-            console.log('Perfil corrigido com sucesso! player_id vinculado:', player_id);
+            console.log('Jogador criado e vinculado:', newJogador.id);
           }
         }
-      } catch (err) {
-        console.error('Erro na auto-correção do jogador:', err);
       }
+    } catch (err) {
+      console.error('Erro na auto-correção do jogador:', err);
     }
   }
 
