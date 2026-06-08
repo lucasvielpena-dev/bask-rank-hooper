@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, jogadoresAPI, rankingAPI } from '../lib/supabase';
+import { IconCrescimento, IconTrofeu, IconCalendario, IconAvaliar, IconBasquete, IconRanking } from '../components/Icons';
 
 // Deterministic position evolution calculation
 // eslint-disable-next-line no-unused-vars
@@ -244,7 +245,9 @@ export default function Home({ profile, onNavigate }) {
 
           <div className="destaques-row">
             <div className="home-highlight-card">
-              <div className="home-highlight-icon">+3</div>
+              <div className="home-highlight-icon" style={{ background: 'rgba(37, 99, 235, 0.08)' }}>
+                <IconCrescimento size={24} color="#2563EB" />
+              </div>
               <div style={{ minWidth: 0 }}>
                 <div className="home-highlight-label">Evolucao semanal</div>
                 <div className="home-highlight-text" style={{ fontSize: 'clamp(12px, 3vw, 13px)' }}>
@@ -254,7 +257,9 @@ export default function Home({ profile, onNavigate }) {
             </div>
 
             <div className="home-highlight-card">
-              <div className="home-highlight-icon">MVP</div>
+              <div className="home-highlight-icon" style={{ background: 'rgba(242, 138, 46, 0.08)' }}>
+                <IconTrofeu size={24} color="#F28A2E" />
+              </div>
               <div style={{ minWidth: 0 }}>
                 <div className="home-highlight-label">MVP da semana</div>
                 <div className="home-highlight-text" style={{ fontSize: 'clamp(12px, 3vw, 13px)' }}>
@@ -264,7 +269,9 @@ export default function Home({ profile, onNavigate }) {
             </div>
 
             <div className="home-highlight-card">
-              <div className="home-highlight-icon">CAL</div>
+              <div className="home-highlight-icon" style={{ background: 'rgba(37, 99, 235, 0.08)' }}>
+                <IconCalendario size={24} color="#2563EB" />
+              </div>
               <div style={{ minWidth: 0 }}>
                 <div className="home-highlight-label">Torneio municipal</div>
                 <div className="home-highlight-text" style={{ fontSize: 'clamp(12px, 3vw, 13px)' }}>
@@ -285,7 +292,9 @@ export default function Home({ profile, onNavigate }) {
               className="quick-action-card quick-action-card-primary"
               onClick={() => onNavigate('jogadores')}
             >
-              <div className="quick-action-icon">STAR</div>
+              <div className="quick-action-icon" style={{ background: 'rgba(255, 255, 255, 0.16)' }}>
+                <IconAvaliar size={24} color="#fff" />
+              </div>
               <div className="quick-action-text">Avaliar jogador</div>
             </button>
 
@@ -293,7 +302,9 @@ export default function Home({ profile, onNavigate }) {
               className="quick-action-card"
               onClick={() => onNavigate('jogos')}
             >
-              <div className="quick-action-icon">BALL</div>
+              <div className="quick-action-icon" style={{ background: 'rgba(242, 138, 46, 0.08)' }}>
+                <IconBasquete size={24} color="#F28A2E" />
+              </div>
               <div className="quick-action-text">Meus jogos</div>
             </button>
 
@@ -301,7 +312,9 @@ export default function Home({ profile, onNavigate }) {
               className="quick-action-card"
               onClick={() => onNavigate('ranking')}
             >
-              <div className="quick-action-icon">RANK</div>
+              <div className="quick-action-icon" style={{ background: 'rgba(37, 99, 235, 0.08)' }}>
+                <IconRanking size={24} color="#2563EB" />
+              </div>
               <div className="quick-action-text">Ver ranking</div>
             </button>
 
@@ -309,7 +322,9 @@ export default function Home({ profile, onNavigate }) {
               className="quick-action-card"
               onClick={() => onNavigate('jogos', { aba: 'torneios' })}
             >
-              <div className="quick-action-icon">CUP</div>
+              <div className="quick-action-icon" style={{ background: 'rgba(242, 138, 46, 0.08)' }}>
+                <IconTrofeu size={24} color="#F28A2E" />
+              </div>
               <div className="quick-action-text">Ver torneios</div>
             </button>
           </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import PlayerProfileModal from '../components/PlayerProfileModal';
+import { IconJogador, IconBuscar } from '../components/Icons';
 
 const FILTROS = [
   { key: 'todos', label: 'Todos' },
@@ -320,7 +321,7 @@ export default function Jogadores({ profile }) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <IconJogador size={20} color="var(--accent-blue-light)" />
             </div>
             <div>
               <h2 style={{ fontWeight: 800, fontSize: 20 }}>Jogadores</h2>
@@ -331,9 +332,9 @@ export default function Jogadores({ profile }) {
 
         {/* Busca */}
         <div style={{ position: 'relative', marginBottom: 16 }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
+          <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', display: 'flex' }}>
+            <IconBuscar size={16} color="var(--text-muted)" />
+          </div>
           <input
             value={busca}
             onChange={e => setBusca(e.target.value)}

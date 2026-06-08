@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { partidasAPI, jogadoresAPI } from '../lib/supabase';
 import Torneios from './Torneios';
+import { IconJogo, IconVoltar, IconPlay, IconPause, IconReset, IconMais, IconMenos, IconRelogio, IconPlacar, IconTrofeu, IconCheck, IconCalendario } from '../components/Icons';
 
 export default function Jogos({ profile, initialAba = 'jogos' }) {
   const [tela, setTela] = useState('lista'); // 'lista' | 'novo' | 'partida'
@@ -437,12 +438,9 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{ width: 40, height: 40, background: 'rgba(99,102,241,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {aba === 'torneios' ? (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2">
-                    <circle cx="12" cy="8" r="7"/>
-                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
-                  </svg>
+                  <IconCalendario size={20} color="var(--accent-blue-light)" />
                 ) : (
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                  <IconJogo size={20} color="var(--accent-blue-light)" />
                 )}
               </div>
               <div>
@@ -457,7 +455,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             
             {partidas.length === 0 && aba !== 'torneios' && (
               <button className="btn btn-primary btn-sm" onClick={() => setTela('novo')}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <IconMais size={14} color="currentColor" />
                 Novo Jogo
               </button>
             )}

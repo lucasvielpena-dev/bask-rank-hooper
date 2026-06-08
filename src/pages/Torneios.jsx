@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase, torneiosAPI, equipesAPI, torneioJogosAPI, profilesAPI } from '../lib/supabase';
+import { IconCalendario, IconTrofeu, IconVoltar } from '../components/Icons';
 
 // Formatos de Torneio Traduzidos
 const FORMATOS = {
@@ -69,10 +70,7 @@ export default function Torneios({ profile, isNested = false }) {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2">
-                    <circle cx="12" cy="8" r="7"/>
-                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
-                  </svg>
+                  <IconCalendario size={20} color="var(--accent-blue-light)" />
                 </div>
                 <div>
                   <h2 style={{ fontWeight: 800, fontSize: 20 }}>Torneios Online</h2>

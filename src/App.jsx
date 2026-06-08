@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, authAPI, profilesAPI, notificacoesAPI } from './lib/supabase';
 import './styles/global.css';
+import { IconMenu, IconSino, IconVoltar, IconClose, IconEditar, IconCamera, IconEnviar, IconCheck, IconLocalizacao } from './components/Icons';
 
 import Home from './pages/Home';
 import Ranking from './pages/Ranking';
@@ -642,7 +643,6 @@ export default function App() {
             background: 'none',
             border: 'none',
             color: 'var(--text-primary)',
-            fontSize: '22px',
             cursor: 'pointer',
             padding: 4,
             display: 'flex',
@@ -650,7 +650,7 @@ export default function App() {
             justifyContent: 'center'
           }}
         >
-          ☰
+          <IconMenu size={22} color="var(--text-primary)" />
         </button>
 
         {/* Brand Logo */}
@@ -671,10 +671,7 @@ export default function App() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           {/* Bell Icon with Badge */}
           <div style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setShowNotificacoes(true)}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F8FAFC" strokeWidth="2">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-            </svg>
+            <IconSino size={22} color="#F8FAFC" />
             {notificacoes.filter(n => !n.lida).length > 0 && (
               <span style={{
                 position: 'absolute',
@@ -1012,10 +1009,7 @@ export default function App() {
         <div className="modal-overlay" style={{ zIndex: 2000 }}>
           <div className="modal-sheet" style={{ maxWidth: 400, padding: 24, textAlign: 'center' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue-light)" strokeWidth="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
+              <IconLocalizacao size={40} color="var(--accent-blue-light)" />
             </div>
             <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 10 }}>Mudar cidade de competição?</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
@@ -1064,7 +1058,7 @@ export default function App() {
             <div className="modal-handle" />
             
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3 style={{ fontWeight: 900, fontSize: 20 }}>🔔 Notificações</h3>
+              <h3 style={{ fontWeight: 900, fontSize: 20, display: 'flex', alignItems: 'center', gap: 8 }}><IconSino size={20} color="var(--text-primary)" /> Notificações</h3>
               {notificacoes.filter(n => !n.lida).length > 0 && (
                 <button 
                   onClick={handleMarcarTodasLidas}
@@ -1087,10 +1081,9 @@ export default function App() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 16 }}>
               {notificacoes.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ marginBottom: 12, opacity: 0.5 }}>
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                  </svg>
+                  <div style={{ marginBottom: 12, opacity: 0.5, display: 'flex', justifyContent: 'center' }}>
+                    <IconSino size={40} color="currentColor" />
+                  </div>
                   <p style={{ fontSize: '13px', fontWeight: 600 }}>Nenhuma notificação por aqui</p>
                   <p style={{ fontSize: '11px', marginTop: 4 }}>Você será avisado sempre que receber avaliações de outros jogadores.</p>
                 </div>
