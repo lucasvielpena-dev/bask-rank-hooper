@@ -509,7 +509,7 @@ export default function Stats({ profile, onNavigate }) {
                 { label: 'Idade', val: profile?.idade ? `${profile.idade} anos` : 'A definir' },
                 { label: 'Altura', val: profile?.altura ? `${Number(profile.altura).toFixed(2)} m` : 'A definir' },
                 { label: 'Posição', val: profile.posicao || myPlayerInfo?.posicao || 'Ala' },
-                { label: 'Equipe', val: myPlayerInfo?.equipe || `${city} Hoops` },
+                { label: 'Equipe', val: myPlayerInfo?.equipe || `${city} Hooper` },
               ].map(item => (
                 <div key={item.label} style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', paddingBottom: 6, borderBottom: '1px solid var(--border)' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>{item.label}</span>

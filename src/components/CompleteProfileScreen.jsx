@@ -301,7 +301,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           </div>
           <h2 style={{ fontWeight: 800, fontSize: 'clamp(20px, 5vw, 24px)', marginBottom: 6 }}>Complete seu perfil</h2>
           <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.5 }}>
-            Falta pouco! Preencha as informações obrigatórias para ter acesso completo ao Ranks Hoops.
+            Falta pouco! Preencha as informações obrigatórias para ter acesso completo ao Rank Hooper.
           </p>
         </div>
 

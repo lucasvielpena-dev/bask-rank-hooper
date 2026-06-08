@@ -577,7 +577,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     { label: 'Idade', val: profileData?.idade ? `${profileData.idade} anos` : '--' },
                     { label: 'Altura', val: profileData?.altura ? `${Number(profileData.altura).toFixed(2)} m` : '--' },
                     { label: 'Posição', val: localJogador.posicao || 'Ala' },
-                    { label: 'Equipe', val: localJogador.equipe || `${localJogador.cidade} Hoops` },
+                    { label: 'Equipe', val: localJogador.equipe || `${localJogador.cidade} Hooper` },
                   ].map(item => (
                     <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 8, borderBottom: '1px solid var(--border)', gap: 16 }}>
                       <span style={{ color: 'var(--text-secondary)', flexShrink: 0, fontSize: '13px' }}>{item.label}</span>

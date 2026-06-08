@@ -78,7 +78,7 @@ export default function AuthScreen() {
             🏆
           </div>
           <h1 style={{ fontFamily: 'DM Sans', fontWeight: 900, fontSize: 'clamp(24px, 6vw, 32px)', lineHeight: 1.1, marginBottom: 8 }}>
-            Ranks <span style={{ color: '#60a5fa' }}>Hoops</span>
+            Rank <span style={{ color: '#60a5fa' }}>Hooper</span>
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.5 }}>
             Sistema de ranking de basquete de Altamira, Pará.

@@ -153,7 +153,25 @@ export default function App() {
   };
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user }, error }) => {
+      if (error) {
+        console.warn('Auth getUser error:', error.message);
+        // Try to recover by refreshing the session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            loadProfile(session.user.id);
+          } else {
+            setProfile(null);
+            setLoadingProfile(false);
+          }
+        }).catch(() => {
+          setUser(null);
+          setProfile(null);
+          setLoadingProfile(false);
+        });
+        return;
+      }
       setUser(user);
       if (user) {
         loadProfile(user.id);
@@ -161,6 +179,11 @@ export default function App() {
         setProfile(null);
         setLoadingProfile(false);
       }
+    }).catch((err) => {
+      console.warn('Auth init error:', err);
+      setUser(null);
+      setProfile(null);
+      setLoadingProfile(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
@@ -665,7 +688,7 @@ export default function App() {
             color: 'var(--text-primary)',
             textTransform: 'uppercase'
           }}>
-            RANKS <span style={{ color: '#60A5FA' }}>HOOPS</span>
+            RANK <span style={{ color: '#60A5FA' }}>HOOPER</span>
           </div>
         </div>
 

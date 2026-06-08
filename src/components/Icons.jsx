@@ -1,5 +1,5 @@
 /**
- * Icones padronizados - Rank Hoops
+ * Icones padronizados - Rank Hooper
  * Todos: 24x24, stroke 2px, outline, sem emojis.
  * Cores: azul padrao #2563EB, laranja destaque #F28A2E
  */
