@@ -61,7 +61,7 @@ export default function AuthScreen() {
 
   return (
     <div className="app-shell" style={{ justifyContent: 'center', minHeight: '100dvh' }}>
-      <div style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ padding: '0 clamp(14px, 4vw, 24px)', display: 'flex', flexDirection: 'column', gap: 20 }}>
         {/* Logo/Header */}
         <div style={{ textAlign: 'center', marginBottom: 12 }}>
           <div style={{ 
@@ -77,7 +77,7 @@ export default function AuthScreen() {
           }}>
             🏆
           </div>
-          <h1 style={{ fontFamily: 'DM Sans', fontWeight: 900, fontSize: 32, lineHeight: 1.1, marginBottom: 8 }}>
+          <h1 style={{ fontFamily: 'DM Sans', fontWeight: 900, fontSize: 'clamp(24px, 6vw, 32px)', lineHeight: 1.1, marginBottom: 8 }}>
             Ranks <span style={{ color: '#60a5fa' }}>Hoops</span>
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.5 }}>

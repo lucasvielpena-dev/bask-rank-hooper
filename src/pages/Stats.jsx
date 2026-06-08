@@ -352,7 +352,7 @@ export default function Stats({ profile, onNavigate }) {
         <div style={{
           position: 'relative',
           width: '100%',
-          height: '210px',
+          height: 'clamp(170px, 40vw, 210px)',
           borderRadius: '16px',
           overflow: 'hidden',
           display: 'flex',
@@ -418,9 +418,9 @@ export default function Stats({ profile, onNavigate }) {
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(5, 1fr)',
-          gap: 8,
+          gap: 'clamp(4px, 1vw, 8px)',
           background: 'var(--bg-card)',
-          padding: '12px 6px',
+          padding: 'clamp(8px, 2vw, 12px) clamp(4px, 1vw, 6px)',
           borderRadius: '12px',
           border: '1px solid var(--border)',
           textAlign: 'center',
@@ -434,8 +434,8 @@ export default function Stats({ profile, onNavigate }) {
             { label: 'BLK', val: blk },
           ].map(item => (
             <div key={item.label}>
-              <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>{item.val}</div>
-              <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, marginTop: 2 }}>{item.label}</div>
+              <div style={{ fontSize: 'clamp(13px, 3.5vw, 16px)', fontWeight: 800, color: 'var(--text-primary)' }}>{item.val}</div>
+              <div style={{ fontSize: 'clamp(8px, 2vw, 9px)', color: 'var(--text-muted)', fontWeight: 600, marginTop: 2 }}>{item.label}</div>
             </div>
           ))}
         </div>
@@ -835,8 +835,8 @@ export default function Stats({ profile, onNavigate }) {
         <div className="modal-overlay" onClick={() => { if (!salvando) setShowRegistrar(false); }} style={{ zIndex: 1000 }}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440, maxHeight: '85vh', overflowY: 'auto' }}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 900, fontSize: 20, marginBottom: 4 }}>🏀 Nova Partida</h3>
-            <p style={{ color: '#64748b', fontSize: 12, marginBottom: 16 }}>Grave seus números de forma privada.</p>
+            <h3 style={{ fontWeight: 900, fontSize: 'clamp(17px, 4vw, 20px)', marginBottom: 4 }}>Nova Partida</h3>
+            <p style={{ color: '#64748b', fontSize: 'clamp(11px, 2.5vw, 12px)', marginBottom: 16 }}>Grave seus numeros de forma privada.</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>

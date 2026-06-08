@@ -233,6 +233,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100dvh;
+  height: 100vh; /* fallback */
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
@@ -243,6 +244,7 @@ body {
   background-size: cover;
   position: relative;
   overflow: hidden;
+  max-height: 100dvh;
 }
 
 /* Header */
@@ -750,6 +752,58 @@ input:focus { border-color: var(--accent-blue); }
 .medal-2 { color: #94a3b8; }
 .medal-3 { color: #cd7c2f; }
 
+/* Safe Area Insets for iOS/Android */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(68px + env(safe-area-inset-bottom));
+  }
+  .page-content {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+  .app-header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Responsive typography scaling */
+@media (max-width: 480px) {
+  .card { padding: 16px 14px; border-radius: 14px; }
+  .card-elevated { padding: 16px 14px; }
+  .btn { padding: 12px 16px; font-size: 14px; }
+  .btn-sm { padding: 7px 12px; font-size: 12px; }
+  .empty-state { padding: 40px 16px; }
+  .empty-state svg { width: 36px; height: 36px; }
+  .empty-state h3 { font-size: 14px; }
+  .empty-state p { font-size: 12px; }
+  .modal-sheet { padding: 16px 12px; border-radius: 20px 20px 0 0; }
+  input, select, textarea { font-size: 14px; padding: 10px 14px; }
+  .section-title { font-size: 14px; }
+  .badge { font-size: 11px; padding: 4px 10px; }
+  .badge-elite, .badge-destaque, .badge-promessa, .badge-desenvolvimento { font-size: 9px; padding: 2px 6px; }
+  .stat-circle { width: 72px; height: 72px; }
+  .stat-circle-value { font-size: 18px; }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .card { padding: 20px 18px; }
+  .modal-sheet { padding: 18px 14px; }
+}
+
+/* Extra small screens (320px) */
+@media (max-width: 359px) {
+  .card { padding: 12px 10px; border-radius: 12px; }
+  .btn { padding: 10px 12px; font-size: 13px; border-radius: 40px; }
+  .btn-sm { padding: 6px 10px; font-size: 11px; }
+  .modal-sheet { padding: 14px 10px; }
+  input, select, textarea { font-size: 13px; padding: 9px 12px; }
+  .nav-item span { font-size: 7.5px; }
+  .nav-item svg { width: 18px; height: 18px; }
+  .bottom-nav { height: 58px; }
+  .tabs { gap: 1px; padding: 3px; }
+  .tab { font-size: 12px; padding: 6px 8px; }
+}
+
 /* Responsive desktop */
 @media (min-width: 1024px) {
   .app-shell {
@@ -757,6 +811,43 @@ input:focus { border-color: var(--accent-blue); }
     border-right: 1px solid var(--border);
     box-shadow: 0 0 80px rgba(0,0,0,0.6);
   }
+}
+
+/* Large desktop */
+@media (min-width: 1440px) {
+  .home-container {
+    max-width: 1200px;
+  }
+}
+
+/* Hide scrollbar utility for mobile */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure no horizontal overflow on body */
+html {
+  overflow-x: hidden;
+}
+
+/* Responsive table wrapper */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+.table-responsive::-webkit-scrollbar { height: 4px; }
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+  .btn, button, .nav-item, .tab {
+    min-height: 44px;
+  }
+  .nav-item { min-height: 48px; }
 }
 
 /* Light Theme Variables Override */
@@ -1131,6 +1222,19 @@ input:focus { border-color: var(--accent-blue); }
   position: relative;
   margin: 24px 0 12px;
   padding: 0 10px;
+  overflow-x: auto;
+}
+
+@media (max-width: 359px) {
+  .evolution-timeline {
+    padding: 0 4px;
+  }
+  .evolution-step .evolution-label {
+    font-size: 7px !important;
+  }
+  .evolution-step .evolution-year {
+    font-size: 6px !important;
+  }
 }
 
 .evolution-timeline::before {
@@ -1218,6 +1322,144 @@ input:focus { border-color: var(--accent-blue); }
 
 /* Responsive Grid & Layout Utilities */
 
+.home-page {
+  background: var(--bg-primary);
+}
+
+.home-container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px 16px 0;
+}
+
+.home-section {
+  margin-bottom: 20px;
+}
+
+.home-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.home-section-title {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.home-section-link {
+  background: none;
+  border: 0;
+  color: var(--accent-blue-light);
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 0;
+}
+
+.destaques-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.home-highlight-card {
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 44px 1fr;
+  min-height: 82px;
+  padding: 14px;
+}
+
+.home-highlight-icon,
+.quick-action-icon {
+  align-items: center;
+  background: var(--accent-gold-dim);
+  border: 1px solid rgba(249, 115, 22, 0.24);
+  border-radius: 10px;
+  color: var(--accent-gold);
+  display: flex;
+  font-size: 10px;
+  font-weight: 900;
+  height: 40px;
+  justify-content: center;
+  line-height: 1;
+  width: 40px;
+}
+
+.home-highlight-label {
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.home-highlight-text {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.home-highlight-text span {
+  color: var(--accent-gold);
+}
+
+.acoes-rapidas-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.quick-action-card {
+  align-items: center;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 40px 1fr;
+  min-height: 78px;
+  padding: 12px;
+  text-align: left;
+}
+
+.quick-action-card-primary {
+  background: var(--accent-blue);
+  border-color: transparent;
+  color: #fff;
+}
+
+.quick-action-card-primary .quick-action-icon {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.quick-action-text {
+  color: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
 .responsive-card-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -1252,24 +1494,32 @@ input:focus { border-color: var(--accent-blue); }
     margin-bottom: 0 !important;
   }
 
-  .destaques-row {
-    overflow-x: visible !important;
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    padding-bottom: 0 !important;
+  .home-container {
+    padding: 24px 24px 0;
   }
 
-  .destaques-row > .card {
-    min-width: 0 !important;
-    flex: 1 !important;
-    height: auto !important;
-    margin-bottom: 0 !important;
+  .destaques-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .home-highlight-card {
+    align-content: space-between;
+    align-items: start;
+    grid-template-columns: 1fr;
+    min-height: 132px;
+    padding: 16px;
   }
 
   .acoes-rapidas-grid {
-    display: grid !important;
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 16px !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .quick-action-card {
+    align-content: space-between;
+    grid-template-columns: 1fr;
+    min-height: 126px;
+    padding: 16px;
   }
 
   /* Bottom nav layout for tablets and desktops */
@@ -1316,6 +1566,10 @@ input:focus { border-color: var(--accent-blue); }
 }
 
 @media (min-width: 1024px) {
+  .home-container {
+    padding-top: 28px;
+  }
+
   .responsive-card-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
@@ -1323,6 +1577,13 @@ input:focus { border-color: var(--accent-blue); }
   
   .first-place-card {
     grid-column: span 3;
+  }
+}
+
+/* Tournament metrics grid - 4 cols on desktop */
+@media (min-width: 768px) {
+  .responsive-card-grid + div[style*="gridTemplateColumns: repeat(2"] {
+    grid-template-columns: repeat(4, 1fr) !important;
   }
 }
 

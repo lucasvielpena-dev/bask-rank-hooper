@@ -231,7 +231,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
   return (
     <div className="app-shell" style={{ justifyContent: 'center', minHeight: '100dvh' }}>
-      <div style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ padding: '0 clamp(14px, 4vw, 24px)', display: 'flex', flexDirection: 'column', gap: 20 }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 12 }}>
           <div style={{ position: 'relative', width: 80, height: 80, margin: '0 auto 16px' }}>
@@ -299,7 +299,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               )}
             </label>
           </div>
-          <h2 style={{ fontWeight: 800, fontSize: 24, marginBottom: 6 }}>Complete seu perfil</h2>
+          <h2 style={{ fontWeight: 800, fontSize: 'clamp(20px, 5vw, 24px)', marginBottom: 6 }}>Complete seu perfil</h2>
           <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.5 }}>
             Falta pouco! Preencha as informações obrigatórias para ter acesso completo ao Ranks Hoops.
           </p>

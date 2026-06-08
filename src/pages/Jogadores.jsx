@@ -315,7 +315,7 @@ export default function Jogadores({ profile }) {
 
   return (
     <div className="page-content">
-      <div style={{ padding: '20px 20px 0' }}>
+      <div style={{ padding: 'clamp(12px, 3vw, 20px) clamp(14px, 3vw, 20px) 0' }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>

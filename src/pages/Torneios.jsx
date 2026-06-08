@@ -549,9 +549,8 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
     }}>
       {/* Hero Header Section */}
       <div style={{
-        height: '220px',
         background: 'linear-gradient(180deg, rgba(11,15,20,0.5) 0%, rgba(17,24,30,0.95) 100%)',
-        padding: '16px 20px 20px',
+        padding: 'clamp(12px, 3vw, 16px) clamp(14px, 3vw, 20px) clamp(14px, 3vw, 20px)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -630,9 +629,9 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
       {/* Resumo do Torneio / Métricas */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr 1fr',
-        gap: '8px',
-        padding: '16px 20px 0',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: 'clamp(6px, 1.5vw, 8px)',
+        padding: 'clamp(10px, 2.5vw, 16px) clamp(14px, 3vw, 20px) 0',
         flexShrink: 0
       }}>
         {[
@@ -1784,10 +1783,10 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginBottom: 20
+        marginBottom: 16
       }}>
         <span className={timerAtivo ? 'timer-active-pulse-text' : ''} style={{
-          fontSize: '84px',
+          fontSize: 'clamp(52px, 15vw, 84px)',
           fontFamily: 'monospace',
           fontWeight: 800,
           color: 'var(--text-primary)',
@@ -1831,8 +1830,8 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         {/* Time A Name & Score */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 0 }}>
           <div style={{
-            width: '40px',
-            height: '40px',
+            width: 'clamp(32px, 8vw, 40px)',
+            height: 'clamp(32px, 8vw, 40px)',
             borderRadius: '50%',
             background: 'rgba(255,255,255,0.03)',
             border: '2px solid #2563EB',
@@ -1847,11 +1846,11 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
               <path d="M2 12h20" />
             </svg>
           </div>
-          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
+          <span style={{ fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
             {jogo.equipe_a?.nome}
           </span>
           <span key={placarA} className="number-animate" style={{
-            fontSize: '48px',
+            fontSize: 'clamp(32px, 10vw, 48px)',
             fontWeight: 900,
             color: 'var(--text-primary)',
             display: 'block',
@@ -1870,8 +1869,8 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         {/* Time B Name & Score */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 0 }}>
           <div style={{
-            width: '40px',
-            height: '40px',
+            width: 'clamp(32px, 8vw, 40px)',
+            height: 'clamp(32px, 8vw, 40px)',
             borderRadius: '50%',
             background: 'rgba(255,255,255,0.03)',
             border: '2px solid #F97316',
@@ -1886,11 +1885,11 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
               <path d="M2 12h20" />
             </svg>
           </div>
-          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
+          <span style={{ fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
             {jogo.equipe_b?.nome}
           </span>
           <span key={placarB} className="number-animate" style={{
-            fontSize: '48px',
+            fontSize: 'clamp(32px, 10vw, 48px)',
             fontWeight: 900,
             color: 'var(--text-primary)',
             display: 'block',

@@ -87,7 +87,7 @@ export default function Home({ profile, onNavigate }) {
           setMyPlayerInfo(pInfo);
         }
 
-        // Calcular rank do usuário na cidade
+        // Calcular rank do usuario na cidade
         const { data: rankList } = await rankingAPI.get(cityVal, ufVal, 200);
         if (rankList) {
           const myIndex = rankList.findIndex(j => j.id === profile.player_id);
@@ -104,7 +104,7 @@ export default function Home({ profile, onNavigate }) {
     setLoading(false);
   }
 
-  // Obter Badge com base na média de estrelas
+  // Obter Badge com base na media de estrelas
   const getBadgeText = (media) => {
     if (media >= 4.5) return 'ELITE';
     if (media >= 4.0) return 'DESTAQUE';
@@ -127,40 +127,40 @@ export default function Home({ profile, onNavigate }) {
   }
 
   return (
-    <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
-      <div style={{ padding: '20px 20px 0' }}>
+    <div className="page-content home-page">
+      <div className="home-container">
         
-        {/* Saudação e Localização */}
-        <div style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-primary)' }}>
+        {/* Saudacao e Localizacao */}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 'clamp(16px, 4vw, 20px)', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 }}>
             Boa noite, <span style={{ color: '#2563EB' }}>{greetingName}</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--text-secondary)', fontSize: '12px', marginTop: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--text-secondary)', fontSize: 'clamp(11px, 2.5vw, 12px)', marginTop: 4 }}>
             Ranking de {city} - {uf}
           </div>
         </div>
 
         <div className="home-top-row">
-          {/* Card: Sua Posição */}
+          {/* Card: Sua Posicao */}
           <div className="card" style={{
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
             borderRadius: '16px',
-            padding: '20px',
+            padding: 'clamp(14px, 3vw, 20px)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             position: 'relative',
             overflow: 'hidden'
           }}>
-            <div>
-              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 6 }}>
-                SUA POSIÇÃO
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 6 }}>
+                SUA POSICAO
               </div>
-              <div style={{ fontSize: '36px', fontWeight: 900, color: '#F97316', lineHeight: 1, marginBottom: 4 }}>
+              <div style={{ fontSize: 'clamp(28px, 8vw, 36px)', fontWeight: 900, color: '#F97316', lineHeight: 1, marginBottom: 4 }}>
                 {myRank}
               </div>
-              <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: 12 }}>
+              <div style={{ fontSize: 'clamp(10px, 2.5vw, 11px)', color: 'var(--text-secondary)', marginBottom: 10 }}>
                 Entre {stats.jogadores} jogadores
               </div>
               <span style={{
@@ -169,7 +169,7 @@ export default function Home({ profile, onNavigate }) {
                 border: '1px solid rgba(37, 99, 235, 0.3)',
                 borderRadius: '6px',
                 padding: '3px 8px',
-                fontSize: '10px',
+                fontSize: 'clamp(9px, 2vw, 10px)',
                 fontWeight: 800,
                 letterSpacing: '0.02em',
                 textTransform: 'uppercase'
@@ -178,17 +178,17 @@ export default function Home({ profile, onNavigate }) {
               </span>
             </div>
 
-            {/* Gráfico Linear e Avatar com Linha de Tendência */}
-            <div style={{ position: 'relative', width: '100px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="100" height="60" viewBox="0 0 100 60" style={{ position: 'absolute', right: 0, bottom: 0, opacity: 0.75 }}>
+            {/* Grafico Linear e Avatar com Linha de Tendencia */}
+            <div style={{ position: 'relative', width: 'clamp(80px, 20vw, 100px)', height: 'clamp(65px, 16vw, 80px)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginLeft: 8 }}>
+              <svg width="100" height="60" viewBox="0 0 100 60" style={{ position: 'absolute', right: 0, bottom: 0, opacity: 0.75, width: '100%', height: 'auto' }}>
                 <path d="M0,50 Q20,38 40,43 T80,18 T100,10" fill="none" stroke="#F97316" strokeWidth="2.5" strokeLinecap="round" />
                 <circle cx="100" cy="10" r="3.5" fill="#F97316" />
               </svg>
-              <div style={{ zIndex: 2, border: '3px solid #111827', borderRadius: '50%', overflow: 'hidden', width: '64px', height: '64px', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
+              <div style={{ zIndex: 2, border: '3px solid #111827', borderRadius: '50%', overflow: 'hidden', width: 'clamp(52px, 14vw, 64px)', height: 'clamp(52px, 14vw, 64px)', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}>
                 {profile?.foto_perfil ? (
                   <img src={profile.foto_perfil} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
-                  <div style={{ width: '100%', height: '100%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', fontWeight: 800, fontSize: '20px' }}>
+                  <div style={{ width: '100%', height: '100%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', fontWeight: 800, fontSize: 'clamp(16px, 4vw, 20px)' }}>
                     {greetingName.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -196,195 +196,121 @@ export default function Home({ profile, onNavigate }) {
             </div>
           </div>
 
-          {/* Card: Estatísticas Gerais */}
+          {/* Card: Estatisticas Gerais */}
           <div className="card" style={{
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
             borderRadius: '16px',
-            padding: '20px'
+            padding: 'clamp(14px, 3vw, 20px)'
           }}>
-            <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 16 }}>
-              ESTATÍSTICAS GERAIS
+            <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 14 }}>
+              ESTATISTICAS GERAIS
             </div>
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(10px, 2.5vw, 16px)' }}>
               <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8 }}>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.jogadores}</div>
-                <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Jogadores</div>
+                <div style={{ fontSize: 'clamp(18px, 5vw, 24px)', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.jogadores}</div>
+                <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', color: 'var(--text-secondary)', marginTop: 2 }}>Jogadores</div>
               </div>
               <div style={{ paddingLeft: 8 }}>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.torneios}</div>
-                <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Torneios</div>
+                <div style={{ fontSize: 'clamp(18px, 5vw, 24px)', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.torneios}</div>
+                <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', color: 'var(--text-secondary)', marginTop: 2 }}>Torneios</div>
               </div>
               <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.avaliacoes}</div>
-                <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Avaliações</div>
+                <div style={{ fontSize: 'clamp(18px, 5vw, 24px)', fontWeight: 800, color: 'var(--text-primary)' }}>{stats.avaliacoes}</div>
+                <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', color: 'var(--text-secondary)', marginTop: 2 }}>Avaliacoes</div>
               </div>
               <div style={{ paddingLeft: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ fontSize: '24px', fontWeight: 800, color: '#F97316' }}>{stats.mediaGeral.toFixed(1)}</div>
-                <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: 2 }}>Média Geral</div>
+                <div style={{ fontSize: 'clamp(18px, 5vw, 24px)', fontWeight: 800, color: '#F97316' }}>{stats.mediaGeral.toFixed(1)}</div>
+                <div style={{ fontSize: 'clamp(9px, 2vw, 10px)', color: 'var(--text-secondary)', marginTop: 2 }}>Media Geral</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Seção Destaques */}
-        <div style={{ marginBottom: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+        {/* Secao Destaques */}
+        <div className="home-section">
+          <div className="home-section-header">
+            <div className="home-section-title">
               DESTAQUES
             </div>
-            <button 
+            <button
+              className="home-section-link"
               onClick={() => onNavigate('jogos', { aba: 'torneios' })}
-              style={{ background: 'none', border: 'none', color: '#2563EB', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
             >
               Ver tudo
             </button>
           </div>
 
           <div className="destaques-row">
-            {/* Card 1: Posição Semanal */}
-            <div className="card" style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: '12px',
-              padding: '16px',
-              minWidth: '135px',
-              flex: '0 0 auto',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              height: '110px'
-            }}>
-              <div style={{ fontSize: '20px', color: '#F97316' }}>📈</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-primary)', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
-                Você subiu <span style={{ color: '#F97316', fontWeight: 700 }}>3 posições</span> esta semana
+            <div className="home-highlight-card">
+              <div className="home-highlight-icon">+3</div>
+              <div style={{ minWidth: 0 }}>
+                <div className="home-highlight-label">Evolucao semanal</div>
+                <div className="home-highlight-text" style={{ fontSize: 'clamp(12px, 3vw, 13px)' }}>
+                  Voce subiu <span>3 posicoes</span> esta semana
+                </div>
               </div>
             </div>
 
-            {/* Card 2: MVP da Semana */}
-            <div className="card" style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: '12px',
-              padding: '16px',
-              minWidth: '135px',
-              flex: '0 0 auto',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              height: '110px'
-            }}>
-              <div style={{ fontSize: '20px', color: '#F97316' }}>🏆</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-primary)', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
-                <span style={{ color: '#F97316', fontWeight: 700 }}>MVP</span> da semana<br />
-                {lider ? lider.nome.split(' ')[0] : 'João Silva'} {(lider?.media_estrelas || 4.9).toFixed(1)} ★
+            <div className="home-highlight-card">
+              <div className="home-highlight-icon">MVP</div>
+              <div style={{ minWidth: 0 }}>
+                <div className="home-highlight-label">MVP da semana</div>
+                <div className="home-highlight-text" style={{ fontSize: 'clamp(12px, 3vw, 13px)' }}>
+                  <span>{lider ? lider.nome.split(' ')[0] : 'Joao Silva'}</span> {(lider?.media_estrelas || 4.9).toFixed(1)} estrelas
+                </div>
               </div>
             </div>
 
-            {/* Card 3: Torneio Municipal */}
-            <div className="card" style={{
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: '12px',
-              padding: '16px',
-              minWidth: '135px',
-              flex: '0 0 auto',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              height: '110px'
-            }}>
-              <div style={{ fontSize: '20px', color: '#F97316' }}>📅</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-primary)', fontWeight: 500, lineHeight: 1.4, marginTop: 10 }}>
-                Torneio Municipal<br />
-                <span style={{ color: 'var(--text-secondary)' }}>Inscrições abertas</span>
+            <div className="home-highlight-card">
+              <div className="home-highlight-icon">CAL</div>
+              <div style={{ minWidth: 0 }}>
+                <div className="home-highlight-label">Torneio municipal</div>
+                <div className="home-highlight-text" style={{ fontSize: 'clamp(12px, 3vw, 13px)' }}>
+                  <span>Inscricoes abertas</span> para novas equipes
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Ações Rápidas */}
-        <div style={{ marginBottom: 28 }}>
-          <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 12 }}>
-            AÇÕES RÁPIDAS
+        <div className="home-section home-actions-section">
+          <div className="home-section-title">
+            ACOES RAPIDAS
           </div>
 
           <div className="acoes-rapidas-grid">
-            {/* Avaliar Jogador */}
-            <button 
+            <button
+              className="quick-action-card quick-action-card-primary"
               onClick={() => onNavigate('jogadores')}
-              style={{
-                background: '#2563EB',
-                border: 'none',
-                borderRadius: '12px',
-                padding: '16px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                cursor: 'pointer',
-                textAlign: 'left'
-              }}
             >
-              <div style={{ fontSize: '20px', color: '#FFF', marginBottom: 12 }}>★</div>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: '#FFF' }}>Avaliar<br />jogador</div>
+              <div className="quick-action-icon">STAR</div>
+              <div className="quick-action-text">Avaliar jogador</div>
             </button>
 
-            {/* Meus Jogos */}
-            <button 
+            <button
+              className="quick-action-card"
               onClick={() => onNavigate('jogos')}
-              style={{
-                background: 'var(--bg-elevated)',
-                border: '1px solid var(--border)',
-                borderRadius: '12px',
-                padding: '16px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                cursor: 'pointer',
-                textAlign: 'left'
-              }}
             >
-              <div style={{ fontSize: '20px', color: '#60A5FA', marginBottom: 12 }}>🏀</div>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>Meus<br />jogos</div>
+              <div className="quick-action-icon">BALL</div>
+              <div className="quick-action-text">Meus jogos</div>
             </button>
 
-            {/* Ranking */}
-            <button 
+            <button
+              className="quick-action-card"
               onClick={() => onNavigate('ranking')}
-              style={{
-                background: 'var(--bg-elevated)',
-                border: '1px solid var(--border)',
-                borderRadius: '12px',
-                padding: '16px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                cursor: 'pointer',
-                textAlign: 'left'
-              }}
             >
-              <div style={{ fontSize: '20px', color: '#60A5FA', marginBottom: 12 }}>📊</div>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>Ver<br />Ranking</div>
+              <div className="quick-action-icon">RANK</div>
+              <div className="quick-action-text">Ver ranking</div>
             </button>
 
-            {/* Torneios */}
-            <button 
+            <button
+              className="quick-action-card"
               onClick={() => onNavigate('jogos', { aba: 'torneios' })}
-              style={{
-                background: 'var(--bg-elevated)',
-                border: '1px solid var(--border)',
-                borderRadius: '12px',
-                padding: '16px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                cursor: 'pointer',
-                textAlign: 'left'
-              }}
             >
-              <div style={{ fontSize: '20px', color: '#60A5FA', marginBottom: 12 }}>🏆</div>
-              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>Ver<br />Torneios</div>
+              <div className="quick-action-icon">CUP</div>
+              <div className="quick-action-text">Ver torneios</div>
             </button>
           </div>
         </div>

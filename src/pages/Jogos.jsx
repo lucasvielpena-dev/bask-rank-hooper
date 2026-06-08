@@ -735,10 +735,10 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            marginBottom: 20
+            marginBottom: 16
           }}>
             <span className={timerAtivo ? 'timer-active-pulse-text' : ''} style={{
-              fontSize: '84px',
+              fontSize: 'clamp(52px, 15vw, 84px)',
               fontFamily: 'monospace',
               fontWeight: 800,
               color: 'var(--text-primary)',
@@ -782,8 +782,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             {/* Time A Name & Score */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 0 }}>
               <div style={{
-                width: '40px',
-                height: '40px',
+                width: 'clamp(32px, 8vw, 40px)',
+                height: 'clamp(32px, 8vw, 40px)',
                 borderRadius: '50%',
                 background: 'rgba(255,255,255,0.03)',
                 border: '2px solid #2563EB',
@@ -798,11 +798,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <path d="M2 12h20" />
                 </svg>
               </div>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
+              <span style={{ fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
                 {timeANome}
               </span>
               <span key={placarA} className="number-animate" style={{
-                fontSize: '48px',
+                fontSize: 'clamp(32px, 10vw, 48px)',
                 fontWeight: 900,
                 color: 'var(--text-primary)',
                 display: 'block',
@@ -821,8 +821,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             {/* Time B Name & Score */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 0 }}>
               <div style={{
-                width: '40px',
-                height: '40px',
+                width: 'clamp(32px, 8vw, 40px)',
+                height: 'clamp(32px, 8vw, 40px)',
                 borderRadius: '50%',
                 background: 'rgba(255,255,255,0.03)',
                 border: '2px solid #F97316',
@@ -837,11 +837,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <path d="M2 12h20" />
                 </svg>
               </div>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
+              <span style={{ fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
                 {timeBNome}
               </span>
               <span key={placarB} className="number-animate" style={{
-                fontSize: '48px',
+                fontSize: 'clamp(32px, 10vw, 48px)',
                 fontWeight: 900,
                 color: 'var(--text-primary)',
                 display: 'block',
