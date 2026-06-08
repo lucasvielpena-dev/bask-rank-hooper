@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, jogadoresAPI, rankingAPI } from '../lib/supabase';
-import { IconAvaliar, IconBasquete, IconRanking, IconTrofeu } from '../components/Icons';
+import { IconCrescimento, IconTrofeu, IconCalendario, IconAvaliar, IconBasquete, IconRanking } from '../components/Icons';
 
 const getEvolucaoValue = (id) => {
   if (!id) return 0;
@@ -15,11 +15,11 @@ function BasketballHoopSVG() {
   return (
     <svg viewBox="0 0 200 220" fill="none" style={{
       position: 'absolute',
-      right: -20,
-      top: -30,
-      width: 'clamp(140px, 35vw, 200px)',
+      right: -15,
+      top: -20,
+      width: 'clamp(120px, 30vw, 180px)',
       height: 'auto',
-      opacity: 0.18,
+      opacity: 0.2,
       pointerEvents: 'none'
     }}>
       <circle cx="100" cy="110" r="50" stroke="#F97316" strokeWidth="4" />
@@ -29,14 +29,53 @@ function BasketballHoopSVG() {
       <path d="M140 60 Q140 90 120 110" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" fill="none" />
       <path d="M70 60 Q75 85 90 105" stroke="rgba(255,255,255,0.12)" strokeWidth="1" fill="none" />
       <path d="M130 60 Q125 85 110 105" stroke="rgba(255,255,255,0.12)" strokeWidth="1" fill="none" />
-      <path d="M80 60 Q82 80 95 100" stroke="rgba(255,255,255,0.1)" strokeWidth="1" fill="none" />
-      <path d="M120 60 Q118 80 105 100" stroke="rgba(255,255,255,0.1)" strokeWidth="1" fill="none" />
       <circle cx="90" cy="30" r="20" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" fill="none" />
-      <path d="M70 30 Q90 20 110 30" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" />
-      <line x1="90" y1="10" x2="90" y2="50" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
     </svg>
   );
 }
+
+function HighlightChartSVG() {
+  return (
+    <svg viewBox="0 0 120 80" fill="none" style={{ position: 'absolute', right: 10, bottom: 10, width: 100, opacity: 0.25, pointerEvents: 'none' }}>
+      <polyline points="10,65 30,50 50,55 70,30 90,35 110,15" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="110" cy="15" r="3" fill="#2563EB" />
+    </svg>
+  );
+}
+
+function HighlightTrophySVG() {
+  return (
+    <svg viewBox="0 0 100 100" fill="none" style={{ position: 'absolute', right: 10, bottom: 5, width: 80, opacity: 0.12, pointerEvents: 'none' }}>
+      <path d="M35 25h30v25a15 15 0 0 1-30 0V25z" stroke="#F97316" strokeWidth="2" fill="none" />
+      <path d="M35 30H25a10 10 0 0 0 0 10h10" stroke="#F97316" strokeWidth="1.5" fill="none" />
+      <path d="M65 30h10a10 10 0 0 1 0 10H65" stroke="#F97316" strokeWidth="1.5" fill="none" />
+      <line x1="50" y1="55" x2="50" y2="70" stroke="#F97316" strokeWidth="2" />
+      <rect x="38" y="70" width="24" height="4" rx="2" fill="#F97316" opacity="0.5" />
+    </svg>
+  );
+}
+
+function HighlightCalendarSVG() {
+  return (
+    <svg viewBox="0 0 100 100" fill="none" style={{ position: 'absolute', right: 10, bottom: 5, width: 75, opacity: 0.12, pointerEvents: 'none' }}>
+      <rect x="15" y="20" width="70" height="60" rx="8" stroke="#2563EB" strokeWidth="2" fill="none" />
+      <line x1="15" y1="40" x2="85" y2="40" stroke="#2563EB" strokeWidth="1.5" />
+      <line x1="30" y1="15" x2="30" y2="30" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
+      <line x1="70" y1="15" x2="70" y2="30" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="38" cy="55" r="3" fill="#2563EB" opacity="0.5" />
+      <circle cx="50" cy="55" r="3" fill="#2563EB" opacity="0.5" />
+      <circle cx="62" cy="55" r="3" fill="#2563EB" opacity="0.5" />
+      <circle cx="38" cy="68" r="3" fill="#2563EB" opacity="0.3" />
+      <circle cx="50" cy="68" r="3" fill="#2563EB" opacity="0.3" />
+    </svg>
+  );
+}
+
+const ChevronArrow = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round">
+    <path d="m9 18 6-6-6-6"/>
+  </svg>
+);
 
 export default function Home({ profile, onNavigate }) {
   const [stats, setStats] = useState({ jogadores: 0, torneios: 0, avaliacoes: 0, mediaGeral: 0.0 });
@@ -121,208 +160,304 @@ export default function Home({ profile, onNavigate }) {
     );
   }
 
+  const statsData = [
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, value: stats.jogadores, label: 'Jogadores' },
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>, value: stats.mediaGeral.toFixed(1), label: 'Media geral' },
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>, value: stats.avaliacoes, label: 'Avaliacoes' },
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>, value: stats.torneios, label: 'Torneios' }
+  ];
+
   return (
     <div className="page-content home-page">
       <div className="home-container">
 
         {/* Saudacao */}
         <div style={{ marginBottom: 20 }}>
-          <div style={{
-            fontSize: 'clamp(22px, 6vw, 28px)',
-            fontWeight: 800,
-            color: '#FFFFFF',
-            lineHeight: 1.2
-          }}>
+          <div style={{ fontSize: 'clamp(22px, 5vw, 28px)', fontWeight: 800, color: '#FFFFFF', lineHeight: 1.2 }}>
             {getGreeting()}, <span style={{ color: '#2563EB' }}>{greetingName}</span> {'\u{1F44B}'}
           </div>
-          <div style={{ color: '#94A3B8', fontSize: 'clamp(12px, 3vw, 14px)', marginTop: 6 }}>
+          <div style={{ color: '#94A3B8', fontSize: 'clamp(12px, 3vw, 14px)', marginTop: 4 }}>
             Voce esta entre os melhores jogadores de {city}.
           </div>
         </div>
 
-        {/* Card Sua Posicao */}
-        <div style={{
-          background: 'linear-gradient(135deg, #111827 0%, rgba(37,99,235,0.12) 100%)',
-          border: '1px solid rgba(37,99,235,0.2)',
-          borderRadius: '20px',
-          padding: 'clamp(20px, 5vw, 28px)',
-          position: 'relative',
-          overflow: 'hidden',
-          marginBottom: 28,
-          boxShadow: '0 8px 32px rgba(0,0,0,0.35)'
-        }}>
-          <BasketballHoopSVG />
-          <div style={{ position: 'relative', zIndex: 2 }}>
-            <div style={{
-              fontSize: 'clamp(10px, 2.5vw, 12px)',
-              fontWeight: 700,
-              color: '#94A3B8',
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              marginBottom: 8
-            }}>
-              SUA POSICAO
-            </div>
-            <div style={{
-              fontSize: 'clamp(56px, 16vw, 80px)',
-              fontWeight: 900,
-              color: '#F97316',
-              lineHeight: 1,
-              marginBottom: 6,
-              letterSpacing: '-0.02em'
-            }}>
-              {myRank}
-            </div>
-            <div style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#94A3B8', marginBottom: 14 }}>
-              Ranking de {city} - {uf}
-            </div>
-            <span style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 5,
-              background: 'rgba(37, 99, 235, 0.15)',
-              color: '#60A5FA',
-              border: '1px solid rgba(37, 99, 235, 0.25)',
-              borderRadius: '8px',
-              padding: '5px 12px',
-              fontSize: 'clamp(10px, 2.5vw, 11px)',
-              fontWeight: 800,
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase'
-            }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="#60A5FA" stroke="none">
-                <path d="M2.5 18.5l2-9 5 4.5L12 7l2.5 7 5-4.5 2 9h-19z"/>
-              </svg>
-              {myBadge}
-            </span>
-          </div>
-        </div>
+        {/* Row: Posicao + Estatisticas lado a lado */}
+        <div className="home-top-row">
 
-        {/* Estatisticas Gerais */}
-        <div style={{ marginBottom: 28 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-            <div style={{ fontSize: 'clamp(11px, 2.5vw, 12px)', fontWeight: 800, color: '#94A3B8', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-              ESTATISTICAS GERAIS
-            </div>
-            <button style={{ background: 'none', border: 0, color: '#2563EB', cursor: 'pointer', fontSize: 12, fontWeight: 700, padding: 0 }}>
-              Ver todas
-            </button>
-          </div>
-
+          {/* Card Posicao */}
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: 0,
+            background: 'linear-gradient(135deg, #111827 0%, rgba(37,99,235,0.12) 100%)',
+            border: '1px solid rgba(37,99,235,0.2)',
+            borderRadius: '20px',
+            padding: 'clamp(20px, 4vw, 28px)',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
+            flex: 1,
+            minWidth: 0
+          }}>
+            <BasketballHoopSVG />
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              <div style={{ fontSize: 'clamp(10px, 2vw, 12px)', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>
+                SUA POSICAO
+              </div>
+              <div style={{ fontSize: 'clamp(52px, 14vw, 76px)', fontWeight: 900, color: '#F97316', lineHeight: 1, marginBottom: 6, letterSpacing: '-0.02em' }}>
+                {myRank}
+              </div>
+              <div style={{ fontSize: 'clamp(12px, 2.5vw, 14px)', color: '#94A3B8', marginBottom: 14 }}>
+                Ranking de {city} - {uf}
+              </div>
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                background: 'rgba(37, 99, 235, 0.15)',
+                color: '#60A5FA',
+                border: '1px solid rgba(37, 99, 235, 0.25)',
+                borderRadius: '8px',
+                padding: '5px 12px',
+                fontSize: 'clamp(9px, 2vw, 11px)',
+                fontWeight: 800,
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase'
+              }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#60A5FA" stroke="none">
+                  <path d="M2.5 18.5l2-9 5 4.5L12 7l2.5 7 5-4.5 2 9h-19z"/>
+                </svg>
+                {myBadge}
+              </span>
+            </div>
+          </div>
+
+          {/* Card Estatisticas */}
+          <div style={{
             background: '#111827',
             border: '1px solid rgba(255,255,255,0.06)',
             borderRadius: '20px',
-            overflow: 'hidden',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.25)'
+            padding: 'clamp(16px, 3vw, 22px)',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.25)',
+            flex: 1,
+            minWidth: 0,
+            display: 'flex',
+            flexDirection: 'column'
           }}>
-            {[
-              { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, value: stats.jogadores, label: 'Jogadores' },
-              { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="#F97316" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>, value: stats.mediaGeral.toFixed(1), label: 'Media geral' },
-              { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>, value: stats.avaliacoes, label: 'Avaliacoes' },
-              { icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>, value: stats.torneios, label: 'Torneios' }
-            ].map((item, i) => (
-              <div key={item.label} style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: 8,
-                padding: 'clamp(14px, 3vw, 20px) clamp(6px, 1.5vw, 10px)',
-                borderRight: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none'
-              }}>
-                <div style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 14,
-                  background: i % 2 === 0 ? 'rgba(37,99,235,0.1)' : 'rgba(249,115,22,0.1)',
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+              <div style={{ fontSize: 'clamp(10px, 2vw, 12px)', fontWeight: 800, color: '#94A3B8', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                ESTATISTICAS GERAIS
+              </div>
+              <button style={{ background: 'none', border: 0, color: '#2563EB', cursor: 'pointer', fontSize: 12, fontWeight: 700, padding: 0 }}>
+                Ver todas
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, flex: 1 }}>
+              {statsData.map((item, i) => (
+                <div key={item.label} style={{
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  gap: 8,
+                  borderRight: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none'
                 }}>
-                  {item.icon}
+                  <div style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 12,
+                    background: i % 2 === 0 ? 'rgba(37,99,235,0.1)' : 'rgba(249,115,22,0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    {item.icon}
+                  </div>
+                  <div style={{ fontSize: 'clamp(20px, 5vw, 28px)', fontWeight: 800, color: '#FFFFFF' }}>
+                    {item.value}
+                  </div>
+                  <div style={{ fontSize: 'clamp(10px, 2vw, 11px)', color: '#64748B', fontWeight: 600, textAlign: 'center' }}>
+                    {item.label}
+                  </div>
                 </div>
-                <div style={{
-                  fontSize: 'clamp(20px, 5vw, 28px)',
-                  fontWeight: 800,
-                  color: '#FFFFFF'
-                }}>
-                  {item.value}
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Destaques */}
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ fontSize: 'clamp(11px, 2.5vw, 12px)', fontWeight: 800, color: '#94A3B8', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              DESTAQUES
+            </div>
+            <button style={{ background: 'none', border: 0, color: '#2563EB', cursor: 'pointer', fontSize: 12, fontWeight: 700, padding: 0 }}>
+              Ver tudo
+            </button>
+          </div>
+
+          <div className="destaques-row">
+            {/* Evolucao semanal */}
+            <div style={{
+              background: 'linear-gradient(135deg, #111827 0%, rgba(37,99,235,0.06) 100%)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              borderRadius: '16px',
+              padding: 'clamp(14px, 3vw, 18px)',
+              position: 'relative',
+              overflow: 'hidden',
+              minHeight: 120
+            }}>
+              <HighlightChartSVG />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(37,99,235,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconCrescimento size={20} color="#2563EB" />
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF' }}>Evolucao semanal</div>
                 </div>
-                <div style={{
-                  fontSize: 'clamp(10px, 2.5vw, 11px)',
-                  color: '#64748B',
-                  fontWeight: 600,
-                  textAlign: 'center'
+                <div style={{ fontSize: 12, color: '#94A3B8', marginBottom: 10, lineHeight: 1.4 }}>
+                  Voce subiu <span style={{ color: '#FFFFFF', fontWeight: 700 }}>3 posicoes</span> esta semana
+                </div>
+                <span style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  background: 'rgba(37,99,235,0.12)',
+                  color: '#60A5FA',
+                  border: '1px solid rgba(37,99,235,0.2)',
+                  borderRadius: 6,
+                  padding: '3px 10px',
+                  fontSize: 10,
+                  fontWeight: 700
                 }}>
-                  {item.label}
+                  +3 posicoes
+                </span>
+              </div>
+            </div>
+
+            {/* MVP da semana */}
+            <div style={{
+              background: 'linear-gradient(135deg, #111827 0%, rgba(249,115,22,0.06) 100%)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              borderRadius: '16px',
+              padding: 'clamp(14px, 3vw, 18px)',
+              position: 'relative',
+              overflow: 'hidden',
+              minHeight: 120
+            }}>
+              <HighlightTrophySVG />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(249,115,22,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconTrofeu size={20} color="#F97316" />
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF' }}>MVP da semana</div>
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#F97316', marginBottom: 4 }}>
+                  {lider ? lider.nome.split(' ')[0] + ' ' + (lider.nome.split(' ')[1] || '') : 'Lara Fabia'}
+                </div>
+                <div style={{ fontSize: 11, color: '#94A3B8', marginBottom: 6 }}>
+                  {(lider?.media_estrelas || 5.0).toFixed(1)} estrelas
+                </div>
+                <div style={{ display: 'flex', gap: 2 }}>
+                  {[1,2,3,4,5].map(s => (
+                    <span key={s} style={{ color: s <= Math.round(lider?.media_estrelas || 5) ? '#F97316' : '#64748B', fontSize: 14 }}>{'\u2605'}</span>
+                  ))}
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Torneio municipal */}
+            <div style={{
+              background: 'linear-gradient(135deg, #111827 0%, rgba(37,99,235,0.06) 100%)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              borderRadius: '16px',
+              padding: 'clamp(14px, 3vw, 18px)',
+              position: 'relative',
+              overflow: 'hidden',
+              minHeight: 120
+            }}>
+              <HighlightCalendarSVG />
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(37,99,235,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconCalendario size={20} color="#2563EB" />
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF' }}>Torneio municipal</div>
+                </div>
+                <div style={{ fontSize: 12, color: '#94A3B8', marginBottom: 10, lineHeight: 1.4 }}>
+                  Inscricoes abertas para novas equipes
+                </div>
+                <button style={{
+                  background: 'rgba(37,99,235,0.12)',
+                  color: '#60A5FA',
+                  border: '1px solid rgba(37,99,235,0.2)',
+                  borderRadius: 6,
+                  padding: '4px 12px',
+                  fontSize: 10,
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit'
+                }}>
+                  Inscreva-se
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Acoes Rapidas */}
-        <div style={{ marginBottom: 28 }}>
+        <div>
           <div style={{ fontSize: 'clamp(11px, 2.5vw, 12px)', fontWeight: 800, color: '#94A3B8', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 14 }}>
             ACOES RAPIDAS
           </div>
 
           <div className="acoes-rapidas-grid">
-            <button className="quick-action-card quick-action-card-primary" onClick={() => onNavigate('jogadores')}>
-              <div className="quick-action-icon" style={{ background: 'rgba(255,255,255,0.16)' }}>
-                <IconAvaliar size={24} color="#fff" />
-              </div>
-              <div className="quick-action-text">Avaliar jogador</div>
-              <svg style={{ marginTop: 'auto' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-
-            <button className="quick-action-card" onClick={() => onNavigate('jogos')}>
-              <div className="quick-action-icon" style={{ background: 'rgba(249,115,22,0.1)' }}>
-                <IconBasquete size={24} color="#F97316" />
-              </div>
-              <div className="quick-action-text">Meus jogos</div>
-              <svg style={{ marginTop: 'auto' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-
-            <button className="quick-action-card" onClick={() => onNavigate('ranking')}>
-              <div className="quick-action-icon" style={{ background: 'rgba(37,99,235,0.1)' }}>
-                <IconRanking size={24} color="#2563EB" />
-              </div>
-              <div className="quick-action-text">Ver ranking</div>
-              <svg style={{ marginTop: 'auto' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-
-            <button className="quick-action-card" onClick={() => onNavigate('jogos', { aba: 'torneios' })}>
-              <div className="quick-action-icon" style={{ background: 'rgba(249,115,22,0.1)' }}>
-                <IconTrofeu size={24} color="#F97316" />
-              </div>
-              <div className="quick-action-text">Ver torneios</div>
-              <svg style={{ marginTop: 'auto' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Frase motivacional */}
-        <div style={{
-          background: 'linear-gradient(135deg, #111827 0%, rgba(37,99,235,0.08) 100%)',
-          border: '1px solid rgba(255,255,255,0.06)',
-          borderRadius: '20px',
-          padding: 'clamp(18px, 4vw, 24px)',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div style={{ position: 'relative', zIndex: 2 }}>
-            <div style={{ fontSize: 'clamp(16px, 4vw, 20px)', fontWeight: 700, color: '#FFFFFF', lineHeight: 1.4 }}>
-              <span style={{ color: '#94A3B8', fontSize: '1.5em', lineHeight: 0 }}>"</span>{' '}
-              Disciplina hoje, <span style={{ color: '#2563EB' }}>vitoria</span> amanha.{' '}
-              <span style={{ color: '#94A3B8', fontSize: '1.5em', lineHeight: 0 }}>"</span>
-            </div>
-            <div style={{ fontSize: 'clamp(11px, 2.5vw, 13px)', color: '#64748B', marginTop: 8 }}>
-              Mantenha o foco e siga evoluindo!
-            </div>
+            {[
+              { icon: <IconAvaliar size={24} color="#fff" />, label: 'Avaliar jogador', action: () => onNavigate('jogadores'), primary: true, iconBg: 'rgba(255,255,255,0.16)' },
+              { icon: <IconBasquete size={24} color="#F97316" />, label: 'Meus jogos', action: () => onNavigate('jogos'), primary: false, iconBg: 'rgba(249,115,22,0.1)' },
+              { icon: <IconRanking size={24} color="#2563EB" />, label: 'Ver ranking', action: () => onNavigate('ranking'), primary: false, iconBg: 'rgba(37,99,235,0.1)' },
+              { icon: <IconTrofeu size={24} color="#F97316" />, label: 'Ver torneios', action: () => onNavigate('jogos', { aba: 'torneios' }), primary: false, iconBg: 'rgba(249,115,22,0.1)' }
+            ].map((item) => (
+              <button
+                key={item.label}
+                onClick={item.action}
+                style={{
+                  background: item.primary ? 'linear-gradient(135deg, #2563EB 0%, #3B82F6 100%)' : '#111827',
+                  border: item.primary ? 'none' : '1px solid rgba(255,255,255,0.06)',
+                  borderRadius: '16px',
+                  padding: 'clamp(12px, 3vw, 16px)',
+                  color: '#FFFFFF',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  gap: 12,
+                  minHeight: 90,
+                  textAlign: 'left',
+                  boxShadow: item.primary ? '0 4px 16px rgba(37,99,235,0.3)' : '0 4px 16px rgba(0,0,0,0.2)',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  fontFamily: 'inherit'
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; }}
+                onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                  <div style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 14,
+                    background: item.iconBg,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    {item.icon}
+                  </div>
+                  <ChevronArrow />
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 700, lineHeight: 1.2 }}>
+                  {item.label}
+                </div>
+              </button>
+            ))}
           </div>
         </div>
 
