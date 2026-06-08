@@ -76,7 +76,7 @@ function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = fa
 function StarPicker({ value, onChange, disabled }) {
   const [hover, setHover] = useState(0);
   return (
-    <div style={{ display: 'flex', gap: 12, justifyContent: 'center', margin: '10px 0' }}>
+    <div style={{ display: 'flex', gap: 6, justifyContent: 'center', margin: '4px 0' }}>
       {[1, 2, 3, 4, 5].map(i => (
         <button
           key={i}
@@ -89,12 +89,12 @@ function StarPicker({ value, onChange, disabled }) {
             background: 'none',
             border: 'none',
             cursor: disabled ? 'default' : 'pointer',
-            padding: '6px',
+            padding: '2px',
             transition: 'transform 0.1s',
-            transform: (hover || value) >= i ? 'scale(1.22)' : 'scale(1)',
+            transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
           }}
         >
-          <svg width="36" height="36" viewBox="0 0 24 24" fill={(hover || value) >= i ? 'var(--accent-gold)' : 'none'} stroke={(hover || value) >= i ? 'var(--accent-gold)' : 'var(--text-muted)'} strokeWidth="2">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill={(hover || value) >= i ? 'var(--accent-gold)' : 'none'} stroke={(hover || value) >= i ? 'var(--accent-gold)' : 'var(--text-muted)'} strokeWidth="2">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
         </button>
@@ -489,27 +489,27 @@ export default function Jogadores({ profile }) {
               Dê uma nota de 1 a 5 estrelas para cada habilidade:
             </p>
 
-            <form onSubmit={handleSubmitVote} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <form onSubmit={handleSubmitVote} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {fundamentos.map((f, i) => {
                 const val = estrelasVoto[f.key] || 0;
                 return (
                   <div key={f.key} style={{
                     background: val > 0 ? 'rgba(37,99,235,0.08)' : 'var(--bg-secondary)',
-                    padding: '12px 14px', borderRadius: 12,
+                    padding: '8px 12px', borderRadius: 10,
                     border: val > 0 ? '1.5px solid rgba(37,99,235,0.3)' : '1px solid var(--border)',
                     transition: 'all 0.2s'
                   }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <span style={{
-                          width: 22, height: 22, borderRadius: 6,
+                          width: 18, height: 18, borderRadius: 5,
                           background: val > 0 ? '#2563EB' : 'var(--bg-tertiary)',
-                          color: '#fff', fontSize: 11, fontWeight: 700,
+                          color: '#fff', fontSize: 10, fontWeight: 700,
                           display: 'flex', alignItems: 'center', justifyContent: 'center'
                         }}>{i + 1}</span>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
                       </div>
-                      <span style={{ fontSize: 12, color: val > 0 ? '#2563EB' : '#F97316', fontWeight: 700, minWidth: 70, textAlign: 'right' }}>
+                      <span style={{ fontSize: 11, color: val > 0 ? '#2563EB' : '#F97316', fontWeight: 700 }}>
                         {val > 0 ? `★ ${val}.0` : labelsNota[val] || 'Nota'}
                       </span>
                     </div>
@@ -518,33 +518,30 @@ export default function Jogadores({ profile }) {
                 );
               })}
 
-              <div>
-                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
-                  Comentário (opcional)
-                </label>
-                <textarea
-                  rows="2"
+              <div style={{ marginTop: 2 }}>
+                <input
+                  type="text"
                   maxLength="200"
                   value={comentarioVoto}
                   onChange={e => setComentarioVoto(e.target.value)}
-                  placeholder="Ex: Excelente arremesso, bom coletivo..."
-                  style={{ resize: 'none' }}
+                  placeholder="Comentário (opcional)"
+                  style={{ width: '100%', boxSizing: 'border-box', padding: '8px 10px', fontSize: 12, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
                   disabled={enviandoVoto}
                 />
               </div>
 
               {votosStatus && (
-                <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-muted)' }}>
+                <div style={{ textAlign: 'center', fontSize: 10, color: 'var(--text-muted)' }}>
                   Avaliações hoje: <strong>{votosStatus.votos_hoje}/20</strong>
                 </div>
               )}
 
-              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setVotingPlayer(null)} disabled={enviandoVoto} style={{ flex: 1 }}>
+              <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setVotingPlayer(null)} disabled={enviandoVoto} style={{ flex: 1, padding: '10px 0' }}>
                   Cancelar
                 </button>
-                <button type="submit" className="btn btn-primary" disabled={enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])} style={{ flex: 2, background: '#2563EB' }}>
-                  {enviandoVoto ? <div className="spinner" /> : 'Salvar Avaliação'}
+                <button type="submit" className="btn btn-primary" disabled={enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])} style={{ flex: 2, background: '#2563EB', padding: '10px 0' }}>
+                  {enviandoVoto ? <div className="spinner" /> : 'Salvar'}
                 </button>
               </div>
             </form>
