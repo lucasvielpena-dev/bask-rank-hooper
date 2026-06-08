@@ -1484,10 +1484,10 @@ html {
   background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: clamp(14px, 3vw, 18px);
+  padding: 16px;
   position: relative;
   overflow: hidden;
-  min-height: 120px;
+  min-height: 130px;
 }
 .home-highlight-inner {
   position: relative;
@@ -1500,12 +1500,13 @@ html {
   margin-bottom: 10px;
 }
 .home-highlight-icon-box {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 .home-highlight-icon-box-blue {
   background: var(--accent-blue-dim);
@@ -1717,9 +1718,19 @@ html {
 }
 
 .destaques-row {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
   gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.destaques-row::-webkit-scrollbar { display: none; }
+.destaques-row > * {
+  scroll-snap-align: start;
+  flex: 0 0 75%;
+  min-width: 0;
 }
 
 .home-highlight-card {
@@ -1850,7 +1861,12 @@ html {
   }
 
   .destaques-row {
+    display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow-x: visible;
+  }
+  .destaques-row > * {
+    flex: unset;
   }
 
   .home-highlight-card {
