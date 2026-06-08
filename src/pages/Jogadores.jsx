@@ -118,9 +118,17 @@ export default function Jogadores({ profile }) {
   const [ranks, setRanks] = useState({});
   const [mvpPlayerIds, setMvpPlayerIds] = useState(new Set());
 
-  // Voto rápido modal
+  const fundamentos = [
+    { key: 'arremesso', label: 'Arremesso' },
+    { key: 'controle_de_bola', label: 'Controle de Bola' },
+    { key: 'defesa', label: 'Defesa' },
+    { key: 'visao_de_jogo', label: 'Visão de Jogo' },
+    { key: 'explosao_fisica', label: 'Explosão Física' }
+  ];
+
+  // Avaliação modal
   const [votingPlayer, setVotingPlayer] = useState(null);
-  const [notaVoto, setNotaVoto] = useState(0);
+  const [estrelasVoto, setEstrelasVoto] = useState({ arremesso: 0, controle_de_bola: 0, defesa: 0, visao_de_jogo: 0, explosao_fisica: 0 });
   const [comentarioVoto, setComentarioVoto] = useState('');
   const [enviandoVoto, setEnviandoVoto] = useState(false);
   const [votosStatus, setVotosStatus] = useState(null);
@@ -277,26 +285,22 @@ export default function Jogadores({ profile }) {
     }
 
     setVotingPlayer(player);
-    setNotaVoto(0);
+    setEstrelasVoto({ arremesso: 0, controle_de_bola: 0, defesa: 0, visao_de_jogo: 0, explosao_fisica: 0 });
     setComentarioVoto('');
   }
 
   async function handleSubmitVote(e) {
     e.preventDefault();
-    if (notaVoto < 1 || notaVoto > 5) {
-      showToast('Por favor, escolha uma nota de 1 a 5 estrelas.', 'error');
+    const faltando = fundamentos.some(f => !estrelasVoto[f.key]);
+    if (faltando) {
+      showToast('Selecione uma nota para todos os 5 fundamentos', 'error');
       return;
     }
 
     setEnviandoVoto(true);
     try {
-      // Executa a avaliação rápida atribuindo a mesma nota aos 5 fundamentos
       const { data, error } = await votacaoAPI.votar(votingPlayer.id, {
-        arremesso: notaVoto,
-        defesa: notaVoto,
-        controle_de_bola: notaVoto,
-        explosao_fisica: notaVoto,
-        visao_de_jogo: notaVoto,
+        ...estrelasVoto,
         comentario: comentarioVoto.trim() || null
       });
 
@@ -473,71 +477,74 @@ export default function Jogadores({ profile }) {
         )}
       </div>
 
-      {/* MODAL SHEET: AVALIAÇÃO RÁPIDA */}
+      {/* MODAL SHEET: AVALIAÇÃO COMPLETA */}
       {votingPlayer && (
         <div className="modal-overlay" onClick={() => { if (!enviandoVoto) setVotingPlayer(null); }}>
-          <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 400 }}>
+          <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 400, maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 900, fontSize: 20, marginBottom: 4, textAlign: 'center' }}>
-              Avaliar {votingPlayer.nome}
+            <h3 style={{ fontWeight: 900, fontSize: 18, marginBottom: 2, textAlign: 'center' }}>
+              Avaliar {votingPlayer.apelido || votingPlayer.nome}
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 16, textAlign: 'center' }}>
-              Selecione uma nota de 1 a 5 estrelas e adicione um comentário opcional.
+            <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 14, textAlign: 'center' }}>
+              Dê uma nota de 1 a 5 estrelas para cada habilidade:
             </p>
 
-            <form onSubmit={handleSubmitVote} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {/* Star Picker */}
-              <div style={{ background: 'var(--bg-secondary)', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border)', textAlign: 'center' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Qual sua nota? *</span>
-                  <span style={{ fontSize: 12, color: 'var(--accent-gold)', fontWeight: 700 }}>
-                    {labelsNota[notaVoto]}
-                  </span>
-                </div>
-                <StarPicker value={notaVoto} onChange={setNotaVoto} disabled={enviandoVoto} />
-              </div>
+            <form onSubmit={handleSubmitVote} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {fundamentos.map((f, i) => {
+                const val = estrelasVoto[f.key] || 0;
+                return (
+                  <div key={f.key} style={{
+                    background: val > 0 ? 'rgba(37,99,235,0.08)' : 'var(--bg-secondary)',
+                    padding: '12px 14px', borderRadius: 12,
+                    border: val > 0 ? '1.5px solid rgba(37,99,235,0.3)' : '1px solid var(--border)',
+                    transition: 'all 0.2s'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{
+                          width: 22, height: 22, borderRadius: 6,
+                          background: val > 0 ? '#2563EB' : 'var(--bg-tertiary)',
+                          color: '#fff', fontSize: 11, fontWeight: 700,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}>{i + 1}</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
+                      </div>
+                      <span style={{ fontSize: 12, color: val > 0 ? '#2563EB' : '#F97316', fontWeight: 700, minWidth: 70, textAlign: 'right' }}>
+                        {val > 0 ? `★ ${val}.0` : labelsNota[val] || 'Nota'}
+                      </span>
+                    </div>
+                    <StarPicker value={val} onChange={v => setEstrelasVoto(p => ({ ...p, [f.key]: v }))} disabled={enviandoVoto} />
+                  </div>
+                );
+              })}
 
-              {/* Comentário Opcional */}
               <div>
-                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
                   Comentário (opcional)
                 </label>
                 <textarea
-                  rows="3"
+                  rows="2"
                   maxLength="200"
                   value={comentarioVoto}
                   onChange={e => setComentarioVoto(e.target.value)}
-                  placeholder="Ex: Joga muito coletivo, excelente arremesso..."
+                  placeholder="Ex: Excelente arremesso, bom coletivo..."
                   style={{ resize: 'none' }}
                   disabled={enviandoVoto}
                 />
               </div>
 
-              {/* Status de Votos Diários */}
               {votosStatus && (
                 <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-muted)' }}>
-                  Você já avaliou <strong>{votosStatus.votos_hoje}/20</strong> jogadores hoje.
+                  Avaliações hoje: <strong>{votosStatus.votos_hoje}/20</strong>
                 </div>
               )}
 
-              {/* Botões do Modal */}
-              <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-                <button 
-                  type="button" 
-                  className="btn btn-secondary" 
-                  onClick={() => setVotingPlayer(null)} 
-                  disabled={enviandoVoto}
-                  style={{ flex: 1 }}
-                >
+              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setVotingPlayer(null)} disabled={enviandoVoto} style={{ flex: 1 }}>
                   Cancelar
                 </button>
-                <button 
-                  type="submit" 
-                  className="btn btn-primary" 
-                  disabled={enviandoVoto || notaVoto < 1}
-                  style={{ flex: 2 }}
-                >
-                  {enviandoVoto ? <div className="spinner" /> : 'Confirmar Enviar'}
+                <button type="submit" className="btn btn-primary" disabled={enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])} style={{ flex: 2, background: '#2563EB' }}>
+                  {enviandoVoto ? <div className="spinner" /> : 'Salvar Avaliação'}
                 </button>
               </div>
             </form>
