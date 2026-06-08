@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase, authAPI, profilesAPI, notificacoesAPI } from './lib/supabase';
 import './styles/global.css';
 import { IconMenu, IconSino, IconVoltar, IconClose, IconEditar, IconCamera, IconEnviar, IconCheck, IconLocalizacao } from './components/Icons';
@@ -96,6 +96,7 @@ export default function App() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [themePref, setThemePref] = useState('system');
   const [cityPrompt, setCityPrompt] = useState(null);
+  const playerCreationLock = useRef(false);
 
   // States de notificações
   const [notificacoes, setNotificacoes] = useState([]);
@@ -210,9 +211,10 @@ export default function App() {
 
   async function verificarEAutoCriarJogador(prof) {
     if (!prof.cadastro_completo) return;
+    if (playerCreationLock.current) return;
+    playerCreationLock.current = true;
 
     try {
-      // Se tem player_id, verificar se o jogador ainda existe
       if (prof.player_id) {
         const { data: existingJogador } = await supabase
           .from('jogadores')
@@ -220,16 +222,29 @@ export default function App() {
           .eq('id', prof.player_id)
           .maybeSingle();
 
-        if (existingJogador) return; // Jogador existe, tudo OK
+        if (existingJogador) return;
 
-        // Jogador não existe mais — limpar player_id e criar novo
         console.log('Jogador referenciado não existe mais. Recriando...');
         await profilesAPI.atualizar(prof.id, { player_id: null });
         prof.player_id = null;
       }
 
-      // Criar jogador se não tem player_id
       if (!prof.player_id) {
+        const { data: alreadyExists } = await supabase
+          .from('jogadores')
+          .select('id')
+          .eq('criado_por', prof.id)
+          .maybeSingle();
+
+        if (alreadyExists) {
+          const { data: updatedProfile } = await profilesAPI.atualizar(prof.id, {
+            player_id: alreadyExists.id,
+            is_player: true
+          });
+          if (updatedProfile) setProfile(updatedProfile);
+          return;
+        }
+
         console.log('Criando jogador para perfil...');
         const { data: newJogador, error: jogError } = await supabase
           .from('jogadores')
@@ -263,6 +278,8 @@ export default function App() {
       }
     } catch (err) {
       console.error('Erro na auto-correção do jogador:', err);
+    } finally {
+      playerCreationLock.current = false;
     }
   }
 
