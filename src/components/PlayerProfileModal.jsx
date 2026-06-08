@@ -58,7 +58,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
 
   // Avaliação Direta
   const [minhaId, setMinhaId] = useState(null);
-  const [showAvaliar, setShowAvaliar] = useState(true);
+  const [showAvaliar, setShowAvaliar] = useState(false);
   const [estrelas, setEstrelas] = useState({ arremesso: 0, defesa: 0, controle_de_bola: 0, explosao_fisica: 0, visao_de_jogo: 0 });
   const [enviandoAvaliacao, setEnviandoAvaliacao] = useState(false);
   const [jaAvaliou, setJaAvaliou] = useState(false);
