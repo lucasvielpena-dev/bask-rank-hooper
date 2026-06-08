@@ -12,7 +12,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ============================================================
 
 -- Perfis de usuários (extends auth.users do Supabase)
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   nome_completo TEXT NOT NULL,
   apelido TEXT,
@@ -919,35 +919,6 @@ CREATE INDEX IF NOT EXISTS idx_partida_jogadores_jogador_id ON public.partida_jo
 CREATE INDEX IF NOT EXISTS idx_votos_jogador_id ON public.votos(jogador_id);
 
 -- ============================================================
--- STORAGE BUCKETS & POLICIES (Avatars)
--- ============================================================
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('avatars', 'avatars', true)
-ON CONFLICT (id) DO NOTHING;
-
--- Garantir que RLS está habilitado para storage.objects
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
-
--- Permite leitura pública de avatares
-DROP POLICY IF EXISTS "Leitura publica de avatares" ON storage.objects;
-CREATE POLICY "Leitura publica de avatares" ON storage.objects
-  FOR SELECT USING (bucket_id = 'avatars');
-
--- Permite inserção de avatares por usuários autenticados
-DROP POLICY IF EXISTS "Insercao de avatares por autenticados" ON storage.objects;
-CREATE POLICY "Insercao de avatares por autenticados" ON storage.objects
-  FOR INSERT WITH CHECK (bucket_id = 'avatars' AND auth.role() = 'authenticated');
-
--- Permite atualização/deleção do próprio avatar
-DROP POLICY IF EXISTS "Atualizacao de avatares pelo dono" ON storage.objects;
-CREATE POLICY "Atualizacao de avatares pelo dono" ON storage.objects
-  FOR UPDATE USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
-
-DROP POLICY IF EXISTS "Delecao de avatares pelo dono" ON storage.objects;
-CREATE POLICY "Delecao de avatares pelo dono" ON storage.objects
-  FOR DELETE USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
-
--- ============================================================
 -- SISTEMA DE NOTIFICAÇÕES
 -- ============================================================
 
@@ -1026,4 +997,3 @@ BEGIN
     ALTER PUBLICATION supabase_realtime ADD TABLE public.notificacoes;
   END IF;
 END $$;
-
