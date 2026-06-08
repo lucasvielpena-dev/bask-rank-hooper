@@ -311,21 +311,40 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
           <div className="loading" style={{ padding: '40px 0' }}><div className="spinner" /> Carregando detalhes...</div>
         ) : showAvaliar ? (
           // Tela de Avaliação Direta
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <h4 style={{ fontWeight: 700, fontSize: 16 }}>Avaliar Atleta</h4>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 6 }}>
-              Dê uma nota de 1 a 5 estrelas para cada fundamento de <strong style={{ color: 'var(--text-primary)' }}>{localJogador.nome}</strong>:
-            </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div style={{ textAlign: 'center', marginBottom: 4 }}>
+              <h4 style={{ fontWeight: 800, fontSize: 18, color: 'var(--text-primary)' }}>Avaliar Atleta</h4>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
+                Notas de <strong style={{ color: 'var(--text-primary)' }}>{localJogador.apelido || localJogador.nome}</strong>
+              </p>
+            </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {fundamentos.map(f => {
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {fundamentos.map((f, i) => {
                 const val = estrelas[f.key] || 0;
                 return (
-                  <div key={f.key} style={{ background: 'var(--bg-secondary)', padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
-                      <span style={{ fontSize: 11, color: '#F97316', fontWeight: 600 }}>
-                        {labelsNota[val]}
+                  <div key={f.key} style={{ 
+                    background: val > 0 ? 'rgba(37,99,235,0.08)' : 'var(--bg-secondary)', 
+                    padding: '14px 16px', 
+                    borderRadius: 12, 
+                    border: val > 0 ? '1.5px solid rgba(37,99,235,0.3)' : '1px solid var(--border)',
+                    transition: 'all 0.2s'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ 
+                          width: 22, height: 22, borderRadius: 6, 
+                          background: val > 0 ? '#2563EB' : 'var(--bg-tertiary)', 
+                          color: '#fff', fontSize: 11, fontWeight: 700,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}>{i + 1}</span>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
+                      </div>
+                      <span style={{ 
+                        fontSize: 12, color: val > 0 ? '#2563EB' : '#F97316', 
+                        fontWeight: 700, minWidth: 70, textAlign: 'right'
+                      }}>
+                        {val > 0 ? `★ ${val}.0` : labelsNota[val] || 'Nota'}
                       </span>
                     </div>
                     <StarPicker
