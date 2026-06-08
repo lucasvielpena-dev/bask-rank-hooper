@@ -550,7 +550,7 @@ export default function Stats({ profile, onNavigate }) {
               {/* Registro Privado */}
               <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '12px', padding: '16px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#F97316', letterSpacing: '0.05em' }}>ESTATÍSTICAS PRIVADAS (JOGOS DA NOITE)</span>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#F97316', letterSpacing: '0.05em' }}>ESTATÍSTICAS PRIVADAS</span>
                   <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>{historicoPrivado.length} jogos</span>
                 </div>
                 <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: 16 }}>
