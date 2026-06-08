@@ -168,6 +168,51 @@ export default function Home({ profile, onNavigate }) {
           </div>
         </div>
 
+        {/* Card Destaques */}
+        <button
+          onClick={() => onNavigate('destaques')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 14,
+            background: 'linear-gradient(135deg, #111827 0%, rgba(37,99,235,0.08) 100%)',
+            border: '1px solid rgba(37,99,235,0.15)',
+            borderRadius: '16px',
+            padding: '16px',
+            marginBottom: 24,
+            cursor: 'pointer',
+            width: '100%',
+            textAlign: 'left',
+            fontFamily: 'inherit'
+          }}
+        >
+          <div style={{
+            width: 44,
+            height: 44,
+            borderRadius: 12,
+            background: 'var(--accent-blue-dim)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0
+          }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 }}>
+              Destaques da semana
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+              Veja o melhor de {city}
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round">
+            <path d="m9 18 6-6-6-6"/>
+          </svg>
+        </button>
+
         {/* Acoes Rapidas */}
         <div>
           <div className="home-section-label" style={{ marginBottom: 14 }}>

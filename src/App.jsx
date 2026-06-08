@@ -8,6 +8,7 @@ import Ranking from './pages/Ranking';
 import Jogadores from './pages/Jogadores';
 import Jogos from './pages/Jogos';
 import Stats from './pages/Stats';
+import Destaques from './pages/Destaques';
 
 import AuthScreen from './components/AuthScreen';
 import CompleteProfileScreen from './components/CompleteProfileScreen';
@@ -591,6 +592,7 @@ export default function App() {
       case 'torneios': return <Jogos profile={profile} initialAba="torneios" />;
       case 'jogos': return <Jogos profile={profile} initialAba={pageProps.aba || 'jogos'} />;
       case 'perfil': return <Stats profile={profile} onNavigate={navigate} />;
+      case 'destaques': return <Destaques profile={profile} onNavigate={navigate} />;
       default: return <Home profile={profile} onNavigate={navigate} />;
     }
   }
