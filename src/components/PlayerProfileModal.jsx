@@ -579,7 +579,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     { label: 'Posição', val: localJogador.posicao || 'Ala' },
                     { label: 'Equipe', val: localJogador.equipe || `${localJogador.cidade} Hoops` },
                   ].map(item => (
-                    <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 8, borderBottom: '1px solid rgba(255,255,255,0.03)', gap: 16 }}>
+                    <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 8, borderBottom: '1px solid var(--border)', gap: 16 }}>
                       <span style={{ color: 'var(--text-secondary)', flexShrink: 0, fontSize: '13px' }}>{item.label}</span>
                       <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '13px', textAlign: 'right', wordBreak: 'break-word' }}>{item.val}</span>
                     </div>
@@ -666,7 +666,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               display: 'flex', 
               gap: '10px', 
               padding: '12px 0 4px',
-              borderTop: '1px solid rgba(255,255,255,0.06)',
+              borderTop: '1px solid var(--border)',
               flexShrink: 0
             }}>
               <button 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
-import { IconCrescimento, IconTrofeu, IconCalendario, IconRanking, IconBasquete } from '../components/Icons';
+import { IconRanking, IconCalendario, IconBasquete } from '../components/Icons';
 
 function StatCard({ icon, label, value, color }) {
   return (

@@ -368,7 +368,7 @@ export default function Stats({ profile, onNavigate }) {
               style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0, opacity: 0.7 }}
             />
           ) : (
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #1A233D 0%, #0D1527 100%)', opacity: 0.5 }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-secondary) 100%)', opacity: 0.5 }} />
           )}
 
           <div style={{
@@ -377,12 +377,12 @@ export default function Stats({ profile, onNavigate }) {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'linear-gradient(to top, #111827 0%, rgba(17, 24, 39, 0) 100%)',
+            background: 'linear-gradient(to top, var(--bg-primary) 0%, rgba(17, 24, 39, 0) 100%)',
             zIndex: 1
           }} />
 
           <div style={{ zIndex: 2, padding: '16px', width: '100%' }}>
-            <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#F8FAFC', marginBottom: 2 }} >{profile.nome_completo}</h3>
+            <h3 style={{ fontSize: '20px', fontWeight: 900, color: 'var(--text-primary)', marginBottom: 2 }} >{profile.nome_completo}</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
               <span style={{
                 background: 'rgba(37, 99, 235, 0.2)',
@@ -487,8 +487,8 @@ export default function Stats({ profile, onNavigate }) {
                 padding: '8px 4px',
                 borderRadius: '6px',
                 border: 'none',
-                background: aba === t.key ? '#1A233D' : 'none',
-                color: aba === t.key ? '#F8FAFC' : '#64748B',
+                background: aba === t.key ? 'var(--bg-elevated)' : 'none',
+                color: aba === t.key ? 'var(--text-primary)' : 'var(--text-muted)',
                 fontSize: '11px',
                 fontWeight: 700,
                 cursor: 'pointer',

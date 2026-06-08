@@ -689,7 +689,7 @@ export default function App() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: '1.5px solid #080F1A'
+                border: '1.5px solid var(--bg-primary)'
               }}>
                 {notificacoes.filter(n => !n.lida).length}
               </span>
@@ -1094,8 +1094,8 @@ export default function App() {
                   <div 
                     key={n.id} 
                     style={{
-                      background: n.lida ? 'rgba(255,255,255,0.01)' : 'rgba(249, 115, 22, 0.04)',
-                      border: n.lida ? '1px solid rgba(255,255,255,0.03)' : '1px solid rgba(249, 115, 22, 0.15)',
+                      background: n.lida ? 'transparent' : 'rgba(249, 115, 22, 0.04)',
+                      border: n.lida ? '1px solid var(--border)' : '1px solid rgba(249, 115, 22, 0.15)',
                       borderRadius: '12px',
                       padding: '14px',
                       display: 'flex',

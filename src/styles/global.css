@@ -1694,6 +1694,26 @@ html {
   color: #6B7280;
 }
 
+/* Destaques page light overrides */
+.light-theme .destaques-back-btn {
+  color: var(--accent-blue);
+}
+.light-theme .destaques-stat-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+}
+.light-theme .destaques-ranking-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+}
+.light-theme .destaques-torneio-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+}
+.light-theme .destaques-cta-card {
+  box-shadow: 0 4px 16px rgba(37,99,235,0.15);
+}
+
 .home-container {
   width: 100%;
   max-width: 1120px;

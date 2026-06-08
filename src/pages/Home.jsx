@@ -175,7 +175,7 @@ export default function Home({ profile, onNavigate }) {
             display: 'flex',
             alignItems: 'center',
             gap: 14,
-            background: 'linear-gradient(135deg, #111827 0%, rgba(37,99,235,0.08) 100%)',
+            background: 'linear-gradient(135deg, var(--bg-card) 0%, rgba(37,99,235,0.08) 100%)',
             border: '1px solid rgba(37,99,235,0.15)',
             borderRadius: '16px',
             padding: '16px',
