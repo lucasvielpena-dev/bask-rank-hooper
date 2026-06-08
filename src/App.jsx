@@ -65,7 +65,7 @@ function NavIcon({ type, active }) {
 export default function App() {
   // Garantir a limpeza de cache do Service Worker na mudança de versão do app
   useEffect(() => {
-    const swVersion = 'v14';
+    const swVersion = 'v15';
     const currentVersion = localStorage.getItem('sw_version');
     if (currentVersion !== swVersion) {
       if ('serviceWorker' in navigator) {

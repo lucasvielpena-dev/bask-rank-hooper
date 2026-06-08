@@ -42,7 +42,11 @@ export default function Home({ profile, onNavigate }) {
           loadData(city, uf);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'CHANNEL_ERROR') {
+          console.warn('Realtime connection lost, will retry automatically');
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
