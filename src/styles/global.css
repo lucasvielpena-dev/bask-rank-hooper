@@ -1375,12 +1375,18 @@ html {
   align-items: center;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 16px;
   display: grid;
   gap: 14px;
   grid-template-columns: 48px 1fr;
   min-height: 82px;
   padding: 14px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.home-highlight-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
 
 .home-highlight-icon,
@@ -1429,23 +1435,34 @@ html {
 
 .quick-action-card {
   align-items: center;
-  background: var(--bg-elevated);
+  background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 16px;
   color: var(--text-primary);
   cursor: pointer;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
-  grid-template-columns: 48px 1fr;
-  min-height: 78px;
-  padding: 12px;
+  min-height: 90px;
+  padding: 14px;
   text-align: left;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.quick-action-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
 
 .quick-action-card-primary {
-  background: var(--accent-blue);
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
   border-color: transparent;
   color: #fff;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.3);
+}
+
+.quick-action-card-primary:hover {
+  box-shadow: 0 6px 24px rgba(37,99,235,0.45);
 }
 
 .quick-action-card-primary .quick-action-icon {
@@ -1456,7 +1473,7 @@ html {
 .quick-action-text {
   color: inherit;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.2;
 }
 
@@ -1516,10 +1533,8 @@ html {
   }
 
   .quick-action-card {
-    align-content: space-between;
-    grid-template-columns: 1fr;
-    min-height: 126px;
-    padding: 16px;
+    min-height: 140px;
+    padding: 18px;
   }
 
   /* Bottom nav layout for tablets and desktops */

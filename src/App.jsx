@@ -632,8 +632,10 @@ export default function App() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '12px 16px',
-        background: 'var(--bg-primary)',
+        padding: '14px 16px',
+        background: 'rgba(8,15,26,0.88)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
         borderBottom: '1px solid var(--border)'
       }}>
         {/* Hamburger Menu Icon */}
@@ -658,12 +660,12 @@ export default function App() {
           <div style={{
             fontFamily: "'Inter', sans-serif",
             fontWeight: 900,
-            fontSize: '15px',
-            letterSpacing: '0.08em',
+            fontSize: '17px',
+            letterSpacing: '0.1em',
             color: 'var(--text-primary)',
             textTransform: 'uppercase'
           }}>
-            RANKS <span style={{ color: '#60A5FA' }}>HOOPS</span>
+            RANKS <span style={{ color: '#2563EB' }}>HOOPS</span>
           </div>
         </div>
 
