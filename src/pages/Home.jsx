@@ -223,9 +223,7 @@ export default function Home({ profile, onNavigate }) {
                   <div className="home-highlight-title">Evolução semanal</div>
                 </div>
                 <div className="home-highlight-desc">
-                  Você subiu<br />
-                  <strong>3 posições</strong><br />
-                  esta semana
+                  Você subiu <strong>3 posições</strong> esta semana
                 </div>
                 <span className="home-highlight-tag">↑ +3 posições</span>
               </div>
@@ -266,8 +264,7 @@ export default function Home({ profile, onNavigate }) {
                   <div className="home-highlight-title">Torneio municipal</div>
                 </div>
                 <div className="home-highlight-desc">
-                  Inscrições abertas<br />
-                  para novas equipes
+                  Inscrições abertas para novas equipes
                 </div>
                 <button className="home-highlight-cta">Inscreva-se</button>
               </div>

@@ -1529,6 +1529,8 @@ html {
   color: var(--text-secondary);
   margin-bottom: 16px;
   line-height: 1.55;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 .home-highlight-desc strong {
   color: var(--text-primary);
