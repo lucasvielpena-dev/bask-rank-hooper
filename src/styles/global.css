@@ -1485,10 +1485,13 @@ html {
   background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-hover) 100%);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 18px;
+  padding: 20px;
   position: relative;
   overflow: hidden;
-  min-height: 150px;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .home-highlight-inner {
   position: relative;
@@ -1498,11 +1501,11 @@ html {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 .home-highlight-icon-box {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -1524,12 +1527,13 @@ html {
 .home-highlight-desc {
   font-size: 14px;
   color: var(--text-secondary);
-  margin-bottom: 12px;
-  line-height: 1.5;
+  margin-bottom: 16px;
+  line-height: 1.55;
 }
 .home-highlight-desc strong {
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 800;
+  font-size: 16px;
 }
 .home-highlight-tag {
   display: inline-flex;
@@ -1538,7 +1542,7 @@ html {
   color: var(--accent-blue);
   border: 1px solid rgba(37,99,235,0.15);
   border-radius: 8px;
-  padding: 6px 14px;
+  padding: 5px 12px;
   font-size: 12px;
   font-weight: 700;
 }
@@ -1646,6 +1650,13 @@ html {
 .light-theme .home-highlight-card {
   background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%);
   border: 1px solid #E5E7EB;
+}
+.light-theme .home-highlight-desc strong {
+  color: #111827;
+}
+.light-theme .home-highlight-tag {
+  background: rgba(37,99,235,0.06);
+  border-color: rgba(37,99,235,0.1);
 }
 .light-theme .home-quick-action {
   background: #FFFFFF;

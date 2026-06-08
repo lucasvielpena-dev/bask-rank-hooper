@@ -25,16 +25,16 @@ function BasketballHoopSVG() {
 
 function HighlightChartSVG() {
   return (
-    <svg viewBox="0 0 120 80" fill="none" style={{ position: 'absolute', right: 10, bottom: 10, width: 100, opacity: 0.25, pointerEvents: 'none' }}>
-      <polyline points="10,65 30,50 50,55 70,30 90,35 110,15" fill="none" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" />
-      <circle cx="110" cy="15" r="3" fill="#2563EB" />
+    <svg viewBox="0 0 140 90" fill="none" style={{ position: 'absolute', right: 12, bottom: 12, width: 'clamp(80px, 25vw, 120px)', opacity: 0.3, pointerEvents: 'none', zIndex: 1 }}>
+      <polyline points="10,70 30,55 50,60 70,35 90,40 110,20 130,25" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="130" cy="25" r="3" fill="#2563EB" />
     </svg>
   );
 }
 
 function HighlightTrophySVG() {
   return (
-    <svg viewBox="0 0 100 100" fill="none" style={{ position: 'absolute', right: 10, bottom: 5, width: 80, opacity: 0.12, pointerEvents: 'none' }}>
+    <svg viewBox="0 0 100 100" fill="none" style={{ position: 'absolute', right: 12, bottom: 8, width: 'clamp(60px, 18vw, 80px)', opacity: 0.15, pointerEvents: 'none', zIndex: 1 }}>
       <path d="M35 25h30v25a15 15 0 0 1-30 0V25z" stroke="#F97316" strokeWidth="2" fill="none" />
       <path d="M35 30H25a10 10 0 0 0 0 10h10" stroke="#F97316" strokeWidth="1.5" fill="none" />
       <path d="M65 30h10a10 10 0 0 1 0 10H65" stroke="#F97316" strokeWidth="1.5" fill="none" />
@@ -46,7 +46,7 @@ function HighlightTrophySVG() {
 
 function HighlightCalendarSVG() {
   return (
-    <svg viewBox="0 0 100 100" fill="none" style={{ position: 'absolute', right: 10, bottom: 5, width: 75, opacity: 0.12, pointerEvents: 'none' }}>
+    <svg viewBox="0 0 100 100" fill="none" style={{ position: 'absolute', right: 12, bottom: 8, width: 'clamp(60px, 18vw, 80px)', opacity: 0.15, pointerEvents: 'none', zIndex: 1 }}>
       <rect x="15" y="20" width="70" height="60" rx="8" stroke="#2563EB" strokeWidth="2" fill="none" />
       <line x1="15" y1="40" x2="85" y2="40" stroke="#2563EB" strokeWidth="1.5" />
       <line x1="30" y1="15" x2="30" y2="30" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
@@ -147,8 +147,8 @@ export default function Home({ profile, onNavigate }) {
 
   const statsData = [
     { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, value: stats.jogadores, label: 'Jogadores', color: 'blue' },
-    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>, value: stats.mediaGeral.toFixed(1), label: 'Media geral', color: 'gold' },
-    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>, value: stats.avaliacoes, label: 'Avaliacoes', color: 'blue' },
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>, value: stats.mediaGeral.toFixed(1), label: 'Média geral', color: 'gold' },
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>, value: stats.avaliacoes, label: 'Avaliações', color: 'blue' },
     { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>, value: stats.torneios, label: 'Torneios', color: 'gold' }
   ];
 
@@ -162,7 +162,7 @@ export default function Home({ profile, onNavigate }) {
             {getGreeting()}, <span className="home-greeting-name">{greetingName}</span> {'\u{1F44B}'}
           </div>
           <div className="home-greeting-sub">
-            Voce esta entre os melhores jogadores de {city}.
+            Você está entre os melhores jogadores de {city}.
           </div>
         </div>
 
@@ -173,7 +173,7 @@ export default function Home({ profile, onNavigate }) {
           <div className="home-position-card">
             <BasketballHoopSVG />
             <div style={{ position: 'relative', zIndex: 2 }}>
-              <div className="home-position-label">SUA POSICAO</div>
+              <div className="home-position-label">SUA POSIÇÃO</div>
               <div className="home-position-number">{myRank}</div>
               <div className="home-position-city">Ranking de {city} - {uf}</div>
               <span className="home-badge">
@@ -188,7 +188,7 @@ export default function Home({ profile, onNavigate }) {
           {/* Card Estatisticas */}
           <div className="home-stats-card">
             <div className="home-stats-header">
-              <div className="home-section-label">ESTATISTICAS GERAIS</div>
+              <div className="home-section-label">ESTATÍSTICAS GERAIS</div>
               <button className="home-section-link">Ver todas</button>
             </div>
             <div className="home-stats-grid">
@@ -213,26 +213,27 @@ export default function Home({ profile, onNavigate }) {
           </div>
 
           <div className="destaques-row">
-            {/* Evolucao semanal */}
+            {/* Evolução semanal */}
             <div className="home-highlight-card">
-              <HighlightChartSVG />
               <div className="home-highlight-inner">
                 <div className="home-highlight-header">
                   <div className="home-highlight-icon-box home-highlight-icon-box-blue">
                     <IconCrescimento size={20} color="#2563EB" />
                   </div>
-                  <div className="home-highlight-title">Evolucao semanal</div>
+                  <div className="home-highlight-title">Evolução semanal</div>
                 </div>
                 <div className="home-highlight-desc">
-                  Voce subiu <strong>3 posicoes</strong> esta semana
+                  Você subiu<br />
+                  <strong>3 posições</strong><br />
+                  esta semana
                 </div>
-                <span className="home-highlight-tag">+3 posicoes</span>
+                <span className="home-highlight-tag">↑ +3 posições</span>
               </div>
+              <HighlightChartSVG />
             </div>
 
             {/* MVP da semana */}
             <div className="home-highlight-card">
-              <HighlightTrophySVG />
               <div className="home-highlight-inner">
                 <div className="home-highlight-header">
                   <div className="home-highlight-icon-box home-highlight-icon-box-gold">
@@ -241,7 +242,7 @@ export default function Home({ profile, onNavigate }) {
                   <div className="home-highlight-title">MVP da semana</div>
                 </div>
                 <div className="home-highlight-player">
-                  {lider ? `${lider.nome.split(' ')[0]} ${lider.nome.split(' ')[1] || ''}`.trim() : 'Lara Fabia'}
+                  {lider ? `${lider.nome.split(' ')[0]} ${lider.nome.split(' ')[1] || ''}`.trim() : 'Lara Fábia'}
                 </div>
                 <div className="home-highlight-rating">
                   {(lider?.media_estrelas || 5.0).toFixed(1)} estrelas
@@ -252,11 +253,11 @@ export default function Home({ profile, onNavigate }) {
                   ))}
                 </div>
               </div>
+              <HighlightTrophySVG />
             </div>
 
             {/* Torneio municipal */}
             <div className="home-highlight-card">
-              <HighlightCalendarSVG />
               <div className="home-highlight-inner">
                 <div className="home-highlight-header">
                   <div className="home-highlight-icon-box home-highlight-icon-box-blue">
@@ -265,10 +266,12 @@ export default function Home({ profile, onNavigate }) {
                   <div className="home-highlight-title">Torneio municipal</div>
                 </div>
                 <div className="home-highlight-desc">
-                  Inscricoes abertas para novas equipes
+                  Inscrições abertas<br />
+                  para novas equipes
                 </div>
                 <button className="home-highlight-cta">Inscreva-se</button>
               </div>
+              <HighlightCalendarSVG />
             </div>
           </div>
         </div>
@@ -276,7 +279,7 @@ export default function Home({ profile, onNavigate }) {
         {/* Acoes Rapidas */}
         <div>
           <div className="home-section-label" style={{ marginBottom: 14 }}>
-            ACOES RAPIDAS
+            AÇÕES RÁPIDAS
           </div>
 
           <div className="acoes-rapidas-grid">
