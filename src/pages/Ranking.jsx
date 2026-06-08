@@ -222,30 +222,31 @@ export default function Ranking({ profile }) {
                     {/* Rank Circle */}
                     {isFirst ? (
                       <div style={{
-                        width: '32px',
-                        height: '32px',
+                        width: '28px',
+                        height: '28px',
                         borderRadius: '50%',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         background: 'linear-gradient(135deg, #F97316 0%, #EAB308 100%)',
                         color: '#fff',
-                        fontSize: '13px',
+                        fontSize: '12px',
                         fontWeight: 900,
                         boxShadow: '0 2px 8px rgba(249,115,22,0.4)',
-                        position: 'relative'
+                        position: 'relative',
+                        flexShrink: 0
                       }}>
-                        {/* Crown SVG above rank circle */}
+                        {/* Small crown above rank circle */}
                         <svg 
                           viewBox="0 0 24 24" 
                           fill="#EAB308" 
                           style={{
                             position: 'absolute',
-                            top: '-12px',
+                            top: '-10px',
                             left: '50%',
                             transform: 'translateX(-50%)',
-                            width: '18px',
-                            height: '18px',
+                            width: '14px',
+                            height: '14px',
                             filter: 'drop-shadow(0 1px 2px rgba(234,179,8,0.5))'
                           }}
                         >
@@ -263,6 +264,7 @@ export default function Ranking({ profile }) {
                         justifyContent: 'center',
                         fontSize: '11px',
                         fontWeight: 800,
+                        flexShrink: 0,
                         ...getRankBadgeStyle(index)
                       }}>
                         {index + 1}
@@ -273,15 +275,15 @@ export default function Ranking({ profile }) {
                     <PlayerAvatar 
                       fotoUrl={jogador.foto_url} 
                       nome={jogador.nome} 
-                      size={isFirst ? 50 : 40}
-                      border={isFirst ? '2px solid rgba(249,115,22,0.6)' : 'none'}
+                      size={isFirst ? 60 : 40}
+                      border={isFirst ? '3px solid rgba(249,115,22,0.6)' : 'none'}
                     />
 
                     {/* Detalhes */}
                     <div>
                       <div style={{
-                        fontSize: isFirst ? '15px' : '14px',
-                        fontWeight: isFirst ? 800 : 700,
+                        fontSize: isFirst ? '17px' : '14px',
+                        fontWeight: isFirst ? 900 : 700,
                         color: isFirst ? 'var(--podium-first-name)' : 'var(--text-primary)',
                         display: 'flex',
                         alignItems: 'center',
@@ -290,7 +292,7 @@ export default function Ranking({ profile }) {
                         {jogador.nome}
                       </div>
                       <div style={{ 
-                        fontSize: '11px', 
+                        fontSize: isFirst ? '12px' : '11px', 
                         color: isFirst ? 'var(--podium-first-sub)' : 'var(--text-secondary)', 
                         marginTop: 2,
                         fontWeight: isFirst ? 600 : 400
@@ -310,20 +312,20 @@ export default function Ranking({ profile }) {
                       gap: 3,
                       ...(isFirst ? {
                         background: 'var(--podium-first-star-bg)',
-                        padding: '4px 10px',
+                        padding: '5px 12px',
                         borderRadius: '20px',
                         border: '1px solid var(--podium-first-star-border)'
                       } : {})
                     }}>
                       <span style={{ 
-                        fontSize: isFirst ? '17px' : '15px', 
+                        fontSize: isFirst ? '18px' : '15px', 
                         fontWeight: 900, 
                         color: isFirst ? 'var(--podium-first-star-color)' : '#F97316', 
                         fontFamily: 'monospace' 
                       }}>
                         {Number(getMetricValue(jogador)).toFixed(1)}
                       </span>
-                      <span style={{ color: isFirst ? 'var(--podium-first-star-color)' : '#F97316', fontSize: isFirst ? '14px' : '12px' }}>★</span>
+                      <span style={{ color: isFirst ? 'var(--podium-first-star-color)' : '#F97316', fontSize: isFirst ? '15px' : '12px' }}>★</span>
                     </div>
                   </div>
 
