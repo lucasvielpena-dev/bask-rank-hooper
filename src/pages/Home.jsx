@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, jogadoresAPI, rankingAPI } from '../lib/supabase';
-import { IconCrescimento, IconTrofeu, IconCalendario, IconAvaliar, IconBasquete, IconRanking } from '../components/Icons';
+import { IconTrofeu, IconAvaliar, IconBasquete, IconRanking } from '../components/Icons';
 
 function BasketballHoopSVG() {
   return (
@@ -23,41 +23,6 @@ function BasketballHoopSVG() {
   );
 }
 
-function HighlightChartSVG() {
-  return (
-    <svg viewBox="0 0 140 90" fill="none" style={{ position: 'absolute', right: 12, bottom: 12, width: 'clamp(80px, 25vw, 120px)', opacity: 0.3, pointerEvents: 'none', zIndex: 1 }}>
-      <polyline points="10,70 30,55 50,60 70,35 90,40 110,20 130,25" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="130" cy="25" r="3" fill="#2563EB" />
-    </svg>
-  );
-}
-
-function HighlightTrophySVG() {
-  return (
-    <svg viewBox="0 0 100 100" fill="none" style={{ position: 'absolute', right: 12, bottom: 8, width: 'clamp(60px, 18vw, 80px)', opacity: 0.15, pointerEvents: 'none', zIndex: 1 }}>
-      <path d="M35 25h30v25a15 15 0 0 1-30 0V25z" stroke="#F97316" strokeWidth="2" fill="none" />
-      <path d="M35 30H25a10 10 0 0 0 0 10h10" stroke="#F97316" strokeWidth="1.5" fill="none" />
-      <path d="M65 30h10a10 10 0 0 1 0 10H65" stroke="#F97316" strokeWidth="1.5" fill="none" />
-      <line x1="50" y1="55" x2="50" y2="70" stroke="#F97316" strokeWidth="2" />
-      <rect x="38" y="70" width="24" height="4" rx="2" fill="#F97316" opacity="0.5" />
-    </svg>
-  );
-}
-
-function HighlightCalendarSVG() {
-  return (
-    <svg viewBox="0 0 100 100" fill="none" style={{ position: 'absolute', right: 12, bottom: 8, width: 'clamp(60px, 18vw, 80px)', opacity: 0.15, pointerEvents: 'none', zIndex: 1 }}>
-      <rect x="15" y="20" width="70" height="60" rx="8" stroke="#2563EB" strokeWidth="2" fill="none" />
-      <line x1="15" y1="40" x2="85" y2="40" stroke="#2563EB" strokeWidth="1.5" />
-      <line x1="30" y1="15" x2="30" y2="30" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
-      <line x1="70" y1="15" x2="70" y2="30" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="38" cy="55" r="3" fill="#2563EB" opacity="0.5" />
-      <circle cx="50" cy="55" r="3" fill="#2563EB" opacity="0.5" />
-      <circle cx="62" cy="55" r="3" fill="#2563EB" opacity="0.5" />
-    </svg>
-  );
-}
-
 const ChevronArrow = () => (
   <svg className="home-quick-action-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
     <path d="m9 18 6-6-6-6"/>
@@ -68,7 +33,6 @@ export default function Home({ profile, onNavigate }) {
   const [stats, setStats] = useState({ jogadores: 0, torneios: 0, avaliacoes: 0, mediaGeral: 0.0 });
   const [myPlayerInfo, setMyPlayerInfo] = useState(null);
   const [myRank, setMyRank] = useState('--');
-  const [lider, setLider] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
@@ -102,7 +66,6 @@ export default function Home({ profile, onNavigate }) {
       const generalAvg = total > 0 ? (averageStarsSum / total) : 4.8;
 
       setStats({ jogadores: total, torneios: tCount || 0, avaliacoes: totalVotes, mediaGeral: generalAvg });
-      setLider(ranking?.length > 0 ? ranking[0] : null);
 
       if (profile?.player_id) {
         const { data: pInfo } = await supabase.from('jogadores').select('*').eq('id', profile.player_id).maybeSingle();
@@ -201,74 +164,6 @@ export default function Home({ profile, onNavigate }) {
                   <div className="home-stat-label">{item.label}</div>
                 </div>
               ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Destaques */}
-        <div style={{ marginBottom: 24 }}>
-          <div className="home-section-header-dark">
-            <div className="home-section-label">DESTAQUES</div>
-            <button className="home-section-link">Ver tudo</button>
-          </div>
-
-          <div className="destaques-row">
-            {/* Evolução semanal */}
-            <div className="home-highlight-card">
-              <div className="home-highlight-inner">
-                <div className="home-highlight-header">
-                  <div className="home-highlight-icon-box home-highlight-icon-box-blue">
-                    <IconCrescimento size={20} color="#2563EB" />
-                  </div>
-                  <div className="home-highlight-title">Evolução semanal</div>
-                </div>
-                <div className="home-highlight-desc">
-                  Você subiu <strong>3 posições</strong> esta semana
-                </div>
-                <span className="home-highlight-tag">↑ +3 posições</span>
-              </div>
-              <HighlightChartSVG />
-            </div>
-
-            {/* MVP da semana */}
-            <div className="home-highlight-card">
-              <div className="home-highlight-inner">
-                <div className="home-highlight-header">
-                  <div className="home-highlight-icon-box home-highlight-icon-box-gold">
-                    <IconTrofeu size={20} color="#F97316" />
-                  </div>
-                  <div className="home-highlight-title">MVP da semana</div>
-                </div>
-                <div className="home-highlight-player">
-                  {lider ? `${lider.nome.split(' ')[0]} ${lider.nome.split(' ')[1] || ''}`.trim() : 'Lara Fábia'}
-                </div>
-                <div className="home-highlight-rating">
-                  {(lider?.media_estrelas || 5.0).toFixed(1)} estrelas
-                </div>
-                <div className="home-highlight-stars">
-                  {[1,2,3,4,5].map(s => (
-                    <span key={s} className={`home-highlight-star ${s <= Math.round(lider?.media_estrelas || 5) ? 'home-highlight-star-filled' : 'home-highlight-star-empty'}`}>{'\u2605'}</span>
-                  ))}
-                </div>
-              </div>
-              <HighlightTrophySVG />
-            </div>
-
-            {/* Torneio municipal */}
-            <div className="home-highlight-card">
-              <div className="home-highlight-inner">
-                <div className="home-highlight-header">
-                  <div className="home-highlight-icon-box home-highlight-icon-box-blue">
-                    <IconCalendario size={20} color="#2563EB" />
-                  </div>
-                  <div className="home-highlight-title">Torneio municipal</div>
-                </div>
-                <div className="home-highlight-desc">
-                  Inscrições abertas para novas equipes
-                </div>
-                <button className="home-highlight-cta">Inscreva-se</button>
-              </div>
-              <HighlightCalendarSVG />
             </div>
           </div>
         </div>
