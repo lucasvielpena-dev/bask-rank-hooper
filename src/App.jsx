@@ -633,7 +633,7 @@ export default function App() {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '12px 16px',
-        background: 'rgba(5, 11, 24, 0.88)',
+        background: 'var(--bg-primary)',
         borderBottom: '1px solid var(--border)'
       }}>
         {/* Hamburger Menu Icon */}
@@ -650,20 +650,20 @@ export default function App() {
             justifyContent: 'center'
           }}
         >
-          <IconMenu size={24} color="var(--text-primary)" />
+          <IconMenu size={22} color="var(--text-primary)" />
         </button>
 
         {/* Brand Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <div style={{
-            fontFamily: "'Poppins', sans-serif",
-            fontWeight: 800,
-            fontSize: '20px',
-            letterSpacing: '2px',
-            color: '#FFFFFF',
+            fontFamily: "'Inter', sans-serif",
+            fontWeight: 900,
+            fontSize: '15px',
+            letterSpacing: '0.08em',
+            color: 'var(--text-primary)',
             textTransform: 'uppercase'
           }}>
-            RANKS <span style={{ color: '#2F6BFF' }}>HOOPS</span>
+            RANKS <span style={{ color: '#60A5FA' }}>HOOPS</span>
           </div>
         </div>
 
