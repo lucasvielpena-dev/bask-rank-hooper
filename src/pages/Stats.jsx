@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
 
 const fundamentos = [
@@ -21,8 +21,6 @@ export default function Stats({ profile, onNavigate }) {
   const [toast, setToast] = useState(null);
 
   // States de estatísticas calculadas privadas
-  // eslint-disable-next-line no-unused-vars
-  const [totaisPrivados, setTotaisPrivados] = useState(null);
   const [mediasPrivadas, setMediasPrivadas] = useState(null);
 
   // States do jogador público
@@ -92,8 +90,6 @@ export default function Stats({ profile, onNavigate }) {
           arremessos_tentados: 0, arremessos_convertidos: 0,
           lf_tentados: 0, lf_convertidos: 0, dois_tentados: 0, dois_convertidos: 0, tres_tentados: 0, tres_convertidos: 0
         });
-        setTotaisPrivados(t);
-
         const qtd = hist.length;
         const m = {
           pontos: (t.pontos / qtd).toFixed(1),
@@ -112,7 +108,6 @@ export default function Stats({ profile, onNavigate }) {
         };
         setMediasPrivadas(m);
       } else {
-        setTotaisPrivados(null);
         setMediasPrivadas(null);
       }
 
@@ -307,12 +302,16 @@ export default function Stats({ profile, onNavigate }) {
   }
 
   // Cálculos de médias oficiais/carreira
-  const totalGamesNum = careerStats.games || 0;
-  const ppj = totalGamesNum > 0 ? (careerStats.points / totalGamesNum).toFixed(1) : '0.0';
-  const reb = totalGamesNum > 0 ? (careerStats.rebounds / totalGamesNum).toFixed(1) : '0.0';
-  const ast = totalGamesNum > 0 ? (careerStats.assists / totalGamesNum).toFixed(1) : '0.0';
-  const stl = totalGamesNum > 0 ? (careerStats.steals / totalGamesNum).toFixed(1) : '0.0';
-  const blk = totalGamesNum > 0 ? (careerStats.blocks / totalGamesNum).toFixed(1) : '0.0';
+  const { ppj, reb, ast, stl, blk } = useMemo(() => {
+    const totalGamesNum = careerStats.games || 0;
+    return {
+      ppj: totalGamesNum > 0 ? (careerStats.points / totalGamesNum).toFixed(1) : '0.0',
+      reb: totalGamesNum > 0 ? (careerStats.rebounds / totalGamesNum).toFixed(1) : '0.0',
+      ast: totalGamesNum > 0 ? (careerStats.assists / totalGamesNum).toFixed(1) : '0.0',
+      stl: totalGamesNum > 0 ? (careerStats.steals / totalGamesNum).toFixed(1) : '0.0',
+      blk: totalGamesNum > 0 ? (careerStats.blocks / totalGamesNum).toFixed(1) : '0.0',
+    };
+  }, [careerStats]);
 
   const starsVal = myPlayerInfo?.media_estrelas || 0;
   const badgeText = starsVal >= 4.5 ? 'ELITE' : starsVal >= 4.0 ? 'DESTAQUE' : starsVal >= 3.5 ? 'PROMESSA' : 'EM DEV.';

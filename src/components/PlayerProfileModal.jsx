@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { supabase, denunciasAPI, votacaoAPI } from '../lib/supabase';
 
 const fundamentos = [
@@ -11,7 +11,7 @@ const fundamentos = [
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
 
-function StarPicker({ value, onChange, disabled }) {
+const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
   const [hover, setHover] = useState(0);
   return (
     <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
@@ -39,7 +39,7 @@ function StarPicker({ value, onChange, disabled }) {
       ))}
     </div>
   );
-}
+});
 
 export default function PlayerProfileModal({ jogador, rank, onClose }) {
   const [localJogador, setLocalJogador] = useState(jogador);

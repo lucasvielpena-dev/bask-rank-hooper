@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { IconJogador, IconBuscar } from '../components/Icons';
@@ -73,7 +73,7 @@ function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = fa
   );
 }
 
-function StarPicker({ value, onChange, disabled }) {
+const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
   const [hover, setHover] = useState(0);
   return (
     <div style={{ display: 'flex', gap: 6, justifyContent: 'center', margin: '4px 0' }}>
@@ -101,7 +101,7 @@ function StarPicker({ value, onChange, disabled }) {
       ))}
     </div>
   );
-}
+});
 
 export default function Jogadores({ profile }) {
   const [jogadores, setJogadores] = useState([]);

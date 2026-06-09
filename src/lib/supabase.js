@@ -31,30 +31,6 @@ export const jogadoresAPI = {
     return { data, error };
   },
 
-  buscar: async (termo) => {
-    const { data, error } = await supabase
-      .from('jogadores')
-      .select('*')
-      .eq('ativo', true)
-      .or(`nome.ilike.%${termo}%,apelido.ilike.%${termo}%`);
-    return { data, error };
-  },
-
-  adicionar: async (jogador, profile) => {
-    const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
-    const uf = profile?.uf || 'PA';
-    const { data, error } = await supabase
-      .from('jogadores')
-      .insert([{
-        ...jogador,
-        cidade: city,
-        uf: uf,
-        criado_por: (await supabase.auth.getUser()).data.user?.id
-      }])
-      .select()
-      .single();
-    return { data, error };
-  },
 };
 
 export const rankingAPI = {
@@ -63,15 +39,6 @@ export const rankingAPI = {
       p_cidade: cidade || null,
       p_uf: uf || null,
       p_limit: limit
-    });
-    return { data, error };
-  },
-
-  getPodio: async (cidade, uf) => {
-    const { data, error } = await supabase.rpc('get_ranking', {
-      p_cidade: cidade || null,
-      p_uf: uf || null,
-      p_limit: 3
     });
     return { data, error };
   },
@@ -87,11 +54,6 @@ export const rankingAPI = {
 };
 
 export const votacaoAPI = {
-  sortearJogadores: async () => {
-    const { data, error } = await supabase.rpc('sortear_jogadores_para_voto');
-    return { data, error };
-  },
-
   votar: async (jogadorId, avaliacao, metadata = {}) => {
     const { data, error } = await supabase.rpc('registrar_avaliacao', {
       p_jogador_id: jogadorId,
@@ -144,26 +106,6 @@ export const jogosAPI = {
   },
 };
 
-export const statsAPI = {
-  getMinhas: async (jogadorId) => {
-    const { data, error } = await supabase
-      .from('estatisticas_partida')
-      .select('*, jogos(data, titulo)')
-      .eq('jogador_id', jogadorId)
-      .order('created_at', { ascending: false });
-    return { data, error };
-  },
-
-  registrar: async (stats) => {
-    const { data, error } = await supabase
-      .from('estatisticas_partida')
-      .insert([stats])
-      .select()
-      .single();
-    return { data, error };
-  },
-};
-
 export const estatisticasPessoaisAPI = {
   obterMinhas: async () => {
     const user = (await supabase.auth.getUser()).data.user;
@@ -199,17 +141,6 @@ export const estatisticasPessoaisAPI = {
   }
 };
 
-export const campoesAPI = {
-  historico: async () => {
-    const { data, error } = await supabase
-      .from('campeoes_semana')
-      .select('*')
-      .order('semana_fim', { ascending: false })
-      .limit(10);
-    return { data, error };
-  },
-};
-
 export const authAPI = {
   login: async (email, senha) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha });
@@ -243,11 +174,6 @@ export const authAPI = {
     return { error };
   },
 
-  getUser: async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    return user;
-  },
-
   recuperarSenha: async (email) => {
     const redirectUrl = window.location.origin.endsWith('/') 
       ? window.location.origin 
@@ -276,16 +202,6 @@ export const profilesAPI = {
       .eq('id', id)
       .select()
       .single();
-    return { data, error };
-  },
-
-  listarPorCidade: async (cidade) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('cidade_atual', cidade)
-      .eq('cadastro_completo', true)
-      .order('nome_completo');
     return { data, error };
   },
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { partidasAPI, jogadoresAPI } from '../lib/supabase';
 import Torneios from './Torneios';
-import { IconJogo, IconVoltar, IconPlay, IconPause, IconReset, IconMais, IconMenos, IconRelogio, IconPlacar, IconTrofeu, IconCheck, IconCalendario } from '../components/Icons';
+import { IconJogo, IconMais, IconCalendario } from '../components/Icons';
 
 export default function Jogos({ profile, initialAba = 'jogos' }) {
   const [tela, setTela] = useState('lista'); // 'lista' | 'novo' | 'partida'

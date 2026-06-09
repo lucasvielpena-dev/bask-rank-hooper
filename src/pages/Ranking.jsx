@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 
-function PlayerAvatar({ fotoUrl, nome, size = 40, border = 'none' }) {
+const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 40, border = 'none' }) {
   const initial = nome ? nome.charAt(0).toUpperCase() : '?';
   
   const getGradientForName = (name) => {
@@ -57,8 +57,7 @@ function PlayerAvatar({ fotoUrl, nome, size = 40, border = 'none' }) {
       </div>
     </div>
   );
-}
-
+});
 
 export default function Ranking({ profile }) {
   const [ranking, setRanking] = useState([]);
@@ -103,7 +102,7 @@ export default function Ranking({ profile }) {
   }
 
   // Ordenação dinâmica com base na categoria
-  const getSortedRanking = () => {
+  const sortedRanking = useMemo(() => {
     const sorted = [...ranking];
     if (categoria === 'pontos') {
       return sorted.sort((a, b) => (b.media_arremesso || 0) - (a.media_arremesso || 0));
@@ -118,9 +117,7 @@ export default function Ranking({ profile }) {
       return sorted.sort((a, b) => (b.media_defesa || 0) - (a.media_defesa || 0));
     }
     return sorted; // Geral (já vem ordenado por media_estrelas)
-  };
-
-  const sortedRanking = getSortedRanking();
+  }, [ranking, categoria]);
 
   const getMetricValue = (player) => {
     if (categoria === 'pontos') return player.media_arremesso || 0;

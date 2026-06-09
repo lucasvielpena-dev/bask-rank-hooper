@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase, torneiosAPI, equipesAPI, torneioJogosAPI, profilesAPI } from '../lib/supabase';
-import { IconCalendario, IconTrofeu, IconVoltar } from '../components/Icons';
+import { IconCalendario } from '../components/Icons';
 
 // Formatos de Torneio Traduzidos
 const FORMATOS = {
