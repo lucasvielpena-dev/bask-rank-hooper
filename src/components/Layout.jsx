@@ -7,6 +7,7 @@ import { IconSino, IconLocalizacao } from './Icons';
 export default function Layout({ page, onNavigate, children }) {
   const {
     profile,
+    isMaster,
     showUserMenu,
     setShowUserMenu,
     isEditingProfile,
@@ -82,7 +83,7 @@ export default function Layout({ page, onNavigate, children }) {
         {children}
       </div>
 
-      <BottomNavigation page={page} onNavigate={onNavigate} />
+      <BottomNavigation page={page} onNavigate={onNavigate} isMaster={isMaster} />
 
       {showUserMenu && profile && (
         <div className="modal-overlay" onClick={() => { if (!salvandoPerfil) { setShowUserMenu(false); setIsEditingProfile(false); } }}>

@@ -37,19 +37,29 @@ const NavIcon = memo(function NavIcon({ type, active }) {
       <circle cx="12" cy="7" r="4" />
     </svg>
   );
+  if (type === 'shield') return (
+    <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  );
   return null;
 });
 
-export default memo(function BottomNavigation({ page, onNavigate }) {
+export default memo(function BottomNavigation({ page, onNavigate, isMaster }) {
+  const allPages = isMaster
+    ? { ...PAGES, master: { label: 'Admin', icon: 'shield' } }
+    : PAGES;
+
   return (
     <nav className="bottom-nav">
-      {Object.entries(PAGES).map(([key, cfg]) => (
+      {Object.entries(allPages).map(([key, cfg]) => (
         <button
           key={key}
-          className={`nav-item ${page === key ? 'active' : ''}`}
+          className={`nav-item ${page === key || (key === 'master' && page.startsWith('master')) ? 'active' : ''}`}
           onClick={() => onNavigate(key)}
         >
-          <NavIcon type={cfg.icon} active={page === key} />
+          <NavIcon type={cfg.icon} active={page === key || (key === 'master' && page.startsWith('master'))} />
           <span>{cfg.label}</span>
         </button>
       ))}

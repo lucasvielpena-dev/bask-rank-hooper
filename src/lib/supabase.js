@@ -513,3 +513,87 @@ export const notificacoesAPI = {
     return { data, error };
   }
 };
+
+// ============================================================
+// MASTER / ADMIN APIs
+// ============================================================
+
+export const masterAPI = {
+  getStats: async () => {
+    const { data, error } = await supabase.rpc('get_master_stats');
+    return { data, error };
+  },
+
+  getCityStats: async () => {
+    const { data, error } = await supabase.rpc('get_city_stats');
+    return { data, error };
+  },
+
+  getUsers: async (search = '') => {
+    const { data, error } = await supabase.rpc('admin_get_users', { p_search: search || null });
+    return { data, error };
+  },
+
+  setRole: async (userId, role) => {
+    const { data, error } = await supabase.rpc('admin_set_user_role', {
+      p_user_id: userId, p_new_role: role
+    });
+    return { data, error };
+  },
+
+  toggleActive: async (userId, active) => {
+    const { data, error } = await supabase.rpc('admin_toggle_user_active', {
+      p_user_id: userId, p_active: active
+    });
+    return { data, error };
+  },
+
+  deleteUser: async (userId) => {
+    const { data, error } = await supabase.rpc('admin_delete_user', { p_user_id: userId });
+    return { data, error };
+  },
+
+  getPlayers: async () => {
+    const { data, error } = await supabase.rpc('admin_get_players');
+    return { data, error };
+  },
+
+  togglePlayer: async (playerId, active) => {
+    const { data, error } = await supabase.rpc('admin_toggle_player', {
+      p_player_id: playerId, p_active: active
+    });
+    return { data, error };
+  },
+
+  sendGlobalNotification: async (titulo, mensagem) => {
+    const { data, error } = await supabase.rpc('admin_send_global_notification', {
+      p_titulo: titulo, p_mensagem: mensagem
+    });
+    return { data, error };
+  },
+
+  deleteTournament: async (torneioId) => {
+    const { data, error } = await supabase.rpc('admin_delete_tournament', { p_torneio_id: torneioId });
+    return { data, error };
+  },
+
+  closeTournament: async (torneioId) => {
+    const { data, error } = await supabase.rpc('admin_close_tournament', { p_torneio_id: torneioId });
+    return { data, error };
+  },
+
+  getReports: async () => {
+    const { data, error } = await supabase.rpc('get_master_reports');
+    return { data, error };
+  },
+
+  getLogs: async (limit = 50) => {
+    const { data, error } = await supabase.rpc('admin_get_logs', { p_limit: limit });
+    return { data, error };
+  },
+
+  touchLastSeen: async () => {
+    const { error } = await supabase.rpc('touch_last_seen');
+    return { error };
+  },
+};

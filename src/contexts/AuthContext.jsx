@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { supabase, authAPI, profilesAPI, notificacoesAPI } from '../lib/supabase';
+import { supabase, authAPI, profilesAPI, notificacoesAPI, masterAPI } from '../lib/supabase';
 import AuthScreen from '../components/AuthScreen';
 import CompleteProfileScreen from '../components/CompleteProfileScreen';
 
@@ -48,6 +48,7 @@ export function AuthProvider({ children }) {
         setEditIdade(data.idade || '');
         setEditPosicao(data.posicao || 'Ala');
         setLoadingProfile(false);
+        masterAPI.touchLastSeen().catch(() => {});
         return data;
       } else if (retries < 3) {
         const loaded = await new Promise((resolve) => {
@@ -560,6 +561,8 @@ export function AuthProvider({ children }) {
     profile,
     setProfile,
     loadingProfile,
+    isMaster: profile?.role === 'master',
+    isAdmin: profile?.role === 'master' || profile?.role === 'admin',
     showUserMenu,
     setShowUserMenu,
     isEditingProfile,
