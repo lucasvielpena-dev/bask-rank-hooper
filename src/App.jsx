@@ -225,8 +225,9 @@ export default function App() {
         if (existingJogador) return;
 
         console.log('Jogador referenciado não existe mais. Recriando...');
-        await profilesAPI.atualizar(prof.id, { player_id: null });
-        prof.player_id = null;
+        const { error: clearErr } = await profilesAPI.atualizar(prof.id, { player_id: null });
+        if (clearErr) console.error('Erro ao limpar player_id:', clearErr);
+        prof = { ...prof, player_id: null };
       }
 
       if (!prof.player_id) {
@@ -237,6 +238,7 @@ export default function App() {
           .maybeSingle();
 
         if (alreadyExists) {
+          console.log('Jogador já existe por criado_por, vinculando...');
           const { data: updatedProfile } = await profilesAPI.atualizar(prof.id, {
             player_id: alreadyExists.id,
             is_player: true
@@ -245,7 +247,7 @@ export default function App() {
           return;
         }
 
-        console.log('Criando jogador para perfil...');
+        console.log('Criando jogador para perfil...', prof.nome_completo, prof.id);
         const { data: newJogador, error: jogError } = await supabase
           .from('jogadores')
           .insert([{
@@ -263,16 +265,22 @@ export default function App() {
           .select()
           .single();
 
-        if (jogError) throw jogError;
+        if (jogError) {
+          console.error('Erro ao criar jogador:', jogError);
+          throw jogError;
+        }
 
         if (newJogador) {
+          console.log('Jogador criado:', newJogador.id);
           const { data: updatedProfile, error: profError } = await profilesAPI.atualizar(prof.id, {
             player_id: newJogador.id,
             is_player: true
           });
           if (!profError && updatedProfile) {
             setProfile(updatedProfile);
-            console.log('Jogador criado e vinculado:', newJogador.id);
+            console.log('Perfil atualizado com player_id:', newJogador.id);
+          } else {
+            console.error('Erro ao atualizar profile:', profError);
           }
         }
       }
