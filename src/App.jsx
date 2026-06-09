@@ -26,7 +26,7 @@ function AppRoutes() {
   const [pageProps, setPageProps] = useState({});
 
   useEffect(() => {
-    const swVersion = 'v17';
+    const swVersion = 'v18';
     const currentVersion = localStorage.getItem('sw_version');
     if (currentVersion !== swVersion) {
       if ('serviceWorker' in navigator) {
@@ -61,7 +61,7 @@ function AppRoutes() {
       case 'jogos': return <Jogos profile={profile} initialAba={pageProps.aba || 'jogos'} />;
       case 'perfil': return <Stats profile={profile} onNavigate={navigate} />;
       case 'destaques': return <Destaques profile={profile} onNavigate={navigate} />;
-      case 'master': return <MasterDashboard profile={profile} onNavigate={navigate} />;
+      case 'master': return <MasterDashboard onNavigate={navigate} />;
       case 'master-users': return <AdminUsers profile={profile} onNavigate={navigate} />;
       case 'master-cities': return <AdminCities profile={profile} onNavigate={navigate} />;
       case 'master-players': return <AdminPlayers profile={profile} onNavigate={navigate} />;
