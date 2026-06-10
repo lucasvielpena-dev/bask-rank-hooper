@@ -120,7 +120,7 @@ const BackgroundDeco = ({ src, opacity, style }) => (
     <div style={{
       position: 'absolute',
       inset: 0,
-      background: 'linear-gradient(to bottom, rgba(6, 13, 24, 0) 0%, rgba(6, 13, 24, 0.6) 60%, rgba(6, 13, 24, 1) 100%)',
+      background: 'var(--bg-overlay-jogadores)',
       pointerEvents: 'none',
       zIndex: 1
     }} />
@@ -345,7 +345,7 @@ export default function Jogadores({ profile }) {
   return (
     <div className="page-content" style={{ position: 'relative' }}>
       <BackgroundDeco 
-        src="/images/bg-2.png" 
+        src="images/bg-2.png" 
         opacity={0.10} 
         style={{ top: 0, left: '50%', transform: 'translateX(-50%)', width: 'clamp(350px, 80vw, 600px)' }} 
       />

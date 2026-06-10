@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Bebas+Neue&family=Oswald:wght@400;700;900&display=swap');
 
 :root {
-  --bg-primary: #080F1A;
+  --bg-primary: #060D18;
   --bg-secondary: #0D1527;
   --bg-card: #111827;
   --bg-card-hover: #161F30;
@@ -22,10 +22,15 @@
   --nav-height: 64px;
   --header-height: 60px;
 
+  /* Theme-adaptive background overlays */
+  --bg-overlay-home: linear-gradient(to top, var(--bg-primary) 0%, rgba(6, 13, 24, 0.4) 50%, transparent 100%);
+  --bg-overlay-jogadores: linear-gradient(to bottom, transparent 0%, rgba(6, 13, 24, 0.6) 60%, var(--bg-primary) 100%);
+  --bg-overlay-ranking: linear-gradient(135deg, rgba(6, 13, 24, 0.4) 0%, rgba(6, 13, 24, 0.8) 50%, var(--bg-primary) 100%);
+
   /* Nav icon and header variables */
   --nav-active-color: #60a5fa;
   --nav-inactive-color: #64748b;
-  --header-bg: #080F1A;
+  --header-bg: #060D18;
 
   /* Podium first place colors */
   --podium-first-name: #FDE68A;
@@ -882,6 +887,11 @@ html {
   --bg-card: #FFFFFF;
   --bg-card-hover: #F8FAFC;
   --bg-elevated: #FFFFFF;
+
+  /* Theme-adaptive background overlays */
+  --bg-overlay-home: linear-gradient(to top, var(--bg-primary) 0%, rgba(244, 247, 251, 0.4) 50%, transparent 100%);
+  --bg-overlay-jogadores: linear-gradient(to bottom, transparent 0%, rgba(244, 247, 251, 0.6) 60%, var(--bg-primary) 100%);
+  --bg-overlay-ranking: linear-gradient(135deg, rgba(244, 247, 251, 0.4) 0%, rgba(244, 247, 251, 0.8) 50%, var(--bg-primary) 100%);
   --text-primary: #111827;
   --text-secondary: #6B7280;
   --text-muted: #9CA3AF;

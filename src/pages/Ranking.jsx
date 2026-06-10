@@ -76,7 +76,7 @@ const BackgroundDeco = ({ src, opacity, style }) => (
     <div style={{
       position: 'absolute',
       inset: 0,
-      background: 'linear-gradient(135deg, rgba(6, 13, 24, 0.4) 0%, rgba(6, 13, 24, 0.8) 50%, rgba(6, 13, 24, 1) 100%)',
+      background: 'var(--bg-overlay-ranking)',
       pointerEvents: 'none',
       zIndex: 1
     }} />
@@ -179,7 +179,7 @@ export default function Ranking({ profile }) {
   return (
     <div className="page-content" style={{ background: 'var(--bg-primary)', position: 'relative' }}>
       <BackgroundDeco 
-        src="/images/bg-3.png" 
+        src="images/bg-3.png" 
         opacity={0.08} 
         style={{ top: '5%', right: '-10%', width: 'clamp(300px, 70vw, 500px)' }} 
       />

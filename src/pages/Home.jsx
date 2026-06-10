@@ -23,7 +23,7 @@ const BackgroundDeco = ({ src, opacity, style }) => (
     <div style={{
       position: 'absolute',
       inset: 0,
-      background: 'linear-gradient(to top, rgba(6, 13, 24, 1) 0%, rgba(6, 13, 24, 0.4) 50%, rgba(6, 13, 24, 0) 100%)',
+      background: 'var(--bg-overlay-home)',
       pointerEvents: 'none',
       zIndex: 1
     }} />
@@ -125,7 +125,7 @@ export default function Home({ profile, onNavigate }) {
   return (
     <div className="page-content home-page" style={{ position: 'relative' }}>
       <BackgroundDeco 
-        src="/images/bg-1.png" 
+        src="images/bg-1.png" 
         opacity={0.12} 
         style={{ right: '-5%', bottom: 0, width: 'clamp(300px, 60vw, 550px)' }} 
       />
