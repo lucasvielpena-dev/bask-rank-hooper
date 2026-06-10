@@ -324,24 +324,25 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 const val = estrelas[f.key] || 0;
                 return (
                   <div key={f.key} style={{ 
-                    background: val > 0 ? 'rgba(37,99,235,0.08)' : 'var(--bg-secondary)', 
+                    background: val > 0 ? 'var(--accent-blue-dim)' : 'var(--bg-secondary)', 
                     padding: '14px 16px', 
                     borderRadius: 12, 
-                    border: val > 0 ? '1.5px solid rgba(37,99,235,0.3)' : '1px solid var(--border)',
+                    border: val > 0 ? '1.5px solid var(--border-active)' : '1px solid var(--border)',
                     transition: 'all 0.2s'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{ 
                           width: 22, height: 22, borderRadius: 6, 
-                          background: val > 0 ? '#2563EB' : 'var(--bg-tertiary)', 
-                          color: '#fff', fontSize: 11, fontWeight: 700,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          background: val > 0 ? 'var(--accent-blue)' : 'var(--bg-secondary)', 
+                          color: val > 0 ? '#fff' : 'var(--text-muted)', fontSize: 11, fontWeight: 700,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          border: val > 0 ? 'none' : '1px solid var(--border)'
                         }}>{i + 1}</span>
                         <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
                       </div>
                       <span style={{ 
-                        fontSize: 12, color: val > 0 ? '#2563EB' : '#F97316', 
+                        fontSize: 12, color: val > 0 ? 'var(--accent-blue)' : 'var(--accent-gold)', 
                         fontWeight: 700, minWidth: 70, textAlign: 'right'
                       }}>
                         {val > 0 ? `★ ${val}.0` : labelsNota[val] || 'Nota'}
@@ -372,7 +373,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 className="btn btn-primary" 
                 onClick={handleConfirmarAvaliacao} 
                 disabled={enviandoAvaliacao || fundamentos.some(f => !estrelas[f.key])} 
-                style={{ flex: 2, background: '#2563EB' }}
+                style={{ flex: 2 }}
               >
                 {enviandoAvaliacao ? 'Salvando...' : 'Salvar Avaliação'}
               </button>
@@ -403,7 +404,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                   borderRadius: '50%',
                   overflow: 'hidden',
                   border: '3px solid var(--accent-blue)',
-                  boxShadow: '0 4px 20px rgba(37,99,235,0.25)',
+                  boxShadow: '0 4px 20px var(--accent-blue-dim)',
                   marginBottom: 12,
                   flexShrink: 0
                 }}>
@@ -418,14 +419,14 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                   width: 88,
                   height: 88,
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #2563EB 0%, #3B82F6 100%)',
+                  background: 'var(--accent-blue-gradient-h)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: 32,
                   fontWeight: 900,
                   color: '#fff',
-                  boxShadow: '0 4px 20px rgba(37,99,235,0.25)',
+                  boxShadow: '0 4px 20px var(--accent-blue-dim)',
                   marginBottom: 12,
                   flexShrink: 0
                 }}>
@@ -489,7 +490,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     gap: 4,
                     background: 'var(--accent-blue-dim)',
                     color: 'var(--accent-blue)',
-                    border: '1px solid rgba(37, 99, 235, 0.2)',
+                    border: '1px solid var(--border)',
                     borderRadius: 999,
                     padding: '6px 14px',
                     fontSize: 13,
@@ -506,7 +507,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               display: 'grid',
               gridTemplateColumns: 'repeat(5, 1fr)',
               gap: 2,
-              background: 'var(--bg-card)',
+              background: 'var(--bg-secondary)',
               padding: '14px 10px',
               borderRadius: '14px',
               border: '1px solid var(--border)',
@@ -615,14 +616,14 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       <div key={f.key}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: 5 }}>
                           <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{f.label}</span>
-                          <span style={{ color: '#60A5FA', fontWeight: 700 }}>
+                          <span style={{ color: 'var(--accent-blue)', fontWeight: 700 }}>
                             {hasVotes ? `★ ${Number(mediaAspecto).toFixed(1)}` : '--'}
                           </span>
                         </div>
                         <div className="progress-bar" style={{ height: '6px', background: 'var(--bg-secondary)' }}>
                           <div 
                             className="progress-fill bar-grow-fill" 
-                            style={{ width: hasVotes ? `${(mediaAspecto / 5) * 100}%` : '0%', background: '#2563EB' }} 
+                            style={{ width: hasVotes ? `${(mediaAspecto / 5) * 100}%` : '0%', background: 'var(--accent-blue)' }} 
                           />
                         </div>
                       </div>
@@ -693,7 +694,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 onClick={() => setShowAvaliar(true)}
                 style={{
                   flex: 2,
-                  background: '#2563EB',
+                  background: 'var(--accent-blue)',
                   height: '44px',
                   borderRadius: '12px',
                   fontWeight: 700,

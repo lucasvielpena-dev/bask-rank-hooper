@@ -418,7 +418,7 @@ export default function Stats({ profile, onNavigate }) {
           display: 'grid',
           gridTemplateColumns: 'repeat(5, 1fr)',
           gap: 'clamp(4px, 1vw, 8px)',
-          background: 'var(--bg-card)',
+          background: 'var(--bg-secondary)',
           padding: 'clamp(8px, 2vw, 12px) clamp(4px, 1vw, 6px)',
           borderRadius: '12px',
           border: '1px solid var(--border)',
@@ -591,7 +591,7 @@ export default function Stats({ profile, onNavigate }) {
                         width: '74px', 
                         height: '74px', 
                         borderRadius: '50%', 
-                        background: `conic-gradient(#F97316 0% ${mediasPrivadas.aproveitamento}%, #1E293B ${mediasPrivadas.aproveitamento}% 100%)`,
+                        background: `conic-gradient(var(--accent-blue) 0% ${mediasPrivadas.aproveitamento}%, var(--border) ${mediasPrivadas.aproveitamento}% 100%)`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyItems: 'center',
@@ -625,8 +625,8 @@ export default function Stats({ profile, onNavigate }) {
                               <span>{item.label}</span>
                               <span style={{ color: 'var(--text-primary)' }}>{item.pct}% <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>({item.vol})</span></span>
                             </div>
-                            <div style={{ height: '4px', background: '#1E293B', borderRadius: '2px', overflow: 'hidden' }}>
-                              <div style={{ height: '100%', background: '#F97316', width: `${item.pct}%`, borderRadius: '2px' }} />
+                            <div style={{ height: '4px', background: 'var(--border)', borderRadius: '2px', overflow: 'hidden' }}>
+                              <div style={{ height: '100%', background: 'var(--accent-blue)', width: `${item.pct}%`, borderRadius: '2px' }} />
                             </div>
                           </div>
                         ))}
@@ -636,7 +636,7 @@ export default function Stats({ profile, onNavigate }) {
                     {/* Gráfico de Evolução (Últimos 5 Jogos) */}
                     {historicoPrivado.length > 0 && (
                       <div style={{ 
-                        background: 'var(--bg-secondary)', 
+                        background: 'var(--bg-card)', 
                         borderRadius: '10px', 
                         padding: '14px', 
                         border: '1px solid var(--border)'
@@ -650,7 +650,18 @@ export default function Stats({ profile, onNavigate }) {
                           const maxPontos = Math.max(...ultimasPartidasParaGrafico.map(p => p.pontos || 0), 10);
                           
                           return (
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '80px', padding: '0 8px', marginTop: 10 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '80px', padding: '0 8px', marginTop: 10, position: 'relative' }}>
+                              {/* Linha auxiliar horizontal a 50% de altura */}
+                              <div style={{
+                                position: 'absolute',
+                                left: 8,
+                                right: 8,
+                                top: '50%',
+                                borderTop: '1px dashed var(--border)',
+                                pointerEvents: 'none',
+                                zIndex: 0
+                              }} />
+                              
                               {ultimasPartidasParaGrafico.map((partida, idx) => {
                                 const alturaPct = Math.max(8, ((partida.pontos || 0) / maxPontos) * 100);
                                 return (
@@ -661,7 +672,8 @@ export default function Stats({ profile, onNavigate }) {
                                     flex: 1, 
                                     height: '100%', 
                                     justifyContent: 'flex-end',
-                                    position: 'relative'
+                                    position: 'relative',
+                                    zIndex: 1
                                   }}>
                                     {/* Pontuação no topo da barra */}
                                     <span style={{ fontSize: '9px', fontWeight: 900, color: 'var(--text-primary)', marginBottom: 4 }}>
@@ -671,9 +683,9 @@ export default function Stats({ profile, onNavigate }) {
                                     <div style={{ 
                                       width: '18px', 
                                       height: `${alturaPct}%`, 
-                                      background: 'linear-gradient(to top, rgba(249, 115, 22, 0.1) 0%, #F97316 100%)',
+                                      background: 'linear-gradient(to top, var(--accent-blue-dim) 0%, var(--accent-blue) 100%)',
                                       borderRadius: '4px 4px 0 0',
-                                      boxShadow: '0 0 10px rgba(249, 115, 22, 0.15)',
+                                      boxShadow: '0 0 10px var(--accent-blue-dim)',
                                       transition: 'height 0.3s ease'
                                     }} />
                                     {/* Data ou número da partida embaixo */}
@@ -692,7 +704,7 @@ export default function Stats({ profile, onNavigate }) {
                   </div>
                 ) : null}
 
-                <button className="btn btn-primary btn-sm" onClick={() => setShowRegistrar(true)} style={{ background: '#F97316', color: '#080F1A', border: 'none', width: '100%', fontSize: '12px', marginTop: 14 }}>
+                <button className="btn btn-primary btn-sm" onClick={() => setShowRegistrar(true)} style={{ width: '100%', marginTop: 14 }}>
                   ➕ Registrar Partida Pessoal
                 </button>
               </div>
@@ -938,7 +950,7 @@ export default function Stats({ profile, onNavigate }) {
 
             <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
               <button className="btn btn-secondary" onClick={() => setShowRegistrar(false)} style={{ flex: 1 }} disabled={salvando}>Cancelar</button>
-              <button className="btn btn-primary" onClick={handleSalvar} disabled={salvando} style={{ flex: 2, background: '#2563EB' }}>
+              <button className="btn btn-primary" onClick={handleSalvar} disabled={salvando} style={{ flex: 2 }}>
                 {salvando ? 'Salvando...' : 'Salvar Partida'}
               </button>
             </div>

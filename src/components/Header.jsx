@@ -11,7 +11,7 @@ export default memo(function Header() {
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '12px 16px',
-      background: 'var(--bg-primary)',
+      background: 'var(--header-bg)',
       borderBottom: '1px solid var(--border)'
     }}>
       <button
@@ -39,19 +39,19 @@ export default memo(function Header() {
           color: 'var(--text-primary)',
           textTransform: 'uppercase'
         }}>
-          RANK <span style={{ color: '#60A5FA' }}>HOOPER</span>
+          RANK <span style={{ color: 'var(--accent-blue-light)' }}>HOOPER</span>
         </div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
         <div style={{ position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => setShowNotificacoes(true)}>
-          <IconSino size={22} color="#F8FAFC" />
+          <IconSino size={22} color="var(--text-primary)" />
           {notificacoes.filter(n => !n.lida).length > 0 && (
             <span style={{
               position: 'absolute',
               top: -2,
               right: -2,
-              background: '#F97316',
+              background: 'var(--accent-gold)',
               color: '#FFF',
               fontSize: '8px',
               fontWeight: 800,
@@ -61,7 +61,7 @@ export default memo(function Header() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: '1.5px solid var(--bg-primary)'
+              border: '1.5px solid var(--header-bg)'
             }}>
               {notificacoes.filter(n => !n.lida).length}
             </span>
@@ -76,10 +76,10 @@ export default memo(function Header() {
             <img
               src={profile.foto_perfil}
               alt="Avatar"
-              style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.2)', objectFit: 'cover' }}
+              style={{ width: 28, height: 28, borderRadius: '50%', border: '1px solid var(--border)', objectFit: 'cover' }}
             />
           ) : (
-            <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#60a5fa' }}>
+            <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: 'var(--accent-blue-light)' }}>
               {profile.nome_completo?.charAt(0).toUpperCase()}
             </div>
           )}

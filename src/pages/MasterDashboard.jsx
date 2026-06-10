@@ -33,7 +33,7 @@ const TABS = [
   { label: 'Logs', page: 'master-logs' }
 ];
 
-const ICON_COLOR = { blue: '#2563EB', gold: '#F97316' };
+const ICON_COLOR = { blue: 'var(--accent-blue)', gold: 'var(--accent-gold)' };
 
 export default function MasterDashboard({ onNavigate }) {
   const [stats, setStats] = useState({});
@@ -231,8 +231,8 @@ export default function MasterDashboard({ onNavigate }) {
             </div>
 
             <div style={{
-              background: 'linear-gradient(135deg, var(--bg-card) 0%, rgba(37,99,235,0.06) 100%)',
-              border: '1px solid rgba(37,99,235,0.12)',
+              background: 'linear-gradient(135deg, var(--bg-card) 0%, var(--accent-blue-dim) 100%)',
+              border: '1px solid var(--border)',
               borderRadius: 'clamp(12px, 2vw, 16px)',
               padding: 'clamp(14px, 3vw, 20px)',
               marginBottom: 16
@@ -285,8 +285,8 @@ export default function MasterDashboard({ onNavigate }) {
                     marginBottom: 10
                   }}>
                     {action.color === 'blue'
-                      ? <IconJogador size={18} color="#2563EB" />
-                      : <IconBasquete size={18} color="#F97316" />
+                      ? <IconJogador size={18} color="var(--accent-blue)" />
+                      : <IconBasquete size={18} color="var(--accent-gold)" />
                     }
                   </div>
                   <div style={{ fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 700, color: 'var(--text-primary)' }}>

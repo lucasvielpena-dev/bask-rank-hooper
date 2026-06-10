@@ -790,13 +790,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 height: 'clamp(32px, 8vw, 40px)',
                 borderRadius: '50%',
                 background: 'rgba(255,255,255,0.03)',
-                border: '2px solid #2563EB',
+                border: '2px solid var(--accent-blue)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: 6
               }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 2a14.5 14.5 0 0 1 0 20" />
                   <path d="M2 12h20" />
@@ -1072,7 +1072,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <button 
               onClick={() => setTimerAtivo(!timerAtivo)}
               style={{
-                background: '#2563EB',
+                background: 'var(--accent-blue)',
                 border: 'none',
                 width: '56px',
                 height: '56px',
@@ -1083,7 +1083,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
+                boxShadow: '0 4px 12px var(--accent-blue-dim)',
                 transition: 'transform 0.1s'
               }}
             >

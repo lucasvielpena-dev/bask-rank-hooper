@@ -40,7 +40,8 @@ function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = fa
     height: size,
     borderRadius: '50%',
     objectFit: 'cover',
-    border: border,
+    border: border !== 'none' ? border : '1px solid var(--border)',
+    boxShadow: '0 3px 8px rgba(0, 0, 0, 0.08)',
     flexShrink: 0
   };
 
@@ -490,9 +491,9 @@ export default function Jogadores({ profile }) {
                         flex: 1, 
                         margin: 0, 
                         padding: '8px 14px',
-                        background: hasVoted ? 'rgba(255, 255, 255, 0.05)' : '#2563EB',
+                        background: hasVoted ? 'var(--bg-secondary)' : 'var(--accent-blue)',
                         color: hasVoted ? 'var(--text-muted)' : '#ffffff',
-                        border: hasVoted ? '1px solid rgba(255, 255, 255, 0.08)' : 'none',
+                        border: hasVoted ? '1px solid var(--border)' : 'none',
                         fontWeight: 700
                       }}
                     >
@@ -523,22 +524,23 @@ export default function Jogadores({ profile }) {
                 const val = estrelasVoto[f.key] || 0;
                 return (
                   <div key={f.key} style={{
-                    background: val > 0 ? 'rgba(37,99,235,0.08)' : 'var(--bg-secondary)',
+                    background: val > 0 ? 'var(--accent-blue-dim)' : 'var(--bg-secondary)',
                     padding: '8px 12px', borderRadius: 10,
-                    border: val > 0 ? '1.5px solid rgba(37,99,235,0.3)' : '1px solid var(--border)',
+                    border: val > 0 ? '1.5px solid var(--border-active)' : '1px solid var(--border)',
                     transition: 'all 0.2s'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <span style={{
                           width: 18, height: 18, borderRadius: 5,
-                          background: val > 0 ? '#2563EB' : 'var(--bg-tertiary)',
-                          color: '#fff', fontSize: 10, fontWeight: 700,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          background: val > 0 ? 'var(--accent-blue)' : 'var(--bg-secondary)',
+                          color: val > 0 ? '#fff' : 'var(--text-muted)', fontSize: 10, fontWeight: 700,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          border: val > 0 ? 'none' : '1px solid var(--border)'
                         }}>{i + 1}</span>
                         <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
                       </div>
-                      <span style={{ fontSize: 11, color: val > 0 ? '#2563EB' : '#F97316', fontWeight: 700 }}>
+                      <span style={{ fontSize: 11, color: val > 0 ? 'var(--accent-blue)' : 'var(--accent-gold)', fontWeight: 700 }}>
                         {val > 0 ? `★ ${val}.0` : labelsNota[val] || 'Nota'}
                       </span>
                     </div>
@@ -569,7 +571,7 @@ export default function Jogadores({ profile }) {
                 <button type="button" className="btn btn-secondary" onClick={() => setVotingPlayer(null)} disabled={enviandoVoto} style={{ flex: 1, padding: '10px 0' }}>
                   Cancelar
                 </button>
-                <button type="submit" className="btn btn-primary" disabled={enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])} style={{ flex: 2, background: '#2563EB', padding: '10px 0' }}>
+                <button type="submit" className="btn btn-primary" disabled={enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])} style={{ flex: 2, padding: '10px 0' }}>
                   {enviandoVoto ? <div className="spinner" /> : 'Salvar'}
                 </button>
               </div>

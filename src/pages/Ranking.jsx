@@ -28,7 +28,8 @@ const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 40, bord
     height: size,
     borderRadius: '50%',
     objectFit: 'cover',
-    border: border,
+    border: border !== 'none' ? border : '1px solid var(--border)',
+    boxShadow: '0 3px 8px rgba(0, 0, 0, 0.08)',
     flexShrink: 0
   };
 
@@ -223,9 +224,9 @@ export default function Ranking({ profile }) {
                     position: 'relative',
                     overflow: 'hidden',
                     ...(isFirst ? {
-                      border: '1.5px solid rgba(249, 115, 22, 0.5)',
-                      background: 'linear-gradient(180deg, rgba(249, 115, 22, 0.18) 0%, rgba(15, 23, 42, 0.82) 100%)',
-                      boxShadow: '0 0 20px rgba(249,115,22,0.15), 0 0 60px rgba(249,115,22,0.05), inset 0 1px 0 rgba(255,255,255,0.06)',
+                      border: '1.5px solid var(--accent-gold)',
+                      background: 'linear-gradient(180deg, rgba(255, 107, 0, 0.1) 0%, var(--bg-card) 100%)',
+                      boxShadow: '0 8px 30px rgba(255, 107, 0, 0.12), inset 0 1px 0 rgba(255,255,255,0.06)',
                     } : {})
                   }}
                 >

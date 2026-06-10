@@ -694,8 +694,8 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
               style={{
                 background: 'none',
                 border: 'none',
-                borderBottom: isActive ? '3px solid #2563EB' : '3px solid transparent',
-                color: isActive ? '#F8FAFC' : '#94A3B8',
+                borderBottom: isActive ? '3px solid var(--accent-blue)' : '3px solid transparent',
+                color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
                 fontWeight: isActive ? 800 : 600,
                 fontSize: '13px',
                 padding: '8px 4px 12px',
@@ -775,7 +775,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
               <div className="card" style={{
                 padding: '20px',
                 borderRadius: '20px',
-                background: '#1A2330',
+                background: 'var(--bg-secondary)',
                 border: '1px solid var(--border)',
                 display: 'flex',
                 flexDirection: 'column',
@@ -790,7 +790,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   <button 
                     onClick={handleIniciarTorneio}
                     style={{
-                      background: '#2563EB',
+                      background: 'var(--accent-blue)',
                       color: '#FFFFFF',
                       border: 'none',
                       height: '56px',
@@ -803,7 +803,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       justifyContent: 'center',
                       gap: '8px',
                       width: '100%',
-                      boxShadow: '0 4px 14px rgba(37, 99, 235, 0.2)',
+                      boxShadow: '0 4px 14px var(--accent-blue-dim)',
                       fontFamily: 'inherit'
                     }}
                   >
@@ -945,7 +945,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 <button 
                   onClick={() => setShowInscricao(true)}
                   style={{
-                    background: '#2563EB',
+                    background: 'var(--accent-blue)',
                     color: '#FFFFFF',
                     border: 'none',
                     borderRadius: '12px',
@@ -996,7 +996,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                             <button 
                               onClick={async () => { await equipesAPI.aprovar(e.id, true); carregarDados(); }}
                               style={{
-                                background: '#2563EB',
+                                background: 'var(--accent-blue)',
                                 color: '#FFFFFF',
                                 border: 'none',
                                 borderRadius: '8px',
@@ -1046,7 +1046,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
               }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', color: 'var(--text-primary)' }}>
                   <thead>
-                    <tr style={{ background: '#1A2330', borderBottom: '1px solid var(--border)' }}>
+                    <tr style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)' }}>
                       <th style={{ padding: '12px 16px', textAlign: 'left', fontWeight: 700, color: 'var(--text-secondary)' }}>EQUIPE</th>
                       <th style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 700, color: 'var(--text-secondary)' }}>P</th>
                       <th style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 700, color: 'var(--text-secondary)' }}>V</th>
@@ -1059,7 +1059,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     {classificacao.map((c, i) => (
                       <tr key={c.id} style={{ borderBottom: '1px solid var(--border)' }}>
                         <td style={{ padding: '12px 16px', fontWeight: 800 }}>{i + 1}. {c.nome}</td>
-                        <td style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 900, color: '#2563EB' }}>{c.pts}</td>
+                        <td style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 900, color: 'var(--accent-blue)' }}>{c.pts}</td>
                         <td style={{ padding: '12px 10px', textAlign: 'center' }}>{c.v}</td>
                         <td style={{ padding: '12px 10px', textAlign: 'center' }}>{c.d}</td>
                         <td style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 700, color: c.sg >= 0 ? '#22c55e' : '#ef4444' }}>
@@ -1169,7 +1169,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                         {j.equipe_a?.nome || 'A definir'}
                       </div>
                       <div style={{
-                        background: '#1A2330',
+                        background: 'var(--bg-secondary)',
                         padding: '6px 16px',
                         borderRadius: '10px',
                         fontWeight: 900,

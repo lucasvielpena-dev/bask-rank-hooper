@@ -108,10 +108,10 @@ export default function Home({ profile, onNavigate }) {
   };
 
   const statsData = useMemo(() => [
-    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, value: stats.jogadores, label: 'Jogadores', color: 'blue' },
-    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>, value: stats.mediaGeral.toFixed(1), label: 'Média geral', color: 'gold' },
-    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>, value: stats.avaliacoes, label: 'Avaliações', color: 'blue' },
-    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>, value: stats.torneios, label: 'Torneios', color: 'gold' }
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, value: stats.jogadores, label: 'Jogadores', color: 'blue' },
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>, value: stats.mediaGeral.toFixed(1), label: 'Média geral', color: 'gold' },
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>, value: stats.avaliacoes, label: 'Avaliações', color: 'blue' },
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>, value: stats.torneios, label: 'Torneios', color: 'gold' }
   ], [stats]);
 
   if (loading) {
@@ -186,8 +186,8 @@ export default function Home({ profile, onNavigate }) {
             display: 'flex',
             alignItems: 'center',
             gap: 14,
-            background: 'rgba(15, 23, 42, 0.82)',
-            border: '1px solid rgba(96, 165, 250, 0.15)',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
             borderRadius: '22px',
             padding: '16px',
             marginBottom: 24,
@@ -197,7 +197,7 @@ export default function Home({ profile, onNavigate }) {
             fontFamily: 'inherit',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            boxShadow: '0 18px 40px rgba(0, 0, 0, 0.28)'
+            boxShadow: 'var(--shadow)'
           }}
         >
           <div style={{
@@ -210,7 +210,7 @@ export default function Home({ profile, onNavigate }) {
             justifyContent: 'center',
             flexShrink: 0
           }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" strokeWidth="2" strokeLinecap="round">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
           </div>
@@ -236,9 +236,9 @@ export default function Home({ profile, onNavigate }) {
           <div className="acoes-rapidas-grid">
             {[
               { icon: <IconAvaliar size={24} color="#fff" />, label: 'Avaliar jogador', action: () => onNavigate('jogadores'), primary: true },
-              { icon: <IconBasquete size={24} color="#F97316" />, label: 'Meus jogos', action: () => onNavigate('jogos'), primary: false },
-              { icon: <IconRanking size={24} color="#2563EB" />, label: 'Ver ranking', action: () => onNavigate('ranking'), primary: false },
-              { icon: <IconTrofeu size={24} color="#F97316" />, label: 'Ver torneios', action: () => onNavigate('jogos', { aba: 'torneios' }), primary: false }
+              { icon: <IconBasquete size={24} color="var(--accent-gold)" />, label: 'Meus jogos', action: () => onNavigate('jogos'), primary: false },
+              { icon: <IconRanking size={24} color="var(--accent-blue)" />, label: 'Ver ranking', action: () => onNavigate('ranking'), primary: false },
+              { icon: <IconTrofeu size={24} color="var(--accent-gold)" />, label: 'Ver torneios', action: () => onNavigate('jogos', { aba: 'torneios' }), primary: false }
             ].map((item) => (
               <button
                 key={item.label}

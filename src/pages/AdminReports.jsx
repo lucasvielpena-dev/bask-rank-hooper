@@ -29,8 +29,8 @@ function BarChart({ data, labelKey, valueKey, color = 'blue', horizontal = false
                 width: `${(item[valueKey] / max) * 100}%`,
                 height: '100%',
                 background: color === 'blue'
-                  ? 'linear-gradient(90deg, #2563EB, #60A5FA)'
-                  : 'linear-gradient(90deg, #F97316, #FBBF24)',
+                  ? 'var(--accent-blue-gradient-h)'
+                  : 'var(--accent-gold-gradient-h)',
                 borderRadius: 6,
                 transition: 'width 0.6s ease'
               }} />
@@ -69,8 +69,8 @@ function BarChart({ data, labelKey, valueKey, color = 'blue', horizontal = false
             height: `${(item[valueKey] / max) * 100}%`,
             minHeight: item[valueKey] > 0 ? 4 : 0,
             background: color === 'blue'
-              ? 'linear-gradient(180deg, #2563EB, #1D4ED8)'
-              : 'linear-gradient(180deg, #F97316, #EA580C)',
+              ? 'var(--accent-blue-gradient)'
+              : 'var(--accent-gold-gradient)',
             borderRadius: '4px 4px 2px 2px',
             transition: 'height 0.6s ease'
           }} />
