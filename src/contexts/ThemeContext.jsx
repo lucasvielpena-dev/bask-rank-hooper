@@ -29,7 +29,20 @@ export function ThemeProvider({ children }) {
   }, [applyTheme, themePref]);
 
   useEffect(() => {
-    document.body.style.backgroundImage = `url(${process.env.PUBLIC_URL}/images/bg-1.png)`;
+    const backgrounds = [
+      `${process.env.PUBLIC_URL}/images/bg-1.png`,
+      `${process.env.PUBLIC_URL}/images/bg-2.png`,
+      `${process.env.PUBLIC_URL}/images/bg-3.png`,
+      `${process.env.PUBLIC_URL}/images/bg-4.png`,
+    ];
+
+    backgrounds.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+
+    const randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
+    document.body.style.backgroundImage = `url(${randomBg})`;
   }, []);
 
   return (
