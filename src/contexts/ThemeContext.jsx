@@ -43,8 +43,11 @@ export function ThemeProvider({ children }) {
 
     const randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
     const isLight = document.body.classList.contains('light-theme');
-    const overlayOpacity = isLight ? '0.65' : '0.78';
-    document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,${overlayOpacity}), rgba(0,0,0,${overlayOpacity})), url(${randomBg})`;
+    if (isLight) {
+      document.body.style.backgroundImage = 'none';
+    } else {
+      document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.78), rgba(0,0,0,0.78)), url(${randomBg})`;
+    }
   }, []);
 
   return (

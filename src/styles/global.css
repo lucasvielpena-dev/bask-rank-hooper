@@ -1091,11 +1091,11 @@ html {
 }
 
 .light-theme .page-content {
-  background: transparent !important;
+  background: #F4F6F8 !important;
 }
 
 .light-theme .home-page {
-  background: transparent !important;
+  background: #F4F6F8 !important;
 }
 .light-theme .card:hover {
   box-shadow: 0 8px 24px rgba(26, 29, 33, 0.10) !important;
