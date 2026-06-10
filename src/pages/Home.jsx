@@ -146,38 +146,7 @@ export default function Home({ profile, onNavigate }) {
 
           {/* Card Posicao */}
           <div className="home-position-card">
-            <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: 16 }}>
-              {myPlayerInfo?.foto_perfil ? (
-                <img
-                  src={myPlayerInfo.foto_perfil}
-                  alt={greetingName}
-                  style={{
-                    width: 72,
-                    height: 72,
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: '3px solid rgba(255,255,255,0.25)',
-                    flexShrink: 0
-                  }}
-                />
-              ) : (
-                <div style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.12)',
-                  border: '3px solid rgba(255,255,255,0.25)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 28,
-                  fontWeight: 900,
-                  color: 'var(--accent-gold)',
-                  flexShrink: 0
-                }}>
-                  {greetingName.charAt(0).toUpperCase()}
-                </div>
-              )}
+            <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <div className="home-position-label">SUA POSIÇÃO</div>
                 <div className="home-position-number">{myRank}</div>
@@ -189,6 +158,37 @@ export default function Home({ profile, onNavigate }) {
                   {myBadge}
                 </span>
               </div>
+              {myPlayerInfo?.foto_perfil ? (
+                <img
+                  src={myPlayerInfo.foto_perfil}
+                  alt={greetingName}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '3px solid rgba(255,255,255,0.2)',
+                    flexShrink: 0
+                  }}
+                />
+              ) : (
+                <div style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '3px solid rgba(255,255,255,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 30,
+                  fontWeight: 900,
+                  color: 'var(--accent-gold)',
+                  flexShrink: 0
+                }}>
+                  {greetingName.charAt(0).toUpperCase()}
+                </div>
+              )}
             </div>
           </div>
 
