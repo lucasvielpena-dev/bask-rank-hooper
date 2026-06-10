@@ -42,7 +42,9 @@ export function ThemeProvider({ children }) {
     });
 
     const randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-    document.body.style.backgroundImage = `url(${randomBg})`;
+    const isLight = document.body.classList.contains('light-theme');
+    const overlayOpacity = isLight ? '0.65' : '0.78';
+    document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,${overlayOpacity}), rgba(0,0,0,${overlayOpacity})), url(${randomBg})`;
   }, []);
 
   return (

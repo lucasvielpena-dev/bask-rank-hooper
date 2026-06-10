@@ -246,7 +246,7 @@ html, body, #root {
 
 body {
   font-family: 'Inter', sans-serif;
-  background: var(--bg-primary);
+  background-color: #060D18;
   color: var(--text-primary);
   overscroll-behavior: none;
   -webkit-font-smoothing: antialiased;
@@ -256,17 +256,8 @@ body {
   background-attachment: fixed;
 }
 
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.78);
-  z-index: -1;
-  pointer-events: none;
-}
-
-.light-theme body::after {
-  background: rgba(0, 0, 0, 0.65);
+.light-theme body {
+  background-color: #F4F6F8;
 }
 
 /* App shell */
@@ -429,7 +420,7 @@ body::after {
   box-shadow: var(--shadow-elevated);
 }
 
-/* Background overlay applied via body::after in ThemeContext */
+/* Background overlay applied via gradient in ThemeContext */
 
 .bg-deco {
   position: absolute;
