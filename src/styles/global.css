@@ -329,7 +329,7 @@ body {
   padding-bottom: 24px;
   scrollbar-width: none;
   position: relative;
-  background: var(--bg-primary);
+  background: transparent;
 }
 .page-content::-webkit-scrollbar { display: none; }
 
@@ -1091,11 +1091,11 @@ html {
 }
 
 .light-theme .page-content {
-  background: var(--bg-primary) !important;
+  background: transparent !important;
 }
 
 .light-theme .home-page {
-  background: var(--bg-primary) !important;
+  background: transparent !important;
 }
 .light-theme .card:hover {
   box-shadow: 0 8px 24px rgba(26, 29, 33, 0.10) !important;
@@ -1433,7 +1433,7 @@ html {
 /* Responsive Grid & Layout Utilities */
 
 .home-page {
-  background: var(--bg-primary);
+  background: transparent;
   min-height: 100%;
 }
 
