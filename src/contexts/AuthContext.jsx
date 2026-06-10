@@ -533,7 +533,7 @@ export function AuthProvider({ children }) {
   if (user && loadingProfile) {
     return (
       <div className="app-shell" style={{ justifyContent: 'center', minHeight: '100dvh' }}>
-        <div className="loading"><div className="spinner" />Carregando perfil...</div>
+        <div className="loading" style={{ position: 'relative', zIndex: 1 }}><div className="spinner" />Carregando perfil...</div>
       </div>
     );
   }

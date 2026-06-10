@@ -28,6 +28,10 @@ export function ThemeProvider({ children }) {
     }
   }, [applyTheme, themePref]);
 
+  useEffect(() => {
+    document.body.style.backgroundImage = `url(${process.env.PUBLIC_URL}/images/bg-1.png)`;
+  }, []);
+
   return (
     <ThemeContext.Provider value={{ themePref, setThemePref }}>
       {children}

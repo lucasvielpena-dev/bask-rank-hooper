@@ -61,7 +61,7 @@ export default function AuthScreen() {
 
   return (
     <div className="app-shell" style={{ justifyContent: 'center', minHeight: '100dvh' }}>
-      <div style={{ padding: '0 clamp(14px, 4vw, 24px)', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ padding: '0 clamp(14px, 4vw, 24px)', display: 'flex', flexDirection: 'column', gap: 20, position: 'relative', zIndex: 1 }}>
         {/* Logo/Header */}
         <div style={{ textAlign: 'center', marginBottom: 12 }}>
           <div style={{ 
