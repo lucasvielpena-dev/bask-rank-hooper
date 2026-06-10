@@ -101,9 +101,15 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   async function loadDados() {
     setLoading(true);
     try {
-      // 1. Carregar jogadores para o formulário de times
+      // 1. Carregar jogadores para o formulário de times (filtrar pela cidade do usuário)
       const { data: jogs } = await jogadoresAPI.listar();
-      setJogadores(jogs || []);
+      const userCity = profile.cidade_atual || profile.cidade || 'Altamira';
+      const userUf = profile.uf || '';
+      setJogadores((jogs || []).filter(j => {
+        if (!j.cidade) return true;
+        return j.cidade.toLowerCase() === userCity.toLowerCase() &&
+               (!userUf || !j.uf || j.uf.toLowerCase() === userUf.toLowerCase());
+      }));
 
       // 2. Carregar partidas
       const { data: parts } = await partidasAPI.listar();
