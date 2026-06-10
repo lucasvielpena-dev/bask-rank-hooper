@@ -146,16 +146,49 @@ export default function Home({ profile, onNavigate }) {
 
           {/* Card Posicao */}
           <div className="home-position-card">
-            <div style={{ position: 'relative', zIndex: 2 }}>
-              <div className="home-position-label">SUA POSIÇÃO</div>
-              <div className="home-position-number">{myRank}</div>
-              <div className="home-position-city">Ranking de {city} - {uf}</div>
-              <span className="home-badge">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                  <path d="M2.5 18.5l2-9 5 4.5L12 7l2.5 7 5-4.5 2 9h-19z"/>
-                </svg>
-                {myBadge}
-              </span>
+            <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: 16 }}>
+              {myPlayerInfo?.foto_perfil ? (
+                <img
+                  src={myPlayerInfo.foto_perfil}
+                  alt={greetingName}
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '3px solid rgba(255,255,255,0.25)',
+                    flexShrink: 0
+                  }}
+                />
+              ) : (
+                <div style={{
+                  width: 72,
+                  height: 72,
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.12)',
+                  border: '3px solid rgba(255,255,255,0.25)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 28,
+                  fontWeight: 900,
+                  color: 'var(--accent-gold)',
+                  flexShrink: 0
+                }}>
+                  {greetingName.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div>
+                <div className="home-position-label">SUA POSIÇÃO</div>
+                <div className="home-position-number">{myRank}</div>
+                <div className="home-position-city">Ranking de {city} - {uf}</div>
+                <span className="home-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                    <path d="M2.5 18.5l2-9 5 4.5L12 7l2.5 7 5-4.5 2 9h-19z"/>
+                  </svg>
+                  {myBadge}
+                </span>
+              </div>
             </div>
           </div>
 
