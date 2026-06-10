@@ -59,6 +59,30 @@ const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 40, bord
   );
 });
 
+const BackgroundDeco = ({ src, opacity, style }) => (
+  <>
+    <img 
+      src={src} 
+      alt="" 
+      style={{
+        position: 'absolute',
+        pointerEvents: 'none',
+        zIndex: 0,
+        objectFit: 'contain',
+        opacity: opacity,
+        ...style
+      }}
+    />
+    <div style={{
+      position: 'absolute',
+      inset: 0,
+      background: 'linear-gradient(135deg, rgba(6, 13, 24, 0.4) 0%, rgba(6, 13, 24, 0.8) 50%, rgba(6, 13, 24, 1) 100%)',
+      pointerEvents: 'none',
+      zIndex: 1
+    }} />
+  </>
+);
+
 export default function Ranking({ profile }) {
   const [ranking, setRanking] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -153,30 +177,12 @@ export default function Ranking({ profile }) {
   );
 
   return (
-    <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
-      <svg viewBox="0 0 400 500" fill="none" style={{
-        position: 'absolute',
-        top: '5%',
-        right: '-3%',
-        width: 'clamp(180px, 45vw, 300px)',
-        height: 'auto',
-        opacity: 0.08,
-        pointerEvents: 'none',
-        zIndex: 0
-      }}>
-        <circle cx="200" cy="200" r="130" stroke="#2563EB" strokeWidth="2" opacity="0.35" />
-        <circle cx="200" cy="200" r="95" stroke="#2563EB" strokeWidth="1" opacity="0.2" />
-        <path d="M150 130 L200 70 L250 130" stroke="#F97316" strokeWidth="1.5" fill="none" opacity="0.2" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M170 150 L200 100 L230 150" stroke="#F97316" strokeWidth="1" fill="none" opacity="0.12" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M200 70 L200 30" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" opacity="0.2" />
-        <path d="M80 210 Q60 240 80 270 Q100 300 120 270" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.08" />
-        <path d="M320 210 Q340 240 320 270 Q300 300 280 270" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.08" />
-        <circle cx="250" cy="330" r="50" stroke="#F97316" strokeWidth="1.5" opacity="0.12" fill="none" />
-        <circle cx="250" cy="330" r="30" stroke="#F97316" strokeWidth="1" opacity="0.08" fill="none" />
-        <path d="M80 380 Q130 350 180 380 Q230 410 280 380 Q330 350 370 380" stroke="#2563EB" strokeWidth="1" opacity="0.08" fill="none" />
-        <circle cx="120" cy="160" r="4" stroke="#F97316" strokeWidth="1" opacity="0.1" fill="none" />
-        <circle cx="280" cy="160" r="4" stroke="#F97316" strokeWidth="1" opacity="0.1" fill="none" />
-      </svg>
+    <div className="page-content" style={{ background: 'var(--bg-primary)', position: 'relative' }}>
+      <BackgroundDeco 
+        src="/images/bg-3.png" 
+        opacity={0.08} 
+        style={{ top: '5%', right: '-10%', width: 'clamp(300px, 70vw, 500px)' }} 
+      />
       <div style={{ position: 'relative', zIndex: 2, padding: '20px 20px 0' }}>
         
         {/* Cabeçalho */}
