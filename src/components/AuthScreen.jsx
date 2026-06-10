@@ -125,7 +125,7 @@ export default function AuthScreen() {
             gap: 10,
             background: '#ffffff',
             color: '#1f2937',
-            border: 'none',
+            border: '1px solid var(--border)',
             fontSize: 15,
             fontWeight: 700
           }}

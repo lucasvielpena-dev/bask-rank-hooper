@@ -122,7 +122,7 @@ export default function AdminCities({ profile, onNavigate }) {
                   background: 'var(--bg-card)',
                   border: index < 3 ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid var(--border)',
                   borderRadius: '16px',
-                  boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+                  boxShadow: 'var(--shadow)'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>

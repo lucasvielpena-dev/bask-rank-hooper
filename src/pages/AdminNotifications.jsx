@@ -113,7 +113,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
             display: 'flex',
             flexDirection: 'column',
             gap: 16,
-            boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+            boxShadow: 'var(--shadow)'
           }}>
             <div>
               <label style={{

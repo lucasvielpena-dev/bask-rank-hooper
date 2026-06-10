@@ -104,6 +104,12 @@
   --card-team-a-border: 1.5px solid rgba(37, 99, 235, 0.25);
   --card-team-b-border: 1.5px solid rgba(239, 68, 68, 0.25);
   --timer-bg: rgba(17, 24, 39, 0.5);
+
+  /* Chart variables for dark mode */
+  --chart-bg: rgba(15, 23, 42, 0.82);
+  --chart-grid: rgba(255, 255, 255, 0.06);
+  --chart-text: #F8FAFC;
+  --chart-accent: #60A5FA;
 }
 
 * {
@@ -199,6 +205,12 @@ body {
   --card-team-a-border: 1.5px solid rgba(37, 99, 235, 0.25);
   --card-team-b-border: 1.5px solid rgba(239, 68, 68, 0.25);
   --timer-bg: rgba(17, 24, 39, 0.5);
+
+  /* Chart variables for dark mode */
+  --chart-bg: rgba(15, 23, 42, 0.82);
+  --chart-grid: rgba(255, 255, 255, 0.06);
+  --chart-text: #F8FAFC;
+  --chart-accent: #60A5FA;
 }
 
 * {
@@ -904,12 +916,12 @@ html {
   --text-muted: #9AA5B1;
   --border: #DDE3EA;
   --border-active: rgba(255, 107, 0, 0.3);
-  --shadow: 0 6px 12px rgba(26, 29, 33, 0.08);
-  --shadow-elevated: 0 10px 40px rgba(26, 29, 33, 0.08);
+  --shadow: 0 4px 12px rgba(26, 29, 33, 0.08);
+  --shadow-elevated: 0 8px 24px rgba(26, 29, 33, 0.10);
 
   --accent-blue: #FF6B00;
   --accent-blue-light: #FF6B00;
-  --accent-blue-dim: rgba(255, 107, 0, 0.06);
+  --accent-blue-dim: rgba(255, 107, 0, 0.08);
   --accent-gold: #FF8C42;
   --accent-gold-dim: rgba(255, 140, 66, 0.12);
 
@@ -923,6 +935,12 @@ html {
   --nav-active-color: #FF6B00;
   --nav-inactive-color: #9AA5B1;
   --header-bg: linear-gradient(to bottom, #FFFFFF 0%, #F4F6F8 100%);
+
+  /* Chart variables for light mode */
+  --chart-bg: #FFFFFF;
+  --chart-grid: #E4E8EC;
+  --chart-text: #1A1D21;
+  --chart-accent: #FF6B00;
 
   /* Podium first place colors */
   --podium-first-name: #B45309;
@@ -1033,7 +1051,7 @@ html {
 .light-theme .bottom-nav {
   background: #FFFFFF !important;
   border-top: 1px solid #E4E8EC !important;
-  box-shadow: 0 -4px 16px rgba(26, 29, 33, 0.06) !important;
+  box-shadow: 0 -4px 20px rgba(26, 29, 33, 0.08) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
@@ -1052,10 +1070,37 @@ html {
 .light-theme .modal-sheet {
   background: #ffffff !important;
   border-color: var(--border) !important;
-  box-shadow: 0 -10px 40px rgba(17, 24, 39, 0.05) !important;
+  box-shadow: 0 -10px 40px rgba(17, 24, 39, 0.08) !important;
 }
 .light-theme .modal-handle {
   background: #cbd5e1 !important;
+}
+
+.light-theme .card {
+  box-shadow: 0 4px 12px rgba(26, 29, 33, 0.08) !important;
+  border-radius: 16px !important;
+}
+.light-theme .card:hover {
+  box-shadow: 0 8px 24px rgba(26, 29, 33, 0.10) !important;
+}
+
+.light-theme .app-header {
+  background: linear-gradient(to bottom, #FFFFFF 0%, #F4F6F8 100%) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid #E4E8EC !important;
+}
+
+.light-theme .stat-circle-value {
+  color: var(--accent-blue) !important;
+}
+
+.light-theme .tabs {
+  background: #EEF2F6 !important;
+}
+.light-theme .tab.active {
+  background: #FFFFFF !important;
+  box-shadow: 0 2px 8px rgba(26, 29, 33, 0.06) !important;
 }
 
 .light-theme .leader-active-glow {
@@ -1709,13 +1754,16 @@ html {
   box-shadow: 0 4px 20px rgba(255, 107, 0, 0.04);
 }
 .light-theme .home-stats-card {
-  background: var(--bg-secondary) !important;
+  background: #EEF2F6 !important;
   border: 1px solid var(--border) !important;
-  box-shadow: none !important;
+  box-shadow: 0 4px 12px rgba(26, 29, 33, 0.08) !important;
+  border-radius: 16px !important;
 }
 .light-theme .home-highlight-card {
   background: linear-gradient(135deg, #FFFFFF 0%, var(--bg-secondary) 100%);
   border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(26, 29, 33, 0.08);
+  border-radius: 16px;
 }
 .light-theme .home-highlight-desc strong {
   color: var(--text-primary);
@@ -1727,10 +1775,11 @@ html {
 .light-theme .home-quick-action {
   background: #FFFFFF;
   border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 12px rgba(26, 29, 33, 0.08);
+  border-radius: 16px;
 }
 .light-theme .home-quick-action:hover {
-  box-shadow: var(--shadow-elevated);
+  box-shadow: 0 8px 24px rgba(26, 29, 33, 0.10);
 }
 .light-theme .home-quick-action-primary {
   background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-gold) 100%) !important;
@@ -1763,17 +1812,22 @@ html {
   color: var(--accent-blue);
 }
 .light-theme .destaques-stat-card {
-  background: var(--bg-secondary) !important;
+  background: #EEF2F6 !important;
   border: 1px solid var(--border) !important;
-  box-shadow: none !important;
+  box-shadow: 0 4px 12px rgba(26, 29, 33, 0.08) !important;
+  border-radius: 16px !important;
 }
 .light-theme .destaques-ranking-card {
   background: #FFFFFF;
   border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(26, 29, 33, 0.08);
+  border-radius: 16px;
 }
 .light-theme .destaques-torneio-card {
   background: #FFFFFF;
   border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(26, 29, 33, 0.08);
+  border-radius: 16px;
 }
 .light-theme .destaques-cta-card {
   box-shadow: 0 4px 16px rgba(255, 107, 0, 0.15);

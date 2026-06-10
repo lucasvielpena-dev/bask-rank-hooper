@@ -119,7 +119,7 @@ export default function AdminTournaments({ profile, onNavigate }) {
                   background: 'var(--bg-card)',
                   border: '1px solid var(--border)',
                   borderLeft: `4px solid ${stat.color}`,
-                  boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                  boxShadow: 'var(--shadow)',
                   animationDelay: `${i * 30}ms`
                 }}
               >

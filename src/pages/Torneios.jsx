@@ -647,7 +647,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
             borderRadius: '20px',
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
-            boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+            boxShadow: 'var(--shadow)'
           }}>
             <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '4px' }}>
               {item.label}
@@ -734,7 +734,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   borderRadius: '16px',
                   background: 'var(--bg-card)',
                   border: '1px solid var(--border)',
-                  boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                  boxShadow: 'var(--shadow)',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '4px'
@@ -759,7 +759,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 borderRadius: '16px',
                 background: 'var(--bg-card)',
                 border: '1px solid var(--border)',
-                boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+                boxShadow: 'var(--shadow)'
               }}>
                 <h4 style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '8px' }}>
                   Descrição do Evento
@@ -780,7 +780,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '12px',
-                boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+                boxShadow: 'var(--shadow)'
               }}>
                 <h4 style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '4px' }}>
                   GERENCIAMENTO
@@ -980,7 +980,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       background: 'var(--bg-card)',
                       border: '1px solid var(--border)',
                       borderRadius: '16px',
-                      boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+                      boxShadow: 'var(--shadow)'
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div style={{ cursor: 'pointer', flex: 1 }} onClick={() => setExpandedTeamId(isExpanded ? null : e.id)}>
@@ -1042,7 +1042,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 background: 'var(--bg-card)',
                 border: '1px solid var(--border)',
                 borderRadius: '16px',
-                boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+                boxShadow: 'var(--shadow)'
               }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', color: 'var(--text-primary)' }}>
                   <thead>
@@ -1097,7 +1097,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                                 background: 'var(--bg-card)',
                                 border: '1px solid var(--border)',
                                 borderRadius: '16px',
-                                boxShadow: '0 4px 20px rgba(0,0,0,.15)'
+                                boxShadow: 'var(--shadow)'
                               }}>
                                 <div style={{ flex: 1 }}>
                                   <div style={{ display: 'flex', justifyContent: 'space-between', margin: '2px 0' }}>
@@ -1149,7 +1149,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
                     borderRadius: '16px',
-                    boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                    boxShadow: 'var(--shadow)',
                     padding: '16px',
                     borderLeft: emProgresso ? '4px solid #2563EB' : '1px solid rgba(255, 255, 255, 0.06)'
                   }}>
@@ -1230,7 +1230,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
                     borderRadius: '16px',
-                    boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                    boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
                     <div style={{ fontSize: '24px' }}>🏀</div>
@@ -1252,7 +1252,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
                     borderRadius: '16px',
-                    boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                    boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
                     <div style={{ fontSize: '24px' }}>🤝</div>
@@ -1274,7 +1274,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
                     borderRadius: '16px',
-                    boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                    boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
                     <div style={{ fontSize: '24px' }}>💪</div>
@@ -1296,7 +1296,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
                     borderRadius: '16px',
-                    boxShadow: '0 4px 20px rgba(0,0,0,.15)',
+                    boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
                     <div style={{ fontSize: '24px' }}>🚫</div>
