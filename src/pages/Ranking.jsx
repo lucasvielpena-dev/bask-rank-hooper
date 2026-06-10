@@ -154,7 +154,30 @@ export default function Ranking({ profile }) {
 
   return (
     <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
-      <div style={{ padding: '20px 20px 0' }}>
+      <svg viewBox="0 0 400 500" fill="none" style={{
+        position: 'absolute',
+        top: '5%',
+        right: '-3%',
+        width: 'clamp(180px, 45vw, 300px)',
+        height: 'auto',
+        opacity: 0.08,
+        pointerEvents: 'none',
+        zIndex: 0
+      }}>
+        <circle cx="200" cy="200" r="130" stroke="#2563EB" strokeWidth="2" opacity="0.35" />
+        <circle cx="200" cy="200" r="95" stroke="#2563EB" strokeWidth="1" opacity="0.2" />
+        <path d="M150 130 L200 70 L250 130" stroke="#F97316" strokeWidth="1.5" fill="none" opacity="0.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M170 150 L200 100 L230 150" stroke="#F97316" strokeWidth="1" fill="none" opacity="0.12" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M200 70 L200 30" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" opacity="0.2" />
+        <path d="M80 210 Q60 240 80 270 Q100 300 120 270" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.08" />
+        <path d="M320 210 Q340 240 320 270 Q300 300 280 270" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.08" />
+        <circle cx="250" cy="330" r="50" stroke="#F97316" strokeWidth="1.5" opacity="0.12" fill="none" />
+        <circle cx="250" cy="330" r="30" stroke="#F97316" strokeWidth="1" opacity="0.08" fill="none" />
+        <path d="M80 380 Q130 350 180 380 Q230 410 280 380 Q330 350 370 380" stroke="#2563EB" strokeWidth="1" opacity="0.08" fill="none" />
+        <circle cx="120" cy="160" r="4" stroke="#F97316" strokeWidth="1" opacity="0.1" fill="none" />
+        <circle cx="280" cy="160" r="4" stroke="#F97316" strokeWidth="1" opacity="0.1" fill="none" />
+      </svg>
+      <div style={{ position: 'relative', zIndex: 2, padding: '20px 20px 0' }}>
         
         {/* Cabeçalho */}
         <div style={{ textAlign: 'center', marginBottom: 20 }}>
@@ -184,9 +207,7 @@ export default function Ranking({ profile }) {
                   className={`card card-enter${isFirst ? ' first-place-card' : ''}`}
                   onClick={() => setSelectedPlayer({ ...jogador, rank: index + 1 })}
                   style={{
-                    background: isFirst ? 'var(--podium-bg-1st)' : 'var(--bg-card)',
-                    border: isFirst ? 'var(--podium-border-1st)' : '1px solid var(--border)',
-                    borderRadius: isFirst ? '16px' : '12px',
+                    borderRadius: isFirst ? '22px' : '22px',
                     padding: isFirst ? '16px 16px' : '12px 14px',
                     display: 'flex',
                     alignItems: 'center',
@@ -196,6 +217,8 @@ export default function Ranking({ profile }) {
                     position: 'relative',
                     overflow: 'hidden',
                     ...(isFirst ? {
+                      border: '1.5px solid rgba(249, 115, 22, 0.5)',
+                      background: 'linear-gradient(180deg, rgba(249, 115, 22, 0.18) 0%, rgba(15, 23, 42, 0.82) 100%)',
                       boxShadow: '0 0 20px rgba(249,115,22,0.15), 0 0 60px rgba(249,115,22,0.05), inset 0 1px 0 rgba(255,255,255,0.06)',
                     } : {})
                   }}

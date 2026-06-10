@@ -320,7 +320,32 @@ export default function Jogadores({ profile }) {
 
   return (
     <div className="page-content">
-      <div style={{ padding: 'clamp(12px, 3vw, 20px) clamp(14px, 3vw, 20px) 0' }}>
+      <svg viewBox="0 0 500 400" fill="none" style={{
+        position: 'absolute',
+        top: 0,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'clamp(250px, 70vw, 450px)',
+        height: 'auto',
+        opacity: 0.10,
+        pointerEvents: 'none',
+        zIndex: 0
+      }}>
+        <circle cx="250" cy="180" r="120" stroke="#2563EB" strokeWidth="2" opacity="0.3" />
+        <circle cx="250" cy="180" r="90" stroke="#2563EB" strokeWidth="1.5" opacity="0.2" />
+        <circle cx="250" cy="180" r="60" stroke="#2563EB" strokeWidth="1" opacity="0.1" />
+        <path d="M250 60 L250 20" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" opacity="0.25" />
+        <path d="M190 100 Q175 80 185 60 Q200 45 220 55" stroke="#F97316" strokeWidth="1.5" fill="none" opacity="0.2" />
+        <path d="M310 100 Q325 80 315 60 Q300 45 280 55" stroke="#F97316" strokeWidth="1.5" fill="none" opacity="0.2" />
+        <path d="M100 220 Q80 240 100 260 Q120 280 140 260" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.08" />
+        <path d="M400 220 Q420 240 400 260 Q380 280 360 260" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.08" />
+        <path d="M250 300 L250 350" stroke="#F97316" strokeWidth="1.5" opacity="0.15" strokeLinecap="round" />
+        <path d="M220 330 Q250 345 280 330" stroke="#F97316" strokeWidth="1" fill="none" opacity="0.1" />
+        <circle cx="130" cy="140" r="6" stroke="#F97316" strokeWidth="1" opacity="0.12" fill="none" />
+        <circle cx="370" cy="140" r="6" stroke="#F97316" strokeWidth="1" opacity="0.12" fill="none" />
+        <path d="M160 350 Q200 330 240 350 Q280 370 320 350 Q360 330 380 350" stroke="#2563EB" strokeWidth="1" opacity="0.08" fill="none" />
+      </svg>
+      <div style={{ position: 'relative', zIndex: 2, padding: 'clamp(12px, 3vw, 20px) clamp(14px, 3vw, 20px) 0' }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>

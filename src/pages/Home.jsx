@@ -2,23 +2,33 @@ import { useState, useEffect, useMemo } from 'react';
 import { supabase, jogadoresAPI, rankingAPI } from '../lib/supabase';
 import { IconTrofeu, IconAvaliar, IconBasquete, IconRanking } from '../components/Icons';
 
-function BasketballHoopSVG() {
+function BasketballDecoHome() {
   return (
-    <svg viewBox="0 0 200 220" fill="none" style={{
+    <svg viewBox="0 0 400 500" fill="none" style={{
       position: 'absolute',
-      right: -15,
-      top: -20,
-      width: 'clamp(120px, 30vw, 180px)',
+      right: '-5%',
+      bottom: 0,
+      width: 'clamp(200px, 50vw, 350px)',
       height: 'auto',
-      opacity: 0.2,
-      pointerEvents: 'none'
+      opacity: 0.12,
+      pointerEvents: 'none',
+      zIndex: 1
     }}>
-      <circle cx="100" cy="110" r="50" stroke="#F97316" strokeWidth="4" />
-      <line x1="100" y1="60" x2="100" y2="10" stroke="#F97316" strokeWidth="3" strokeLinecap="round" />
-      <line x1="60" y1="60" x2="140" y2="60" stroke="#F97316" strokeWidth="3" strokeLinecap="round" />
-      <path d="M60 60 Q60 90 80 110" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.15" />
-      <path d="M140 60 Q140 90 120 110" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.15" />
-      <circle cx="90" cy="30" r="20" stroke="currentColor" strokeWidth="1.5" fill="none" opacity="0.08" />
+      <circle cx="200" cy="250" r="140" stroke="#2563EB" strokeWidth="2.5" opacity="0.4" />
+      <circle cx="200" cy="250" r="110" stroke="#2563EB" strokeWidth="1.5" opacity="0.25" />
+      <circle cx="200" cy="250" r="80" stroke="#2563EB" strokeWidth="1" opacity="0.15" />
+      <path d="M200 110 L200 20" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" opacity="0.3" />
+      <path d="M120 150 Q110 120 130 100 Q150 85 170 100" stroke="#2563EB" strokeWidth="1.5" fill="none" opacity="0.2" />
+      <path d="M280 150 Q290 120 270 100 Q250 85 230 100" stroke="#2563EB" strokeWidth="1.5" fill="none" opacity="0.2" />
+      <path d="M200 110 L175 90" stroke="#2563EB" strokeWidth="1" opacity="0.15" />
+      <path d="M200 110 L225 90" stroke="#2563EB" strokeWidth="1" opacity="0.15" />
+      <path d="M120 200 Q60 180 40 220" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.08" />
+      <path d="M280 200 Q340 180 360 220" stroke="currentColor" strokeWidth="1" fill="none" opacity="0.08" />
+      <circle cx="120" cy="120" r="8" stroke="#F97316" strokeWidth="1" opacity="0.15" fill="none" />
+      <circle cx="280" cy="120" r="8" stroke="#F97316" strokeWidth="1" opacity="0.15" fill="none" />
+      <circle cx="80" cy="300" r="5" stroke="#F97316" strokeWidth="1" opacity="0.1" fill="none" />
+      <circle cx="320" cy="300" r="5" stroke="#F97316" strokeWidth="1" opacity="0.1" fill="none" />
+      <path d="M60 380 Q100 350 140 380 Q180 410 220 380 Q260 350 300 380 Q340 410 360 380" stroke="#F97316" strokeWidth="1" opacity="0.08" fill="none" />
     </svg>
   );
 }
@@ -134,7 +144,7 @@ export default function Home({ profile, onNavigate }) {
 
           {/* Card Posicao */}
           <div className="home-position-card">
-            <BasketballHoopSVG />
+            <BasketballDecoHome />
             <div style={{ position: 'relative', zIndex: 2 }}>
               <div className="home-position-label">SUA POSIÇÃO</div>
               <div className="home-position-number">{myRank}</div>
@@ -175,15 +185,18 @@ export default function Home({ profile, onNavigate }) {
             display: 'flex',
             alignItems: 'center',
             gap: 14,
-            background: 'linear-gradient(135deg, var(--bg-card) 0%, rgba(37,99,235,0.08) 100%)',
-            border: '1px solid rgba(37,99,235,0.15)',
-            borderRadius: '16px',
+            background: 'rgba(15, 23, 42, 0.82)',
+            border: '1px solid rgba(96, 165, 250, 0.15)',
+            borderRadius: '22px',
             padding: '16px',
             marginBottom: 24,
             cursor: 'pointer',
             width: '100%',
             textAlign: 'left',
-            fontFamily: 'inherit'
+            fontFamily: 'inherit',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            boxShadow: '0 18px 40px rgba(0, 0, 0, 0.28)'
           }}
         >
           <div style={{
