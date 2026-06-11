@@ -99,14 +99,6 @@ export default function Home({ profile, onNavigate }) {
     setLoading(false);
   }
 
-  const getBadgeText = (media) => {
-    if (media >= 4.5) return 'ELITE';
-    if (media >= 4.0) return 'DESTAQUE';
-    if (media >= 3.5) return 'PROMISSA';
-    return 'EM DEV';
-  };
-
-  const myBadge = getBadgeText(myPlayerInfo?.media_estrelas || 0);
   const greetingName = profile?.apelido || profile?.nome_completo?.split(' ')[0] || 'Atleta';
 
   const getGreeting = () => {
@@ -142,34 +134,153 @@ export default function Home({ profile, onNavigate }) {
           </div>
         </div>
 
-        <div className="home-position-card">
-          <div className="home-position-top">
-            <div className="home-position-left">
-              <div className="home-position-label">Sua Posição</div>
-              <div className="home-position-number">{myRank}</div>
-              <div className="home-position-city">Ranking de {city} - {uf}</div>
-            </div>
-            {myPlayerInfo?.foto_perfil && (
-              <img src={myPlayerInfo.foto_perfil} alt={greetingName} className="home-position-avatar" />
-            )}
-          </div>
-          <div className="home-position-meta">
-            <span className="home-badge">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                <path d="M2.5 18.5l2-9 5 4.5L12 7l2.5 7 5-4.5 2 9h-19z"/>
-              </svg>
-              {myBadge}
+        <div className="hero-card" style={{
+          background: 'linear-gradient(135deg, #111827, #161B33, #0F172A)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: 24, padding: '20px 20px 16px', position: 'relative', overflow: 'hidden',
+          marginBottom: 20,
+        }}>
+          {/* Top badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            background: myRank !== '--' ? 'rgba(200,241,53,0.12)' : 'rgba(106,106,130,0.12)',
+            border: myRank !== '--' ? '1px solid rgba(200,241,53,0.2)' : '1px solid rgba(106,106,130,0.2)',
+            borderRadius: 20, padding: '4px 12px', marginBottom: 16,
+          }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={myRank !== '--' ? '#C8F135' : '#6A6A82'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+              <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+            </svg>
+            <span style={{
+              fontSize: 10, fontWeight: 700, color: myRank !== '--' ? '#C8F135' : '#6A6A82',
+              fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.08em',
+            }}>
+              {myRank !== '--' ? 'Melhor da Cidade' : 'Sem Posição'}
             </span>
-            <span className="home-position-percent">
+          </div>
+
+          {/* Main row: photo + info */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, marginBottom: 16 }}>
+            {/* Photo */}
+            {myPlayerInfo?.foto_perfil ? (
+              <img
+                src={myPlayerInfo.foto_perfil}
+                alt={greetingName}
+                style={{
+                  width: 80, height: 80, borderRadius: 16, objectFit: 'cover',
+                  border: '2px solid rgba(255,255,255,0.1)', flexShrink: 0,
+                }}
+              />
+            ) : (
+              <div style={{
+                width: 80, height: 80, borderRadius: 16, flexShrink: 0,
+                background: 'linear-gradient(135deg, rgba(200,241,53,0.15), rgba(200,241,53,0.05))',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '2px solid rgba(255,255,255,0.06)',
+              }}>
+                <span style={{
+                  fontSize: 30, fontWeight: 800, color: '#C8F135',
+                  fontFamily: "'Barlow Condensed',sans-serif",
+                }}>
+                  {greetingName.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            )}
+
+            {/* Info */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              {/* Rank + Name */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <span style={{
+                  fontSize: 36, fontWeight: 800, color: '#C8F135',
+                  fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 1,
+                }}>
+                  {myRank}
+                </span>
+              </div>
+              <div style={{
+                fontSize: 20, fontWeight: 700, color: 'var(--text-primary)',
+                fontFamily: "'Inter',sans-serif", lineHeight: 1.2, marginBottom: 2,
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              }}>
+                {myPlayerInfo?.nome || greetingName}
+              </div>
+              <div style={{
+                fontSize: 13, color: getPositionColor(myPlayerInfo?.posicao), fontWeight: 600,
+                fontFamily: "'Inter',sans-serif", marginBottom: 12,
+              }}>
+                {myPlayerInfo?.posicao || 'Atleta'}
+              </div>
+
+              {/* Stats row */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#C8F135" stroke="none">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                  <span style={{
+                    fontSize: 15, fontWeight: 800, color: 'var(--text-primary)',
+                    fontFamily: "'Barlow Condensed',sans-serif",
+                  }}>
+                    {myPlayerInfo?.media_estrelas ? Number(myPlayerInfo.media_estrelas).toFixed(1) : '--'}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2" strokeLinecap="round">
+                    <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/>
+                  </svg>
+                  <span style={{
+                    fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)',
+                    fontFamily: "'Inter',sans-serif",
+                  }}>
+                    {myPlayerInfo?.total_votos || 0} jogos
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Location + Top % */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 12,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif" }}>
+                {city} - {uf}
+              </span>
+            </div>
+            <span style={{
+              fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)',
+              fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em',
+            }}>
               Top {myRank !== '--' ? `${Math.max(1, Math.round((parseInt(myRank.replace('#','')) || 1) / (topPlayers.length || 1) * 100))}%` : '--'} da cidade
             </span>
           </div>
-          <button className="btn-ranking" onClick={() => onNavigate('ranking')}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+
+          {/* Button */}
+          <button
+            onClick={() => onNavigate('ranking')}
+            style={{
+              width: '100%', height: 48, borderRadius: 14, marginTop: 14,
+              background: 'transparent', border: '1px solid rgba(255,255,255,0.1)',
+              color: 'var(--text-primary)', fontSize: 13, fontWeight: 700,
+              cursor: 'pointer', fontFamily: "'Inter',sans-serif",
+              textTransform: 'uppercase', letterSpacing: '0.06em',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              transition: 'background 0.2s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
               <polyline points="17 6 23 6 23 12"/>
             </svg>
-            Ver Ranking
+            Ver Ranking Completo
           </button>
         </div>
 

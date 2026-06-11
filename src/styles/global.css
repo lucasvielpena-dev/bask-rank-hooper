@@ -302,61 +302,12 @@ input:focus { border-color:#C8F135; }
 }
 .home-section-link:hover { opacity:0.8; }
 
-/* Hero Card - Premium */
-.home-position-card {
-  background:linear-gradient(145deg, #13131F 0%, #1A1A28 50%, #13131F 100%);
-  border:1px solid rgba(200,241,53,0.14);
-  border-radius:16px; padding:32px 28px; position:relative; overflow:hidden;
-  box-shadow:none;
-  margin-bottom:32px;
+/* Hero Card */
+.hero-card {
+  background:linear-gradient(135deg, #111827, #161B33, #0F172A);
+  border:1px solid rgba(255,255,255,0.08); border-radius:24px;
+  padding:20px 20px 16px; position:relative; overflow:hidden; margin-bottom:20px;
 }
-.home-position-card::before {
-  content:''; position:absolute; top:-60%; left:50%; transform:translateX(-50%);
-  width:300px; height:300px;
-  background:radial-gradient(circle, rgba(200,241,53,0.07) 0%, transparent 65%);
-  pointer-events:none; z-index:0;
-}
-.home-position-card::after {
-  content:''; position:absolute; bottom:-40%; right:-20%; width:200px; height:200px;
-  background:radial-gradient(circle, rgba(200,241,53,0.03) 0%, transparent 70%);
-  pointer-events:none; z-index:0;
-}
-.home-position-top { position:relative; z-index:2; display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:20px; }
-.home-position-left { flex:1; min-width:0; }
-.home-position-label {
-  font-size:11px; font-weight:400; color:#8A8A9A; letter-spacing:0.12em;
-  text-transform:uppercase; margin-bottom:8px; font-family:'Inter',sans-serif;
-}
-.home-position-number {
-  font-size:clamp(72px,22vw,100px); font-weight:800; color:#FFFFFF;
-  line-height:0.85; margin-bottom:10px; letter-spacing:-0.04em;
-  font-family:'Barlow Condensed',sans-serif;
-  text-shadow:0 0 60px rgba(200,241,53,0.15), 0 2px 24px rgba(0,0,0,0.3);
-}
-.home-position-city { font-size:13px; color:#8A8A9A; font-weight:400; font-family:'Inter',sans-serif; }
-.home-position-avatar {
-  width:72px; height:72px; border-radius:50%; object-fit:cover;
-  border:2px solid rgba(200,241,53,0.2); flex-shrink:0;
-  box-shadow:none; position:relative; z-index:2;
-}
-.home-position-meta { display:flex; align-items:center; gap:10px; position:relative; z-index:2; }
-.home-badge {
-  display:inline-flex; align-items:center; gap:5px;
-  background:rgba(200,241,53,0.1); color:#FFFFFF;
-  border:1px solid rgba(200,241,53,0.25); border-radius:6px;
-  padding:5px 12px; font-size:11px; font-weight:700;
-  letter-spacing:0.04em; text-transform:uppercase; font-family:'Inter',sans-serif;
-}
-.home-position-percent { font-size:12px; color:#8A8A9A; font-weight:400; }
-.btn-ranking {
-  display:flex; align-items:center; justify-content:center; gap:8px;
-  width:100%; background:#C8F135; color:#0C0C14; border:none; border-radius:12px;
-  padding:0; height:48px; font-size:14px; font-weight:700; cursor:pointer;
-  font-family:'Inter',sans-serif; text-transform:uppercase; letter-spacing:0.06em;
-  transition:all 0.2s; box-shadow:0 4px 16px rgba(200,241,53,0.25);
-  position:relative; z-index:2; margin-top:20px;
-}
-.btn-ranking:hover { background:#B8E030; transform:translateY(-1px); box-shadow:0 6px 20px rgba(200,241,53,0.35); }
 .btn-ranking:active { transform:scale(0.98); }
 
 /* Stats grid - 2x2 */
@@ -532,7 +483,6 @@ input:focus { border-color:#C8F135; }
 .light-theme .btn-secondary { background:#F3F4F6 !important; color:#111111 !important; border:1px solid #E5E7EB !important; }
 .light-theme input, .light-theme select, .light-theme textarea { background:#F3F4F6 !important; border:1px solid #E5E7EB !important; color:#111111 !important; }
 .light-theme input:focus { border-color:#C8F135 !important; background:#FFFFFF !important; }
-.light-theme .home-position-card { background:#FFFFFF !important; border:1px solid rgba(200,241,53,0.12) !important; }
 .light-theme .home-quick-action { background:#FFFFFF !important; border:1px solid #E5E7EB !important; }
 .light-theme .home-quick-action-primary { background:linear-gradient(135deg, #C8F135 0%, #B8E030 100%) !important; color:#0C0C14 !important; box-shadow:0 4px 12px rgba(200,241,53,0.15) !important; }
 .light-theme .home-highlight-card { background:#FFFFFF !important; border:1px solid #E5E7EB !important; }
@@ -551,15 +501,7 @@ input:focus { border-color:#C8F135; }
 .light-theme .home-greeting-sub { color:#6B7280 !important; }
 .light-theme .home-section-label { color:#6B7280 !important; }
 .light-theme .home-section-link { color:#C8F135 !important; }
-.light-theme .home-position-card { background:#FFFFFF !important; border:1px solid rgba(200,241,53,0.15) !important; box-shadow:0 2px 8px rgba(0,0,0,0.06) !important; }
-.light-theme .home-position-card::before { background:radial-gradient(circle, rgba(200,241,53,0.04) 0%, transparent 65%) !important; }
-.light-theme .home-position-card::after { background:radial-gradient(circle, rgba(200,241,53,0.02) 0%, transparent 70%) !important; }
-.light-theme .home-position-number { color:#111111 !important; text-shadow:none !important; }
-.light-theme .home-position-label { color:#6B7280 !important; }
-.light-theme .home-position-city { color:#6B7280 !important; }
-.light-theme .home-badge { background:rgba(200,241,53,0.1) !important; border:1px solid rgba(200,241,53,0.2) !important; color:#111111 !important; }
-.light-theme .home-position-percent { color:#6B7280 !important; }
-.light-theme .home-position-avatar { border:2px solid rgba(200,241,53,0.2) !important; }
+.light-theme .hero-card { background:linear-gradient(135deg, #FFFFFF, #F8FAFC, #EEF2F7) !important; border:1px solid #E5E7EB !important; }
 .light-theme .home-stat-item { background:#FFFFFF !important; border:1px solid #E5E7EB !important; }
 .light-theme .home-stat-value { color:#111111 !important; }
 .light-theme .home-stat-label { color:#6B7280 !important; }
@@ -581,7 +523,6 @@ input:focus { border-color:#C8F135; }
 .light-theme .evolution-step.completed .evolution-label { color:#111111 !important; }
 .light-theme .evolution-timeline::before { background:#E5E7EB !important; }
 /* Score / ranking light overrides */
-.light-theme .home-position-number { color:#111111 !important; }
 
 /* Safe Area */
 @supports (padding:env(safe-area-inset-bottom)) {
