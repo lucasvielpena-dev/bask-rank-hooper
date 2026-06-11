@@ -27,17 +27,17 @@ export default function AuthScreen() {
         const { data, error } = await authAPI.registrar(email, senha, nome);
         if (error) throw error;
         if (data && !data.session) {
-          setSuccessMsg('Cadastro realizado! Um e-mail de confirma\u00e7\u00e3o foi enviado. Confirme seu e-mail antes de entrar.');
+          setSuccessMsg('Cadastro realizado! Um e-mail de confirmação foi enviado. Confirme seu e-mail antes de entrar.');
         }
       } else if (tab === 'forgot') {
         if (!email.trim()) throw new Error('Por favor, informe seu e-mail.');
         const { error } = await authAPI.recuperarSenha(email);
         if (error) throw error;
-        setSuccessMsg('E-mail de recupera\u00e7\u00e3o enviado! Verifique sua caixa de entrada.');
+        setSuccessMsg('E-mail de recuperação enviado! Verifique sua caixa de entrada.');
         setTab('login');
       }
     } catch (err) {
-      setErro(err.message || 'Ocorreu um erro ao processar a autentica\u00e7\u00e3o.');
+      setErro(err.message || 'Ocorreu um erro ao processar a autenticação.');
     } finally {
       setCarregando(false);
     }
@@ -143,7 +143,7 @@ export default function AuthScreen() {
         {tab === 'forgot' ? (
           <div style={{ textAlign: 'center', marginBottom: 4 }}>
             <h3 style={{ fontWeight: 800, fontSize: 18, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif" }}>Recuperar Senha</h3>
-            <p style={{ color: '#8A8A9A', fontSize: 13, marginTop: 4, fontFamily: "'Inter',sans-serif" }}>Digite seu e-mail para receber as instru\u00e7\u00f5es</p>
+            <p style={{ color: '#8A8A9A', fontSize: 13, marginTop: 4, fontFamily: "'Inter',sans-serif" }}>Digite seu e-mail para receber as instruções</p>
           </div>
         ) : (
           <div style={{ display: 'flex', background: '#1D1D2E', borderRadius: 10, padding: 4, gap: 4 }}>
@@ -288,7 +288,7 @@ export default function AuthScreen() {
         </form>
 
         <p style={{ textAlign: 'center', fontSize: 11, color: '#444', fontFamily: "'Inter',sans-serif", padding: '16px 0 32px' }}>
-          Ao entrar voc\u00ea concorda com os Termos de Uso
+          Ao entrar você concorda com os Termos de Uso
         </p>
       </div>
     </div>

@@ -16,8 +16,8 @@ const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
 const positionColors = {
   'Ala': ['#3B82F6', '#1D4ED8'],
   'Armador': ['#8B5CF6', '#6D28D9'],
-  'Piv\u00f4': ['#10B981', '#047857'],
-  'Ala-Piv\u00f4': ['#06B6D4', '#0891B2'],
+  'Pivô': ['#10B981', '#047857'],
+  'Ala-Pivô': ['#06B6D4', '#0891B2'],
   'Armador-Ala': ['#EC4899', '#BE185D'],
 };
 
@@ -131,8 +131,8 @@ export default function Jogadores({ profile }) {
     { key: 'arremesso', label: 'Arremesso' },
     { key: 'controle_de_bola', label: 'Controle de Bola' },
     { key: 'defesa', label: 'Defesa' },
-    { key: 'visao_de_jogo', label: 'Vis\u00e3o de Jogo' },
-    { key: 'explosao_fisica', label: 'Explos\u00e3o F\u00edsica' }
+    { key: 'visao_de_jogo', label: 'Visão de Jogo' },
+    { key: 'explosao_fisica', label: 'Explosão Física' }
   ];
 
   const [votingPlayer, setVotingPlayer] = useState(null);
@@ -246,11 +246,11 @@ export default function Jogadores({ profile }) {
   function handleOpenVote(player, e) {
     e.stopPropagation();
     if (profile?.player_id === player.id) {
-      showToast('Voc\u00ea n\u00e3o pode avaliar a si mesmo!', 'error');
+      showToast('Você não pode avaliar a si mesmo!', 'error');
       return;
     }
     if (votosStatus && votosStatus.restantes <= 0) {
-      showToast('Voc\u00ea atingiu o limite de 20 avalia\u00e7\u00f5es por dia!', 'error');
+      showToast('Você atingiu o limite de 20 avaliações por dia!', 'error');
       return;
     }
     setVotingPlayer(player);
@@ -272,14 +272,14 @@ export default function Jogadores({ profile }) {
         comentario: comentarioVoto.trim() || null
       });
       if (error || !data?.sucesso) {
-        showToast(data?.erro || error?.message || 'Erro ao registrar avalia\u00e7\u00e3o.', 'error');
+        showToast(data?.erro || error?.message || 'Erro ao registrar avaliação.', 'error');
       } else {
-        showToast(`\u2713 Avalia\u00e7\u00e3o computada! Nova m\u00e9dia: \u2605 ${Number(data.media_estrelas).toFixed(1)}`, 'success');
+        showToast(`✓ Avaliação computada! Nova média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
         setVotingPlayer(null);
         loadJogadores();
       }
     } catch (err) {
-      showToast('Erro de conex\u00e3o ao salvar avalia\u00e7\u00e3o.', 'error');
+      showToast('Erro de conexão ao salvar avaliação.', 'error');
     } finally {
       setEnviandoVoto(false);
     }
@@ -323,7 +323,7 @@ export default function Jogadores({ profile }) {
           <input
             value={busca}
             onChange={e => setBusca(e.target.value)}
-            placeholder="Buscar por nome ou posi\u00e7\u00e3o..."
+            placeholder="Buscar por nome ou posição..."
             style={{
               paddingLeft: 40, width: '100%', boxSizing: 'border-box',
               background: 'var(--bg-card)', border: '1px solid var(--border)',
@@ -487,7 +487,7 @@ export default function Jogadores({ profile }) {
               Avaliar {votingPlayer.apelido || votingPlayer.nome}
             </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 14, textAlign: 'center' }}>
-              D\u00ea uma nota de 1 a 5 estrelas para cada habilidade:
+              Dê uma nota de 1 a 5 estrelas para cada habilidade:
             </p>
 
             <form onSubmit={handleSubmitVote} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -524,7 +524,7 @@ export default function Jogadores({ profile }) {
                   type="text" maxLength="200"
                   value={comentarioVoto}
                   onChange={e => setComentarioVoto(e.target.value)}
-                  placeholder="Coment\u00e1rio (opcional)"
+                  placeholder="Comentário (opcional)"
                   style={{ width: '100%', boxSizing: 'border-box', padding: '8px 10px', fontSize: 12, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
                   disabled={enviandoVoto}
                 />
@@ -532,7 +532,7 @@ export default function Jogadores({ profile }) {
 
               {votosStatus && (
                 <div style={{ textAlign: 'center', fontSize: 10, color: 'var(--text-muted)' }}>
-                  Avalia\u00e7\u00f5es hoje: <strong>{votosStatus.votos_hoje}/20</strong>
+                  Avaliações hoje: <strong>{votosStatus.votos_hoje}/20</strong>
                 </div>
               )}
 

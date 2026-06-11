@@ -5,8 +5,8 @@ const fundamentos = [
   { key: 'arremesso', label: 'Arremesso' },
   { key: 'controle_de_bola', label: 'Controle de Bola' },
   { key: 'defesa', label: 'Defesa' },
-  { key: 'visao_de_jogo', label: 'Vis\u00e3o de Jogo' },
-  { key: 'explosao_fisica', label: 'Explos\u00e3o F\u00edsica' }
+  { key: 'visao_de_jogo', label: 'Visão de Jogo' },
+  { key: 'explosao_fisica', label: 'Explosão Física' }
 ];
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
@@ -140,11 +140,11 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
 
   async function handleEnviarDenuncia(e) {
     e.preventDefault();
-    if (!descricao.trim()) { showToast('Por favor, descreva o motivo da den\u00fancia.', 'error'); return; }
+    if (!descricao.trim()) { showToast('Por favor, descreva o motivo da denúncia.', 'error'); return; }
     setEnviandoDenuncia(true);
     const { error } = await denunciasAPI.criar({ jogador_id: jogador.id, tipo: tipoDenuncia, descricao: descricao.trim() });
-    if (error) { showToast(error.message || 'Erro ao registrar den\u00fancia.', 'error'); }
-    else { showToast('\u2713 Den\u00fancia enviada para an\u00e1lise!', 'success'); setTimeout(() => { setShowDenunciar(false); setDescricao(''); }, 1500); }
+    if (error) { showToast(error.message || 'Erro ao registrar denúncia.', 'error'); }
+    else { showToast('✓ Denúncia enviada para análise!', 'success'); setTimeout(() => { setShowDenunciar(false); setDescricao(''); }, 1500); }
     setEnviandoDenuncia(false);
   }
 
@@ -152,9 +152,9 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
     if (fundamentos.some(f => !estrelas[f.key])) { showToast('Selecione uma nota para todos os 5 fundamentos', 'error'); return; }
     setEnviandoAvaliacao(true);
     const { data, error } = await votacaoAPI.votar(jogador.id, estrelas);
-    if (error || !data?.sucesso) { showToast(data?.erro || error?.message || 'Erro ao registrar avalia\u00e7\u00e3o', 'error'); }
+    if (error || !data?.sucesso) { showToast(data?.erro || error?.message || 'Erro ao registrar avaliação', 'error'); }
     else {
-      showToast(`\u2713 Avalia\u00e7\u00e3o registrada! M\u00e9dia: \u2605 ${Number(data.media_estrelas).toFixed(1)}`, 'success');
+      showToast(`✓ Avaliação registrada! Média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
       setJaAvaliou(true); setShowAvaliar(false);
       const { data: updatedJ } = await supabase.from('jogadores').select('*').eq('id', jogador.id).single();
       if (updatedJ) setLocalJogador(updatedJ);
@@ -190,11 +190,11 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
 
   const tabs = [
     { key: 'sobre', label: 'Sobre' },
-    { key: 'estatisticas', label: 'Estat\u00edsticas' },
-    { key: 'historico', label: 'Hist\u00f3rico' },
+    { key: 'estatisticas', label: 'Estatísticas' },
+    { key: 'historico', label: 'Histórico' },
   ];
 
-  const positionColors = { 'Ala': '#3B82F6', 'Armador': '#8B5CF6', 'Piv\u00f4': '#10B981' };
+  const positionColors = { 'Ala': '#3B82F6', 'Armador': '#8B5CF6', 'Pivô': '#10B981' };
   const posColor = positionColors[localJogador.posicao] || '#C8F135';
 
   return (
@@ -278,7 +278,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       {starsVal > 0 ? Number(starsVal).toFixed(1) : '--'}
                     </span>
                     <span style={{ fontSize: 14, color: '#C8F135' }}>&#9733;</span>
-                    <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif", fontWeight: 400 }}> Nota m\u00e9dia</span>
+                    <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif", fontWeight: 400 }}> Nota média</span>
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif", marginTop: 2 }}>
                     baseado em {localJogador.total_votos || 0} {(localJogador.total_votos || 0) === 1 ? 'voto' : 'votos'}
@@ -314,7 +314,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
 
               {/* Evolution Timeline */}
               <div style={{ padding: '0 16px 16px' }}>
-                <div style={{ fontSize: 11, fontWeight: 400, color: '#6B7280', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: 12 }}>Linha de Evolu\u00e7\u00e3o</div>
+                <div style={{ fontSize: 11, fontWeight: 400, color: '#6B7280', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: 12 }}>Linha de Evolução</div>
                 <div style={{ display: 'flex', alignItems: 'flex-start', position: 'relative', padding: '0 8px' }}>
                   <div style={{ position: 'absolute', top: 10, left: 24, right: 24, height: 2, background: 'rgba(255,255,255,0.06)' }} />
                   <div style={{ position: 'absolute', top: 10, left: 24, width: `${evolutionIndex * 33.3}%`, maxWidth: 'calc(100% - 48px)', height: 2, background: '#C8F135', transition: 'width 0.6s ease' }} />
@@ -377,7 +377,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       { label: 'Cidade', val: `${localJogador.cidade} - ${localJogador.uf}`, icon: null },
                       { label: 'Idade', val: profileData?.idade ? `${profileData.idade} anos` : '--', icon: null },
                       { label: 'Altura', val: profileData?.altura ? `${Number(profileData.altura).toFixed(2)} m` : '--', icon: null },
-                      { label: 'Posi\u00e7\u00e3o', val: localJogador.posicao || 'Ala', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8F135" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg> },
+                      { label: 'Posição', val: localJogador.posicao || 'Ala', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8F135" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg> },
                       { label: 'Equipe', val: localJogador.equipe || `${localJogador.cidade} Hooper`, icon: null },
                     ].map((item, i) => (
                       <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: i < 4 ? '1px solid rgba(255,255,255,0.04)' : 'none', minHeight: 48 }}>
@@ -409,7 +409,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       );
                     })}
                     {localJogador.total_votos < 1 && (
-                      <div style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', marginTop: 6, fontFamily: "'Inter',sans-serif" }}>Sem dados de avalia\u00e7\u00e3o ainda</div>
+                      <div style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', marginTop: 6, fontFamily: "'Inter',sans-serif" }}>Sem dados de avaliação ainda</div>
                     )}
                   </div>
                 )}
@@ -438,7 +438,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             {!isMe && (
               <div style={{ padding: '12px 16px 20px', borderTop: '1px solid var(--border)', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <button onClick={() => setShowAvaliar(true)} style={{ width: '100%', height: 52, borderRadius: 12, background: '#C8F135', border: 'none', color: '#0C0C14', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em', boxShadow: '0 4px 16px rgba(200,241,53,0.25)' }}>
-                  {jaAvaliou ? 'Editar Avalia\u00e7\u00e3o' : 'Avaliar Este Jogador'}
+                  {jaAvaliou ? 'Editar Avaliação' : 'Avaliar Este Jogador'}
                 </button>
                 <button onClick={() => setShowDenunciar(true)} style={{ width: '100%', height: 44, borderRadius: 12, background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>
                   Denunciar Perfil
@@ -459,12 +459,12 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                   <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Motivo</label>
                    <select value={tipoDenuncia} onChange={e => setTipoDenuncia(e.target.value)} style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text-primary)', fontSize: 13 }}>
                     <option value="perfil_falso">Perfil Falso</option>
-                    <option value="avaliacao_suspeita">Avalia\u00e7\u00e3o Suspeita</option>
+                    <option value="avaliacao_suspeita">Avaliação Suspeita</option>
                     <option value="comportamento_inadequado">Comportamento Inadequado</option>
                   </select>
                 </div>
                 <div>
-                  <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Descri\u00e7\u00e3o *</label>
+                  <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Descrição *</label>
                    <textarea required rows="3" value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Descreva brevemente..." style={{ resize: 'none', width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text-primary)', fontSize: 13 }} />
                 </div>
                 <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
