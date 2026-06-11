@@ -135,14 +135,14 @@ export default function Home({ profile, onNavigate }) {
         </div>
 
         <div className="hero-card" style={{
-          borderRadius: 24, padding: '20px 20px 16px', marginBottom: 20,
+          borderRadius: 20, padding: '14px 16px 12px', marginBottom: 14,
         }}>
           {/* Top badge */}
           <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
+            display: 'inline-flex', alignItems: 'center', gap: 5,
             background: myRank !== '--' ? 'rgba(200,241,53,0.12)' : 'rgba(106,106,130,0.12)',
             border: myRank !== '--' ? '1px solid rgba(200,241,53,0.2)' : '1px solid rgba(106,106,130,0.2)',
-            borderRadius: 20, padding: '4px 12px', marginBottom: 16,
+            borderRadius: 20, padding: '3px 10px', marginBottom: 10,
           }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={myRank !== '--' ? '#C8F135' : '#6A6A82'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
@@ -157,29 +157,29 @@ export default function Home({ profile, onNavigate }) {
           </div>
 
           {/* Main row: info + photo */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, marginBottom: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 10 }}>
 
             {/* Info */}
             <div style={{ flex: 1, minWidth: 0 }}>
               {/* Rank + Name */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
                 <span style={{
-                  fontSize: 36, fontWeight: 800, color: '#C8F135',
+                  fontSize: 32, fontWeight: 800, color: '#C8F135',
                   fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 1,
                 }}>
                   {myRank}
                 </span>
               </div>
               <div style={{
-                fontSize: 20, fontWeight: 700, color: 'var(--text-primary)',
-                fontFamily: "'Inter',sans-serif", lineHeight: 1.2, marginBottom: 2,
+                fontSize: 18, fontWeight: 700, color: 'var(--text-primary)',
+                fontFamily: "'Inter',sans-serif", lineHeight: 1.2, marginBottom: 1,
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
               }}>
                 {myPlayerInfo?.nome || greetingName}
               </div>
               <div style={{
-                fontSize: 13, color: getPositionColor(myPlayerInfo?.posicao), fontWeight: 600,
-                fontFamily: "'Inter',sans-serif", marginBottom: 12,
+                fontSize: 12, color: getPositionColor(myPlayerInfo?.posicao), fontWeight: 600,
+                fontFamily: "'Inter',sans-serif", marginBottom: 8,
               }}>
                 {myPlayerInfo?.posicao || 'Atleta'}
               </div>
@@ -241,7 +241,7 @@ export default function Home({ profile, onNavigate }) {
           {/* Location + Top % */}
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 12,
+            borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 8,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round">
@@ -263,7 +263,7 @@ export default function Home({ profile, onNavigate }) {
           <button
             onClick={() => onNavigate('ranking')}
             style={{
-              width: '100%', height: 48, borderRadius: 14, marginTop: 14,
+              width: '100%', height: 40, borderRadius: 12, marginTop: 10,
               background: 'transparent', border: '1px solid rgba(255,255,255,0.1)',
               color: 'var(--text-primary)', fontSize: 13, fontWeight: 700,
               cursor: 'pointer', fontFamily: "'Inter',sans-serif",
@@ -289,7 +289,7 @@ export default function Home({ profile, onNavigate }) {
               Ver todos
             </button>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {topPlayers.map((player, i) => (
               <div
                 key={player.id}
@@ -297,11 +297,11 @@ export default function Home({ profile, onNavigate }) {
                 style={{
                   background: 'var(--bg-card)',
                   border: i === 0 ? '1px solid rgba(200,241,53,0.15)' : '1px solid var(--border)',
-                  borderRadius: 14,
-                  padding: '14px 16px',
+                  borderRadius: 12,
+                  padding: '10px 12px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 14,
+                  gap: 10,
                   cursor: 'pointer',
                   transition: 'transform 0.15s',
                 }}
@@ -311,20 +311,20 @@ export default function Home({ profile, onNavigate }) {
                     src={player.foto_url}
                     alt={player.nome}
                     style={{
-                      width: 76, height: 76, borderRadius: 12, objectFit: 'cover',
+                      width: 52, height: 52, borderRadius: 10, objectFit: 'cover',
                       border: i === 0 ? '2px solid rgba(200,241,53,0.25)' : '1px solid var(--border)',
                       flexShrink: 0,
                     }}
                   />
                 ) : (
                   <div style={{
-                    width: 76, height: 76, borderRadius: 12, flexShrink: 0,
+                    width: 52, height: 52, borderRadius: 10, flexShrink: 0,
                     background: `linear-gradient(135deg, ${getPositionColor(player.posicao)}22, ${getPositionColor(player.posicao)}44)`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     border: i === 0 ? '2px solid rgba(200,241,53,0.25)' : '1px solid var(--border)',
                   }}>
                     <span style={{
-                      fontSize: 26, fontWeight: 800, color: getPositionColor(player.posicao),
+                      fontSize: 20, fontWeight: 800, color: getPositionColor(player.posicao),
                       fontFamily: "'Barlow Condensed',sans-serif",
                     }}>
                       {player.nome ? player.nome.charAt(0).toUpperCase() : '?'}
@@ -332,11 +332,11 @@ export default function Home({ profile, onNavigate }) {
                   </div>
                 )}
 
-                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <RankBadge rank={i + 1} />
                     <span style={{
-                      fontSize: 16, fontWeight: 700, color: 'var(--text-primary)',
+                      fontSize: 14, fontWeight: 700, color: 'var(--text-primary)',
                       fontFamily: "'Inter',sans-serif", lineHeight: 1.2,
                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                     }}>
@@ -345,16 +345,16 @@ export default function Home({ profile, onNavigate }) {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <span style={{
-                      fontSize: 12, color: getPositionColor(player.posicao), fontWeight: 600,
+                      fontSize: 11, color: getPositionColor(player.posicao), fontWeight: 600,
                       fontFamily: "'Inter',sans-serif",
                     }}>
                       {player.posicao || 'Ala'}
                     </span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
-                    <StarIcon size={13} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                    <StarIcon size={12} />
                     <span style={{
-                      fontSize: 15, fontWeight: 800, color: 'var(--text-primary)',
+                      fontSize: 13, fontWeight: 800, color: 'var(--text-primary)',
                       fontFamily: "'Barlow Condensed',sans-serif",
                     }}>
                       {Number(player.media_estrelas || 0).toFixed(1)}
