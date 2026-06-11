@@ -124,15 +124,15 @@ export default function Home({ profile, onNavigate }) {
             </div>
             <button
               onClick={() => onNavigate('ranking')}
-              style={{ background:'var(--accent)', color:'#05070A', border:'none', borderRadius:14, padding:'10px 20px', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:"'Oswald',sans-serif", textTransform:'uppercase', letterSpacing:'0.04em', transition:'all 0.2s' }}
+              style={{ background:'var(--accent)', color:'#0A1018', border:'none', borderRadius:14, padding:'10px 20px', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:"'Oswald',sans-serif", textTransform:'uppercase', letterSpacing:'0.04em', transition:'all 0.2s' }}
             >
               Ver Ranking
             </button>
           </div>
           {myPlayerInfo?.foto_perfil ? (
-            <img src={myPlayerInfo.foto_perfil} alt={greetingName} style={{ width:100, height:100, borderRadius:'50%', objectFit:'cover', border:'3px solid rgba(255,107,0,0.3)', flexShrink:0 }} />
+            <img src={myPlayerInfo.foto_perfil} alt={greetingName} style={{ width:100, height:100, borderRadius:'50%', objectFit:'cover', border:'3px solid rgba(249,115,22,0.3)', flexShrink:0 }} />
           ) : (
-            <div style={{ width:100, height:100, borderRadius:'50%', background:'var(--accent-dim)', border:'3px solid rgba(255,107,0,0.2)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:36, fontWeight:700, color:'var(--accent)', flexShrink:0, fontFamily:"'Oswald',sans-serif" }}>
+            <div style={{ width:100, height:100, borderRadius:'50%', background:'var(--accent-dim)', border:'3px solid rgba(249,115,22,0.2)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:36, fontWeight:700, color:'var(--accent)', flexShrink:0, fontFamily:"'Oswald',sans-serif" }}>
               {greetingName.charAt(0).toUpperCase()}
             </div>
           )}
@@ -178,7 +178,7 @@ export default function Home({ profile, onNavigate }) {
           <div className="home-section-label" style={{ marginBottom:12 }}>Ações Rápidas</div>
           <div className="acoes-rapidas-grid">
             {[
-              { icon: <IconAvaliar size={22} color="#05070A" />, label: 'Avaliar atleta', action: () => onNavigate('jogadores'), primary: true },
+              { icon: <IconAvaliar size={22} color="#0A1018" />, label: 'Avaliar atleta', action: () => onNavigate('jogadores'), primary: true },
               { icon: <IconBasquete size={22} color="var(--accent)" />, label: 'Meus jogos', action: () => onNavigate('jogos'), primary: false },
               { icon: <IconRanking size={22} color="var(--accent)" />, label: 'Ver ranking', action: () => onNavigate('ranking'), primary: false },
               { icon: <IconTrofeu size={22} color="var(--accent)" />, label: 'Ver torneios', action: () => onNavigate('jogos', { aba: 'torneios' }), primary: false }

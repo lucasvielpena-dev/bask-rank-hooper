@@ -207,8 +207,8 @@ export default function AdminNotifications({ profile, onNavigate }) {
           {/* Recipient Count */}
           {recipientCount !== null && (
             <div className="card" style={{
-              background: 'linear-gradient(135deg, var(--bg-card) 0%, rgba(255,107,0,0.06) 100%)',
-              border: '1px solid rgba(255,107,0,0.12)',
+              background: 'linear-gradient(135deg, var(--bg-card) 0%, rgba(249,115,22,0.06) 100%)',
+              border: '1px solid rgba(249,115,22,0.12)',
               borderRadius: 'clamp(12px, 2vw, 16px)',
               padding: 'clamp(14px, 3vw, 20px)',
               display: 'flex',
@@ -273,7 +273,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
               justifyContent: 'center',
               gap: 10,
               width: '100%',
-              boxShadow: '0 4px 14px rgba(255,107,0,0.2)',
+              boxShadow: '0 4px 14px rgba(249,115,22,0.2)',
               fontFamily: 'inherit',
               letterSpacing: '0.02em'
             }}

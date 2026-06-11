@@ -193,7 +193,7 @@ export default function Destaques({ profile, onNavigate }) {
                     width: 32,
                     height: 32,
                     borderRadius: 8,
-                    background: i === 0 ? 'rgba(255,107,0,0.12)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--accent-dim)',
+                    background: i === 0 ? 'rgba(249,115,22,0.12)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--accent-dim)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -277,13 +277,13 @@ export default function Destaques({ profile, onNavigate }) {
 
         {/* Ação Rápida */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(255,107,0,0.15) 0%, rgba(255,107,0,0.05) 100%)',
+          background: 'linear-gradient(135deg, rgba(249,115,22,0.15) 0%, rgba(249,115,22,0.05) 100%)',
           borderRadius: '16px',
           padding: '20px',
           display: 'flex',
           alignItems: 'center',
           gap: 14,
-          boxShadow: '0 4px 16px rgba(255,107,0,0.15)'
+          boxShadow: '0 4px 16px rgba(249,115,22,0.15)'
         }}>
           <div style={{
             width: 48,

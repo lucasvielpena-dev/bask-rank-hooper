@@ -384,9 +384,9 @@ export default function Stats({ profile, onNavigate }) {
             <h3 style={{ fontSize: '20px', fontWeight: 900, color: 'var(--text-primary)', marginBottom: 2 }} >{profile.nome_completo}</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
               <span style={{
-                background: 'rgba(255,107,0,0.12)',
+                background: 'rgba(249,115,22,0.12)',
                 color: 'var(--accent)',
-                border: '1px solid rgba(255,107,0,0.3)',
+                border: '1px solid rgba(249,115,22,0.3)',
                 borderRadius: '6px',
                 padding: '2px 8px',
                 fontSize: '9px',
@@ -719,8 +719,8 @@ export default function Stats({ profile, onNavigate }) {
                 <button
                   onClick={() => setSubAbaHistorico('pessoal')}
                   style={{
-                    background: subAbaHistorico === 'pessoal' ? 'rgba(255,107,0,0.1)' : 'none',
-                    border: subAbaHistorico === 'pessoal' ? '1px solid rgba(255,107,0,0.2)' : '1px solid transparent',
+                    background: subAbaHistorico === 'pessoal' ? 'rgba(249,115,22,0.1)' : 'none',
+                    border: subAbaHistorico === 'pessoal' ? '1px solid rgba(249,115,22,0.2)' : '1px solid transparent',
                     borderRadius: '20px',
                     padding: '4px 12px',
                     fontSize: '11px',
@@ -734,8 +734,8 @@ export default function Stats({ profile, onNavigate }) {
                 <button
                   onClick={() => setSubAbaHistorico('quadra')}
                   style={{
-                    background: subAbaHistorico === 'quadra' ? 'rgba(255,107,0,0.1)' : 'none',
-                    border: subAbaHistorico === 'quadra' ? '1px solid rgba(255,107,0,0.2)' : '1px solid transparent',
+                    background: subAbaHistorico === 'quadra' ? 'rgba(249,115,22,0.1)' : 'none',
+                    border: subAbaHistorico === 'quadra' ? '1px solid rgba(249,115,22,0.2)' : '1px solid transparent',
                     borderRadius: '20px',
                     padding: '4px 12px',
                     fontSize: '11px',

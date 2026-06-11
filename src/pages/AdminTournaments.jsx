@@ -5,7 +5,7 @@ import { IconCalendario, IconVoltar, IconTrofeu } from '../components/Icons';
 const STATUS_TORNEIO = {
   inscricoes_abertas: { label: 'Inscrições Abertas', color: '#22c55e', bg: 'rgba(34,197,94,0.12)' },
   inscricoes_encerradas: { label: 'Aguardando Início', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  em_andamento: { label: 'Em Andamento', color: 'var(--accent)', bg: 'rgba(255,107,0,0.12)' },
+  em_andamento: { label: 'Em Andamento', color: 'var(--accent)', bg: 'rgba(249,115,22,0.12)' },
   finalizado: { label: 'Finalizado', color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' }
 };
 
@@ -81,7 +81,7 @@ export default function AdminTournaments({ profile, onNavigate }) {
           >
             <IconVoltar size={18} color="var(--text-primary)" />
           </button>
-          <div style={{ width: 40, height: 40, background: 'rgba(255,107,0,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 40, height: 40, background: 'rgba(249,115,22,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <IconCalendario size={20} color="var(--accent)" />
           </div>
           <div>

@@ -301,9 +301,9 @@ export default function AdminUsers({ profile, onNavigate }) {
                         fontWeight: 800,
                         textTransform: 'uppercase',
                         letterSpacing: '0.04em',
-                        background: isAdmin ? 'rgba(255,107,0,0.12)' : 'var(--accent-dim)',
+                        background: isAdmin ? 'rgba(249,115,22,0.12)' : 'var(--accent-dim)',
                         color: isAdmin ? 'var(--accent)' : 'var(--accent)',
-                        border: isAdmin ? '1px solid rgba(255,107,0,0.3)' : '1px solid rgba(255,107,0,0.2)'
+                        border: isAdmin ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(249,115,22,0.2)'
                       }}>
                         {user.role || 'user'}
                       </span>
@@ -345,8 +345,8 @@ export default function AdminUsers({ profile, onNavigate }) {
                         minWidth: 'clamp(80px, 25vw, 110px)',
                         padding: '7px 10px',
                         borderRadius: 8,
-                        border: isAdmin ? '1px solid rgba(255,107,0,0.3)' : '1px solid rgba(255,107,0,0.2)',
-                        background: isAdmin ? 'rgba(255,107,0,0.08)' : 'var(--accent-dim)',
+                        border: isAdmin ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(249,115,22,0.2)',
+                        background: isAdmin ? 'rgba(249,115,22,0.08)' : 'var(--accent-dim)',
                         color: isAdmin ? 'var(--accent)' : 'var(--accent)',
                         fontSize: 11,
                         fontWeight: 700,

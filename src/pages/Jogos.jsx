@@ -442,7 +442,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           {/* Header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 40, height: 40, background: 'rgba(255,107,0,0.12)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: 40, height: 40, background: 'rgba(249,115,22,0.12)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {aba === 'torneios' ? (
                   <IconCalendario size={20} color="var(--accent)" />
                 ) : (
@@ -475,7 +475,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <button className={`tab ${aba === 'historico' ? 'active' : ''}`} onClick={() => setAba('historico')}>
               Histórico
               {historico.length > 0 && (
-                <span style={{ background: 'var(--accent)', color: '#05070A', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{historico.length}</span>
+                <span style={{ background: 'var(--accent)', color: '#0A1018', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{historico.length}</span>
               )}
             </button>
             <button className={`tab ${aba === 'torneios' ? 'active' : ''}`} onClick={() => setAba('torneios')}>
@@ -665,7 +665,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             type="button"
                             onClick={() => togglePlayer(j.id, 'A')}
                             className={`btn btn-sm ${noA ? 'btn-primary' : 'btn-secondary'}`}
-                            style={{ fontSize: 11, padding: '4px 10px', background: noA ? 'var(--accent)' : 'transparent', color: noA ? '#05070A' : 'var(--text-secondary)', border: noA ? '1px solid var(--accent)' : '1px solid var(--border)' }}
+                            style={{ fontSize: 11, padding: '4px 10px', background: noA ? 'var(--accent)' : 'transparent', color: noA ? '#0A1018' : 'var(--text-secondary)', border: noA ? '1px solid var(--accent)' : '1px solid var(--border)' }}
                           >
                             Time A
                           </button>
@@ -923,7 +923,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   </h3>
                   <button onClick={comecarProximoPeriodo} style={{
                     background: 'var(--accent)',
-                    color: '#05070A',
+                    color: '#0A1018',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '8px 20px',
@@ -949,7 +949,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   </h3>
                   <button onClick={comecarProximoPeriodo} style={{
                     background: 'var(--accent)',
-                    color: '#05070A',
+                    color: '#0A1018',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '8px 20px',
@@ -987,7 +987,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <div style={{
               padding: '12px',
               background: 'var(--bg-card)',
-              border: '1px solid rgba(255, 107, 0, 0.12)',
+              border: '1px solid rgba(249,115,22,0.12)',
               borderRadius: '12px',
               display: 'flex',
               flexDirection: 'column',
@@ -1077,7 +1077,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 width: '56px',
                 height: '56px',
                 borderRadius: '50%',
-                color: '#05070A',
+                color: '#0A1018',
                 fontSize: '22px',
                 display: 'flex',
                 alignItems: 'center',

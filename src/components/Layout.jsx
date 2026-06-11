@@ -272,7 +272,7 @@ export default function Layout({ page, onNavigate, children }) {
                           padding: '8px 4px',
                           borderRadius: 8,
                           border: themePref === t.key ? '2px solid var(--accent)' : '1px solid var(--border)',
-                          background: themePref === t.key ? 'rgba(255,107,0,0.15)' : 'none',
+                          background: themePref === t.key ? 'rgba(249,115,22,0.15)' : 'none',
                           color: 'var(--text-primary)',
                           cursor: 'pointer',
                           fontSize: 12,

@@ -29,8 +29,8 @@ function BarChart({ data, labelKey, valueKey, color = 'blue', horizontal = false
                 width: `${(item[valueKey] / max) * 100}%`,
                 height: '100%',
                 background: color === 'blue'
-                  ? 'linear-gradient(135deg, rgba(255,107,0,0.15) 0%, rgba(255,107,0,0.05) 100%)'
-                  : 'linear-gradient(135deg, rgba(255,107,0,0.15) 0%, rgba(255,107,0,0.05) 100%)',
+                  ? 'linear-gradient(135deg, rgba(249,115,22,0.15) 0%, rgba(249,115,22,0.05) 100%)'
+                  : 'linear-gradient(135deg, rgba(249,115,22,0.15) 0%, rgba(249,115,22,0.05) 100%)',
                 borderRadius: 6,
                 transition: 'width 0.6s ease'
               }} />
@@ -298,7 +298,7 @@ export default function AdminReports({ profile, onNavigate }) {
                         width: 22,
                         height: 22,
                         borderRadius: 6,
-                        background: i === 0 ? 'rgba(255,107,0,0.15)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--bg-card)',
+                        background: i === 0 ? 'rgba(249,115,22,0.15)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--bg-card)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -372,7 +372,7 @@ export default function AdminReports({ profile, onNavigate }) {
                       width: 22,
                       height: 22,
                       borderRadius: 6,
-                      background: i === 0 ? 'rgba(255,107,0,0.15)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--bg-card)',
+                      background: i === 0 ? 'rgba(249,115,22,0.15)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--bg-card)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',

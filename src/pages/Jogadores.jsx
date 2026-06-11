@@ -305,7 +305,7 @@ export default function Jogadores({ profile }) {
       <div style={{ position: 'relative', zIndex: 2, padding: 'clamp(12px, 3vw, 20px) clamp(14px, 3vw, 20px) 0' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 40, height: 40, background: 'rgba(255,107,0,0.12)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 40, height: 40, background: 'rgba(249,115,22,0.12)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <IconJogador size={20} color="var(--accent)" />
             </div>
             <div>

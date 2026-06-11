@@ -419,7 +419,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                   width: 88,
                   height: 88,
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, rgba(255,107,0,0.15) 0%, rgba(255,107,0,0.05) 100%)',
+                  background: 'linear-gradient(135deg, rgba(249,115,22,0.15) 0%, rgba(249,115,22,0.05) 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',

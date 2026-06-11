@@ -128,7 +128,7 @@ export default function Ranking({ profile }) {
   };
 
   const getRankBadgeStyle = (index) => {
-    if (index === 0) return { border: '2px solid var(--accent)', background: 'rgba(255,107,0,0.15)', color: 'var(--accent)' };
+    if (index === 0) return { border: '2px solid var(--accent)', background: 'rgba(249,115,22,0.15)', color: 'var(--accent)' };
     if (index === 1) return { border: '2px solid #94A3B8', background: 'rgba(148, 163, 184, 0.15)', color: 'var(--text-secondary)' };
     if (index === 2) return { border: '2px solid #CD7C2F', background: 'rgba(205, 124, 47, 0.15)', color: '#CD7C2F' };
     return { border: '1px solid var(--border)', background: 'none', color: 'var(--text-secondary)' };
@@ -195,8 +195,8 @@ export default function Ranking({ profile }) {
                     overflow: 'hidden',
                     ...(isFirst ? {
                       border: '1.5px solid var(--accent)',
-                      background: 'linear-gradient(180deg, rgba(255,107,0,0.1) 0%, var(--bg-card) 100%)',
-                      boxShadow: '0 8px 30px rgba(255,107,0,0.12), inset 0 1px 0 rgba(255,255,255,0.06)',
+                      background: 'linear-gradient(180deg, rgba(249,115,22,0.1) 0%, var(--bg-card) 100%)',
+                      boxShadow: '0 8px 30px rgba(249,115,22,0.12), inset 0 1px 0 rgba(255,255,255,0.06)',
                     } : {})
                   }}
                 >
@@ -215,7 +215,7 @@ export default function Ranking({ profile }) {
                         color: '#fff',
                         fontSize: '12px',
                         fontWeight: 900,
-                        boxShadow: '0 2px 8px rgba(255,107,0,0.4)',
+                        boxShadow: '0 2px 8px rgba(249,115,22,0.4)',
                         position: 'relative',
                         flexShrink: 0
                       }}>
@@ -243,7 +243,7 @@ export default function Ranking({ profile }) {
                       fotoUrl={jogador.foto_url} 
                       nome={jogador.nome} 
                       size={isFirst ? 60 : 40}
-                      border={isFirst ? '3px solid rgba(255,107,0,0.6)' : 'none'}
+                      border={isFirst ? '3px solid rgba(249,115,22,0.6)' : 'none'}
                     />
 
                     {/* Detalhes */}
@@ -281,7 +281,7 @@ export default function Ranking({ profile }) {
                         background: 'var(--accent-dim)',
                         padding: '5px 12px',
                         borderRadius: '20px',
-                        border: '1px solid rgba(255,107,0,0.25)'
+                        border: '1px solid rgba(249,115,22,0.25)'
                       } : {})
                     }}>
                       <span style={{ 
