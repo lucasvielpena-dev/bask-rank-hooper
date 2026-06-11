@@ -1,7 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import PlayerProfileModal from '../components/PlayerProfileModal';
-import { IconJogador, IconBuscar } from '../components/Icons';
 
 const FILTROS = [
   { key: 'todos', label: 'Todos' },
@@ -14,65 +13,79 @@ const FILTROS = [
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
 
-function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = false }) {
+const positionColors = {
+  'Ala': ['#3B82F6', '#1D4ED8'],
+  'Armador': ['#8B5CF6', '#6D28D9'],
+  'Piv\u00f4': ['#10B981', '#047857'],
+  'Ala-Piv\u00f4': ['#06B6D4', '#0891B2'],
+  'Armador-Ala': ['#EC4899', '#BE185D'],
+};
+
+function PlayerAvatar({ fotoUrl, nome, posicao, size = 44, isFirst = false }) {
   const initial = nome ? nome.charAt(0).toUpperCase() : '?';
-  
-  const getGradientForName = (name) => {
-    const colors = [
-      ['var(--accent)', '#1d4ed8'],
-      ['#f59e0b', '#d97706'],
-      ['#10b981', '#047857'],
-      ['#8b5cf6', '#6d28d9'],
-      ['#ec4899', '#be185d'],
-      ['#f43f5e', '#be123c'],
-      ['#06b6d4', '#0891b2'],
-    ];
-    let hash = 0;
-    for (let i = 0; i < (name || '').length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const index = Math.abs(hash) % colors.length;
-    return `linear-gradient(135deg, ${colors[index][0]} 0%, ${colors[index][1]} 100%)`;
+
+  const getGradient = () => {
+    const pos = positionColors[posicao] || positionColors['Ala'];
+    return `linear-gradient(135deg, ${pos[0]} 0%, ${pos[1]} 100%)`;
   };
 
-  const avatarStyle = {
+  const wrapperStyle = {
+    position: 'relative',
+    display: 'inline-flex',
+    flexShrink: 0,
+  };
+
+  const imgStyle = {
     width: size,
     height: size,
     borderRadius: '50%',
     objectFit: 'cover',
-    border: border !== 'none' ? border : '1px solid var(--border)',
-    boxShadow: '0 3px 8px rgba(0, 0, 0, 0.08)',
-    flexShrink: 0
+    border: isFirst ? '2px solid transparent' : '1.5px solid rgba(255,255,255,0.12)',
+    boxShadow: isFirst ? '0 0 0 2px rgba(249,115,22,0.3)' : 'none',
+  };
+
+  const initialsStyle = {
+    width: size,
+    height: size,
+    borderRadius: '50%',
+    background: getGradient(),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#ffffff',
+    fontWeight: 800,
+    fontSize: size * 0.38,
+    fontFamily: "'Barlow Condensed',sans-serif",
+    border: isFirst ? '2px solid transparent' : '1.5px solid rgba(255,255,255,0.12)',
+    boxShadow: isFirst ? '0 0 0 2px rgba(249,115,22,0.3)' : 'none',
   };
 
   if (fotoUrl) {
     return (
-      <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
-        {hasCrown && <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
-        <img src={fotoUrl} alt={nome} style={avatarStyle} />
+      <div style={wrapperStyle}>
+        <img src={fotoUrl} alt={nome} style={imgStyle} />
       </div>
     );
   }
 
   return (
-    <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
-      {hasCrown && <div style={{ position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)', fontSize: 18, zIndex: 5 }}>👑</div>}
-      <div style={{
-        ...avatarStyle,
-        background: getGradientForName(nome),
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#ffffff',
-        fontWeight: 800,
-        fontSize: size * 0.44,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-      }}>
-        {initial}
-      </div>
+    <div style={wrapperStyle}>
+      <div style={initialsStyle}>{initial}</div>
     </div>
   );
 }
+
+const ScoreBar = ({ value, max = 5.0 }) => {
+  const pct = Math.min((value / max) * 100, 100);
+  let color = '#64748B';
+  if (value >= 3.0) color = '#F97316';
+  else if (value >= 2.0) color = '#EAB308';
+  return (
+    <div style={{ width: 80, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)', marginTop: 4, overflow: 'hidden' }}>
+      <div style={{ width: `${pct}%`, height: '100%', borderRadius: 2, background: color, transition: 'width 0.5s ease' }} />
+    </div>
+  );
+};
 
 const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
   const [hover, setHover] = useState(0);
@@ -87,10 +100,8 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
           onMouseLeave={() => !disabled && setHover(0)}
           disabled={disabled}
           style={{
-            background: 'none',
-            border: 'none',
-            cursor: disabled ? 'default' : 'pointer',
-            padding: '2px',
+            background: 'none', border: 'none',
+            cursor: disabled ? 'default' : 'pointer', padding: '2px',
             transition: 'transform 0.1s',
             transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
           }}
@@ -111,8 +122,7 @@ export default function Jogadores({ profile }) {
   const [filtroAtivo, setFiltroAtivo] = useState('todos');
   const [loading, setLoading] = useState(true);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-
-  const [selectedCity, setSelectedCity] = useState(profile?.cidade_atual || profile?.cidade || 'Altamira');
+  const [selectedCity] = useState(profile?.cidade_atual || profile?.cidade || 'Altamira');
 
   const [ranks, setRanks] = useState({});
   const [mvpPlayerIds, setMvpPlayerIds] = useState(new Set());
@@ -121,8 +131,8 @@ export default function Jogadores({ profile }) {
     { key: 'arremesso', label: 'Arremesso' },
     { key: 'controle_de_bola', label: 'Controle de Bola' },
     { key: 'defesa', label: 'Defesa' },
-    { key: 'visao_de_jogo', label: 'Visão de Jogo' },
-    { key: 'explosao_fisica', label: 'Explosão Física' }
+    { key: 'visao_de_jogo', label: 'Vis\u00e3o de Jogo' },
+    { key: 'explosao_fisica', label: 'Explos\u00e3o F\u00edsica' }
   ];
 
   const [votingPlayer, setVotingPlayer] = useState(null);
@@ -130,42 +140,22 @@ export default function Jogadores({ profile }) {
   const [comentarioVoto, setComentarioVoto] = useState('');
   const [enviandoVoto, setEnviandoVoto] = useState(false);
   const [votosStatus, setVotosStatus] = useState(null);
-
   const [toast, setToast] = useState(null);
-
-
 
   useEffect(() => {
     if (profile) {
       loadJogadores();
-      const userCity = profile.cidade_atual || profile.cidade || 'Altamira';
-      setSelectedCity(userCity);
     }
   }, [profile]);
 
   useEffect(() => {
     if (!profile) return;
     const channel = supabase
-      .channel('jogadores-global-realtime-unified')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'jogadores' },
-        () => {
-          loadJogadores();
-        }
-      )
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'avaliacoes' },
-        () => {
-          loadJogadores();
-        }
-      )
+      .channel('jogadores-global-realtime-v2')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores' }, () => loadJogadores())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'avaliacoes' }, () => loadJogadores())
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [profile]);
 
   useEffect(() => {
@@ -174,7 +164,8 @@ export default function Jogadores({ profile }) {
     if (busca.trim() !== '') {
       result = result.filter(j =>
         j.nome.toLowerCase().includes(busca.toLowerCase()) ||
-        (j.apelido || '').toLowerCase().includes(busca.toLowerCase())
+        (j.apelido || '').toLowerCase().includes(busca.toLowerCase()) ||
+        (j.posicao || '').toLowerCase().includes(busca.toLowerCase())
       );
     }
 
@@ -220,11 +211,9 @@ export default function Jogadores({ profile }) {
         ...j,
         ja_votou_hoje: avaliadosSet.has(j.id)
       }));
-      
+
       setJogadores(players);
       setVotosStatus(votesStatus);
-
-
 
       const playerRanks = {};
       const playersByCity = {};
@@ -243,7 +232,6 @@ export default function Jogadores({ profile }) {
 
       const mvps = new Set(partidasData?.map(p => p.mvp_id).filter(Boolean) || []);
       setMvpPlayerIds(mvps);
-
     } catch (e) {
       console.error('Erro ao carregar atletas:', e);
     }
@@ -255,17 +243,16 @@ export default function Jogadores({ profile }) {
     setTimeout(() => setToast(null), 3500);
   }
 
-  function handleOpenVote(player) {
+  function handleOpenVote(player, e) {
+    e.stopPropagation();
     if (profile?.player_id === player.id) {
-      showToast('Você não pode avaliar a si mesmo!', 'error');
+      showToast('Voc\u00ea n\u00e3o pode avaliar a si mesmo!', 'error');
       return;
     }
-
     if (votosStatus && votosStatus.restantes <= 0) {
-      showToast('Você atingiu o limite de 20 avaliações por dia!', 'error');
+      showToast('Voc\u00ea atingiu o limite de 20 avalia\u00e7\u00f5es por dia!', 'error');
       return;
     }
-
     setVotingPlayer(player);
     setEstrelasVoto({ arremesso: 0, controle_de_bola: 0, defesa: 0, visao_de_jogo: 0, explosao_fisica: 0 });
     setComentarioVoto('');
@@ -278,23 +265,21 @@ export default function Jogadores({ profile }) {
       showToast('Selecione uma nota para todos os 5 fundamentos', 'error');
       return;
     }
-
     setEnviandoVoto(true);
     try {
       const { data, error } = await votacaoAPI.votar(votingPlayer.id, {
         ...estrelasVoto,
         comentario: comentarioVoto.trim() || null
       });
-
       if (error || !data?.sucesso) {
-        showToast(data?.erro || error?.message || 'Erro ao registrar avaliação.', 'error');
+        showToast(data?.erro || error?.message || 'Erro ao registrar avalia\u00e7\u00e3o.', 'error');
       } else {
-        showToast(`✓ Avaliação computada! Nova média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
+        showToast(`\u2713 Avalia\u00e7\u00e3o computada! Nova m\u00e9dia: \u2605 ${Number(data.media_estrelas).toFixed(1)}`, 'success');
         setVotingPlayer(null);
         loadJogadores();
       }
     } catch (err) {
-      showToast('Erro de conexão ao salvar avaliação.', 'error');
+      showToast('Erro de conex\u00e3o ao salvar avalia\u00e7\u00e3o.', 'error');
     } finally {
       setEnviandoVoto(false);
     }
@@ -302,32 +287,60 @@ export default function Jogadores({ profile }) {
 
   return (
     <div className="page-content" style={{ position: 'relative' }}>
-      <div style={{ position: 'relative', zIndex: 2, padding: 'clamp(12px, 3vw, 20px) clamp(14px, 3vw, 20px) 0' }}>
+      <div style={{ padding: '16px 16px 0' }}>
+
+        {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 40, height: 40, background: 'rgba(249,115,22,0.12)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <IconJogador size={20} color="var(--accent)" />
-            </div>
-            <div>
-              <h2 style={{ fontWeight: 800, fontSize: 20, fontFamily:"'Oswald',sans-serif", textTransform:'uppercase', letterSpacing:'0.04em' }}>Jogadores</h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{filtrados.length} atletas em {selectedCity} - {profile?.uf || 'PA'}</p>
-            </div>
+          <div>
+            <h2 style={{
+              fontWeight: 800, fontSize: 22, color: '#FFFFFF',
+              fontFamily: "'Barlow Condensed',sans-serif", textTransform: 'uppercase',
+              letterSpacing: '0.04em', lineHeight: 1,
+            }}>
+              Jogadores
+            </h2>
+            <p style={{ color: '#8A8A9A', fontSize: 12, marginTop: 3, fontFamily: "'Inter',sans-serif", fontWeight: 400 }}>
+              <span style={{ color: '#22C55E', fontSize: 8, marginRight: 4 }}>&#9679;</span>
+              {filtrados.length} atletas em {selectedCity} - {profile?.uf || 'PA'}
+            </p>
           </div>
+          <button style={{
+            width: 36, height: 36, borderRadius: 10, border: '1px solid rgba(255,255,255,0.08)',
+            background: '#131C27', color: '#8A8A9A', display: 'flex', alignItems: 'center',
+            justifyContent: 'center', cursor: 'pointer', fontSize: 16,
+          }}>
+            &#8693;
+          </button>
         </div>
 
-        <div style={{ position: 'relative', marginBottom: 16 }}>
-          <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', display: 'flex' }}>
-            <IconBuscar size={16} color="var(--text-muted)" />
+        {/* Search */}
+        <div style={{ position: 'relative', marginBottom: 12 }}>
+          <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
           </div>
           <input
             value={busca}
             onChange={e => setBusca(e.target.value)}
-            placeholder="Buscar jogador..."
-            style={{ paddingLeft: 40, width: '100%' }}
+            placeholder="Buscar por nome ou posi\u00e7\u00e3o..."
+            style={{
+              paddingLeft: 40, width: '100%', boxSizing: 'border-box',
+              background: '#1E1E2E', border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: 12, padding: '12px 14px 12px 40px',
+              fontSize: 14, color: '#F8FAFC', fontFamily: "'Inter',sans-serif",
+              outline: 'none', transition: 'border-color 0.2s',
+            }}
+            onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
+            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
           />
         </div>
 
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 16, scrollbarWidth: 'none', webkitOverflowScrolling: 'touch' }} className="hide-scrollbar">
+        {/* Filters */}
+        <div style={{
+          display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 16,
+          scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch',
+        }} className="hide-scrollbar">
           {FILTROS.map(f => {
             const active = filtroAtivo === f.key;
             return (
@@ -335,17 +348,12 @@ export default function Jogadores({ profile }) {
                 key={f.key}
                 onClick={() => setFiltroAtivo(f.key)}
                 style={{
-                  flexShrink: 0,
-                  padding: '8px 16px',
-                  borderRadius: '30px',
-                  border: active ? '1.5px solid var(--accent)' : '1.5px solid var(--border)',
-                  background: active ? 'var(--accent-dim)' : 'var(--bg-card)',
-                  color: active ? 'var(--accent)' : 'var(--text-secondary)',
-                  fontWeight: 700,
-                  fontSize: 12,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  transition: 'all 0.2s ease'
+                  flexShrink: 0, padding: '8px 16px', borderRadius: 20,
+                  border: active ? 'none' : '1px solid #333',
+                  background: active ? '#F97316' : 'transparent',
+                  color: active ? '#FFFFFF' : '#8A8A9A',
+                  fontWeight: 700, fontSize: 12, cursor: 'pointer',
+                  fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
                 }}
               >
                 {f.label}
@@ -354,104 +362,123 @@ export default function Jogadores({ profile }) {
           })}
         </div>
 
+        {/* List */}
         {loading ? (
-          <div className="responsive-card-grid" style={{ paddingBottom: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {[1, 2, 3, 4].map(idx => (
-              <div key={idx} className="skeleton" style={{ height: 120, borderRadius: '16px' }} />
+              <div key={idx} className="skeleton" style={{ height: 72, borderRadius: 14 }} />
             ))}
           </div>
         ) : filtrados.length === 0 ? (
           <div className="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             <h3>Nenhum jogador encontrado</h3>
-            <p>Selecione outro filtro ou altere sua busca por nome/apelido.</p>
+            <p>Selecione outro filtro ou altere sua busca.</p>
           </div>
         ) : (
-          <div className="responsive-card-grid" style={{ paddingBottom: 30 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {filtrados.map((j, i) => {
               const rankVal = ranks[j.id] || 0;
               const hasVoted = j.ja_votou_hoje;
+              const score = j.total_votos >= 1 ? Number(j.media_estrelas) : 0;
+              const isFirst = rankVal === 1;
+
               return (
-                <div 
-                  key={j.id} 
-                  className="card card-enter" 
-                  style={{ animationDelay: `${i * 25}ms`, padding: '16px 18px' }}
+                <div
+                  key={j.id}
+                  onClick={() => setSelectedPlayer({ ...j, rank: rankVal })}
+                  style={{
+                    background: '#131C27', border: '1px solid rgba(255,255,255,0.05)',
+                    borderRadius: 14, padding: '12px 14px',
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    cursor: 'pointer', transition: 'transform 0.15s',
+                    animationDelay: `${i * 20}ms`,
+                  }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={44} hasCrown={j.atual_campeao} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: 800, fontSize: 16, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                        <span style={{ color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {j.nome}
-                        </span>
-                        {j.apelido && <span style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 500 }}>"{j.apelido}"</span>}
-                      </div>
-                      <div style={{ fontSize: 11, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 6, marginTop: 2, flexWrap: 'wrap' }}>
-                        {rankVal > 0 && (
-                          <>
-                            <span style={{ fontWeight: 700, color: 'var(--text-muted)' }}>
-                              #{rankVal}
-                            </span>
-                            <span style={{ color: 'var(--text-muted)' }}>•</span>
-                          </>
-                        )}
-                        <span>{j.posicao || 'Ala'}</span>
-                        <span style={{ color: 'var(--text-muted)' }}>•</span>
-                        <span>{j.cidade} - {j.uf}</span>
-                      </div>
-                    </div>
+                  <PlayerAvatar
+                    fotoUrl={j.foto_url}
+                    nome={j.nome}
+                    posicao={j.posicao}
+                    size={44}
+                    isFirst={isFirst}
+                  />
 
-                    <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <span style={{ fontSize: '18px', fontWeight: 900, color: 'var(--accent)' }}>
-                          {j.total_votos >= 1 ? Number(j.media_estrelas).toFixed(1) : 'S/N'}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, overflow: 'hidden' }}>
+                      <span style={{
+                        fontSize: 15, fontWeight: 700, color: '#FFFFFF',
+                        fontFamily: "'Inter',sans-serif",
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                      }}>
+                        {j.nome}
+                      </span>
+                      {j.apelido && (
+                        <span style={{ fontSize: 12, color: '#6B7280', fontWeight: 400, flexShrink: 0 }}>
+                          "{j.apelido}"
                         </span>
-                        <span style={{ color: 'var(--accent)', fontSize: '14px' }}>★</span>
-                      </div>
-                      <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>
-                        {j.total_votos} {j.total_votos === 1 ? 'voto' : 'votos'}
-                      </div>
+                      )}
+                    </div>
+                    <div style={{ fontSize: 12, color: '#6B7280', fontFamily: "'Inter',sans-serif", fontWeight: 400, marginTop: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      {rankVal > 0 && (
+                        <span style={{ fontWeight: 700, color: isFirst ? '#F97316' : '#8A8A9A', fontSize: 12 }}>
+                          #{rankVal}
+                        </span>
+                      )}
+                      <span>{j.posicao || 'Ala'}</span>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: 8, marginTop: 14, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
-                    <button 
-                      className="btn btn-secondary btn-sm" 
-                      onClick={() => setSelectedPlayer({ ...j, rank: rankVal })} 
-                      style={{ 
-                        flex: 1, 
-                        margin: 0, 
-                        padding: '8px 14px',
-                        border: '1px solid var(--border)',
-                        background: 'rgba(255, 255, 255, 0.02)',
-                        color: 'var(--text-primary)'
-                      }}
-                    >
-                      Ver Perfil
-                    </button>
-                    <button 
-                      className="btn btn-sm"
-                      onClick={() => handleOpenVote(j)}
-                      style={{ 
-                        flex: 1, 
-                        margin: 0, 
-                        padding: '8px 14px',
-                        background: hasVoted ? 'var(--bg-secondary)' : 'var(--accent)',
-                        color: hasVoted ? 'var(--text-muted)' : '#ffffff',
-                        border: hasVoted ? '1px solid var(--border)' : 'none',
-                        fontWeight: 700
-                      }}
-                    >
-                      {hasVoted ? '✓ Avaliado' : 'Avaliar'}
-                    </button>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0, gap: 2 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                      <span style={{
+                        fontSize: 18, fontWeight: 800, color: '#FFFFFF',
+                        fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 1,
+                      }}>
+                        {j.total_votos >= 1 ? score.toFixed(1) : 'S/N'}
+                      </span>
+                      <span style={{ color: '#F97316', fontSize: 12 }}>&#9733;</span>
+                    </div>
+                    {j.total_votos >= 1 && <ScoreBar value={score} />}
+                    <div style={{ fontSize: 10, color: '#64748B', fontFamily: "'Inter',sans-serif" }}>
+                      {j.total_votos} {j.total_votos === 1 ? 'voto' : 'votos'}
+                    </div>
+                    {hasVoted && (
+                      <div style={{ fontSize: 10, color: '#64748B', fontFamily: "'Inter',sans-serif", fontWeight: 500 }}>
+                        &#10003; avaliado
+                      </div>
+                    )}
                   </div>
+
+                  {!hasVoted && profile?.player_id !== j.id && (
+                    <button
+                      onClick={(e) => handleOpenVote(j, e)}
+                      style={{
+                        width: 40, height: 28, borderRadius: 8,
+                        background: '#F97316', border: 'none',
+                        color: '#0A1018', fontSize: 11, fontWeight: 700,
+                        cursor: 'pointer', fontFamily: "'Inter',sans-serif",
+                        flexShrink: 0, display: 'flex', alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      Avaliar
+                    </button>
+                  )}
                 </div>
               );
             })}
+
+            <div style={{
+              padding: '20px 0 40px', textAlign: 'center',
+              color: '#64748B', fontSize: 12, fontFamily: "'Inter',sans-serif",
+            }}>
+              Mais jogadores em breve
+            </div>
           </div>
         )}
       </div>
 
+      {/* Voting Modal */}
       {votingPlayer && (
         <div className="modal-overlay" onClick={() => { if (!enviandoVoto) setVotingPlayer(null); }}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 400, maxHeight: '90vh', overflowY: 'auto' }}>
@@ -460,7 +487,7 @@ export default function Jogadores({ profile }) {
               Avaliar {votingPlayer.apelido || votingPlayer.nome}
             </h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 14, textAlign: 'center' }}>
-              Dê uma nota de 1 a 5 estrelas para cada habilidade:
+              D\u00ea uma nota de 1 a 5 estrelas para cada habilidade:
             </p>
 
             <form onSubmit={handleSubmitVote} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -471,7 +498,6 @@ export default function Jogadores({ profile }) {
                     background: val > 0 ? 'var(--accent-dim)' : 'var(--bg-secondary)',
                     padding: '8px 12px', borderRadius: 10,
                     border: val > 0 ? '1.5px solid var(--border)' : '1px solid var(--border)',
-                    transition: 'all 0.2s'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -480,12 +506,12 @@ export default function Jogadores({ profile }) {
                           background: val > 0 ? 'var(--accent)' : 'var(--bg-secondary)',
                           color: val > 0 ? '#fff' : 'var(--text-muted)', fontSize: 10, fontWeight: 700,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          border: val > 0 ? 'none' : '1px solid var(--border)'
+                          border: val > 0 ? 'none' : '1px solid var(--border)',
                         }}>{i + 1}</span>
                         <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
                       </div>
                       <span style={{ fontSize: 11, color: val > 0 ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 700 }}>
-                        {val > 0 ? `★ ${val}.0` : labelsNota[val] || 'Nota'}
+                        {val > 0 ? `\u2605 ${val}.0` : labelsNota[val] || 'Nota'}
                       </span>
                     </div>
                     <StarPicker value={val} onChange={v => setEstrelasVoto(p => ({ ...p, [f.key]: v }))} disabled={enviandoVoto} />
@@ -495,11 +521,10 @@ export default function Jogadores({ profile }) {
 
               <div style={{ marginTop: 2 }}>
                 <input
-                  type="text"
-                  maxLength="200"
+                  type="text" maxLength="200"
                   value={comentarioVoto}
                   onChange={e => setComentarioVoto(e.target.value)}
-                  placeholder="Comentário (opcional)"
+                  placeholder="Coment\u00e1rio (opcional)"
                   style={{ width: '100%', boxSizing: 'border-box', padding: '8px 10px', fontSize: 12, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
                   disabled={enviandoVoto}
                 />
@@ -507,7 +532,7 @@ export default function Jogadores({ profile }) {
 
               {votosStatus && (
                 <div style={{ textAlign: 'center', fontSize: 10, color: 'var(--text-muted)' }}>
-                  Avaliações hoje: <strong>{votosStatus.votos_hoje}/20</strong>
+                  Avalia\u00e7\u00f5es hoje: <strong>{votosStatus.votos_hoje}/20</strong>
                 </div>
               )}
 
