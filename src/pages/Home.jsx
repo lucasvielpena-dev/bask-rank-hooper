@@ -135,10 +135,7 @@ export default function Home({ profile, onNavigate }) {
         </div>
 
         <div className="hero-card" style={{
-          background: 'linear-gradient(135deg, #111827, #161B33, #0F172A)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: 24, padding: '20px 20px 16px', position: 'relative', overflow: 'hidden',
-          marginBottom: 20,
+          borderRadius: 24, padding: '20px 20px 16px', marginBottom: 20,
         }}>
           {/* Top badge */}
           <div style={{
@@ -215,9 +212,9 @@ export default function Home({ profile, onNavigate }) {
             </div>
 
             {/* Photo */}
-            {myPlayerInfo?.foto_perfil ? (
+            {myPlayerInfo?.foto_url ? (
               <img
-                src={myPlayerInfo.foto_perfil}
+                src={myPlayerInfo.foto_url}
                 alt={greetingName}
                 style={{
                   width: 80, height: 80, borderRadius: 16, objectFit: 'cover',
