@@ -12,7 +12,7 @@ const FORMATOS = {
 const STATUS_TORNEIO = {
   inscricoes_abertas: { label: '🟢 Inscrições Abertas', color: '#22c55e', bg: 'rgba(34,197,94,0.12)' },
   inscricoes_encerradas: { label: '🟡 Aguardando Início', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  em_andamento: { label: '🔵 Em Andamento', color: 'var(--accent)', bg: 'rgba(249,115,22,0.12)' },
+  em_andamento: { label: '🔵 Em Andamento', color: 'var(--accent)', bg: 'rgba(200,241,53,0.12)' },
   finalizado: { label: '🏆 Finalizado', color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' }
 };
 
@@ -69,7 +69,7 @@ export default function Torneios({ profile, isNested = false }) {
           {!isNested ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 40, height: 40, background: 'rgba(249,115,22,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 40, height: 40, background: 'rgba(200,241,53,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <IconCalendario size={20} color="var(--accent)" />
                 </div>
                 <div>
@@ -2054,7 +2054,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         <div style={{
           padding: '12px',
           background: 'var(--bg-card)',
-          border: '1px solid rgba(249, 115, 22, 0.2)',
+          border: '1px solid rgba(200, 241, 53, 0.2)',
           borderRadius: '12px',
           display: 'flex',
           flexDirection: 'column',
@@ -2124,7 +2124,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(249,115,22,0.3)',
+            boxShadow: '0 4px 12px rgba(200,241,53,0.3)',
             transition: 'transform 0.1s'
           }}
         >

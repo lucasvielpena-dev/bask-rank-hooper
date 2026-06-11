@@ -376,7 +376,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
           {/* Status da Localização Automática */}
           {locationStatus === 'requesting' && (
-            <div style={{ padding: '12px', background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', borderRadius: 8, fontSize: 13, color: '#93c5fd', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ padding: '12px', background: 'rgba(200,241,53,0.1)', border: '1px solid rgba(200,241,53,0.2)', borderRadius: 8, fontSize: 13, color: '#93c5fd', display: 'flex', alignItems: 'center', gap: 8 }}>
               <div className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} />
               Obtendo localização atual...
             </div>

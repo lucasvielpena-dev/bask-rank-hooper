@@ -41,7 +41,7 @@ function PlayerAvatar({ fotoUrl, nome, posicao, size = 44, isFirst = false }) {
     borderRadius: '50%',
     objectFit: 'cover',
     border: isFirst ? '2px solid transparent' : '1.5px solid rgba(255,255,255,0.12)',
-    boxShadow: isFirst ? '0 0 0 2px rgba(249,115,22,0.3)' : 'none',
+    boxShadow: isFirst ? '0 0 0 2px rgba(200,241,53,0.3)' : 'none',
   };
 
   const initialsStyle = {
@@ -57,7 +57,7 @@ function PlayerAvatar({ fotoUrl, nome, posicao, size = 44, isFirst = false }) {
     fontSize: size * 0.38,
     fontFamily: "'Barlow Condensed',sans-serif",
     border: isFirst ? '2px solid transparent' : '1.5px solid rgba(255,255,255,0.12)',
-    boxShadow: isFirst ? '0 0 0 2px rgba(249,115,22,0.3)' : 'none',
+    boxShadow: isFirst ? '0 0 0 2px rgba(200,241,53,0.3)' : 'none',
   };
 
   if (fotoUrl) {
@@ -78,7 +78,7 @@ function PlayerAvatar({ fotoUrl, nome, posicao, size = 44, isFirst = false }) {
 const ScoreBar = ({ value, max = 5.0 }) => {
   const pct = Math.min((value / max) * 100, 100);
   let color = '#64748B';
-  if (value >= 3.0) color = '#F97316';
+  if (value >= 3.0) color = '#C8F135';
   else if (value >= 2.0) color = '#EAB308';
   return (
     <div style={{ width: 80, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)', marginTop: 4, overflow: 'hidden' }}>
@@ -306,7 +306,7 @@ export default function Jogadores({ profile }) {
           </div>
           <button style={{
             width: 36, height: 36, borderRadius: 10, border: '1px solid rgba(255,255,255,0.08)',
-            background: '#131C27', color: '#8A8A9A', display: 'flex', alignItems: 'center',
+            background: '#13131F', color: '#8A8A9A', display: 'flex', alignItems: 'center',
             justifyContent: 'center', cursor: 'pointer', fontSize: 16,
           }}>
             &#8693;
@@ -331,7 +331,7 @@ export default function Jogadores({ profile }) {
               fontSize: 14, color: '#F8FAFC', fontFamily: "'Inter',sans-serif",
               outline: 'none', transition: 'border-color 0.2s',
             }}
-            onFocus={e => e.target.style.borderColor = 'rgba(249,115,22,0.5)'}
+            onFocus={e => e.target.style.borderColor = 'rgba(200,241,53,0.5)'}
             onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
           />
         </div>
@@ -350,7 +350,7 @@ export default function Jogadores({ profile }) {
                 style={{
                   flexShrink: 0, padding: '8px 16px', borderRadius: 20,
                   border: active ? 'none' : '1px solid #333',
-                  background: active ? '#F97316' : 'transparent',
+                  background: active ? '#C8F135' : 'transparent',
                   color: active ? '#FFFFFF' : '#8A8A9A',
                   fontWeight: 700, fontSize: 12, cursor: 'pointer',
                   fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
@@ -388,7 +388,7 @@ export default function Jogadores({ profile }) {
                   key={j.id}
                   onClick={() => setSelectedPlayer({ ...j, rank: rankVal })}
                   style={{
-                    background: '#131C27', border: '1px solid rgba(255,255,255,0.05)',
+                    background: '#13131F', border: '1px solid rgba(255,255,255,0.05)',
                     borderRadius: 14, padding: '12px 14px',
                     display: 'flex', alignItems: 'center', gap: 12,
                     cursor: 'pointer', transition: 'transform 0.15s',
@@ -420,7 +420,7 @@ export default function Jogadores({ profile }) {
                     </div>
                     <div style={{ fontSize: 12, color: '#6B7280', fontFamily: "'Inter',sans-serif", fontWeight: 400, marginTop: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
                       {rankVal > 0 && (
-                        <span style={{ fontWeight: 700, color: isFirst ? '#F97316' : '#8A8A9A', fontSize: 12 }}>
+                        <span style={{ fontWeight: 700, color: isFirst ? '#C8F135' : '#8A8A9A', fontSize: 12 }}>
                           #{rankVal}
                         </span>
                       )}
@@ -436,7 +436,7 @@ export default function Jogadores({ profile }) {
                       }}>
                         {j.total_votos >= 1 ? score.toFixed(1) : 'S/N'}
                       </span>
-                      <span style={{ color: '#F97316', fontSize: 12 }}>&#9733;</span>
+                       <span style={{ color: '#C8F135', fontSize: 12 }}>&#9733;</span>
                     </div>
                     {j.total_votos >= 1 && <ScoreBar value={score} />}
                     <div style={{ fontSize: 10, color: '#64748B', fontFamily: "'Inter',sans-serif" }}>
@@ -454,8 +454,8 @@ export default function Jogadores({ profile }) {
                       onClick={(e) => handleOpenVote(j, e)}
                       style={{
                         width: 40, height: 28, borderRadius: 8,
-                        background: '#F97316', border: 'none',
-                        color: '#0A1018', fontSize: 11, fontWeight: 700,
+                        background: '#C8F135', border: 'none',
+                        color: '#0C0C14', fontSize: 11, fontWeight: 700,
                         cursor: 'pointer', fontFamily: "'Inter',sans-serif",
                         flexShrink: 0, display: 'flex', alignItems: 'center',
                         justifyContent: 'center',

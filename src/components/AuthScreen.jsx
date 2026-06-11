@@ -59,13 +59,13 @@ export default function AuthScreen() {
   const showHint = touched.senha && senha.length > 0 && senha.length < 6;
 
   return (
-    <div className="app-shell" style={{ justifyContent: 'flex-start', minHeight: '100dvh', background: '#0A0A12' }}>
+    <div className="app-shell" style={{ justifyContent: 'flex-start', minHeight: '100dvh', background: '#0C0C14' }}>
 
       {/* Background glow */}
       <div style={{
         position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
         width: 400, height: 400,
-        background: 'radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(200,241,53,0.08) 0%, transparent 70%)',
         pointerEvents: 'none', zIndex: 0,
       }} />
 
@@ -84,12 +84,12 @@ export default function AuthScreen() {
           <div style={{
             width: 72, height: 72, background: '#1D1D2E', borderRadius: 18,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 16px', border: '1.5px solid rgba(249,115,22,0.3)',
-            boxShadow: '0 0 30px rgba(249,115,22,0.1)',
+            margin: '0 auto 16px', border: '1.5px solid rgba(200,241,53,0.3)',
+            boxShadow: '0 0 30px rgba(200,241,53,0.1)',
           }}>
             <span style={{
               fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800,
-              fontSize: 28, color: '#F97316', letterSpacing: '-0.02em',
+              fontSize: 28, color: '#C8F135', letterSpacing: '-0.02em',
             }}>RH</span>
           </div>
           <h1 style={{
@@ -156,7 +156,7 @@ export default function AuthScreen() {
                 onClick={() => { setTab(t.key); setErro(null); setSuccessMsg(null); }}
                 style={{
                   flex: 1, padding: '10px 4px', borderRadius: 8, border: 'none',
-                  background: tab === t.key ? '#F97316' : 'transparent',
+                  background: tab === t.key ? '#C8F135' : 'transparent',
                   color: tab === t.key ? '#FFFFFF' : '#555',
                   fontSize: 13, fontWeight: 700, cursor: 'pointer',
                   fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
@@ -185,7 +185,7 @@ export default function AuthScreen() {
                     padding: '0 16px 0 40px', height: 52, fontSize: 14, color: '#FFFFFF',
                     fontFamily: "'Inter',sans-serif", outline: 'none', transition: 'border-color 0.2s',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#F97316'}
+                  onFocus={e => e.target.style.borderColor = '#C8F135'}
                   onBlur={e => e.target.style.borderColor = '#2A2A3A'}
                 />
               </div>
@@ -207,7 +207,7 @@ export default function AuthScreen() {
                   padding: '0 16px 0 40px', height: 52, fontSize: 14, color: '#FFFFFF',
                   fontFamily: "'Inter',sans-serif", outline: 'none', transition: 'border-color 0.2s',
                 }}
-                onFocus={e => e.target.style.borderColor = '#F97316'}
+                onFocus={e => e.target.style.borderColor = '#C8F135'}
                 onBlur={e => e.target.style.borderColor = '#2A2A3A'}
               />
             </div>
@@ -231,7 +231,7 @@ export default function AuthScreen() {
                     borderRadius: 12, padding: '0 44px 0 40px', height: 52, fontSize: 14, color: '#FFFFFF',
                     fontFamily: "'Inter',sans-serif", outline: 'none', transition: 'border-color 0.2s',
                   }}
-                  onFocus={e => e.target.style.borderColor = '#F97316'}
+                  onFocus={e => e.target.style.borderColor = '#C8F135'}
                   onBlur={e => { setTouched(p => ({ ...p, senha: true })); if (!(touched.senha && showHint)) e.target.style.borderColor = '#2A2A3A'; }}
                 />
                 <button type="button" onClick={() => setShowPassword(p => !p)} style={{
@@ -250,7 +250,7 @@ export default function AuthScreen() {
               )}
               {tab === 'login' && (
                 <div style={{ textAlign: 'right', marginTop: 8 }}>
-                  <button type="button" onClick={() => { setTab('forgot'); setErro(null); setSuccessMsg(null); }} style={{ background: 'none', border: 'none', color: '#F97316', cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: 0, fontFamily: "'Inter',sans-serif" }}>
+                  <button type="button" onClick={() => { setTab('forgot'); setErro(null); setSuccessMsg(null); }} style={{ background: 'none', border: 'none', color: '#C8F135', cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: 0, fontFamily: "'Inter',sans-serif" }}>
                     Esqueci minha senha
                   </button>
                 </div>
@@ -260,11 +260,11 @@ export default function AuthScreen() {
 
           <button type="submit" disabled={carregando} style={{
             width: '100%', height: 56, borderRadius: 14, border: 'none',
-            background: '#F97316', color: '#0A1018', fontSize: 16, fontWeight: 700,
+            background: '#C8F135', color: '#0C0C14', fontSize: 16, fontWeight: 700,
             cursor: 'pointer', fontFamily: "'Barlow Condensed',sans-serif",
             textTransform: 'uppercase', letterSpacing: '0.06em',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            boxShadow: '0 4px 16px rgba(249,115,22,0.3)', transition: 'all 0.2s',
+            boxShadow: '0 4px 16px rgba(200,241,53,0.3)', transition: 'all 0.2s',
           }}>
             {carregando ? (
               <div className="spinner" />

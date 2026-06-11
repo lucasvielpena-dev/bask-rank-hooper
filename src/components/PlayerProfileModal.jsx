@@ -30,7 +30,7 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
             transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
           }}
         >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill={(hover || value) >= i ? '#F97316' : 'none'} stroke={(hover || value) >= i ? '#F97316' : '#64748B'} strokeWidth="2">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill={(hover || value) >= i ? '#C8F135' : 'none'} stroke={(hover || value) >= i ? '#C8F135' : '#64748B'} strokeWidth="2">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
         </button>
@@ -195,7 +195,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   ];
 
   const positionColors = { 'Ala': '#3B82F6', 'Armador': '#8B5CF6', 'Piv\u00f4': '#10B981' };
-  const posColor = positionColors[localJogador.posicao] || '#F97316';
+  const posColor = positionColors[localJogador.posicao] || '#C8F135';
 
   return (
     <div className="modal-overlay" style={{ alignItems: 'flex-end', padding: 0 }}>
@@ -216,13 +216,13 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               {fundamentos.map((f, i) => {
                 const val = estrelas[f.key] || 0;
                 return (
-                  <div key={f.key} style={{ background: val > 0 ? 'rgba(249,115,22,0.1)' : '#131C27', padding: '14px 16px', borderRadius: 12, border: val > 0 ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(255,255,255,0.06)' }}>
+                   <div key={f.key} style={{ background: val > 0 ? 'rgba(200,241,53,0.1)' : '#13131F', padding: '14px 16px', borderRadius: 12, border: val > 0 ? '1px solid rgba(200,241,53,0.3)' : '1px solid rgba(255,255,255,0.06)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ width: 22, height: 22, borderRadius: 6, background: val > 0 ? '#F97316' : '#131C27', color: val > 0 ? '#fff' : '#64748B', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', border: val > 0 ? 'none' : '1px solid rgba(255,255,255,0.08)' }}>{i + 1}</span>
+                        <span style={{ width: 22, height: 22, borderRadius: 6, background: val > 0 ? '#C8F135' : '#13131F', color: val > 0 ? '#fff' : '#64748B', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', border: val > 0 ? 'none' : '1px solid rgba(255,255,255,0.08)' }}>{i + 1}</span>
                         <span style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>{f.label}</span>
                       </div>
-                      <span style={{ fontSize: 12, color: '#F97316', fontWeight: 700 }}>{val > 0 ? `\u2605 ${val}.0` : labelsNota[val] || 'Nota'}</span>
+                      <span style={{ fontSize: 12, color: '#C8F135', fontWeight: 700 }}>{val > 0 ? `\u2605 ${val}.0` : labelsNota[val] || 'Nota'}</span>
                     </div>
                     <StarPicker value={val} onChange={v => setEstrelas(p => ({ ...p, [f.key]: v }))} disabled={enviandoAvaliacao} />
                   </div>
@@ -230,8 +230,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               })}
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
-              <button type="button" onClick={() => setShowAvaliar(false)} disabled={enviandoAvaliacao} style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', background: '#131C27', color: '#FFFFFF', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>Voltar</button>
-              <button type="button" onClick={handleConfirmarAvaliacao} disabled={enviandoAvaliacao || fundamentos.some(f => !estrelas[f.key])} style={{ flex: 2, padding: '12px', borderRadius: 12, border: 'none', background: '#F97316', color: '#0A1018', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>{enviandoAvaliacao ? 'Salvando...' : 'Salvar'}</button>
+              <button type="button" onClick={() => setShowAvaliar(false)} disabled={enviandoAvaliacao} style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', background: '#13131F', color: '#FFFFFF', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>Voltar</button>
+              <button type="button" onClick={handleConfirmarAvaliacao} disabled={enviandoAvaliacao || fundamentos.some(f => !estrelas[f.key])} style={{ flex: 2, padding: '12px', borderRadius: 12, border: 'none', background: '#C8F135', color: '#0C0C14', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>{enviandoAvaliacao ? 'Salvando...' : 'Salvar'}</button>
             </div>
           </div>
         ) : (
@@ -251,8 +251,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 {localJogador.foto_url ? (
                   <img src={localJogador.foto_url} alt={localJogador.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
-                  <div style={{ width: '100%', height: '100%', background: `linear-gradient(135deg, ${posColor}22 0%, #131C27 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ width: 96, height: 96, borderRadius: '50%', background: `linear-gradient(135deg, ${posColor} 0%, ${posColor}88 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40, fontWeight: 800, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif", border: '3px solid rgba(249,115,22,0.3)', boxShadow: '0 0 0 4px rgba(249,115,22,0.1)' }}>
+                  <div style={{ width: '100%', height: '100%', background: `linear-gradient(135deg, ${posColor}22 0%, #13131F 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                     <div style={{ width: 96, height: 96, borderRadius: '50%', background: `linear-gradient(135deg, ${posColor} 0%, ${posColor}88 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40, fontWeight: 800, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif", border: '3px solid rgba(200,241,53,0.3)', boxShadow: '0 0 0 4px rgba(200,241,53,0.1)' }}>
                       {localJogador.nome?.charAt(0) || '?'}
                     </div>
                   </div>
@@ -274,10 +274,10 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-                    <span style={{ fontSize: 24, fontWeight: 800, color: '#F97316', fontFamily: "'Barlow Condensed',sans-serif" }}>
+                    <span style={{ fontSize: 24, fontWeight: 800, color: '#C8F135', fontFamily: "'Barlow Condensed',sans-serif" }}>
                       {starsVal > 0 ? Number(starsVal).toFixed(1) : '--'}
                     </span>
-                    <span style={{ fontSize: 14, color: '#F97316' }}>&#9733;</span>
+                    <span style={{ fontSize: 14, color: '#C8F135' }}>&#9733;</span>
                     <span style={{ fontSize: 13, color: '#8A8A9A', fontFamily: "'Inter',sans-serif", fontWeight: 400 }}> Nota m\u00e9dia</span>
                   </div>
                   <div style={{ fontSize: 11, color: '#64748B', fontFamily: "'Inter',sans-serif", marginTop: 2 }}>
@@ -298,7 +298,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/>
                     </svg>
                     <div style={{ fontSize: 13, color: '#8A8A9A', fontFamily: "'Inter',sans-serif", marginBottom: 8 }}>Nenhuma partida registrada ainda</div>
-                    <button style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', borderRadius: 8, padding: '8px 16px', color: '#F97316', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>+ Adicionar partida</button>
+                    <button style={{ background: 'rgba(200,241,53,0.1)', border: '1px solid rgba(200,241,53,0.2)', borderRadius: 8, padding: '8px 16px', color: '#C8F135', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>+ Adicionar partida</button>
                   </div>
                 ) : (
                   <div style={{ display: 'grid', gridTemplateColumns: `repeat(${gameStats.length}, 1fr)`, gap: 8, textAlign: 'center' }}>
@@ -317,7 +317,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 <div style={{ fontSize: 11, fontWeight: 400, color: '#6B7280', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: 12 }}>Linha de Evolu\u00e7\u00e3o</div>
                 <div style={{ display: 'flex', alignItems: 'flex-start', position: 'relative', padding: '0 8px' }}>
                   <div style={{ position: 'absolute', top: 10, left: 24, right: 24, height: 2, background: 'rgba(255,255,255,0.06)' }} />
-                  <div style={{ position: 'absolute', top: 10, left: 24, width: `${evolutionIndex * 33.3}%`, maxWidth: 'calc(100% - 48px)', height: 2, background: '#F97316', transition: 'width 0.6s ease' }} />
+                  <div style={{ position: 'absolute', top: 10, left: 24, width: `${evolutionIndex * 33.3}%`, maxWidth: 'calc(100% - 48px)', height: 2, background: '#C8F135', transition: 'width 0.6s ease' }} />
                   {[
                     { label: 'Rookie', year: '2023', val: 0 },
                     { label: 'Promessa', year: '2024', val: 1 },
@@ -330,10 +330,10 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       <div key={step.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 2 }}>
                         <div style={{
                           width: 20, height: 20, borderRadius: '50%',
-                          background: isCompleted ? '#F97316' : 'transparent',
+                          background: isCompleted ? '#C8F135' : 'transparent',
                           border: isCompleted ? 'none' : '2px dashed rgba(255,255,255,0.15)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          boxShadow: isActive ? '0 0 12px rgba(249,115,22,0.4)' : 'none',
+                          boxShadow: isActive ? '0 0 12px rgba(200,241,53,0.4)' : 'none',
                           animation: isActive ? 'pulse 2s infinite' : 'none',
                           marginBottom: 6,
                         }}>
@@ -357,8 +357,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       onClick={() => setPerfilTab(t.key)}
                       style={{
                         flex: 1, padding: '12px 4px', background: 'none', border: 'none',
-                        borderBottom: active ? '2px solid #F97316' : '2px solid transparent',
-                        color: active ? '#F97316' : '#555',
+                        borderBottom: active ? '2px solid #C8F135' : '2px solid transparent',
+                        color: active ? '#C8F135' : '#555',
                         fontSize: 13, fontWeight: active ? 700 : 500, cursor: 'pointer',
                         fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
                       }}
@@ -377,7 +377,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       { label: 'Cidade', val: `${localJogador.cidade} - ${localJogador.uf}`, icon: null },
                       { label: 'Idade', val: profileData?.idade ? `${profileData.idade} anos` : '--', icon: null },
                       { label: 'Altura', val: profileData?.altura ? `${Number(profileData.altura).toFixed(2)} m` : '--', icon: null },
-                      { label: 'Posi\u00e7\u00e3o', val: localJogador.posicao || 'Ala', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg> },
+                      { label: 'Posi\u00e7\u00e3o', val: localJogador.posicao || 'Ala', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8F135" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg> },
                       { label: 'Equipe', val: localJogador.equipe || `${localJogador.cidade} Hooper`, icon: null },
                     ].map((item, i) => (
                       <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: i < 4 ? '1px solid rgba(255,255,255,0.04)' : 'none', minHeight: 48 }}>
@@ -400,10 +400,10 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                         <div key={f.key}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 5 }}>
                             <span style={{ fontWeight: 600, color: '#FFFFFF', fontFamily: "'Inter',sans-serif" }}>{f.label}</span>
-                            <span style={{ color: '#F97316', fontWeight: 700, fontFamily: "'Barlow Condensed',sans-serif" }}>{hasVotes ? `\u2605 ${Number(mediaAspecto).toFixed(1)}` : '--'}</span>
+                            <span style={{ color: '#C8F135', fontWeight: 700, fontFamily: "'Barlow Condensed',sans-serif" }}>{hasVotes ? `\u2605 ${Number(mediaAspecto).toFixed(1)}` : '--'}</span>
                           </div>
                           <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
-                            <div className="bar-grow-fill" style={{ width: hasVotes ? `${(mediaAspecto / 5) * 100}%` : '0%', height: '100%', borderRadius: 3, background: '#F97316' }} />
+                            <div className="bar-grow-fill" style={{ width: hasVotes ? `${(mediaAspecto / 5) * 100}%` : '0%', height: '100%', borderRadius: 3, background: '#C8F135' }} />
                           </div>
                         </div>
                       );
@@ -420,7 +420,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       <div style={{ fontSize: 13, color: '#64748B', textAlign: 'center', padding: '24px 0', fontFamily: "'Inter',sans-serif" }}>Nenhuma partida finalizada</div>
                     ) : (
                       historicoJogos.map(h => (
-                        <div key={h.id} style={{ background: '#131C27', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div key={h.id} style={{ background: '#13131F', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <div>
                             <div style={{ fontSize: 12, fontWeight: 700, color: '#FFFFFF', fontFamily: "'Inter',sans-serif" }}>{h.timeA} {h.placarA} x {h.placarB} {h.timeB}</div>
                             <span style={{ fontSize: 10, color: '#64748B', fontFamily: "'Inter',sans-serif" }}>{new Date(h.data).toLocaleDateString('pt-BR')}</span>
@@ -437,7 +437,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             {/* Bottom CTAs */}
             {!isMe && (
               <div style={{ padding: '12px 16px 20px', borderTop: '1px solid rgba(255,255,255,0.06)', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <button onClick={() => setShowAvaliar(true)} style={{ width: '100%', height: 52, borderRadius: 12, background: '#F97316', border: 'none', color: '#0A1018', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em', boxShadow: '0 4px 16px rgba(249,115,22,0.25)' }}>
+                <button onClick={() => setShowAvaliar(true)} style={{ width: '100%', height: 52, borderRadius: 12, background: '#C8F135', border: 'none', color: '#0C0C14', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em', boxShadow: '0 4px 16px rgba(200,241,53,0.25)' }}>
                   {jaAvaliou ? 'Editar Avalia\u00e7\u00e3o' : 'Avaliar Este Jogador'}
                 </button>
                 <button onClick={() => setShowDenunciar(true)} style={{ width: '100%', height: 44, borderRadius: 12, background: 'transparent', border: '1px solid rgba(255,255,255,0.08)', color: '#8A8A9A', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>
@@ -457,7 +457,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               <form onSubmit={handleEnviarDenuncia} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div>
                   <label style={{ fontSize: 12, color: '#8A8A9A', fontWeight: 600, display: 'block', marginBottom: 6 }}>Motivo</label>
-                  <select value={tipoDenuncia} onChange={e => setTipoDenuncia(e.target.value)} style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.08)', background: '#131C27', color: '#FFFFFF', fontSize: 13 }}>
+                   <select value={tipoDenuncia} onChange={e => setTipoDenuncia(e.target.value)} style={{ width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.08)', background: '#13131F', color: '#FFFFFF', fontSize: 13 }}>
                     <option value="perfil_falso">Perfil Falso</option>
                     <option value="avaliacao_suspeita">Avalia\u00e7\u00e3o Suspeita</option>
                     <option value="comportamento_inadequado">Comportamento Inadequado</option>
@@ -465,10 +465,10 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 </div>
                 <div>
                   <label style={{ fontSize: 12, color: '#8A8A9A', fontWeight: 600, display: 'block', marginBottom: 6 }}>Descri\u00e7\u00e3o *</label>
-                  <textarea required rows="3" value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Descreva brevemente..." style={{ resize: 'none', width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.08)', background: '#131C27', color: '#FFFFFF', fontSize: 13 }} />
+                   <textarea required rows="3" value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Descreva brevemente..." style={{ resize: 'none', width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 10, border: '1px solid rgba(255,255,255,0.08)', background: '#13131F', color: '#FFFFFF', fontSize: 13 }} />
                 </div>
                 <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
-                  <button type="button" onClick={() => setShowDenunciar(false)} disabled={enviandoDenuncia} style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', background: '#131C27', color: '#FFFFFF', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>Cancelar</button>
+                   <button type="button" onClick={() => setShowDenunciar(false)} disabled={enviandoDenuncia} style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)', background: '#13131F', color: '#FFFFFF', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>Cancelar</button>
                   <button type="submit" disabled={enviandoDenuncia} style={{ flex: 2, padding: '12px', borderRadius: 12, border: 'none', background: '#EF4444', color: '#FFFFFF', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>{enviandoDenuncia ? 'Enviando...' : 'Enviar'}</button>
                 </div>
               </form>
@@ -479,7 +479,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
 
       {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
 
-      <style>{`@keyframes pulse { 0%, 100% { box-shadow: 0 0 8px rgba(249,115,22,0.3); } 50% { box-shadow: 0 0 16px rgba(249,115,22,0.6); } }`}</style>
+      <style>{`@keyframes pulse { 0%, 100% { box-shadow: 0 0 8px rgba(200,241,53,0.3); } 50% { box-shadow: 0 0 16px rgba(200,241,53,0.6); } }`}</style>
     </div>
   );
 }

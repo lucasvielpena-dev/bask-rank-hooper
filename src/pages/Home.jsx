@@ -191,7 +191,7 @@ export default function Home({ profile, onNavigate }) {
           <div className="home-section-label">A\u00e7\u00f5es R\u00e1pidas</div>
           <div className="acoes-rapidas-grid">
             {[
-              { icon: <IconAvaliar size={20} color="#0A1018" />, label: 'Avaliar atleta', action: () => onNavigate('jogadores'), primary: true },
+              { icon: <IconAvaliar size={20} color="#0C0C14" />, label: 'Avaliar atleta', action: () => onNavigate('jogadores'), primary: true },
               { icon: <IconBasquete size={20} color="var(--accent)" />, label: 'Meus jogos', action: () => onNavigate('jogos'), primary: false },
               { icon: <IconRanking size={20} color="var(--accent)" />, label: 'Ver ranking', action: () => onNavigate('ranking'), primary: false },
               { icon: <IconTrofeu size={20} color="var(--accent)" />, label: 'Ver torneios', action: () => onNavigate('jogos', { aba: 'torneios' }), primary: false }

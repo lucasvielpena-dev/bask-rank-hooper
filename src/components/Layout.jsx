@@ -45,6 +45,49 @@ export default function Layout({ page, onNavigate, children }) {
 
   return (
     <div className="app-shell">
+      {/* Background SVG — court lines + basketballs */}
+      <svg
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}
+        viewBox="0 0 400 800"
+        preserveAspectRatio="xMidYMin slice"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <radialGradient id="rh-glow" cx="50%" cy="15%" r="40%">
+            <stop offset="0%" stopColor="#C8F135" stopOpacity="0.05" />
+            <stop offset="100%" stopColor="#C8F135" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <rect width="400" height="800" fill="url(#rh-glow)" />
+        {/* Court outline */}
+        <g stroke="#C8F135" strokeWidth="0.8" fill="none" opacity="0.04">
+          <rect x="40" y="100" width="320" height="500" rx="0" />
+          <line x1="200" y1="100" x2="200" y2="600" />
+          <circle cx="200" cy="350" r="60" />
+          {/* 3-point arcs */}
+          <path d="M 40 250 Q 120 350 40 450" />
+          <path d="M 360 250 Q 280 350 360 450" />
+          {/* Free throw areas */}
+          <rect x="40" y="230" width="120" height="140" />
+          <rect x="240" y="230" width="120" height="140" />
+          <circle cx="160" cy="350" r="30" />
+          <circle cx="240" cy="350" r="30" />
+        </g>
+        {/* Large basketball top-right */}
+        <g transform="translate(310, 60)" stroke="#C8F135" strokeWidth="1.2" fill="none" opacity="0.045">
+          <circle cx="0" cy="0" r="40" />
+          <path d="M 0 -40 Q 20 0 0 40" />
+          <path d="M 0 -40 Q -20 0 0 40" />
+          <line x1="-40" y1="0" x2="40" y2="0" />
+        </g>
+        {/* Small basketball bottom-left */}
+        <g transform="translate(60, 720)" stroke="#C8F135" strokeWidth="1" fill="none" opacity="0.03">
+          <circle cx="0" cy="0" r="28" />
+          <path d="M 0 -28 Q 14 0 0 28" />
+          <path d="M 0 -28 Q -14 0 0 28" />
+          <line x1="-28" y1="0" x2="28" y2="0" />
+        </g>
+      </svg>
       <Header />
 
       {profile && profile.cadastro_completo && !profile.player_id && (
@@ -272,7 +315,7 @@ export default function Layout({ page, onNavigate, children }) {
                           padding: '8px 4px',
                           borderRadius: 8,
                           border: themePref === t.key ? '2px solid var(--accent)' : '1px solid var(--border)',
-                          background: themePref === t.key ? 'rgba(249,115,22,0.15)' : 'none',
+                          background: themePref === t.key ? 'rgba(200,241,53,0.15)' : 'none',
                           color: 'var(--text-primary)',
                           cursor: 'pointer',
                           fontSize: 12,
@@ -402,8 +445,8 @@ export default function Layout({ page, onNavigate, children }) {
                   <div
                     key={n.id}
                     style={{
-                      background: n.lida ? 'transparent' : 'rgba(249, 115, 22, 0.04)',
-                      border: n.lida ? '1px solid var(--border)' : '1px solid rgba(249, 115, 22, 0.15)',
+                      background: n.lida ? 'transparent' : 'rgba(200, 241, 53, 0.04)',
+                      border: n.lida ? '1px solid var(--border)' : '1px solid rgba(200, 241, 53, 0.15)',
                       borderRadius: '12px',
                       padding: '14px',
                       display: 'flex',
@@ -441,7 +484,7 @@ export default function Layout({ page, onNavigate, children }) {
                       <button
                         onClick={() => handleMarcarLida(n.id)}
                         style={{
-                          background: 'rgba(249, 115, 22, 0.12)',
+                          background: 'rgba(200, 241, 53, 0.12)',
                           color: 'var(--accent)',
                           border: 'none',
                           borderRadius: '6px',

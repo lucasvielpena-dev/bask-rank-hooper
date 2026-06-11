@@ -7,7 +7,7 @@ const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 48, isFi
 
   const getGradientForName = (name) => {
     const colors = [
-      ['#F97316', '#EA580C'],
+      ['#C8F135', '#B8E030'],
       ['#f59e0b', '#d97706'],
       ['#10b981', '#047857'],
       ['#8b5cf6', '#6d28d9'],
@@ -32,8 +32,8 @@ const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 48, isFi
     height: size,
     borderRadius: '50%',
     objectFit: 'cover',
-    border: isFirst ? '2px solid transparent' : '1px solid rgba(255,255,255,0.08)',
-    boxShadow: isFirst ? '0 0 0 2px rgba(249,115,22,0.3)' : 'none',
+    border: isFirst ? '2px solid rgba(200,241,53,0.3)' : '1px solid rgba(255,255,255,0.08)',
+    boxShadow: isFirst ? '0 0 0 2px rgba(200,241,53,0.3)' : 'none',
   };
 
   const initialsStyle = {
@@ -49,7 +49,7 @@ const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 48, isFi
     fontSize: size * 0.4,
     fontFamily: "'Barlow Condensed',sans-serif",
     border: isFirst ? '2px solid transparent' : '1px solid rgba(255,255,255,0.08)',
-    boxShadow: isFirst ? '0 0 0 2px rgba(249,115,22,0.3)' : 'none',
+    boxShadow: isFirst ? '0 0 0 2px rgba(200,241,53,0.3)' : 'none',
   };
 
   if (fotoUrl) {
@@ -68,7 +68,7 @@ const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 48, isFi
 });
 
 const LocationPin = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="#F97316" stroke="none" style={{ verticalAlign: 'middle', marginRight: 3 }}>
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="#C8F135" stroke="none" style={{ verticalAlign: 'middle', marginRight: 3 }}>
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
   </svg>
 );
@@ -115,22 +115,22 @@ export default function Ranking({ profile }) {
   const getScore = (player) => player.media_estrelas || 0;
 
   const getBorderStyle = (index) => {
-    if (index === 0) return { borderLeft: '4px solid #F97316' };
+    if (index === 0) return { borderLeft: '4px solid #C8F135' };
     if (index === 1) return { borderLeft: '4px solid #9CA3AF' };
     if (index === 2) return { borderLeft: '4px solid #CD7F32' };
     return {};
   };
 
   const getBarColor = (index) => {
-    if (index === 0) return '#F97316';
+    if (index === 0) return '#C8F135';
     if (index === 1) return '#9CA3AF';
     if (index === 2) return '#CD7F32';
     return '#64748B';
   };
 
   const getCardBg = (index) => {
-    if (index === 0) return 'linear-gradient(135deg, rgba(249,115,22,0.08) 0%, #131C27 100%)';
-    return '#131C27';
+    if (index === 0) return 'linear-gradient(135deg, rgba(200,241,53,0.08) 0%, #13131F 100%)';
+    return '#13131F';
   };
 
   if (loading) return (
@@ -208,9 +208,9 @@ export default function Ranking({ profile }) {
                     flexShrink: 0,
                     fontFamily: "'Barlow Condensed',sans-serif",
                     ...(isFirst ? {
-                      background: '#F97316',
-                      color: '#0A1018',
-                      boxShadow: '0 2px 8px rgba(249,115,22,0.3)',
+                      background: '#C8F135',
+                      color: '#0C0C14',
+                      boxShadow: '0 2px 8px rgba(200,241,53,0.3)',
                     } : index < 3 ? {
                       background: 'rgba(255,255,255,0.06)',
                       color: barColor,
@@ -261,7 +261,7 @@ export default function Ranking({ profile }) {
                     <div style={{
                       fontSize: isFirst ? 22 : 17,
                       fontWeight: 800,
-                      color: isFirst ? '#F97316' : '#FFFFFF',
+                      color: isFirst ? '#C8F135' : '#FFFFFF',
                       fontFamily: "'Barlow Condensed',sans-serif",
                       lineHeight: 1,
                     }}>
@@ -331,11 +331,11 @@ export default function Ranking({ profile }) {
         <button
           onClick={() => window.history.back()}
           style={{
-            width: '100%', background: '#F97316', border: 'none', borderRadius: 12,
-            height: 52, color: '#0A1018', fontSize: 14, fontWeight: 700,
+            width: '100%', background: '#C8F135', border: 'none', borderRadius: 12,
+            height: 52, color: '#0C0C14', fontSize: 14, fontWeight: 700,
             cursor: 'pointer', fontFamily: "'Inter',sans-serif",
             textTransform: 'uppercase', letterSpacing: '0.06em',
-            boxShadow: '0 4px 16px rgba(249,115,22,0.25)',
+            boxShadow: '0 4px 16px rgba(200,241,53,0.25)',
           }}
         >
           Ver ranking completo
