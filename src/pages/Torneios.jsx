@@ -235,7 +235,7 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Max Equipes</label>
+              <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>M\u00e1x. Equipes</label>
               <select value={form.max_equipes} onChange={e => setForm(p => ({ ...p, max_equipes: parseInt(e.target.value) }))}>
                 <option value="4">4 Equipes</option>
                 <option value="8">8 Equipes</option>

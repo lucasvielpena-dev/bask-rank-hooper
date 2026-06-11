@@ -323,7 +323,7 @@ export default function Ranking({ profile }) {
               {sortedRanking.length > 0 ? Number(sortedRanking.reduce((a, b) => a + (b.media_estrelas || 0), 0) / sortedRanking.length).toFixed(1) : '0.0'}
             </div>
             <div style={{ fontSize: 10, color: '#8A8A9A', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              Media
+              M\u00e9dia
             </div>
           </div>
         </div>

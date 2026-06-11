@@ -847,7 +847,7 @@ export default function Stats({ profile, onNavigate }) {
           <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440, maxHeight: '85vh', overflowY: 'auto' }}>
             <div className="modal-handle" />
             <h3 style={{ fontWeight: 900, fontSize: 'clamp(17px, 4vw, 20px)', marginBottom: 4 }}>Nova Partida</h3>
-            <p style={{ color: '#64748b', fontSize: 'clamp(11px, 2.5vw, 12px)', marginBottom: 16 }}>Grave seus numeros de forma privada.</p>
+            <p style={{ color: '#64748b', fontSize: 'clamp(11px, 2.5vw, 12px)', marginBottom: 16 }}>Grave seus n\u00fameros de forma privada.</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>

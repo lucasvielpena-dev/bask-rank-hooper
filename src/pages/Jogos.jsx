@@ -193,7 +193,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       }
     } catch (e) {
       console.error(e);
-      showToast('Erro ao carregar dados do Supabase', 'error');
+      showToast('Erro ao carregar dados. Tente novamente.', 'error');
     }
     setLoading(false);
   }
