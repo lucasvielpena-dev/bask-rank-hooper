@@ -243,7 +243,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
                   width: 80, 
                   height: 80, 
                   borderRadius: '50%', 
-                  border: '2px solid var(--accent-blue)', 
+                   border: '2px solid var(--accent)',
                   display: 'block',
                   objectFit: 'cover'
                 }} 
@@ -252,7 +252,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               <div style={{ 
                 width: 80, 
                 height: 80, 
-                background: 'var(--accent-blue-dim)', 
+                background: 'var(--accent-dim)', 
                 borderRadius: '50%', 
                 display: 'flex', 
                 alignItems: 'center', 
@@ -279,7 +279,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
                 position: 'absolute', 
                 bottom: 0, 
                 right: 0, 
-                background: '#3b82f6', 
+                background: 'var(--accent)', 
                 color: 'white', 
                 width: 26, 
                 height: 26, 
@@ -376,7 +376,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
           {/* Status da Localização Automática */}
           {locationStatus === 'requesting' && (
-            <div style={{ padding: '12px', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 8, fontSize: 13, color: '#93c5fd', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ padding: '12px', background: 'rgba(255,107,0,0.1)', border: '1px solid rgba(255,107,0,0.2)', borderRadius: 8, fontSize: 13, color: '#93c5fd', display: 'flex', alignItems: 'center', gap: 8 }}>
               <div className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} />
               Obtendo localização atual...
             </div>

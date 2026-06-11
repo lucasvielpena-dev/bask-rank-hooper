@@ -83,8 +83,8 @@ export default function AdminPlayers({ profile, onNavigate }) {
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <svg key={i} width="14" height="14" viewBox="0 0 24 24"
-          fill={i <= rounded ? 'var(--accent-gold)' : 'none'}
-          stroke={i <= rounded ? 'var(--accent-gold)' : 'var(--text-muted)'}
+          fill={i <= rounded ? 'var(--accent)' : 'none'}
+          stroke={i <= rounded ? 'var(--accent)' : 'var(--text-muted)'}
           strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
@@ -97,7 +97,7 @@ export default function AdminPlayers({ profile, onNavigate }) {
     return (
       <div className="page-content" style={{ background: 'var(--bg-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
         <div style={{ textAlign: 'center', padding: '0 24px' }}>
-          <div style={{ width: 56, height: 56, borderRadius: 14, background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14, opacity: 0.6, margin: '0 auto 14px' }}>
+          <div style={{ width: 56, height: 56, borderRadius: 14, background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14, opacity: 0.6, margin: '0 auto 14px' }}>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -190,9 +190,9 @@ export default function AdminPlayers({ profile, onNavigate }) {
                   flexShrink: 0,
                   padding: '8px 16px',
                   borderRadius: '30px',
-                  border: active ? '1.5px solid var(--accent-blue)' : '1.5px solid var(--border)',
-                  background: active ? 'var(--accent-blue-dim)' : 'var(--bg-card)',
-                  color: active ? 'var(--accent-blue-light)' : 'var(--text-secondary)',
+                  border: active ? '1.5px solid var(--accent)' : '1.5px solid var(--border)',
+                  background: active ? 'var(--accent-dim)' : 'var(--bg-card)',
+                  color: active ? 'var(--accent)' : 'var(--text-secondary)',
                   fontWeight: 700,
                   fontSize: 12,
                   cursor: 'pointer',
@@ -220,14 +220,14 @@ export default function AdminPlayers({ profile, onNavigate }) {
               width: 56,
               height: 56,
               borderRadius: 14,
-              background: 'var(--accent-blue-dim)',
+              background: 'var(--accent-dim)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: 14,
               opacity: 0.6
             }}>
-              <IconBasquete size={26} color="#F97316" />
+              <IconBasquete size={26} color="var(--accent)" />
             </div>
             <h3 style={{
               fontSize: 'clamp(14px, 3.5vw, 16px)',
@@ -280,7 +280,7 @@ export default function AdminPlayers({ profile, onNavigate }) {
                       width: 44,
                       height: 44,
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                      background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent) 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -353,7 +353,7 @@ export default function AdminPlayers({ profile, onNavigate }) {
                       height: 28,
                       borderRadius: 14,
                       border: 'none',
-                      background: player.ativo ? 'var(--accent-blue)' : 'var(--bg-secondary)',
+                      background: player.ativo ? 'var(--accent)' : 'var(--bg-secondary)',
                       cursor: togglingId === player.id ? 'wait' : 'pointer',
                       position: 'relative',
                       flexShrink: 0,
@@ -391,7 +391,7 @@ export default function AdminPlayers({ profile, onNavigate }) {
                     <span style={{
                       fontSize: 13,
                       fontWeight: 800,
-                      color: 'var(--accent-gold)',
+                      color: 'var(--accent)',
                       marginLeft: 2
                     }}>
                       {player.total_votos >= 1 ? Number(player.media_estrelas).toFixed(1) : 'S/N'}

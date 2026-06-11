@@ -67,7 +67,7 @@ export default function AdminCities({ profile, onNavigate }) {
               fontFamily: 'inherit'
             }}
           >
-            <IconVoltar size={16} color="var(--accent-blue)" />
+            <IconVoltar size={16} color="var(--accent)" />
             Voltar
           </button>
         </div>
@@ -163,8 +163,8 @@ export default function AdminCities({ profile, onNavigate }) {
                   gap: 8
                 }}>
                   {[
-                    { label: 'Usuários', value: city.user_count || 0, color: '#3b82f6' },
-                    { label: 'Jogadores', value: city.player_count || 0, color: '#F97316' },
+                    { label: 'Usuários', value: city.user_count || 0, color: 'var(--accent)' },
+                    { label: 'Jogadores', value: city.player_count || 0, color: 'var(--accent)' },
                     { label: 'Torneios', value: city.tournament_count || 0, color: '#8b5cf6' },
                     { label: 'Partidas', value: city.match_count || 0, color: '#10b981' },
                   ].map((stat) => (

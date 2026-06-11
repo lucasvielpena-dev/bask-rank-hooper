@@ -27,13 +27,13 @@ function formatDate(iso) {
 
 const LogIcon = ({ action }) => {
   const color = {
-    set_role: '#60A5FA',
+    set_role: 'var(--accent)',
     suspend_user: '#EF4444',
     activate_user: '#10B981',
     delete_user: '#EF4444',
-    global_notification: '#F97316',
+    global_notification: 'var(--accent)',
     delete_tournament: '#EF4444',
-    close_tournament: '#F97316',
+    close_tournament: 'var(--accent)',
     activate_player: '#10B981',
     suspend_player: '#EF4444',
   }[action] || '#64748B';

@@ -7,7 +7,7 @@ const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 40, bord
   
   const getGradientForName = (name) => {
     const colors = [
-      ['#3b82f6', '#1d4ed8'],
+      ['var(--accent)', 'var(--accent)'],
       ['#f59e0b', '#d97706'],
       ['#10b981', '#047857'],
       ['#8b5cf6', '#6d28d9'],
@@ -60,30 +60,6 @@ const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 40, bord
   );
 });
 
-const BackgroundDeco = ({ src, opacity, style }) => (
-  <>
-    <img 
-      src={src} 
-      alt="" 
-      style={{
-        position: 'absolute',
-        pointerEvents: 'none',
-        zIndex: 0,
-        objectFit: 'contain',
-        opacity: opacity,
-        ...style
-      }}
-    />
-    <div style={{
-      position: 'absolute',
-      inset: 0,
-      background: 'var(--bg-overlay-ranking)',
-      pointerEvents: 'none',
-      zIndex: 1
-    }} />
-  </>
-);
-
 export default function Ranking({ profile }) {
   const [ranking, setRanking] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -126,7 +102,6 @@ export default function Ranking({ profile }) {
     setLoading(false);
   }
 
-  // Ordenação dinâmica com base na categoria
   const sortedRanking = useMemo(() => {
     const sorted = [...ranking];
     if (categoria === 'pontos') {
@@ -141,7 +116,7 @@ export default function Ranking({ profile }) {
     if (categoria === 'defesa') {
       return sorted.sort((a, b) => (b.media_defesa || 0) - (a.media_defesa || 0));
     }
-    return sorted; // Geral (já vem ordenado por media_estrelas)
+    return sorted;
   }, [ranking, categoria]);
 
   const getMetricValue = (player) => {
@@ -153,7 +128,7 @@ export default function Ranking({ profile }) {
   };
 
   const getRankBadgeStyle = (index) => {
-    if (index === 0) return { border: '2px solid #F97316', background: 'rgba(249, 115, 22, 0.15)', color: '#F97316' };
+    if (index === 0) return { border: '2px solid var(--accent)', background: 'rgba(255,107,0,0.15)', color: 'var(--accent)' };
     if (index === 1) return { border: '2px solid #94A3B8', background: 'rgba(148, 163, 184, 0.15)', color: 'var(--text-secondary)' };
     if (index === 2) return { border: '2px solid #CD7C2F', background: 'rgba(205, 124, 47, 0.15)', color: '#CD7C2F' };
     return { border: '1px solid var(--border)', background: 'none', color: 'var(--text-secondary)' };
@@ -179,16 +154,11 @@ export default function Ranking({ profile }) {
 
   return (
     <div className="page-content" style={{ background: 'var(--bg-primary)', position: 'relative' }}>
-      <BackgroundDeco 
-        src="images/bg-3.png" 
-        opacity={0.08} 
-        style={{ top: '5%', right: '-10%', width: 'clamp(300px, 70vw, 500px)' }} 
-      />
       <div style={{ position: 'relative', zIndex: 2, padding: '20px 20px 0' }}>
         
         {/* Cabeçalho */}
         <div style={{ textAlign: 'center', marginBottom: 20 }}>
-          <h2 style={{ fontWeight: 800, fontSize: '18px', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <h2 style={{ fontWeight: 800, fontSize: '18px', color: 'var(--text-primary)', fontFamily:"'Oswald',sans-serif", textTransform:'uppercase', letterSpacing:'0.04em' }}>
             RANKING
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: 2 }}>
@@ -224,26 +194,12 @@ export default function Ranking({ profile }) {
                     position: 'relative',
                     overflow: 'hidden',
                     ...(isFirst ? {
-                      border: '1.5px solid var(--accent-gold)',
-                      background: 'linear-gradient(180deg, rgba(255, 107, 0, 0.1) 0%, var(--bg-card) 100%)',
-                      boxShadow: '0 8px 30px rgba(255, 107, 0, 0.12), inset 0 1px 0 rgba(255,255,255,0.06)',
+                      border: '1.5px solid var(--accent)',
+                      background: 'linear-gradient(180deg, rgba(255,107,0,0.1) 0%, var(--bg-card) 100%)',
+                      boxShadow: '0 8px 30px rgba(255,107,0,0.12), inset 0 1px 0 rgba(255,255,255,0.06)',
                     } : {})
                   }}
                 >
-                  {/* Shimmer effect for first place */}
-                  {isFirst && (
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: '-100%',
-                      width: '100%',
-                      height: '100%',
-                      background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.06) 50%, transparent 100%)',
-                      animation: 'shimmer 3s ease-in-out infinite',
-                      pointerEvents: 'none'
-                    }} />
-                  )}
-
                   <div style={{ display: 'flex', alignItems: 'center', gap: isFirst ? 14 : 12 }}>
                     
                     {/* Rank Circle */}
@@ -255,30 +211,14 @@ export default function Ranking({ profile }) {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: 'linear-gradient(135deg, #F97316 0%, #EAB308 100%)',
+                        background: 'var(--accent)',
                         color: '#fff',
                         fontSize: '12px',
                         fontWeight: 900,
-                        boxShadow: '0 2px 8px rgba(249,115,22,0.4)',
+                        boxShadow: '0 2px 8px rgba(255,107,0,0.4)',
                         position: 'relative',
                         flexShrink: 0
                       }}>
-                        {/* Small crown above rank circle */}
-                        <svg 
-                          viewBox="0 0 24 24" 
-                          fill="#EAB308" 
-                          style={{
-                            position: 'absolute',
-                            top: '-10px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            width: '14px',
-                            height: '14px',
-                            filter: 'drop-shadow(0 1px 2px rgba(234,179,8,0.5))'
-                          }}
-                        >
-                          <path d="M2.5 18.5l2-9 5 4.5L12 7l2.5 7 5-4.5 2 9h-19z"/>
-                        </svg>
                         1
                       </div>
                     ) : (
@@ -303,7 +243,7 @@ export default function Ranking({ profile }) {
                       fotoUrl={jogador.foto_url} 
                       nome={jogador.nome} 
                       size={isFirst ? 60 : 40}
-                      border={isFirst ? '3px solid rgba(249,115,22,0.6)' : 'none'}
+                      border={isFirst ? '3px solid rgba(255,107,0,0.6)' : 'none'}
                     />
 
                     {/* Detalhes */}
@@ -311,7 +251,7 @@ export default function Ranking({ profile }) {
                       <div style={{
                         fontSize: isFirst ? '17px' : '14px',
                         fontWeight: isFirst ? 900 : 700,
-                        color: isFirst ? 'var(--podium-first-name)' : 'var(--text-primary)',
+                        color: isFirst ? 'var(--accent)' : 'var(--text-primary)',
                         display: 'flex',
                         alignItems: 'center',
                         gap: 6
@@ -320,7 +260,7 @@ export default function Ranking({ profile }) {
                       </div>
                       <div style={{ 
                         fontSize: isFirst ? '12px' : '11px', 
-                        color: isFirst ? 'var(--podium-first-sub)' : 'var(--text-secondary)', 
+                        color: isFirst ? 'var(--text-secondary)' : 'var(--text-secondary)', 
                         marginTop: 2,
                         fontWeight: isFirst ? 600 : 400
                       }}>
@@ -338,21 +278,21 @@ export default function Ranking({ profile }) {
                       alignItems: 'center', 
                       gap: 3,
                       ...(isFirst ? {
-                        background: 'var(--podium-first-star-bg)',
+                        background: 'var(--accent-dim)',
                         padding: '5px 12px',
                         borderRadius: '20px',
-                        border: '1px solid var(--podium-first-star-border)'
+                        border: '1px solid rgba(255,107,0,0.25)'
                       } : {})
                     }}>
                       <span style={{ 
                         fontSize: isFirst ? '18px' : '15px', 
                         fontWeight: 900, 
-                        color: isFirst ? 'var(--podium-first-star-color)' : '#F97316', 
+                        color: isFirst ? 'var(--accent)' : 'var(--accent)', 
                         fontFamily: 'monospace' 
                       }}>
                         {Number(getMetricValue(jogador)).toFixed(1)}
                       </span>
-                      <span style={{ color: isFirst ? 'var(--podium-first-star-color)' : '#F97316', fontSize: isFirst ? '15px' : '12px' }}>★</span>
+                      <span style={{ color: isFirst ? 'var(--accent)' : 'var(--accent)', fontSize: isFirst ? '15px' : '12px' }}>★</span>
                     </div>
                   </div>
 
@@ -368,9 +308,9 @@ export default function Ranking({ profile }) {
           className="btn-back-ranking"
           style={{
             background: 'none',
-            border: '1px solid var(--accent-blue)',
+            border: '1px solid var(--accent)',
             borderRadius: '50px',
-            color: 'var(--accent-blue)',
+            color: 'var(--accent)',
             padding: '12px',
             fontSize: '13px',
             fontWeight: 700,

@@ -28,28 +28,6 @@ export function ThemeProvider({ children }) {
     }
   }, [applyTheme, themePref]);
 
-  useEffect(() => {
-    const backgrounds = [
-      `${process.env.PUBLIC_URL}/images/bg-1.png`,
-      `${process.env.PUBLIC_URL}/images/bg-2.png`,
-      `${process.env.PUBLIC_URL}/images/bg-3.png`,
-      `${process.env.PUBLIC_URL}/images/bg-4.png`,
-    ];
-
-    backgrounds.forEach(src => {
-      const img = new Image();
-      img.src = src;
-    });
-
-    const randomBg = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-    const isLight = document.body.classList.contains('light-theme');
-    if (isLight) {
-      document.body.style.backgroundImage = 'none';
-    } else {
-      document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.78), rgba(0,0,0,0.78)), url(${randomBg})`;
-    }
-  }, []);
-
   return (
     <ThemeContext.Provider value={{ themePref, setThemePref }}>
       {children}

@@ -17,7 +17,7 @@ function StatCard({ icon, label, value, color }) {
         width: 40,
         height: 40,
         borderRadius: 12,
-        background: color === 'blue' ? 'var(--accent-blue-dim)' : 'var(--accent-gold-dim)',
+        background: 'var(--accent-dim)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
@@ -43,14 +43,14 @@ function HighlightSection({ title, icon, children }) {
           width: 36,
           height: 36,
           borderRadius: 10,
-          background: 'var(--accent-blue-dim)',
+              background: 'var(--accent-dim)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }}>
           {icon}
         </div>
-        <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>{title}</div>
+        <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em' }}>{title}</div>
       </div>
       {children}
     </div>
@@ -110,7 +110,7 @@ export default function Destaques({ profile, onNavigate }) {
             style={{
               background: 'none',
               border: 'none',
-              color: 'var(--accent-blue)',
+              color: 'var(--accent)',
               cursor: 'pointer',
               fontSize: 13,
               fontWeight: 600,
@@ -127,7 +127,7 @@ export default function Destaques({ profile, onNavigate }) {
             </svg>
             Voltar
           </button>
-          <h1 style={{ fontSize: 24, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1.2 }}>
+          <h1 style={{ fontSize: 24, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1.2, fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Destaques
           </h1>
           <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 4 }}>
@@ -143,25 +143,25 @@ export default function Destaques({ profile, onNavigate }) {
           marginBottom: 28
         }}>
           <StatCard
-            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
+            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
             label="Jogadores ativos"
             value={stats.jogadores}
             color="blue"
           />
           <StatCard
-            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>}
+            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>}
             label="Média geral"
             value={stats.mediaGeral > 0 ? stats.mediaGeral.toFixed(1) : '--'}
             color="gold"
           />
           <StatCard
-            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>}
+            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>}
             label="Avaliações"
             value={stats.avaliacoes}
             color="blue"
           />
           <StatCard
-            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>}
+            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>}
             label="Torneios"
             value={stats.torneios}
             color="gold"
@@ -171,7 +171,7 @@ export default function Destaques({ profile, onNavigate }) {
         {/* Top Ranking */}
         <HighlightSection
           title="Top Ranking"
-          icon={<IconRanking size={18} color="var(--accent-blue)" />}
+          icon={<IconRanking size={18} color="var(--accent)" />}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {topJogadores.length === 0 ? (
@@ -193,13 +193,13 @@ export default function Destaques({ profile, onNavigate }) {
                     width: 32,
                     height: 32,
                     borderRadius: 8,
-                    background: i === 0 ? 'rgba(249,115,22,0.12)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--accent-blue-dim)',
+                    background: i === 0 ? 'rgba(255,107,0,0.12)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--accent-dim)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: 14,
                     fontWeight: 800,
-                    color: i === 0 ? '#F97316' : i === 1 ? '#94A3B8' : i === 2 ? '#CD7C2F' : 'var(--accent-blue)',
+                    color: i === 0 ? 'var(--accent)' : i === 1 ? '#94A3B8' : i === 2 ? '#CD7C2F' : 'var(--accent)',
                     flexShrink: 0
                   }}>
                     {i + 1}
@@ -213,7 +213,7 @@ export default function Destaques({ profile, onNavigate }) {
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
-                    <span style={{ color: '#F97316', fontSize: 12 }}>{'\u2605'}</span>
+                    <span style={{ color: 'var(--accent)', fontSize: 12 }}>{'\u2605'}</span>
                     <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-primary)' }}>
                       {jogador.media_estrelas ? Number(jogador.media_estrelas).toFixed(1) : '--'}
                     </span>
@@ -227,7 +227,7 @@ export default function Destaques({ profile, onNavigate }) {
         {/* Torneios Ativos */}
         <HighlightSection
           title="Torneios"
-          icon={<IconCalendario size={18} color="var(--accent-blue)" />}
+          icon={<IconCalendario size={18} color="var(--accent)" />}
         >
           <div style={{
             background: 'var(--bg-card)',
@@ -240,13 +240,13 @@ export default function Destaques({ profile, onNavigate }) {
               width: 48,
               height: 48,
               borderRadius: 14,
-              background: 'var(--accent-blue-dim)',
+          background: 'var(--accent-dim)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               margin: '0 auto 12px'
             }}>
-              <IconCalendario size={24} color="var(--accent-blue)" />
+              <IconCalendario size={24} color="var(--accent)" />
             </div>
             <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>
               {stats.torneios > 0 ? `${stats.torneios} torneio(s) ativo(s)` : 'Nenhum torneio ativo'}
@@ -259,7 +259,7 @@ export default function Destaques({ profile, onNavigate }) {
             <button
               onClick={() => onNavigate('jogos', { aba: 'torneios' })}
               style={{
-                background: 'var(--accent-blue)',
+                background: 'var(--accent)',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '10px',
@@ -277,13 +277,13 @@ export default function Destaques({ profile, onNavigate }) {
 
         {/* Ação Rápida */}
         <div style={{
-          background: 'var(--accent-blue-gradient-h)',
+          background: 'linear-gradient(135deg, rgba(255,107,0,0.15) 0%, rgba(255,107,0,0.05) 100%)',
           borderRadius: '16px',
           padding: '20px',
           display: 'flex',
           alignItems: 'center',
           gap: 14,
-          boxShadow: '0 4px 16px var(--accent-blue-dim)'
+          boxShadow: '0 4px 16px rgba(255,107,0,0.15)'
         }}>
           <div style={{
             width: 48,

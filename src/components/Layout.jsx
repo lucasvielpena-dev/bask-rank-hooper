@@ -120,7 +120,7 @@ export default function Layout({ page, onNavigate, children }) {
                     {editFoto ? (
                       <img src={editFoto} alt="Preview" style={{ width: 44, height: 44, borderRadius: '50%', border: '1px solid var(--border)', objectFit: 'cover' }} />
                     ) : (
-                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-blue-light)', fontWeight: 700, fontSize: 18 }}>
+                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)', fontWeight: 700, fontSize: 18 }}>
                         {profile.nome_completo?.charAt(0).toUpperCase()}
                       </div>
                     )}
@@ -271,8 +271,8 @@ export default function Layout({ page, onNavigate, children }) {
                           flex: 1,
                           padding: '8px 4px',
                           borderRadius: 8,
-                          border: themePref === t.key ? '2px solid var(--accent-blue)' : '1px solid var(--border)',
-                          background: themePref === t.key ? 'rgba(59,130,246,0.15)' : 'none',
+                          border: themePref === t.key ? '2px solid var(--accent)' : '1px solid var(--border)',
+                          background: themePref === t.key ? 'rgba(255,107,0,0.15)' : 'none',
                           color: 'var(--text-primary)',
                           cursor: 'pointer',
                           fontSize: 12,
@@ -320,7 +320,7 @@ export default function Layout({ page, onNavigate, children }) {
         <div className="modal-overlay" style={{ zIndex: 2000 }}>
           <div className="modal-sheet" style={{ maxWidth: 400, padding: 24, textAlign: 'center' }}>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-              <IconLocalizacao size={40} color="var(--accent-blue-light)" />
+              <IconLocalizacao size={40} color="var(--accent)" />
             </div>
             <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 10 }}>Mudar cidade de competição?</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
@@ -330,7 +330,7 @@ export default function Layout({ page, onNavigate, children }) {
               <button
                 onClick={handleConfirmCityUpdate}
                 style={{
-                  background: 'var(--accent-blue)',
+                  background: 'var(--accent)',
                   color: '#fff',
                   border: 'none',
                   borderRadius: 50,
@@ -375,7 +375,7 @@ export default function Layout({ page, onNavigate, children }) {
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: '#60A5FA',
+                    color: 'var(--accent)',
                     fontSize: '11px',
                     fontWeight: 700,
                     cursor: 'pointer',
@@ -417,7 +417,7 @@ export default function Layout({ page, onNavigate, children }) {
                       <span style={{
                         width: '8px',
                         height: '8px',
-                        background: '#F97316',
+                        background: 'var(--accent)',
                         borderRadius: '50%',
                         position: 'absolute',
                         top: '16px',
@@ -442,7 +442,7 @@ export default function Layout({ page, onNavigate, children }) {
                         onClick={() => handleMarcarLida(n.id)}
                         style={{
                           background: 'rgba(249, 115, 22, 0.12)',
-                          color: '#F97316',
+                          color: 'var(--accent)',
                           border: 'none',
                           borderRadius: '6px',
                           padding: '4px 8px',

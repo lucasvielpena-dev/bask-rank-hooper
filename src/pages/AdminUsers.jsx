@@ -126,7 +126,7 @@ export default function AdminUsers({ profile, onNavigate }) {
             style={{
               background: 'none',
               border: 'none',
-              color: 'var(--accent-blue)',
+              color: 'var(--accent)',
               cursor: 'pointer',
               padding: 6,
               display: 'flex',
@@ -134,7 +134,7 @@ export default function AdminUsers({ profile, onNavigate }) {
               fontFamily: 'inherit'
             }}
           >
-            <IconVoltar size={22} color="var(--accent-blue)" />
+            <IconVoltar size={22} color="var(--accent)" />
           </button>
           <div>
             <h2 style={{
@@ -232,12 +232,12 @@ export default function AdminUsers({ profile, onNavigate }) {
                       height: 42,
                       borderRadius: '50%',
                       background: isAdmin
-                        ? 'linear-gradient(135deg, #F97316 0%, #EAB308 100%)'
-                        : 'var(--accent-blue-dim)',
+                        ? 'linear-gradient(135deg, var(--accent) 0%, var(--accent) 100%)'
+                        : 'var(--accent-dim)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: isAdmin ? '#fff' : 'var(--accent-blue-light)',
+                      color: isAdmin ? '#fff' : 'var(--accent)',
                       fontWeight: 800,
                       fontSize: 16,
                       flexShrink: 0
@@ -301,9 +301,9 @@ export default function AdminUsers({ profile, onNavigate }) {
                         fontWeight: 800,
                         textTransform: 'uppercase',
                         letterSpacing: '0.04em',
-                        background: isAdmin ? 'rgba(249,115,22,0.12)' : 'var(--accent-blue-dim)',
-                        color: isAdmin ? '#F97316' : 'var(--accent-blue-light)',
-                        border: isAdmin ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(37,99,235,0.2)'
+                        background: isAdmin ? 'rgba(255,107,0,0.12)' : 'var(--accent-dim)',
+                        color: isAdmin ? 'var(--accent)' : 'var(--accent)',
+                        border: isAdmin ? '1px solid rgba(255,107,0,0.3)' : '1px solid rgba(255,107,0,0.2)'
                       }}>
                         {user.role || 'user'}
                       </span>
@@ -345,9 +345,9 @@ export default function AdminUsers({ profile, onNavigate }) {
                         minWidth: 'clamp(80px, 25vw, 110px)',
                         padding: '7px 10px',
                         borderRadius: 8,
-                        border: isAdmin ? '1px solid rgba(249,115,22,0.3)' : '1px solid rgba(37,99,235,0.2)',
-                        background: isAdmin ? 'rgba(249,115,22,0.08)' : 'var(--accent-blue-dim)',
-                        color: isAdmin ? '#F97316' : 'var(--accent-blue-light)',
+                        border: isAdmin ? '1px solid rgba(255,107,0,0.3)' : '1px solid rgba(255,107,0,0.2)',
+                        background: isAdmin ? 'rgba(255,107,0,0.08)' : 'var(--accent-dim)',
+                        color: isAdmin ? 'var(--accent)' : 'var(--accent)',
                         fontSize: 11,
                         fontWeight: 700,
                         cursor: isLoading ? 'not-allowed' : 'pointer',

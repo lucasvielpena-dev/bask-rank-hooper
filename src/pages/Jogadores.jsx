@@ -19,7 +19,7 @@ function PlayerAvatar({ fotoUrl, nome, size = 44, border = 'none', hasCrown = fa
   
   const getGradientForName = (name) => {
     const colors = [
-      ['#3b82f6', '#1d4ed8'],
+      ['var(--accent)', '#1d4ed8'],
       ['#f59e0b', '#d97706'],
       ['#10b981', '#047857'],
       ['#8b5cf6', '#6d28d9'],
@@ -95,7 +95,7 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
             transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
           }}
         >
-          <svg width="26" height="26" viewBox="0 0 24 24" fill={(hover || value) >= i ? 'var(--accent-gold)' : 'none'} stroke={(hover || value) >= i ? 'var(--accent-gold)' : 'var(--text-muted)'} strokeWidth="2">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill={(hover || value) >= i ? 'var(--accent)' : 'none'} stroke={(hover || value) >= i ? 'var(--accent)' : 'var(--text-muted)'} strokeWidth="2">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
         </button>
@@ -103,30 +103,6 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
     </div>
   );
 });
-
-const BackgroundDeco = ({ src, opacity, style }) => (
-  <>
-    <img 
-      src={src} 
-      alt="" 
-      style={{
-        position: 'absolute',
-        pointerEvents: 'none',
-        zIndex: 0,
-        objectFit: 'contain',
-        opacity: opacity,
-        ...style
-      }}
-    />
-    <div style={{
-      position: 'absolute',
-      inset: 0,
-      background: 'var(--bg-overlay-jogadores)',
-      pointerEvents: 'none',
-      zIndex: 1
-    }} />
-  </>
-);
 
 export default function Jogadores({ profile }) {
   const [jogadores, setJogadores] = useState([]);
@@ -136,10 +112,8 @@ export default function Jogadores({ profile }) {
   const [loading, setLoading] = useState(true);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
-  // Filtros geográficos
   const [selectedCity, setSelectedCity] = useState(profile?.cidade_atual || profile?.cidade || 'Altamira');
 
-  // Ranks e MVPs
   const [ranks, setRanks] = useState({});
   const [mvpPlayerIds, setMvpPlayerIds] = useState(new Set());
 
@@ -151,14 +125,12 @@ export default function Jogadores({ profile }) {
     { key: 'explosao_fisica', label: 'Explosão Física' }
   ];
 
-  // Avaliação modal
   const [votingPlayer, setVotingPlayer] = useState(null);
   const [estrelasVoto, setEstrelasVoto] = useState({ arremesso: 0, controle_de_bola: 0, defesa: 0, visao_de_jogo: 0, explosao_fisica: 0 });
   const [comentarioVoto, setComentarioVoto] = useState('');
   const [enviandoVoto, setEnviandoVoto] = useState(false);
   const [votosStatus, setVotosStatus] = useState(null);
 
-  // Toast feedback
   const [toast, setToast] = useState(null);
 
 
@@ -169,7 +141,6 @@ export default function Jogadores({ profile }) {
       const userCity = profile.cidade_atual || profile.cidade || 'Altamira';
       setSelectedCity(userCity);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   useEffect(() => {
@@ -195,14 +166,11 @@ export default function Jogadores({ profile }) {
     return () => {
       supabase.removeChannel(channel);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
-  // Aplicar busca e filtros combinados
   useEffect(() => {
     let result = [...jogadores];
 
-    // 1. Filtrar por termo de busca
     if (busca.trim() !== '') {
       result = result.filter(j =>
         j.nome.toLowerCase().includes(busca.toLowerCase()) ||
@@ -210,12 +178,10 @@ export default function Jogadores({ profile }) {
       );
     }
 
-    // 1.5. Filtrar por município selecionado
     if (selectedCity !== 'todos') {
       result = result.filter(j => j.cidade === selectedCity);
     }
 
-    // 2. Filtrar por categoria ativa
     if (filtroAtivo === 'elite') {
       result = result.filter(j => j.media_estrelas >= 4.5 && j.total_votos >= 1);
     } else if (filtroAtivo === 'promessa') {
@@ -224,11 +190,9 @@ export default function Jogadores({ profile }) {
       result = result.filter(j => j.atual_campeao || mvpPlayerIds.has(j.id));
     }
 
-    // 3. Aplicar ordenação baseada no filtro selecionado
     if (filtroAtivo === 'votados') {
       result.sort((a, b) => b.total_votos - a.total_votos || b.media_estrelas - a.media_estrelas);
     } else {
-      // Filtros 'todos', 'avaliados', 'elite', 'promessa', 'mvp' ordenam por média de estrelas
       result.sort((a, b) => b.media_estrelas - a.media_estrelas || b.total_votos - a.total_votos);
     }
 
@@ -245,16 +209,13 @@ export default function Jogadores({ profile }) {
         jogadoresAPI.listarPorEstado(stateUfVal),
         supabase.from('partidas').select('mvp_id'),
         votacaoAPI.getStatusHoje(),
-        // Buscar avaliações já feitas pelo usuário logado para marcar como "já avaliado"
         userId
           ? supabase.from('avaliacoes').select('jogador_id').eq('avaliador_id', userId)
           : Promise.resolve({ data: [] })
       ]);
 
-      // Criar Set de jogadores já avaliados pelo usuário
       const avaliadosSet = new Set((minhasAvaliacoes || []).map(a => a.jogador_id));
 
-      // Marcar ja_votou_hoje em cada jogador
       const players = (jogs || []).map(j => ({
         ...j,
         ja_votou_hoje: avaliadosSet.has(j.id)
@@ -265,7 +226,6 @@ export default function Jogadores({ profile }) {
 
 
 
-      // Calcular Ranks locais para os jogadores de cada cidade
       const playerRanks = {};
       const playersByCity = {};
       players.forEach(j => {
@@ -281,7 +241,6 @@ export default function Jogadores({ profile }) {
       });
       setRanks(playerRanks);
 
-      // Mapear MVPs da cidade
       const mvps = new Set(partidasData?.map(p => p.mvp_id).filter(Boolean) || []);
       setMvpPlayerIds(mvps);
 
@@ -297,13 +256,11 @@ export default function Jogadores({ profile }) {
   }
 
   function handleOpenVote(player) {
-    // 1. Impedir votar em si mesmo
     if (profile?.player_id === player.id) {
       showToast('Você não pode avaliar a si mesmo!', 'error');
       return;
     }
 
-    // 2. Verificar limite diário de votos
     if (votosStatus && votosStatus.restantes <= 0) {
       showToast('Você atingiu o limite de 20 avaliações por dia!', 'error');
       return;
@@ -345,26 +302,19 @@ export default function Jogadores({ profile }) {
 
   return (
     <div className="page-content" style={{ position: 'relative' }}>
-      <BackgroundDeco 
-        src="images/bg-2.png" 
-        opacity={0.10} 
-        style={{ top: 0, left: '50%', transform: 'translateX(-50%)', width: 'clamp(350px, 80vw, 600px)' }} 
-      />
       <div style={{ position: 'relative', zIndex: 2, padding: 'clamp(12px, 3vw, 20px) clamp(14px, 3vw, 20px) 0' }}>
-        {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <IconJogador size={20} color="var(--accent-blue-light)" />
+            <div style={{ width: 40, height: 40, background: 'rgba(255,107,0,0.12)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <IconJogador size={20} color="var(--accent)" />
             </div>
             <div>
-              <h2 style={{ fontWeight: 800, fontSize: 20 }}>Jogadores</h2>
+              <h2 style={{ fontWeight: 800, fontSize: 20, fontFamily:"'Oswald',sans-serif", textTransform:'uppercase', letterSpacing:'0.04em' }}>Jogadores</h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{filtrados.length} atletas em {selectedCity} - {profile?.uf || 'PA'}</p>
             </div>
           </div>
         </div>
 
-        {/* Busca */}
         <div style={{ position: 'relative', marginBottom: 16 }}>
           <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', display: 'flex' }}>
             <IconBuscar size={16} color="var(--text-muted)" />
@@ -377,7 +327,6 @@ export default function Jogadores({ profile }) {
           />
         </div>
 
-        {/* Filtros Pílulas Deslizantes */}
         <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 16, scrollbarWidth: 'none', webkitOverflowScrolling: 'touch' }} className="hide-scrollbar">
           {FILTROS.map(f => {
             const active = filtroAtivo === f.key;
@@ -389,9 +338,9 @@ export default function Jogadores({ profile }) {
                   flexShrink: 0,
                   padding: '8px 16px',
                   borderRadius: '30px',
-                  border: active ? '1.5px solid var(--accent-blue)' : '1.5px solid var(--border)',
-                  background: active ? 'var(--accent-blue-dim)' : 'var(--bg-card)',
-                  color: active ? 'var(--accent-blue-light)' : 'var(--text-secondary)',
+                  border: active ? '1.5px solid var(--accent)' : '1.5px solid var(--border)',
+                  background: active ? 'var(--accent-dim)' : 'var(--bg-card)',
+                  color: active ? 'var(--accent)' : 'var(--text-secondary)',
                   fontWeight: 700,
                   fontSize: 12,
                   cursor: 'pointer',
@@ -405,7 +354,6 @@ export default function Jogadores({ profile }) {
           })}
         </div>
 
-        {/* Lista de Jogadores */}
         {loading ? (
           <div className="responsive-card-grid" style={{ paddingBottom: 20 }}>
             {[1, 2, 3, 4].map(idx => (
@@ -429,7 +377,6 @@ export default function Jogadores({ profile }) {
                   className="card card-enter" 
                   style={{ animationDelay: `${i * 25}ms`, padding: '16px 18px' }}
                 >
-                  {/* Informações Principais */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={44} hasCrown={j.atual_campeao} />
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -454,13 +401,12 @@ export default function Jogadores({ profile }) {
                       </div>
                     </div>
 
-                    {/* Média de Estrelas */}
                     <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <span style={{ fontSize: '18px', fontWeight: 900, color: 'var(--accent-gold)' }}>
+                        <span style={{ fontSize: '18px', fontWeight: 900, color: 'var(--accent)' }}>
                           {j.total_votos >= 1 ? Number(j.media_estrelas).toFixed(1) : 'S/N'}
                         </span>
-                        <span style={{ color: 'var(--accent-gold)', fontSize: '14px' }}>★</span>
+                        <span style={{ color: 'var(--accent)', fontSize: '14px' }}>★</span>
                       </div>
                       <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>
                         {j.total_votos} {j.total_votos === 1 ? 'voto' : 'votos'}
@@ -468,7 +414,6 @@ export default function Jogadores({ profile }) {
                     </div>
                   </div>
 
-                  {/* Botões de Ação Rápida */}
                   <div style={{ display: 'flex', gap: 8, marginTop: 14, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
                     <button 
                       className="btn btn-secondary btn-sm" 
@@ -491,7 +436,7 @@ export default function Jogadores({ profile }) {
                         flex: 1, 
                         margin: 0, 
                         padding: '8px 14px',
-                        background: hasVoted ? 'var(--bg-secondary)' : 'var(--accent-blue)',
+                        background: hasVoted ? 'var(--bg-secondary)' : 'var(--accent)',
                         color: hasVoted ? 'var(--text-muted)' : '#ffffff',
                         border: hasVoted ? '1px solid var(--border)' : 'none',
                         fontWeight: 700
@@ -507,7 +452,6 @@ export default function Jogadores({ profile }) {
         )}
       </div>
 
-      {/* MODAL SHEET: AVALIAÇÃO COMPLETA */}
       {votingPlayer && (
         <div className="modal-overlay" onClick={() => { if (!enviandoVoto) setVotingPlayer(null); }}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 400, maxHeight: '90vh', overflowY: 'auto' }}>
@@ -524,23 +468,23 @@ export default function Jogadores({ profile }) {
                 const val = estrelasVoto[f.key] || 0;
                 return (
                   <div key={f.key} style={{
-                    background: val > 0 ? 'var(--accent-blue-dim)' : 'var(--bg-secondary)',
+                    background: val > 0 ? 'var(--accent-dim)' : 'var(--bg-secondary)',
                     padding: '8px 12px', borderRadius: 10,
-                    border: val > 0 ? '1.5px solid var(--border-active)' : '1px solid var(--border)',
+                    border: val > 0 ? '1.5px solid var(--border)' : '1px solid var(--border)',
                     transition: 'all 0.2s'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <span style={{
                           width: 18, height: 18, borderRadius: 5,
-                          background: val > 0 ? 'var(--accent-blue)' : 'var(--bg-secondary)',
+                          background: val > 0 ? 'var(--accent)' : 'var(--bg-secondary)',
                           color: val > 0 ? '#fff' : 'var(--text-muted)', fontSize: 10, fontWeight: 700,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           border: val > 0 ? 'none' : '1px solid var(--border)'
                         }}>{i + 1}</span>
                         <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
                       </div>
-                      <span style={{ fontSize: 11, color: val > 0 ? 'var(--accent-blue)' : 'var(--accent-gold)', fontWeight: 700 }}>
+                      <span style={{ fontSize: 11, color: val > 0 ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 700 }}>
                         {val > 0 ? `★ ${val}.0` : labelsNota[val] || 'Nota'}
                       </span>
                     </div>
@@ -580,7 +524,6 @@ export default function Jogadores({ profile }) {
         </div>
       )}
 
-      {/* MODAL SHEET: DETALHES DO JOGADOR */}
       {selectedPlayer && (
         <PlayerProfileModal
           jogador={selectedPlayer}
@@ -588,7 +531,6 @@ export default function Jogadores({ profile }) {
         />
       )}
 
-      {/* Toast Feedback */}
       {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
     </div>
   );

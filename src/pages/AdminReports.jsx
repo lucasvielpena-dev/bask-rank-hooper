@@ -29,8 +29,8 @@ function BarChart({ data, labelKey, valueKey, color = 'blue', horizontal = false
                 width: `${(item[valueKey] / max) * 100}%`,
                 height: '100%',
                 background: color === 'blue'
-                  ? 'var(--accent-blue-gradient-h)'
-                  : 'var(--accent-gold-gradient-h)',
+                  ? 'linear-gradient(135deg, rgba(255,107,0,0.15) 0%, rgba(255,107,0,0.05) 100%)'
+                  : 'linear-gradient(135deg, rgba(255,107,0,0.15) 0%, rgba(255,107,0,0.05) 100%)',
                 borderRadius: 6,
                 transition: 'width 0.6s ease'
               }} />
@@ -69,8 +69,8 @@ function BarChart({ data, labelKey, valueKey, color = 'blue', horizontal = false
             height: `${(item[valueKey] / max) * 100}%`,
             minHeight: item[valueKey] > 0 ? 4 : 0,
             background: color === 'blue'
-              ? 'var(--accent-blue-gradient)'
-              : 'var(--accent-gold-gradient)',
+              ? 'var(--accent)'
+              : 'var(--accent)',
             borderRadius: '4px 4px 2px 2px',
             transition: 'height 0.6s ease'
           }} />
@@ -105,7 +105,7 @@ function SectionCard({ title, icon, children }) {
           width: 34,
           height: 34,
           borderRadius: 8,
-          background: 'var(--accent-blue-dim)',
+          background: 'var(--accent-dim)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -229,7 +229,7 @@ export default function AdminReports({ profile, onNavigate }) {
           {/* 1. Crescimento de Usuários */}
           <SectionCard
             title="Crescimento de Usuários"
-            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
+            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
           >
             {usersPerMonth.length === 0 ? (
               <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
@@ -241,7 +241,7 @@ export default function AdminReports({ profile, onNavigate }) {
           {/* 2. Jogadores por Cidade */}
           <SectionCard
             title="Jogadores por Cidade"
-            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>}
+            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>}
           >
             {playersByCity.length === 0 ? (
               <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
@@ -253,7 +253,7 @@ export default function AdminReports({ profile, onNavigate }) {
           {/* 3. Partidas por Mês */}
           <SectionCard
             title="Partidas por Mês"
-            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>}
+            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>}
           >
             {matchesPerMonth.length === 0 ? (
               <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
@@ -265,7 +265,7 @@ export default function AdminReports({ profile, onNavigate }) {
           {/* 4. Avaliações por Mês */}
           <SectionCard
             title="Avaliações por Mês"
-            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>}
+            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>}
           >
             {ratingsPerMonth.length === 0 ? (
               <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
@@ -277,7 +277,7 @@ export default function AdminReports({ profile, onNavigate }) {
           {/* 5. Torneios Mais Ativos */}
           <SectionCard
             title="Torneios Mais Ativos"
-            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>}
+            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>}
           >
             {activeTournaments.length === 0 ? (
               <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
@@ -298,13 +298,13 @@ export default function AdminReports({ profile, onNavigate }) {
                         width: 22,
                         height: 22,
                         borderRadius: 6,
-                        background: i === 0 ? 'rgba(249,115,22,0.15)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--bg-card)',
+                        background: i === 0 ? 'rgba(255,107,0,0.15)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--bg-card)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontSize: 10,
                         fontWeight: 800,
-                        color: i === 0 ? '#F97316' : i === 1 ? '#94A3B8' : i === 2 ? '#CD7C2F' : 'var(--text-muted)',
+                        color: i === 0 ? 'var(--accent)' : i === 1 ? '#94A3B8' : i === 2 ? '#CD7C2F' : 'var(--text-muted)',
                         flexShrink: 0
                       }}>
                         {i + 1}
@@ -339,7 +339,7 @@ export default function AdminReports({ profile, onNavigate }) {
                         <div style={{
                           width: `${((t.total_equipes || 0) / maxTeams) * 100}%`,
                           height: '100%',
-                          background: 'linear-gradient(90deg, #2563EB, #60A5FA)',
+                          background: 'linear-gradient(90deg, var(--accent), var(--accent))',
                           borderRadius: 3
                         }} />
                       </div>
@@ -353,7 +353,7 @@ export default function AdminReports({ profile, onNavigate }) {
           {/* 6. Jogadores Mais Ativos */}
           <SectionCard
             title="Jogadores Mais Ativos"
-            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
+            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
           >
             {topPlayers.length === 0 ? (
               <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
@@ -372,13 +372,13 @@ export default function AdminReports({ profile, onNavigate }) {
                       width: 22,
                       height: 22,
                       borderRadius: 6,
-                      background: i === 0 ? 'rgba(249,115,22,0.15)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--bg-card)',
+                      background: i === 0 ? 'rgba(255,107,0,0.15)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--bg-card)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontSize: 10,
                       fontWeight: 800,
-                      color: i === 0 ? '#F97316' : i === 1 ? '#94A3B8' : i === 2 ? '#CD7C2F' : 'var(--text-muted)',
+                      color: i === 0 ? 'var(--accent)' : i === 1 ? '#94A3B8' : i === 2 ? '#CD7C2F' : 'var(--text-muted)',
                       flexShrink: 0
                     }}>
                       {i + 1}
@@ -403,7 +403,7 @@ export default function AdminReports({ profile, onNavigate }) {
                           <span style={{ fontWeight: 700, color: 'var(--text-secondary)' }}>{p.total_votos || 0}</span> votos
                         </span>
                         <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                          <span style={{ fontWeight: 700, color: '#F97316' }}>{Number(p.media_estrelas || 0).toFixed(1)}</span> ★
+                          <span style={{ fontWeight: 700, color: 'var(--accent)' }}>{Number(p.media_estrelas || 0).toFixed(1)}</span> ★
                         </span>
                       </div>
                     </div>

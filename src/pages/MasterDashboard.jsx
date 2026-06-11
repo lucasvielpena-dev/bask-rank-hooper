@@ -33,7 +33,7 @@ const TABS = [
   { label: 'Logs', page: 'master-logs' }
 ];
 
-const ICON_COLOR = { blue: 'var(--accent-blue)', gold: 'var(--accent-gold)' };
+const ICON_COLOR = { blue: 'var(--accent)', gold: 'var(--accent)' };
 
 export default function MasterDashboard({ onNavigate }) {
   const [stats, setStats] = useState({});
@@ -164,7 +164,7 @@ export default function MasterDashboard({ onNavigate }) {
                       width: 'clamp(34px, 8vw, 40px)',
                       height: 'clamp(34px, 8vw, 40px)',
                       borderRadius: 10,
-                      background: card.color === 'blue' ? 'var(--accent-blue-dim)' : 'var(--accent-gold-dim)',
+                      background: card.color === 'blue' ? 'var(--accent-dim)' : 'var(--accent-dim)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
@@ -231,7 +231,7 @@ export default function MasterDashboard({ onNavigate }) {
             </div>
 
             <div style={{
-              background: 'linear-gradient(135deg, var(--bg-card) 0%, var(--accent-blue-dim) 100%)',
+              background: 'linear-gradient(135deg, var(--bg-card) 0%, var(--accent-dim) 100%)',
               border: '1px solid var(--border)',
               borderRadius: 'clamp(12px, 2vw, 16px)',
               padding: 'clamp(14px, 3vw, 20px)',
@@ -240,7 +240,7 @@ export default function MasterDashboard({ onNavigate }) {
               <div style={{
                 fontSize: 'clamp(10px, 2.5vw, 12px)',
                 fontWeight: 800,
-                color: 'var(--accent-blue-light)',
+                color: 'var(--accent)',
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
                 marginBottom: 8
@@ -278,15 +278,15 @@ export default function MasterDashboard({ onNavigate }) {
                     width: 'clamp(32px, 7vw, 38px)',
                     height: 'clamp(32px, 7vw, 38px)',
                     borderRadius: 10,
-                    background: action.color === 'blue' ? 'var(--accent-blue-dim)' : 'var(--accent-gold-dim)',
+                    background: action.color === 'blue' ? 'var(--accent-dim)' : 'var(--accent-dim)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     marginBottom: 10
                   }}>
                     {action.color === 'blue'
-                      ? <IconJogador size={18} color="var(--accent-blue)" />
-                      : <IconBasquete size={18} color="var(--accent-gold)" />
+                      ? <IconJogador size={18} color="var(--accent)" />
+                      : <IconBasquete size={18} color="var(--accent)" />
                     }
                   </div>
                   <div style={{ fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 700, color: 'var(--text-primary)' }}>

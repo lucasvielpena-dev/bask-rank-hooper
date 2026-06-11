@@ -12,7 +12,7 @@ const FORMATOS = {
 const STATUS_TORNEIO = {
   inscricoes_abertas: { label: '🟢 Inscrições Abertas', color: '#22c55e', bg: 'rgba(34,197,94,0.12)' },
   inscricoes_encerradas: { label: '🟡 Aguardando Início', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  em_andamento: { label: '🔵 Em Andamento', color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
+  em_andamento: { label: '🔵 Em Andamento', color: 'var(--accent)', bg: 'rgba(255,107,0,0.12)' },
   finalizado: { label: '🏆 Finalizado', color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' }
 };
 
@@ -69,8 +69,8 @@ export default function Torneios({ profile, isNested = false }) {
           {!isNested ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 40, height: 40, background: 'rgba(59,130,246,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <IconCalendario size={20} color="var(--accent-blue-light)" />
+                <div style={{ width: 40, height: 40, background: 'rgba(255,107,0,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <IconCalendario size={20} color="var(--accent)" />
                 </div>
                 <div>
                   <h2 style={{ fontWeight: 800, fontSize: 20 }}>Torneios Online</h2>
@@ -655,7 +655,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
             <span style={{
               fontSize: item.label === 'Prêmio' ? '13px' : '22px',
               fontWeight: 900,
-              color: item.label === 'Prêmio' ? '#F97316' : '#F8FAFC',
+              color: item.label === 'Prêmio' ? 'var(--accent)' : '#F8FAFC',
               fontFamily: "'Bebas Neue', sans-serif",
               textAlign: 'center',
               wordBreak: 'break-word',
@@ -694,7 +694,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
               style={{
                 background: 'none',
                 border: 'none',
-                borderBottom: isActive ? '3px solid var(--accent-blue)' : '3px solid transparent',
+                borderBottom: isActive ? '3px solid var(--accent)' : '3px solid transparent',
                 color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
                 fontWeight: isActive ? 800 : 600,
                 fontSize: '13px',
@@ -745,7 +745,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   <span style={{
                     fontSize: '14px',
                     fontWeight: 800,
-                    color: info.highlight ? '#F97316' : '#F8FAFC'
+                    color: info.highlight ? 'var(--accent)' : '#F8FAFC'
                   }}>
                     {info.value}
                   </span>
@@ -790,7 +790,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   <button 
                     onClick={handleIniciarTorneio}
                     style={{
-                      background: 'var(--accent-blue)',
+                      background: 'var(--accent)',
                       color: '#FFFFFF',
                       border: 'none',
                       height: '56px',
@@ -803,7 +803,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       justifyContent: 'center',
                       gap: '8px',
                       width: '100%',
-                      boxShadow: '0 4px 14px var(--accent-blue-dim)',
+                      boxShadow: '0 4px 14px var(--accent-dim)',
                       fontFamily: 'inherit'
                     }}
                   >
@@ -945,7 +945,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 <button 
                   onClick={() => setShowInscricao(true)}
                   style={{
-                    background: 'var(--accent-blue)',
+                    background: 'var(--accent)',
                     color: '#FFFFFF',
                     border: 'none',
                     borderRadius: '12px',
@@ -996,15 +996,15 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                             <button 
                               onClick={async () => { await equipesAPI.aprovar(e.id, true); carregarDados(); }}
                               style={{
-                                background: 'var(--accent-blue)',
-                                color: '#FFFFFF',
-                                border: 'none',
-                                borderRadius: '8px',
-                                padding: '6px 12px',
-                                fontSize: '12px',
-                                fontWeight: 800,
-                                cursor: 'pointer',
-                                fontFamily: 'inherit'
+                    background: 'var(--accent)',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '6px 12px',
+                    fontSize: '12px',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    fontFamily: 'inherit'
                               }}
                             >
                               Aprovar
@@ -1059,7 +1059,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     {classificacao.map((c, i) => (
                       <tr key={c.id} style={{ borderBottom: '1px solid var(--border)' }}>
                         <td style={{ padding: '12px 16px', fontWeight: 800 }}>{i + 1}. {c.nome}</td>
-                        <td style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 900, color: 'var(--accent-blue)' }}>{c.pts}</td>
+                        <td style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 900, color: 'var(--accent)' }}>{c.pts}</td>
                         <td style={{ padding: '12px 10px', textAlign: 'center' }}>{c.v}</td>
                         <td style={{ padding: '12px 10px', textAlign: 'center' }}>{c.d}</td>
                         <td style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 700, color: c.sg >= 0 ? '#22c55e' : '#ef4444' }}>
@@ -1151,12 +1151,12 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     borderRadius: '16px',
                     boxShadow: 'var(--shadow)',
                     padding: '16px',
-                    borderLeft: emProgresso ? '4px solid #2563EB' : '1px solid rgba(255, 255, 255, 0.06)'
+                    borderLeft: emProgresso ? '4px solid var(--accent)' : '1px solid rgba(255, 255, 255, 0.06)'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '8px', fontWeight: 600 }}>
                       <span>{j.fase.toUpperCase()} {j.grupo ? `· ${j.grupo.toUpperCase()}` : ''}</span>
                       {emProgresso ? (
-                        <span style={{ color: '#2563EB', fontWeight: 800 }}>AO VIVO ({j.tempo_total})</span>
+                        <span style={{ color: 'var(--accent)', fontWeight: 800 }}>AO VIVO ({j.tempo_total})</span>
                       ) : j.status === 'finalizado' ? (
                         <span style={{ color: 'var(--text-secondary)', fontWeight: 700 }}>FINALIZADO</span>
                       ) : (
@@ -1238,7 +1238,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.cestinha.nome}</strong>
                       <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Cestinha do Torneio</span>
                     </div>
-                    <div style={{ fontSize: '22px', fontWeight: 900, color: '#F97316', fontFamily: "'Bebas Neue', sans-serif" }}>
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: 'var(--accent)', fontFamily: "'Bebas Neue', sans-serif" }}>
                       {lideres.cestinha.pts} PTS
                     </div>
                   </div>
@@ -1260,7 +1260,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.assistencias.nome}</strong>
                       <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Líder em Assistências</span>
                     </div>
-                    <div style={{ fontSize: '22px', fontWeight: 900, color: '#F97316', fontFamily: "'Bebas Neue', sans-serif" }}>
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: 'var(--accent)', fontFamily: "'Bebas Neue', sans-serif" }}>
                       {lideres.assistencias.ast} AST
                     </div>
                   </div>
@@ -1282,7 +1282,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.rebotes.nome}</strong>
                       <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Líder em Rebotes</span>
                     </div>
-                    <div style={{ fontSize: '22px', fontWeight: 900, color: '#F97316', fontFamily: "'Bebas Neue', sans-serif" }}>
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: 'var(--accent)', fontFamily: "'Bebas Neue', sans-serif" }}>
                       {lideres.rebotes.reb} REB
                     </div>
                   </div>
@@ -1304,7 +1304,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.tocos.nome}</strong>
                       <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Líder em Tocos (Blocks)</span>
                     </div>
-                    <div style={{ fontSize: '22px', fontWeight: 900, color: '#F97316', fontFamily: "'Bebas Neue', sans-serif" }}>
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: 'var(--accent)', fontFamily: "'Bebas Neue', sans-serif" }}>
                       {lideres.tocos.tocos} BLK
                     </div>
                   </div>
@@ -1432,7 +1432,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
     if (valor === 0) return;
     const text = valor > 0 ? `+${valor}` : `${valor}`;
     const id = Math.random().toString(36).substring(2, 9);
-    const color = valor > 0 ? 'var(--accent-gold)' : '#f87171';
+    const color = valor > 0 ? 'var(--accent)' : '#f87171';
     const newFeedback = { id, text, color };
     if (time === 'A') {
       setFeedbacksA(prev => [...prev, newFeedback]);
@@ -1722,7 +1722,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             alignItems: 'center',
             background: 'none',
             border: 'none',
-            color: 'var(--accent-blue)',
+            color: 'var(--accent)',
             cursor: 'pointer',
             fontSize: '14px',
             fontWeight: 700,
@@ -1767,7 +1767,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
                     setTempo(mins * 60);
                     localStorage.setItem(`duracao_torneio_jogo_${jogo.id}`, String(mins));
                   }}
-                  style={{ accentColor: '#3b82f6' }}
+                  style={{ accentColor: 'var(--accent)' }}
                 />
                 {mins} minutos
               </label>
@@ -1832,13 +1832,13 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             height: 'clamp(32px, 8vw, 40px)',
             borderRadius: '50%',
             background: 'rgba(255,255,255,0.03)',
-            border: '2px solid #2563EB',
+            border: '2px solid var(--accent)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: 6
           }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2">
               <circle cx="12" cy="12" r="10" />
               <path d="M12 2a14.5 14.5 0 0 1 0 20" />
               <path d="M2 12h20" />
@@ -1871,13 +1871,13 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             height: 'clamp(32px, 8vw, 40px)',
             borderRadius: '50%',
             background: 'rgba(255,255,255,0.03)',
-            border: '2px solid #F97316',
+            border: '2px solid var(--accent)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: 6
           }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2">
               <circle cx="12" cy="12" r="10" />
               <path d="M12 2a14.5 14.5 0 0 1 0 20" />
               <path d="M2 12h20" />
@@ -1964,7 +1964,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
                 Fim do {periodo}º Quarto
               </h3>
               <button onClick={comecarProximoPeriodo} style={{
-                background: '#2563EB',
+                background: 'var(--accent)',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '8px',
@@ -1990,7 +1990,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
                 Jogo Empatado!
               </h3>
               <button onClick={comecarProximoPeriodo} style={{
-                background: '#F97316',
+                background: 'var(--accent)',
                 color: '#080F1A',
                 border: 'none',
                 borderRadius: '8px',
@@ -2113,7 +2113,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         <button 
           onClick={() => setTimerAtivo(!timerAtivo)}
           style={{
-            background: '#2563EB',
+            background: 'var(--accent)',
             border: 'none',
             width: '56px',
             height: '56px',
@@ -2124,7 +2124,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
+            boxShadow: '0 4px 12px rgba(255,107,0,0.3)',
             transition: 'transform 0.1s'
           }}
         >
@@ -2164,7 +2164,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           {allPlayers.map(p => {
             const st = statsJogo[p.jogador_id] || { pontos: 0, rebotes: 0, assistencias: 0, tocos: 0, roubos: 0 };
             const isTeamA = rosterA.some(r => r.jogador_id === p.jogador_id);
-            const teamBadgeColor = isTeamA ? '#2563EB' : '#F97316';
+            const teamBadgeColor = isTeamA ? 'var(--accent)' : 'var(--accent)';
             return (
               <div key={p.id} className="card" style={{ padding: '12px 14px', background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
@@ -2342,7 +2342,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
                 {r.jogador?.foto_perfil ? (
                   <img src={r.jogador.foto_perfil} alt="Avatar" style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} />
                 ) : (
-                  <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'var(--accent-blue-light)' }}>
+                  <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: 'var(--accent)' }}>
                     {r.jogador?.nome_completo?.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -2418,7 +2418,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
                     {p.foto_perfil ? (
                       <img src={p.foto_perfil} alt="Avatar" style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />
                     ) : (
-                      <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--accent-blue-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: 'var(--accent-blue-light)' }}>
+                       <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: 'var(--accent)' }}>
                         {p.nome_completo?.charAt(0).toUpperCase()}
                       </div>
                     )}

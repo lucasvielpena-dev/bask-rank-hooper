@@ -32,7 +32,7 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
             transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
           }}
         >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill={(hover || value) >= i ? '#F97316' : 'none'} stroke={(hover || value) >= i ? '#F97316' : 'var(--text-muted)'} strokeWidth="2">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill={(hover || value) >= i ? 'var(--accent)' : 'none'} stroke={(hover || value) >= i ? 'var(--accent)' : 'var(--text-muted)'} strokeWidth="2">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
           </svg>
         </button>
@@ -324,7 +324,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 const val = estrelas[f.key] || 0;
                 return (
                   <div key={f.key} style={{ 
-                    background: val > 0 ? 'var(--accent-blue-dim)' : 'var(--bg-secondary)', 
+                    background: val > 0 ? 'var(--accent-dim)' : 'var(--bg-secondary)', 
                     padding: '14px 16px', 
                     borderRadius: 12, 
                     border: val > 0 ? '1.5px solid var(--border-active)' : '1px solid var(--border)',
@@ -334,7 +334,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{ 
                           width: 22, height: 22, borderRadius: 6, 
-                          background: val > 0 ? 'var(--accent-blue)' : 'var(--bg-secondary)', 
+                          background: val > 0 ? 'var(--accent)' : 'var(--bg-secondary)', 
                           color: val > 0 ? '#fff' : 'var(--text-muted)', fontSize: 11, fontWeight: 700,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           border: val > 0 ? 'none' : '1px solid var(--border)'
@@ -342,7 +342,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                         <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
                       </div>
                       <span style={{ 
-                        fontSize: 12, color: val > 0 ? 'var(--accent-blue)' : 'var(--accent-gold)', 
+                        fontSize: 12, color: val > 0 ? 'var(--accent)' : 'var(--accent)', 
                         fontWeight: 700, minWidth: 70, textAlign: 'right'
                       }}>
                         {val > 0 ? `★ ${val}.0` : labelsNota[val] || 'Nota'}
@@ -403,8 +403,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                   height: 88,
                   borderRadius: '50%',
                   overflow: 'hidden',
-                  border: '3px solid var(--accent-blue)',
-                  boxShadow: '0 4px 20px var(--accent-blue-dim)',
+                  border: '3px solid var(--accent)',
+                  boxShadow: '0 4px 20px var(--accent-dim)',
                   marginBottom: 12,
                   flexShrink: 0
                 }}>
@@ -419,14 +419,14 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                   width: 88,
                   height: 88,
                   borderRadius: '50%',
-                  background: 'var(--accent-blue-gradient-h)',
+                  background: 'linear-gradient(135deg, rgba(255,107,0,0.15) 0%, rgba(255,107,0,0.05) 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: 32,
                   fontWeight: 900,
                   color: '#fff',
-                  boxShadow: '0 4px 20px var(--accent-blue-dim)',
+                  boxShadow: '0 4px 20px var(--accent-dim)',
                   marginBottom: 12,
                   flexShrink: 0
                 }}>
@@ -471,7 +471,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                   alignItems: 'center',
                   gap: 5,
                   background: 'rgba(249, 115, 22, 0.12)',
-                  color: '#F97316',
+                  color: 'var(--accent)',
                   border: '1px solid rgba(249, 115, 22, 0.25)',
                   borderRadius: 999,
                   padding: '6px 14px',
@@ -488,8 +488,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: 4,
-                    background: 'var(--accent-blue-dim)',
-                    color: 'var(--accent-blue)',
+                    background: 'var(--accent-dim)',
+                    color: 'var(--accent)',
                     border: '1px solid var(--border)',
                     borderRadius: 999,
                     padding: '6px 14px',
@@ -616,14 +616,14 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       <div key={f.key}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: 5 }}>
                           <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{f.label}</span>
-                          <span style={{ color: 'var(--accent-blue)', fontWeight: 700 }}>
+                          <span style={{ color: 'var(--accent)', fontWeight: 700 }}>
                             {hasVotes ? `★ ${Number(mediaAspecto).toFixed(1)}` : '--'}
                           </span>
                         </div>
                         <div className="progress-bar" style={{ height: '6px', background: 'var(--bg-secondary)' }}>
                           <div 
                             className="progress-fill bar-grow-fill" 
-                            style={{ width: hasVotes ? `${(mediaAspecto / 5) * 100}%` : '0%', background: 'var(--accent-blue)' }} 
+                            style={{ width: hasVotes ? `${(mediaAspecto / 5) * 100}%` : '0%', background: 'var(--accent)' }} 
                           />
                         </div>
                       </div>
@@ -694,7 +694,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 onClick={() => setShowAvaliar(true)}
                 style={{
                   flex: 2,
-                  background: 'var(--accent-blue)',
+                  background: 'var(--accent)',
                   height: '44px',
                   borderRadius: '12px',
                   fontWeight: 700,

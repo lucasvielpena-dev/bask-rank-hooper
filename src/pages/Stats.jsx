@@ -341,7 +341,7 @@ export default function Stats({ profile, onNavigate }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
           <button 
             onClick={() => onNavigate('inicio')} 
-            style={{ background: 'none', border: 'none', color: '#60A5FA', cursor: 'pointer', display: 'flex', alignItems: 'center', fontSize: '13px', fontWeight: 700, padding: 0, fontFamily: 'inherit' }}
+            style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', display: 'flex', alignItems: 'center', fontSize: '13px', fontWeight: 700, padding: 0, fontFamily: 'inherit' }}
           >
             ← Início
           </button>
@@ -384,9 +384,9 @@ export default function Stats({ profile, onNavigate }) {
             <h3 style={{ fontSize: '20px', fontWeight: 900, color: 'var(--text-primary)', marginBottom: 2 }} >{profile.nome_completo}</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
               <span style={{
-                background: 'rgba(37, 99, 235, 0.2)',
-                color: '#60A5FA',
-                border: '1px solid rgba(37, 99, 235, 0.4)',
+                background: 'rgba(255,107,0,0.12)',
+                color: 'var(--accent)',
+                border: '1px solid rgba(255,107,0,0.3)',
                 borderRadius: '6px',
                 padding: '2px 8px',
                 fontSize: '9px',
@@ -400,10 +400,10 @@ export default function Stats({ profile, onNavigate }) {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style={{ fontSize: '22px', fontWeight: 900, color: '#F97316', fontFamily: 'monospace' }}>
+                <span style={{ fontSize: '22px', fontWeight: 900, color: 'var(--accent)', fontFamily: 'monospace' }}>
                   {starsVal > 0 ? Number(starsVal).toFixed(1) : '0.0'}
                 </span>
-                <span style={{ color: '#F97316', fontSize: '15px' }}>★</span>
+                <span style={{ color: 'var(--accent)', fontSize: '15px' }}>★</span>
                 <span style={{ color: '#94A3B8', fontSize: '11px', marginLeft: 4 }}>Nota média</span>
               </div>
               <div style={{ fontSize: '11px', color: '#94A3B8' }}>
@@ -441,7 +441,7 @@ export default function Stats({ profile, onNavigate }) {
 
         {/* Linha de Evolução */}
         <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '14px', padding: '14px 16px', marginBottom: 16 }}>
-          <div style={{ fontSize: '9px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+          <div style={{ fontSize: '9px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.04em', textTransform: 'uppercase', fontFamily: "'Oswald',sans-serif" }}>
             LINHA DE EVOLUÇÃO
           </div>
           <div className="evolution-timeline" style={{ margin: '18px 0 6px' }}>
@@ -522,7 +522,7 @@ export default function Stats({ profile, onNavigate }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {/* Avaliações Públicas */}
               <div>
-                <div style={{ fontSize: '11px', fontWeight: 700, color: '#60A5FA', letterSpacing: '0.02em', marginBottom: 10 }}>AVALIAÇÕES PÚBLICAS DA QUADRA</div>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.04em', marginBottom: 10, fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase' }}>AVALIAÇÕES PÚBLICAS DA QUADRA</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {fundamentos.map(f => {
                     const mediaAspecto = myPlayerInfo ? myPlayerInfo[`media_${f.key}`] || 0 : 0;
@@ -530,14 +530,14 @@ export default function Stats({ profile, onNavigate }) {
                       <div key={f.key}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: 4 }}>
                           <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{f.label}</span>
-                          <span style={{ color: '#60A5FA', fontWeight: 700 }}>
+                          <span style={{ color: 'var(--accent)', fontWeight: 700 }}>
                             {myPlayerInfo?.total_votos >= 1 ? `★ ${Number(mediaAspecto).toFixed(1)}` : '--'}
                           </span>
                         </div>
                         <div className="progress-bar" style={{ height: '4px', background: 'var(--bg-secondary)' }}>
                           <div 
                             className="progress-fill bar-grow-fill" 
-                            style={{ width: myPlayerInfo?.total_votos >= 1 ? `${(mediaAspecto / 5) * 100}%` : '0%', background: '#2563EB' }} 
+                            style={{ width: myPlayerInfo?.total_votos >= 1 ? `${(mediaAspecto / 5) * 100}%` : '0%', background: 'var(--accent)' }} 
                           />
                         </div>
                       </div>
@@ -549,7 +549,7 @@ export default function Stats({ profile, onNavigate }) {
               {/* Registro Privado */}
               <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '12px', padding: '16px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#F97316', letterSpacing: '0.05em' }}>ESTATÍSTICAS PRIVADAS</span>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.04em', fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase' }}>ESTATÍSTICAS PRIVADAS</span>
                   <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>{historicoPrivado.length} jogos</span>
                 </div>
                 <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: 16 }}>
@@ -562,7 +562,7 @@ export default function Stats({ profile, onNavigate }) {
                     {/* Linha Principal de Médias */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, textAlign: 'center' }}>
                       <div style={{ background: 'var(--bg-secondary)', padding: '10px 4px', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                        <div style={{ fontSize: '18px', fontWeight: 900, color: '#F97316' }}>{mediasPrivadas.pontos}</div>
+                        <div style={{ fontSize: '18px', fontWeight: 900, color: 'var(--accent)' }}>{mediasPrivadas.pontos}</div>
                         <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>PPJ</div>
                       </div>
                       <div style={{ background: 'var(--bg-secondary)', padding: '10px 4px', borderRadius: '8px', border: '1px solid var(--border)' }}>
@@ -591,7 +591,7 @@ export default function Stats({ profile, onNavigate }) {
                         width: '74px', 
                         height: '74px', 
                         borderRadius: '50%', 
-                        background: `conic-gradient(var(--accent-blue) 0% ${mediasPrivadas.aproveitamento}%, var(--border) ${mediasPrivadas.aproveitamento}% 100%)`,
+                        background: `conic-gradient(var(--accent) 0% ${mediasPrivadas.aproveitamento}%, var(--border) ${mediasPrivadas.aproveitamento}% 100%)`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyItems: 'center',
@@ -626,7 +626,7 @@ export default function Stats({ profile, onNavigate }) {
                               <span style={{ color: 'var(--text-primary)' }}>{item.pct}% <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>({item.vol})</span></span>
                             </div>
                             <div style={{ height: '4px', background: 'var(--border)', borderRadius: '2px', overflow: 'hidden' }}>
-                              <div style={{ height: '100%', background: 'var(--accent-blue)', width: `${item.pct}%`, borderRadius: '2px' }} />
+                              <div style={{ height: '100%', background: 'var(--accent)', width: `${item.pct}%`, borderRadius: '2px' }} />
                             </div>
                           </div>
                         ))}
@@ -641,7 +641,7 @@ export default function Stats({ profile, onNavigate }) {
                         padding: '14px', 
                         border: '1px solid var(--border)'
                       }}>
-                        <div style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: 12, textTransform: 'uppercase' }}>
+                        <div style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.04em', marginBottom: 12, textTransform: 'uppercase', fontFamily: "'Oswald',sans-serif" }}>
                           Evolução de Pontos (Últimos 5 Jogos)
                         </div>
                         
@@ -683,9 +683,9 @@ export default function Stats({ profile, onNavigate }) {
                                     <div style={{ 
                                       width: '18px', 
                                       height: `${alturaPct}%`, 
-                                      background: 'linear-gradient(to top, var(--accent-blue-dim) 0%, var(--accent-blue) 100%)',
+                                      background: 'linear-gradient(to top, var(--accent-dim) 0%, var(--accent) 100%)',
                                       borderRadius: '4px 4px 0 0',
-                                      boxShadow: '0 0 10px var(--accent-blue-dim)',
+                                      boxShadow: '0 0 10px var(--accent-dim)',
                                       transition: 'height 0.3s ease'
                                     }} />
                                     {/* Data ou número da partida embaixo */}
@@ -719,12 +719,12 @@ export default function Stats({ profile, onNavigate }) {
                 <button
                   onClick={() => setSubAbaHistorico('pessoal')}
                   style={{
-                    background: subAbaHistorico === 'pessoal' ? 'rgba(37,99,235,0.1)' : 'none',
-                    border: subAbaHistorico === 'pessoal' ? '1px solid rgba(37,99,235,0.2)' : '1px solid transparent',
+                    background: subAbaHistorico === 'pessoal' ? 'rgba(255,107,0,0.1)' : 'none',
+                    border: subAbaHistorico === 'pessoal' ? '1px solid rgba(255,107,0,0.2)' : '1px solid transparent',
                     borderRadius: '20px',
                     padding: '4px 12px',
                     fontSize: '11px',
-                    color: subAbaHistorico === 'pessoal' ? '#60A5FA' : '#64748B',
+                    color: subAbaHistorico === 'pessoal' ? 'var(--accent)' : '#64748B',
                     cursor: 'pointer',
                     fontFamily: 'inherit'
                   }}
@@ -734,12 +734,12 @@ export default function Stats({ profile, onNavigate }) {
                 <button
                   onClick={() => setSubAbaHistorico('quadra')}
                   style={{
-                    background: subAbaHistorico === 'quadra' ? 'rgba(37,99,235,0.1)' : 'none',
-                    border: subAbaHistorico === 'quadra' ? '1px solid rgba(37,99,235,0.2)' : '1px solid transparent',
+                    background: subAbaHistorico === 'quadra' ? 'rgba(255,107,0,0.1)' : 'none',
+                    border: subAbaHistorico === 'quadra' ? '1px solid rgba(255,107,0,0.2)' : '1px solid transparent',
                     borderRadius: '20px',
                     padding: '4px 12px',
                     fontSize: '11px',
-                    color: subAbaHistorico === 'quadra' ? '#60A5FA' : '#64748B',
+                    color: subAbaHistorico === 'quadra' ? 'var(--accent)' : '#64748B',
                     cursor: 'pointer',
                     fontFamily: 'inherit'
                   }}

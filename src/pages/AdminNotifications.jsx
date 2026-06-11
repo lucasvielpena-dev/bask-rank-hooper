@@ -207,8 +207,8 @@ export default function AdminNotifications({ profile, onNavigate }) {
           {/* Recipient Count */}
           {recipientCount !== null && (
             <div className="card" style={{
-              background: 'linear-gradient(135deg, var(--bg-card) 0%, rgba(37,99,235,0.06) 100%)',
-              border: '1px solid rgba(37,99,235,0.12)',
+              background: 'linear-gradient(135deg, var(--bg-card) 0%, rgba(255,107,0,0.06) 100%)',
+              border: '1px solid rgba(255,107,0,0.12)',
               borderRadius: 'clamp(12px, 2vw, 16px)',
               padding: 'clamp(14px, 3vw, 20px)',
               display: 'flex',
@@ -219,13 +219,13 @@ export default function AdminNotifications({ profile, onNavigate }) {
                 width: 'clamp(40px, 10vw, 48px)',
                 height: 'clamp(40px, 10vw, 48px)',
                 borderRadius: 12,
-                background: 'var(--accent-blue-dim)',
+                background: 'var(--accent-dim)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0
               }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                   <circle cx="9" cy="7" r="4" />
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -259,7 +259,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
             type="submit"
             disabled={enviando}
             style={{
-              background: '#2563EB',
+              background: 'var(--accent)',
               color: '#FFFFFF',
               border: 'none',
               height: 'clamp(48px, 12vw, 56px)',
@@ -273,7 +273,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
               justifyContent: 'center',
               gap: 10,
               width: '100%',
-              boxShadow: '0 4px 14px rgba(37, 99, 235, 0.2)',
+              boxShadow: '0 4px 14px rgba(255,107,0,0.2)',
               fontFamily: 'inherit',
               letterSpacing: '0.02em'
             }}

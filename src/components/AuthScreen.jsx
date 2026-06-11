@@ -67,7 +67,7 @@ export default function AuthScreen() {
           <div style={{ 
             width: 64, 
             height: 64, 
-            background: 'var(--accent-blue)', 
+            background: 'var(--accent)', 
             borderRadius: 18, 
             display: 'flex', 
             alignItems: 'center', 

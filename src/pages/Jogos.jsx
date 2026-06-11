@@ -43,7 +43,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     if (valor === 0) return;
     const text = valor > 0 ? `+${valor}` : `${valor}`;
     const id = Math.random().toString(36).substring(2, 9);
-    const color = valor > 0 ? 'var(--accent-gold)' : '#f87171';
+    const color = valor > 0 ? 'var(--accent)' : '#f87171';
     const newFeedback = { id, text, color };
     if (time === 'A') {
       setFeedbacksA(prev => [...prev, newFeedback]);
@@ -442,15 +442,15 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           {/* Header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 40, height: 40, background: 'rgba(99,102,241,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: 40, height: 40, background: 'rgba(255,107,0,0.12)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {aba === 'torneios' ? (
-                  <IconCalendario size={20} color="var(--accent-blue-light)" />
+                  <IconCalendario size={20} color="var(--accent)" />
                 ) : (
-                  <IconJogo size={20} color="var(--accent-blue-light)" />
+                  <IconJogo size={20} color="var(--accent)" />
                 )}
               </div>
               <div>
-                <h2 style={{ fontWeight: 800, fontSize: 20 }}>
+                <h2 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 20 }}>
                   {aba === 'torneios' ? 'Torneios Regionais' : 'Jogos da Noite'}
                 </h2>
                 <p style={{ color: '#64748b', fontSize: 13 }}>
@@ -475,7 +475,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <button className={`tab ${aba === 'historico' ? 'active' : ''}`} onClick={() => setAba('historico')}>
               Histórico
               {historico.length > 0 && (
-                <span style={{ background: '#3b82f6', color: 'white', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{historico.length}</span>
+                <span style={{ background: 'var(--accent)', color: '#05070A', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{historico.length}</span>
               )}
             </button>
             <button className={`tab ${aba === 'torneios' ? 'active' : ''}`} onClick={() => setAba('torneios')}>
@@ -591,7 +591,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       {/* TELA 2: WIZARD / CADASTRO DE TIMES */}
       {tela === 'novo' && (
         <div style={{ padding: '20px' }}>
-          <h3 style={{ fontWeight: 800, fontSize: 22, marginBottom: 4 }}>Configurar Partida</h3>
+          <h3 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 22, marginBottom: 4 }}>Configurar Partida</h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>Configure as equipes e a lista de atletas antes de iniciar o cronômetro.</p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -625,7 +625,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     name="duracaoQuarto"
                     checked={duracaoQuarto === 10}
                     onChange={() => setDuracaoQuarto(10)}
-                    style={{ accentColor: '#3b82f6', width: 16, height: 16 }}
+                    style={{ accentColor: 'var(--accent)', width: 16, height: 16 }}
                   />
                   10 minutos
                 </label>
@@ -635,7 +635,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     name="duracaoQuarto"
                     checked={duracaoQuarto === 12}
                     onChange={() => setDuracaoQuarto(12)}
-                    style={{ accentColor: '#3b82f6', width: 16, height: 16 }}
+                    style={{ accentColor: 'var(--accent)', width: 16, height: 16 }}
                   />
                   12 minutos
                 </label>
@@ -665,7 +665,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             type="button"
                             onClick={() => togglePlayer(j.id, 'A')}
                             className={`btn btn-sm ${noA ? 'btn-primary' : 'btn-secondary'}`}
-                            style={{ fontSize: 11, padding: '4px 10px', background: noA ? '#3b82f6' : 'transparent', color: noA ? '#fff' : 'var(--text-secondary)', border: noA ? '1px solid #3b82f6' : '1px solid var(--border)' }}
+                            style={{ fontSize: 11, padding: '4px 10px', background: noA ? 'var(--accent)' : 'transparent', color: noA ? '#05070A' : 'var(--text-secondary)', border: noA ? '1px solid var(--accent)' : '1px solid var(--border)' }}
                           >
                             Time A
                           </button>
@@ -714,7 +714,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 alignItems: 'center',
                 background: 'none',
                 border: 'none',
-                color: 'var(--accent-blue)',
+                color: 'var(--accent)',
                 cursor: 'pointer',
                 fontSize: '14px',
                 fontWeight: 700,
@@ -790,13 +790,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 height: 'clamp(32px, 8vw, 40px)',
                 borderRadius: '50%',
                 background: 'rgba(255,255,255,0.03)',
-                border: '2px solid var(--accent-blue)',
+                border: '2px solid var(--accent)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: 6
               }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" strokeWidth="2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 2a14.5 14.5 0 0 1 0 20" />
                   <path d="M2 12h20" />
@@ -829,13 +829,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 height: 'clamp(32px, 8vw, 40px)',
                 borderRadius: '50%',
                 background: 'rgba(255,255,255,0.03)',
-                border: '2px solid #F97316',
+                border: '2px solid var(--accent)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: 6
               }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 2a14.5 14.5 0 0 1 0 20" />
                   <path d="M2 12h20" />
@@ -922,8 +922,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     Fim do {periodo}º Quarto
                   </h3>
                   <button onClick={comecarProximoPeriodo} style={{
-                    background: '#2563EB',
-                    color: '#ffffff',
+                    background: 'var(--accent)',
+                    color: '#05070A',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '8px 20px',
@@ -948,8 +948,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     Jogo Empatado!
                   </h3>
                   <button onClick={comecarProximoPeriodo} style={{
-                    background: '#F97316',
-                    color: '#080F1A',
+                    background: 'var(--accent)',
+                    color: '#05070A',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '8px 20px',
@@ -987,7 +987,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <div style={{
               padding: '12px',
               background: 'var(--bg-card)',
-              border: '1px solid rgba(37, 99, 235, 0.2)',
+              border: '1px solid rgba(255, 107, 0, 0.12)',
               borderRadius: '12px',
               display: 'flex',
               flexDirection: 'column',
@@ -1072,18 +1072,18 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <button 
               onClick={() => setTimerAtivo(!timerAtivo)}
               style={{
-                background: 'var(--accent-blue)',
+                background: 'var(--accent)',
                 border: 'none',
                 width: '56px',
                 height: '56px',
                 borderRadius: '50%',
-                color: '#FFF',
+                color: '#05070A',
                 fontSize: '22px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                boxShadow: '0 4px 12px var(--accent-blue-dim)',
+                boxShadow: '0 4px 12px var(--accent-dim)',
                 transition: 'transform 0.1s'
               }}
             >
@@ -1144,7 +1144,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
         <div className="modal-overlay" onClick={() => setShowFinalizarModal(false)}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Finalizar Jogo</h3>
+            <h3 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Finalizar Jogo</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>Deseja mesmo encerrar a partida? O placar acumulado e estatísticas serão registrados de forma definitiva.</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
