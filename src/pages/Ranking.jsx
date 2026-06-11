@@ -2,98 +2,106 @@ import { useState, useEffect, useMemo, memo } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 
-const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 40, border = 'none' }) {
+const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 48, isFirst = false }) {
   const initial = nome ? nome.charAt(0).toUpperCase() : '?';
-  
+
   const getGradientForName = (name) => {
     const colors = [
-      ['var(--accent)', 'var(--accent)'],
+      ['#F97316', '#EA580C'],
       ['#f59e0b', '#d97706'],
       ['#10b981', '#047857'],
       ['#8b5cf6', '#6d28d9'],
       ['#ec4899', '#be185d'],
-      ['#f43f5e', '#be123c'],
       ['#06b6d4', '#0891b2'],
     ];
     let hash = 0;
     for (let i = 0; i < (name || '').length; i++) {
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
-    const index = Math.abs(hash) % colors.length;
-    return `linear-gradient(135deg, ${colors[index][0]} 0%, ${colors[index][1]} 100%)`;
+    return `linear-gradient(135deg, ${colors[Math.abs(hash) % colors.length][0]} 0%, ${colors[Math.abs(hash) % colors.length][1]} 100%)`;
   };
 
-  const avatarStyle = {
+  const wrapperStyle = {
+    position: 'relative',
+    display: 'inline-flex',
+    flexShrink: 0,
+  };
+
+  const imgStyle = {
     width: size,
     height: size,
     borderRadius: '50%',
     objectFit: 'cover',
-    border: border !== 'none' ? border : '1px solid var(--border)',
-    boxShadow: '0 3px 8px rgba(0, 0, 0, 0.08)',
-    flexShrink: 0
+    border: isFirst ? '2px solid transparent' : '1px solid rgba(255,255,255,0.08)',
+    boxShadow: isFirst ? '0 0 0 2px rgba(249,115,22,0.3)' : 'none',
+  };
+
+  const initialsStyle = {
+    width: size,
+    height: size,
+    borderRadius: '50%',
+    background: getGradientForName(nome),
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#ffffff',
+    fontWeight: 800,
+    fontSize: size * 0.4,
+    fontFamily: "'Barlow Condensed',sans-serif",
+    border: isFirst ? '2px solid transparent' : '1px solid rgba(255,255,255,0.08)',
+    boxShadow: isFirst ? '0 0 0 2px rgba(249,115,22,0.3)' : 'none',
   };
 
   if (fotoUrl) {
     return (
-      <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
-        <img src={fotoUrl} alt={nome} style={avatarStyle} />
+      <div style={wrapperStyle}>
+        <img src={fotoUrl} alt={nome} style={imgStyle} />
       </div>
     );
   }
 
   return (
-    <div style={{ position: 'relative', display: 'inline-flex', verticalAlign: 'middle' }}>
-      <div style={{
-        ...avatarStyle,
-        background: getGradientForName(nome),
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#ffffff',
-        fontWeight: 800,
-        fontSize: size * 0.44,
-        boxShadow: '0 2px 6px rgba(0,0,0,0.2)'
-      }}>
-        {initial}
-      </div>
+    <div style={wrapperStyle}>
+      <div style={initialsStyle}>{initial}</div>
     </div>
   );
 });
+
+const LocationPin = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="#F97316" stroke="none" style={{ verticalAlign: 'middle', marginRight: 3 }}>
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+  </svg>
+);
+
+const ScoreBar = ({ value, max = 5.0, color = 'var(--accent)' }) => {
+  const pct = Math.min((value / max) * 100, 100);
+  return (
+    <div style={{ width: '100%', height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.06)', marginTop: 6, overflow: 'hidden' }}>
+      <div style={{ width: `${pct}%`, height: '100%', borderRadius: 2, background: color, transition: 'width 0.6s ease' }} />
+    </div>
+  );
+};
 
 export default function Ranking({ profile }) {
   const [ranking, setRanking] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const categoria = 'geral';
 
   const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
   const uf = profile?.uf || 'PA';
 
   useEffect(() => {
-    if (profile) {
-      loadRanking(city, uf);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile]);
+    if (profile) loadRanking(city, uf);
+  }, [profile, city, uf]);
 
   useEffect(() => {
     if (!profile) return;
     const channel = supabase
       .channel('ranking-realtime')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'jogadores' },
-        () => {
-          loadRanking(city, uf);
-        }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores' }, () => loadRanking(city, uf))
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile]);
+    return () => { supabase.removeChannel(channel); };
+  }, [profile, city, uf]);
 
   async function loadRanking(cityVal = city, ufVal = uf) {
     setLoading(true);
@@ -102,71 +110,59 @@ export default function Ranking({ profile }) {
     setLoading(false);
   }
 
-  const sortedRanking = useMemo(() => {
-    const sorted = [...ranking];
-    if (categoria === 'pontos') {
-      return sorted.sort((a, b) => (b.media_arremesso || 0) - (a.media_arremesso || 0));
-    }
-    if (categoria === 'rebotes') {
-      return sorted.sort((a, b) => (b.media_explosao_fisica || 0) - (a.media_explosao_fisica || 0));
-    }
-    if (categoria === 'assist') {
-      return sorted.sort((a, b) => (b.media_controle_de_bola || 0) - (a.media_controle_de_bola || 0));
-    }
-    if (categoria === 'defesa') {
-      return sorted.sort((a, b) => (b.media_defesa || 0) - (a.media_defesa || 0));
-    }
-    return sorted;
-  }, [ranking, categoria]);
+  const sortedRanking = useMemo(() => [...ranking].sort((a, b) => (b.media_estrelas || 0) - (a.media_estrelas || 0)), [ranking]);
 
-  const getMetricValue = (player) => {
-    if (categoria === 'pontos') return player.media_arremesso || 0;
-    if (categoria === 'rebotes') return player.media_explosao_fisica || 0;
-    if (categoria === 'assist') return player.media_controle_de_bola || 0;
-    if (categoria === 'defesa') return player.media_defesa || 0;
-    return player.media_estrelas || 0;
+  const getScore = (player) => player.media_estrelas || 0;
+
+  const getBorderStyle = (index) => {
+    if (index === 0) return { borderLeft: '4px solid #F97316' };
+    if (index === 1) return { borderLeft: '4px solid #9CA3AF' };
+    if (index === 2) return { borderLeft: '4px solid #CD7F32' };
+    return {};
   };
 
-  const getRankBadgeStyle = (index) => {
-    if (index === 0) return { border: '2px solid var(--accent)', background: 'rgba(249,115,22,0.15)', color: 'var(--accent)' };
-    if (index === 1) return { border: '2px solid #94A3B8', background: 'rgba(148, 163, 184, 0.15)', color: 'var(--text-secondary)' };
-    if (index === 2) return { border: '2px solid #CD7C2F', background: 'rgba(205, 124, 47, 0.15)', color: '#CD7C2F' };
-    return { border: '1px solid var(--border)', background: 'none', color: 'var(--text-secondary)' };
+  const getBarColor = (index) => {
+    if (index === 0) return '#F97316';
+    if (index === 1) return '#9CA3AF';
+    if (index === 2) return '#CD7F32';
+    return '#64748B';
+  };
+
+  const getCardBg = (index) => {
+    if (index === 0) return 'linear-gradient(135deg, rgba(249,115,22,0.08) 0%, #131C27 100%)';
+    return '#131C27';
   };
 
   if (loading) return (
     <div className="page-content" style={{ padding: '20px' }}>
-      <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
-        <div className="skeleton skeleton-avatar" style={{ width: 40, height: 40 }} />
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <div className="skeleton skeleton-bar" style={{ width: '60%', height: 16 }} />
-          <div className="skeleton skeleton-bar" style={{ width: '40%', height: 12 }} />
-        </div>
-      </div>
-      <div style={{ display: 'flex', gap: 10, marginBottom: 24, height: 40 }} className="skeleton" />
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {[1, 2, 3, 4, 5].map(idx => (
-          <div key={idx} className="skeleton" style={{ height: 64, borderRadius: '12px' }} />
+          <div key={idx} className="skeleton" style={{ height: 72, borderRadius: 12 }} />
         ))}
       </div>
     </div>
   );
 
   return (
-    <div className="page-content" style={{ background: 'var(--bg-primary)', position: 'relative' }}>
-      <div style={{ position: 'relative', zIndex: 2, padding: '20px 20px 0' }}>
-        
-        {/* Cabeçalho */}
-        <div style={{ textAlign: 'center', marginBottom: 20 }}>
-          <h2 style={{ fontWeight: 800, fontSize: '18px', color: 'var(--text-primary)', fontFamily:"'Oswald',sans-serif", textTransform:'uppercase', letterSpacing:'0.04em' }}>
-            RANKING
+    <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
+      <div style={{ padding: '16px 16px 0' }}>
+
+        <div style={{ textAlign: 'center', marginBottom: 16 }}>
+          <h2 style={{
+            fontWeight: 800, fontSize: 18, color: '#FFFFFF',
+            fontFamily: "'Barlow Condensed',sans-serif", textTransform: 'uppercase',
+            letterSpacing: '0.06em', marginBottom: 4
+          }}>
+            Ranking
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: 2 }}>
-            {city} - {uf}
+          <p style={{ color: '#8A8A9A', fontSize: 13, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>
+            <LocationPin />{city} - {uf}
+          </p>
+          <p style={{ color: '#64748B', fontSize: 11, marginTop: 2, fontFamily: "'Inter',sans-serif" }}>
+            Atualizado hoje
           </p>
         </div>
 
-        {/* Listagem */}
         {sortedRanking.length === 0 ? (
           <div className="empty-state">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
@@ -174,148 +170,172 @@ export default function Ranking({ profile }) {
             <p>Os jogadores aparecerão aqui quando forem avaliados.</p>
           </div>
         ) : (
-          <div className="responsive-card-grid" style={{ marginBottom: 20 }}>
-            {sortedRanking.map((jogador, index) => {
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
+            {sortedRanking.slice(0, 10).map((jogador, index) => {
               const isFirst = index === 0;
-              
+              const score = getScore(jogador);
+              const barColor = getBarColor(index);
+
               return (
-                <div 
-                  key={jogador.id} 
-                  className={`card card-enter${isFirst ? ' first-place-card' : ''}`}
+                <div
+                  key={jogador.id}
                   onClick={() => setSelectedPlayer({ ...jogador, rank: index + 1 })}
                   style={{
-                    borderRadius: isFirst ? '22px' : '22px',
-                    padding: isFirst ? '16px 16px' : '12px 14px',
+                    background: getCardBg(index),
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: 12,
+                    padding: isFirst ? '16px' : '12px 16px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
+                    gap: 12,
                     cursor: 'pointer',
-                    animationDelay: `${index * 20}ms`,
+                    transition: 'transform 0.15s',
                     position: 'relative',
                     overflow: 'hidden',
-                    ...(isFirst ? {
-                      border: '1.5px solid var(--accent)',
-                      background: 'linear-gradient(180deg, rgba(249,115,22,0.1) 0%, var(--bg-card) 100%)',
-                      boxShadow: '0 8px 30px rgba(249,115,22,0.12), inset 0 1px 0 rgba(255,255,255,0.06)',
-                    } : {})
+                    ...getBorderStyle(index),
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: isFirst ? 14 : 12 }}>
-                    
-                    {/* Rank Circle */}
-                    {isFirst ? (
-                      <div style={{
-                        width: '28px',
-                        height: '28px',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: 'var(--accent)',
-                        color: '#fff',
-                        fontSize: '12px',
-                        fontWeight: 900,
-                        boxShadow: '0 2px 8px rgba(249,115,22,0.4)',
-                        position: 'relative',
-                        flexShrink: 0
-                      }}>
-                        1
-                      </div>
-                    ) : (
-                      <div style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '11px',
-                        fontWeight: 800,
-                        flexShrink: 0,
-                        ...getRankBadgeStyle(index)
-                      }}>
-                        {index + 1}
-                      </div>
-                    )}
-
-                    {/* Avatar */}
-                    <PlayerAvatar 
-                      fotoUrl={jogador.foto_url} 
-                      nome={jogador.nome} 
-                      size={isFirst ? 60 : 40}
-                      border={isFirst ? '3px solid rgba(249,115,22,0.6)' : 'none'}
-                    />
-
-                    {/* Detalhes */}
-                    <div>
-                      <div style={{
-                        fontSize: isFirst ? '17px' : '14px',
-                        fontWeight: isFirst ? 900 : 700,
-                        color: isFirst ? 'var(--accent)' : 'var(--text-primary)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 6
-                      }}>
-                        {jogador.nome}
-                      </div>
-                      <div style={{ 
-                        fontSize: isFirst ? '12px' : '11px', 
-                        color: isFirst ? 'var(--text-secondary)' : 'var(--text-secondary)', 
-                        marginTop: 2,
-                        fontWeight: isFirst ? 600 : 400
-                      }}>
-                        {jogador.posicao || 'Ala'}
-                      </div>
-                    </div>
+                  {/* Rank */}
+                  <div style={{
+                    width: isFirst ? 28 : 22,
+                    height: isFirst ? 28 : 22,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: isFirst ? 13 : 11,
+                    fontWeight: 800,
+                    flexShrink: 0,
+                    fontFamily: "'Barlow Condensed',sans-serif",
+                    ...(isFirst ? {
+                      background: '#F97316',
+                      color: '#0A1018',
+                      boxShadow: '0 2px 8px rgba(249,115,22,0.3)',
+                    } : index < 3 ? {
+                      background: 'rgba(255,255,255,0.06)',
+                      color: barColor,
+                    } : {
+                      background: 'rgba(255,255,255,0.04)',
+                      color: '#64748B',
+                    }),
+                  }}>
+                    {index + 1}
                   </div>
 
-                  {/* Lado Direito: Nota e Tendência */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  {/* Avatar */}
+                  <PlayerAvatar
+                    fotoUrl={jogador.foto_url}
+                    nome={jogador.nome}
+                    size={isFirst ? 56 : 44}
+                    isFirst={isFirst}
+                  />
 
-                    {/* Nota Estrelas */}
-                    <div style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: 3,
-                      ...(isFirst ? {
-                        background: 'var(--accent-dim)',
-                        padding: '5px 12px',
-                        borderRadius: '20px',
-                        border: '1px solid rgba(249,115,22,0.25)'
-                      } : {})
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{
+                      fontSize: isFirst ? 16 : 14,
+                      fontWeight: 700,
+                      color: '#FFFFFF',
+                      fontFamily: "'Inter',sans-serif",
+                      lineHeight: 1.2,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
                     }}>
-                      <span style={{ 
-                        fontSize: isFirst ? '18px' : '15px', 
-                        fontWeight: 900, 
-                        color: isFirst ? 'var(--accent)' : 'var(--accent)', 
-                        fontFamily: 'monospace' 
-                      }}>
-                        {Number(getMetricValue(jogador)).toFixed(1)}
-                      </span>
-                      <span style={{ color: isFirst ? 'var(--accent)' : 'var(--accent)', fontSize: isFirst ? '15px' : '12px' }}>★</span>
+                      {jogador.nome}
                     </div>
+                    <div style={{
+                      fontSize: 12,
+                      color: '#6B7280',
+                      fontFamily: "'Inter',sans-serif",
+                      fontWeight: 400,
+                      marginTop: 2,
+                    }}>
+                      {jogador.posicao || 'Ala'}
+                    </div>
+                    <ScoreBar value={score} color={barColor} />
                   </div>
 
+                  {/* Score */}
+                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                    <div style={{
+                      fontSize: isFirst ? 22 : 17,
+                      fontWeight: 800,
+                      color: isFirst ? '#F97316' : '#FFFFFF',
+                      fontFamily: "'Barlow Condensed',sans-serif",
+                      lineHeight: 1,
+                    }}>
+                      {Number(score).toFixed(1)}
+                    </div>
+                    <div style={{
+                      fontSize: 10,
+                      color: '#64748B',
+                      fontFamily: "'Inter',sans-serif",
+                      marginTop: 2,
+                    }}>
+                      / 5.0
+                    </div>
+                  </div>
                 </div>
               );
             })}
+
+            {sortedRanking.length > 10 && (
+              <div style={{
+                padding: '16px',
+                textAlign: 'center',
+                color: '#64748B',
+                fontSize: 12,
+                fontFamily: "'Inter',sans-serif",
+                opacity: 0.5,
+              }}>
+                +{sortedRanking.length - 10} jogadores no ranking completo
+              </div>
+            )}
           </div>
         )}
 
-        {/* Botão de Rodapé para fechar/voltar */}
-        <button 
+        {/* Stats bar */}
+        <div style={{
+          display: 'flex', justifyContent: 'space-around',
+          padding: '16px 0', marginBottom: 16,
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif" }}>
+              {sortedRanking.length}
+            </div>
+            <div style={{ fontSize: 10, color: '#8A8A9A', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              Atletas
+            </div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif" }}>
+              {sortedRanking.filter(j => j.media_estrelas >= 4.0).length}
+            </div>
+            <div style={{ fontSize: 10, color: '#8A8A9A', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              Elite
+            </div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif" }}>
+              {sortedRanking.length > 0 ? Number(sortedRanking.reduce((a, b) => a + (b.media_estrelas || 0), 0) / sortedRanking.length).toFixed(1) : '0.0'}
+            </div>
+            <div style={{ fontSize: 10, color: '#8A8A9A', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              Media
+            </div>
+          </div>
+        </div>
+
+        <button
           onClick={() => window.history.back()}
-          className="btn-back-ranking"
           style={{
-            background: 'none',
-            border: '1px solid var(--accent)',
-            borderRadius: '50px',
-            color: 'var(--accent)',
-            padding: '12px',
-            fontSize: '13px',
-            fontWeight: 700,
-            cursor: 'pointer',
-            fontFamily: 'inherit'
+            width: '100%', background: '#F97316', border: 'none', borderRadius: 12,
+            height: 52, color: '#0A1018', fontSize: 14, fontWeight: 700,
+            cursor: 'pointer', fontFamily: "'Inter',sans-serif",
+            textTransform: 'uppercase', letterSpacing: '0.06em',
+            boxShadow: '0 4px 16px rgba(249,115,22,0.25)',
           }}
         >
           Ver ranking completo
