@@ -81,7 +81,7 @@ const ScoreBar = ({ value, max = 5.0 }) => {
   if (value >= 3.0) color = '#C8F135';
   else if (value >= 2.0) color = '#EAB308';
   return (
-    <div style={{ width: 80, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.06)', marginTop: 4, overflow: 'hidden' }}>
+    <div style={{ width: 80, height: 4, borderRadius: 2, background: 'var(--border)', marginTop: 4, overflow: 'hidden' }}>
       <div style={{ width: `${pct}%`, height: '100%', borderRadius: 2, background: color, transition: 'width 0.5s ease' }} />
     </div>
   );
@@ -293,20 +293,20 @@ export default function Jogadores({ profile }) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div>
             <h2 style={{
-              fontWeight: 800, fontSize: 22, color: '#FFFFFF',
+              fontWeight: 800, fontSize: 22, color: 'var(--text-primary)',
               fontFamily: "'Barlow Condensed',sans-serif", textTransform: 'uppercase',
               letterSpacing: '0.04em', lineHeight: 1,
             }}>
               Jogadores
             </h2>
-            <p style={{ color: '#8A8A9A', fontSize: 12, marginTop: 3, fontFamily: "'Inter',sans-serif", fontWeight: 400 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginTop: 3, fontFamily: "'Inter',sans-serif", fontWeight: 400 }}>
               <span style={{ color: '#22C55E', fontSize: 8, marginRight: 4 }}>&#9679;</span>
               {filtrados.length} atletas em {selectedCity} - {profile?.uf || 'PA'}
             </p>
           </div>
           <button style={{
-            width: 36, height: 36, borderRadius: 10, border: '1px solid rgba(255,255,255,0.08)',
-            background: '#13131F', color: '#8A8A9A', display: 'flex', alignItems: 'center',
+            width: 36, height: 36, borderRadius: 10, border: '1px solid var(--border)',
+            background: 'var(--bg-card)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center',
             justifyContent: 'center', cursor: 'pointer', fontSize: 16,
           }}>
             &#8693;
@@ -326,13 +326,13 @@ export default function Jogadores({ profile }) {
             placeholder="Buscar por nome ou posi\u00e7\u00e3o..."
             style={{
               paddingLeft: 40, width: '100%', boxSizing: 'border-box',
-              background: '#1E1E2E', border: '1px solid rgba(255,255,255,0.08)',
+              background: 'var(--bg-card)', border: '1px solid var(--border)',
               borderRadius: 12, padding: '12px 14px 12px 40px',
               fontSize: 14, color: '#F8FAFC', fontFamily: "'Inter',sans-serif",
               outline: 'none', transition: 'border-color 0.2s',
             }}
             onFocus={e => e.target.style.borderColor = 'rgba(200,241,53,0.5)'}
-            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+            onBlur={e => e.target.style.borderColor = 'var(--border)'}
           />
         </div>
 
@@ -388,7 +388,7 @@ export default function Jogadores({ profile }) {
                   key={j.id}
                   onClick={() => setSelectedPlayer({ ...j, rank: rankVal })}
                   style={{
-                    background: '#13131F', border: '1px solid rgba(255,255,255,0.05)',
+                    background: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.05)',
                     borderRadius: 14, padding: '12px 14px',
                     display: 'flex', alignItems: 'center', gap: 12,
                     cursor: 'pointer', transition: 'transform 0.15s',
@@ -406,7 +406,7 @@ export default function Jogadores({ profile }) {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, overflow: 'hidden' }}>
                       <span style={{
-                        fontSize: 15, fontWeight: 700, color: '#FFFFFF',
+                        fontSize: 15, fontWeight: 700, color: 'var(--text-primary)',
                         fontFamily: "'Inter',sans-serif",
                         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                       }}>
@@ -431,7 +431,7 @@ export default function Jogadores({ profile }) {
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0, gap: 2 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                       <span style={{
-                        fontSize: 18, fontWeight: 800, color: '#FFFFFF',
+                        fontSize: 18, fontWeight: 800, color: 'var(--text-primary)',
                         fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 1,
                       }}>
                         {j.total_votos >= 1 ? score.toFixed(1) : 'S/N'}
@@ -439,11 +439,11 @@ export default function Jogadores({ profile }) {
                        <span style={{ color: '#C8F135', fontSize: 12 }}>&#9733;</span>
                     </div>
                     {j.total_votos >= 1 && <ScoreBar value={score} />}
-                    <div style={{ fontSize: 10, color: '#64748B', fontFamily: "'Inter',sans-serif" }}>
+                    <div style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif" }}>
                       {j.total_votos} {j.total_votos === 1 ? 'voto' : 'votos'}
                     </div>
                     {hasVoted && (
-                      <div style={{ fontSize: 10, color: '#64748B', fontFamily: "'Inter',sans-serif", fontWeight: 500 }}>
+                      <div style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif", fontWeight: 500 }}>
                         &#10003; avaliado
                       </div>
                     )}
@@ -470,7 +470,7 @@ export default function Jogadores({ profile }) {
 
             <div style={{
               padding: '20px 0 40px', textAlign: 'center',
-              color: '#64748B', fontSize: 12, fontFamily: "'Inter',sans-serif",
+              color: 'var(--text-muted)', fontSize: 12, fontFamily: "'Inter',sans-serif",
             }}>
               Mais jogadores em breve
             </div>

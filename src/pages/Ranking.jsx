@@ -32,7 +32,7 @@ const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 48, isFi
     height: size,
     borderRadius: '50%',
     objectFit: 'cover',
-    border: isFirst ? '2px solid rgba(200,241,53,0.3)' : '1px solid rgba(255,255,255,0.08)',
+    border: isFirst ? '2px solid rgba(200,241,53,0.3)' : '1px solid var(--border)',
     boxShadow: isFirst ? '0 0 0 2px rgba(200,241,53,0.3)' : 'none',
   };
 
@@ -44,11 +44,11 @@ const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 48, isFi
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#ffffff',
+    color: 'var(--text-primary)',
     fontWeight: 800,
     fontSize: size * 0.4,
     fontFamily: "'Barlow Condensed',sans-serif",
-    border: isFirst ? '2px solid transparent' : '1px solid rgba(255,255,255,0.08)',
+    border: isFirst ? '2px solid transparent' : '1px solid var(--border)',
     boxShadow: isFirst ? '0 0 0 2px rgba(200,241,53,0.3)' : 'none',
   };
 
@@ -76,7 +76,7 @@ const LocationPin = () => (
 const ScoreBar = ({ value, max = 5.0, color = 'var(--accent)' }) => {
   const pct = Math.min((value / max) * 100, 100);
   return (
-    <div style={{ width: '100%', height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.06)', marginTop: 6, overflow: 'hidden' }}>
+    <div style={{ width: '100%', height: 3, borderRadius: 2, background: 'var(--border)', marginTop: 6, overflow: 'hidden' }}>
       <div style={{ width: `${pct}%`, height: '100%', borderRadius: 2, background: color, transition: 'width 0.6s ease' }} />
     </div>
   );
@@ -129,8 +129,8 @@ export default function Ranking({ profile }) {
   };
 
   const getCardBg = (index) => {
-    if (index === 0) return 'linear-gradient(135deg, rgba(200,241,53,0.08) 0%, #13131F 100%)';
-    return '#13131F';
+    if (index === 0) return 'linear-gradient(135deg, rgba(200,241,53,0.08) 0%, var(--bg-card) 100%)';
+    return 'var(--bg-card)';
   };
 
   if (loading) return (
@@ -149,16 +149,16 @@ export default function Ranking({ profile }) {
 
         <div style={{ textAlign: 'center', marginBottom: 16 }}>
           <h2 style={{
-            fontWeight: 800, fontSize: 18, color: '#FFFFFF',
+            fontWeight: 800, fontSize: 18, color: 'var(--text-primary)',
             fontFamily: "'Barlow Condensed',sans-serif", textTransform: 'uppercase',
             letterSpacing: '0.06em', marginBottom: 4
           }}>
             Ranking
           </h2>
-          <p style={{ color: '#8A8A9A', fontSize: 13, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 13, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>
             <LocationPin />{city} - {uf}
           </p>
-          <p style={{ color: '#64748B', fontSize: 11, marginTop: 2, fontFamily: "'Inter',sans-serif" }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: 11, marginTop: 2, fontFamily: "'Inter',sans-serif" }}>
             Atualizado hoje
           </p>
         </div>
@@ -182,7 +182,7 @@ export default function Ranking({ profile }) {
                   onClick={() => setSelectedPlayer({ ...jogador, rank: index + 1 })}
                   style={{
                     background: getCardBg(index),
-                    border: '1px solid rgba(255,255,255,0.06)',
+                    border: '1px solid var(--border)',
                     borderRadius: 12,
                     padding: isFirst ? '16px' : '12px 16px',
                     display: 'flex',
@@ -212,11 +212,11 @@ export default function Ranking({ profile }) {
                       color: '#0C0C14',
                       boxShadow: '0 2px 8px rgba(200,241,53,0.3)',
                     } : index < 3 ? {
-                      background: 'rgba(255,255,255,0.06)',
+                      background: 'var(--border)',
                       color: barColor,
                     } : {
                       background: 'rgba(255,255,255,0.04)',
-                      color: '#64748B',
+                      color: 'var(--text-muted)',
                     }),
                   }}>
                     {index + 1}
@@ -235,7 +235,7 @@ export default function Ranking({ profile }) {
                     <div style={{
                       fontSize: isFirst ? 16 : 14,
                       fontWeight: 700,
-                      color: '#FFFFFF',
+                      color: 'var(--text-primary)',
                       fontFamily: "'Inter',sans-serif",
                       lineHeight: 1.2,
                       overflow: 'hidden',
@@ -261,7 +261,7 @@ export default function Ranking({ profile }) {
                     <div style={{
                       fontSize: isFirst ? 22 : 17,
                       fontWeight: 800,
-                      color: isFirst ? '#C8F135' : '#FFFFFF',
+                      color: isFirst ? '#C8F135' : 'var(--text-primary)',
                       fontFamily: "'Barlow Condensed',sans-serif",
                       lineHeight: 1,
                     }}>
@@ -269,7 +269,7 @@ export default function Ranking({ profile }) {
                     </div>
                     <div style={{
                       fontSize: 10,
-                      color: '#64748B',
+                      color: 'var(--text-muted)',
                       fontFamily: "'Inter',sans-serif",
                       marginTop: 2,
                     }}>
@@ -284,7 +284,7 @@ export default function Ranking({ profile }) {
               <div style={{
                 padding: '16px',
                 textAlign: 'center',
-                color: '#64748B',
+                color: 'var(--text-muted)',
                 fontSize: 12,
                 fontFamily: "'Inter',sans-serif",
                 opacity: 0.5,
@@ -299,30 +299,30 @@ export default function Ranking({ profile }) {
         <div style={{
           display: 'flex', justifyContent: 'space-around',
           padding: '16px 0', marginBottom: 16,
-          borderTop: '1px solid rgba(255,255,255,0.06)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderTop: '1px solid var(--border)',
+          borderBottom: '1px solid var(--border)',
         }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif" }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif" }}>
               {sortedRanking.length}
             </div>
-            <div style={{ fontSize: 10, color: '#8A8A9A', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <div style={{ fontSize: 10, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               Atletas
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif" }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif" }}>
               {sortedRanking.filter(j => j.media_estrelas >= 4.0).length}
             </div>
-            <div style={{ fontSize: 10, color: '#8A8A9A', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <div style={{ fontSize: 10, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               Elite
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif" }}>
+            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif" }}>
               {sortedRanking.length > 0 ? Number(sortedRanking.reduce((a, b) => a + (b.media_estrelas || 0), 0) / sortedRanking.length).toFixed(1) : '0.0'}
             </div>
-            <div style={{ fontSize: 10, color: '#8A8A9A', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <div style={{ fontSize: 10, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               M\u00e9dia
             </div>
           </div>

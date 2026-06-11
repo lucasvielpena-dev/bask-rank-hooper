@@ -3,14 +3,14 @@ import { masterAPI } from '../lib/supabase';
 
 const ACTION_LABELS = {
   set_role: 'Alterou role',
-  suspend_user: 'Suspensu usuário',
+  suspend_user: 'Suspendeu usuário',
   activate_user: 'Ativou usuário',
   delete_user: 'Excluiu usuário',
   global_notification: 'Enviou notificação global',
   delete_tournament: 'Excluiu torneio',
   close_tournament: 'Encerrou torneio',
   activate_player: 'Ativou jogador',
-  suspend_player: 'Suspensu jogador',
+  suspend_player: 'Suspendeu jogador',
 };
 
 function formatDate(iso) {

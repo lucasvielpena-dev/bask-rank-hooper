@@ -77,7 +77,7 @@ export default function AdminTournaments({ profile, onNavigate }) {
               transition: 'background 0.2s'
             }}
             onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.14)'}
-            onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+            onMouseOut={e => e.currentTarget.style.background = 'var(--border)'}
           >
             <IconVoltar size={18} color="var(--text-primary)" />
           </button>

@@ -260,7 +260,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
             disabled={enviando}
             style={{
               background: 'var(--accent)',
-              color: '#FFFFFF',
+              color: 'var(--text-primary)',
               border: 'none',
               height: 'clamp(48px, 12vw, 56px)',
               borderRadius: 'clamp(12px, 2vw, 16px)',

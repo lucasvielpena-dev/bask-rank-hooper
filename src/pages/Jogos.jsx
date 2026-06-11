@@ -453,7 +453,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 <h2 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 20 }}>
                   {aba === 'torneios' ? 'Torneios Regionais' : 'Jogos da Noite'}
                 </h2>
-                <p style={{ color: '#64748b', fontSize: 13 }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>
                   {aba === 'torneios' ? 'Competições e campeonatos ativos' : 'Gerenciador de partidas'}
                 </p>
               </div>
@@ -515,14 +515,14 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     <div key={p.id} className="card card-enter" style={{ display: 'flex', flexDirection: 'column', gap: 12, animationDelay: `${i * 30}ms` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ background: 'rgba(34,197,94,0.15)', color: '#4ade80', padding: '3px 10px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>EM ANDAMENTO</span>
-                        <span style={{ color: '#64748b', fontSize: 13 }}>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span>
+                        <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span>
                       </div>
                       <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'center', gap: 24, margin: '10px 0' }}>
                         <div style={{ textAlign: 'center', flex: 1 }}>
                           <div style={{ fontWeight: 800, fontSize: 18 }}>{p.time_a}</div>
                           <div style={{ fontSize: 32, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_a}</div>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', fontSize: 20, color: '#64748b', fontWeight: 800 }}>x</div>
+                        <div style={{ display: 'flex', alignItems: 'center', fontSize: 20, color: 'var(--text-muted)', fontWeight: 800 }}>x</div>
                         <div style={{ textAlign: 'center', flex: 1 }}>
                           <div style={{ fontWeight: 800, fontSize: 18 }}>{p.time_b}</div>
                           <div style={{ fontSize: 32, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_b}</div>
@@ -557,7 +557,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     const venceB = p.placar_time_b > p.placar_time_a;
                     return (
                       <div key={p.id} className="card card-enter" style={{ borderLeft: `4px solid ${venceA ? '#4ade80' : venceB ? '#f87171' : '#64748b'}`, animationDelay: `${i * 30}ms` }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#64748b', marginBottom: 8 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>
                           <span>{p.cidade} • {p.uf}</span>
                           <span>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span>
                         </div>
@@ -574,7 +574,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             <span style={{ fontWeight: venceB ? 800 : 500, color: venceB ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_b}</span>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#64748b', borderTop: '1px solid var(--border)', marginTop: 8, paddingTop: 6 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', marginTop: 8, paddingTop: 6 }}>
                           <span>Duração: {p.tempo_total}</span>
                           <span>Períodos: {p.periodos}</span>
                         </div>

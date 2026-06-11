@@ -791,7 +791,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     onClick={handleIniciarTorneio}
                     style={{
                       background: 'var(--accent)',
-                      color: '#FFFFFF',
+                      color: 'var(--text-primary)',
                       border: 'none',
                       height: '56px',
                       borderRadius: '16px',
@@ -946,7 +946,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   onClick={() => setShowInscricao(true)}
                   style={{
                     background: 'var(--accent)',
-                    color: '#FFFFFF',
+                    color: 'var(--text-primary)',
                     border: 'none',
                     borderRadius: '12px',
                     padding: '8px 16px',
@@ -997,7 +997,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                               onClick={async () => { await equipesAPI.aprovar(e.id, true); carregarDados(); }}
                               style={{
                     background: 'var(--accent)',
-                    color: '#FFFFFF',
+                    color: 'var(--text-primary)',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '6px 12px',
