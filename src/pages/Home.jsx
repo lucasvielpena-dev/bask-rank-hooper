@@ -159,33 +159,8 @@ export default function Home({ profile, onNavigate }) {
             </span>
           </div>
 
-          {/* Main row: photo + info */}
+          {/* Main row: info + photo */}
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, marginBottom: 16 }}>
-            {/* Photo */}
-            {myPlayerInfo?.foto_perfil ? (
-              <img
-                src={myPlayerInfo.foto_perfil}
-                alt={greetingName}
-                style={{
-                  width: 80, height: 80, borderRadius: 16, objectFit: 'cover',
-                  border: '2px solid rgba(255,255,255,0.1)', flexShrink: 0,
-                }}
-              />
-            ) : (
-              <div style={{
-                width: 80, height: 80, borderRadius: 16, flexShrink: 0,
-                background: 'linear-gradient(135deg, rgba(200,241,53,0.15), rgba(200,241,53,0.05))',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: '2px solid rgba(255,255,255,0.06)',
-              }}>
-                <span style={{
-                  fontSize: 30, fontWeight: 800, color: '#C8F135',
-                  fontFamily: "'Barlow Condensed',sans-serif",
-                }}>
-                  {greetingName.charAt(0).toUpperCase()}
-                </span>
-              </div>
-            )}
 
             {/* Info */}
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -238,6 +213,32 @@ export default function Home({ profile, onNavigate }) {
                 </div>
               </div>
             </div>
+
+            {/* Photo */}
+            {myPlayerInfo?.foto_perfil ? (
+              <img
+                src={myPlayerInfo.foto_perfil}
+                alt={greetingName}
+                style={{
+                  width: 80, height: 80, borderRadius: 16, objectFit: 'cover',
+                  border: '2px solid rgba(255,255,255,0.1)', flexShrink: 0,
+                }}
+              />
+            ) : (
+              <div style={{
+                width: 80, height: 80, borderRadius: 16, flexShrink: 0,
+                background: 'linear-gradient(135deg, rgba(200,241,53,0.15), rgba(200,241,53,0.05))',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '2px solid rgba(255,255,255,0.06)',
+              }}>
+                <span style={{
+                  fontSize: 30, fontWeight: 800, color: '#C8F135',
+                  fontFamily: "'Barlow Condensed',sans-serif",
+                }}>
+                  {greetingName.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Location + Top % */}
