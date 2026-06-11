@@ -86,9 +86,9 @@ export default function Home({ profile, onNavigate }) {
   ], [stats]);
 
   const topHighlights = useMemo(() => [
-    { rank: '1\u00ba', name: 'L\u00edder', nota: '5.0', pos: 'Ala', rankClass: '' },
-    { rank: '2\u00ba', name: 'Vice', nota: '4.8', pos: 'Piv\u00f4', rankClass: 'silver' },
-    { rank: '3\u00ba', name: 'Terceiro', nota: '4.6', pos: 'Armador', rankClass: 'bronze' },
+    { rank: '1º', name: 'Líder', nota: '5.0', pos: 'Ala', rankClass: '' },
+    { rank: '2º', name: 'Vice', nota: '4.8', pos: 'Pivô', rankClass: 'silver' },
+    { rank: '3º', name: 'Terceiro', nota: '4.6', pos: 'Armador', rankClass: 'bronze' },
   ], []);
 
   if (loading) {
@@ -108,13 +108,13 @@ export default function Home({ profile, onNavigate }) {
             {getGreeting()}, <span className="home-greeting-name">{greetingName}</span>
           </div>
           <div className="home-greeting-sub">
-            Voc\u00ea est\u00e1 entre os melhores atletas de {city}.
+            Você está entre os melhores atletas de {city}.
           </div>
         </div>
 
         <div className="home-position-card">
           <div className="home-position-left">
-            <div className="home-position-label">Sua Posi\u00e7\u00e3o</div>
+            <div className="home-position-label">Sua Posição</div>
             <div className="home-position-number">{myRank}</div>
             <div className="home-position-city">Ranking de {city} - {uf}</div>
             <div className="home-position-meta">
@@ -146,7 +146,7 @@ export default function Home({ profile, onNavigate }) {
         </div>
 
         <div className="home-stats-section">
-          <div className="home-section-label" style={{ marginBottom:12 }}>Estat\u00edsticas</div>
+          <div className="home-section-label" style={{ marginBottom:12 }}>Estatísticas</div>
           <div className="home-stats-grid">
             {statsData.map((item) => (
               <div key={item.label} className="home-stat-item">
@@ -161,7 +161,7 @@ export default function Home({ profile, onNavigate }) {
         <div className="home-highlights-section">
           <div className="home-highlights-header">
             <div className="home-section-label">Destaques da Semana</div>
-            <button onClick={() => onNavigate('destaques')} style={{ background:'none', border:'none', color:'var(--accent)', fontSize:12, fontWeight:700, cursor:'pointer', fontFamily:"'Oswald',sans-serif", textTransform:'uppercase', letterSpacing:'0.04em' }}>
+            <button onClick={() => onNavigate('destaques')} className="home-section-link">
               Ver todos
             </button>
           </div>
@@ -178,7 +178,7 @@ export default function Home({ profile, onNavigate }) {
         </div>
 
         <div className="home-actions-section">
-          <div className="home-section-label" style={{ marginBottom:12 }}>A\u00e7\u00f5es R\u00e1pidas</div>
+          <div className="home-section-label" style={{ marginBottom:12 }}>Ações Rápidas</div>
           <div className="acoes-rapidas-grid">
             {[
               { icon: <IconAvaliar size={20} color="#0A1018" />, label: 'Avaliar atleta', action: () => onNavigate('jogadores'), primary: true },
