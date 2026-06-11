@@ -145,13 +145,13 @@ export default function Ranking({ profile }) {
 
   return (
     <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
-      <div style={{ padding: '16px 16px 0' }}>
+      <div style={{ padding: '12px 12px 0' }}>
 
-        <div style={{ textAlign: 'center', marginBottom: 16 }}>
+        <div style={{ textAlign: 'center', marginBottom: 10 }}>
           <h2 style={{
-            fontWeight: 800, fontSize: 18, color: 'var(--text-primary)',
+            fontWeight: 800, fontSize: 16, color: 'var(--text-primary)',
             fontFamily: "'Barlow Condensed',sans-serif", textTransform: 'uppercase',
-            letterSpacing: '0.06em', marginBottom: 4
+            letterSpacing: '0.06em', marginBottom: 2
           }}>
             Ranking
           </h2>
@@ -170,7 +170,7 @@ export default function Ranking({ profile }) {
             <p>Os jogadores aparecerão aqui quando forem avaliados.</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
             {sortedRanking.slice(0, 10).map((jogador, index) => {
               const isFirst = index === 0;
               const score = getScore(jogador);
@@ -184,10 +184,10 @@ export default function Ranking({ profile }) {
                     background: getCardBg(index),
                     border: '1px solid var(--border)',
                     borderRadius: 12,
-                    padding: isFirst ? '16px' : '12px 16px',
+                    padding: isFirst ? '12px' : '10px 12px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 12,
+                    gap: 8,
                     cursor: 'pointer',
                     transition: 'transform 0.15s',
                     position: 'relative',
@@ -226,14 +226,14 @@ export default function Ranking({ profile }) {
                   <PlayerAvatar
                     fotoUrl={jogador.foto_url}
                     nome={jogador.nome}
-                    size={isFirst ? 56 : 44}
+                    size={isFirst ? 44 : 36}
                     isFirst={isFirst}
                   />
 
                   {/* Info */}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
-                      fontSize: isFirst ? 16 : 14,
+                      fontSize: isFirst ? 14 : 14,
                       fontWeight: 700,
                       color: 'var(--text-primary)',
                       fontFamily: "'Inter',sans-serif",
@@ -249,7 +249,7 @@ export default function Ranking({ profile }) {
                       color: '#6B7280',
                       fontFamily: "'Inter',sans-serif",
                       fontWeight: 400,
-                      marginTop: 2,
+                      marginTop: 1,
                     }}>
                       {jogador.posicao || 'Ala'}
                     </div>
@@ -259,7 +259,7 @@ export default function Ranking({ profile }) {
                   {/* Score */}
                   <div style={{ textAlign: 'right', flexShrink: 0 }}>
                     <div style={{
-                      fontSize: isFirst ? 22 : 17,
+                      fontSize: isFirst ? 18 : 17,
                       fontWeight: 800,
                       color: isFirst ? '#C8F135' : 'var(--text-primary)',
                       fontFamily: "'Barlow Condensed',sans-serif",
@@ -271,7 +271,7 @@ export default function Ranking({ profile }) {
                       fontSize: 10,
                       color: 'var(--text-muted)',
                       fontFamily: "'Inter',sans-serif",
-                      marginTop: 2,
+                      marginTop: 1,
                     }}>
                       / 5.0
                     </div>
@@ -298,12 +298,12 @@ export default function Ranking({ profile }) {
         {/* Stats bar */}
         <div style={{
           display: 'flex', justifyContent: 'space-around',
-          padding: '16px 0', marginBottom: 16,
+          padding: '10px 0', marginBottom: 10,
           borderTop: '1px solid var(--border)',
           borderBottom: '1px solid var(--border)',
         }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif" }}>
+            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif" }}>
               {sortedRanking.length}
             </div>
             <div style={{ fontSize: 10, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
@@ -311,7 +311,7 @@ export default function Ranking({ profile }) {
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif" }}>
+            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif" }}>
               {sortedRanking.filter(j => j.media_estrelas >= 4.0).length}
             </div>
             <div style={{ fontSize: 10, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
@@ -319,7 +319,7 @@ export default function Ranking({ profile }) {
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif" }}>
+            <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif" }}>
               {sortedRanking.length > 0 ? Number(sortedRanking.reduce((a, b) => a + (b.media_estrelas || 0), 0) / sortedRanking.length).toFixed(1) : '0.0'}
             </div>
             <div style={{ fontSize: 10, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em' }}>
@@ -331,8 +331,8 @@ export default function Ranking({ profile }) {
         <button
           onClick={() => window.history.back()}
           style={{
-            width: '100%', background: '#C8F135', border: 'none', borderRadius: 12,
-            height: 52, color: '#0C0C14', fontSize: 14, fontWeight: 700,
+            width: '100%', background: '#C8F135', border: 'none', borderRadius: 10,
+            height: 42, color: '#0C0C14', fontSize: 12, fontWeight: 700,
             cursor: 'pointer', fontFamily: "'Inter',sans-serif",
             textTransform: 'uppercase', letterSpacing: '0.06em',
             boxShadow: '0 4px 16px rgba(200,241,53,0.25)',

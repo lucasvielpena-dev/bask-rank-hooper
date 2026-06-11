@@ -287,25 +287,25 @@ export default function Jogadores({ profile }) {
 
   return (
     <div className="page-content" style={{ position: 'relative' }}>
-      <div style={{ padding: '16px 16px 0' }}>
+      <div style={{ padding: '12px 12px 0' }}>
 
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
           <div>
             <h2 style={{
-              fontWeight: 800, fontSize: 22, color: 'var(--text-primary)',
+              fontWeight: 800, fontSize: 18, color: 'var(--text-primary)',
               fontFamily: "'Barlow Condensed',sans-serif", textTransform: 'uppercase',
               letterSpacing: '0.04em', lineHeight: 1,
             }}>
               Jogadores
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginTop: 3, fontFamily: "'Inter',sans-serif", fontWeight: 400 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginTop: 2, fontFamily: "'Inter',sans-serif", fontWeight: 400 }}>
               <span style={{ color: '#22C55E', fontSize: 8, marginRight: 4 }}>&#9679;</span>
               {filtrados.length} atletas em {selectedCity} - {profile?.uf || 'PA'}
             </p>
           </div>
           <button style={{
-            width: 36, height: 36, borderRadius: 10, border: '1px solid var(--border)',
+            width: 30, height: 30, borderRadius: 8, border: '1px solid var(--border)',
             background: 'var(--bg-card)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center',
             justifyContent: 'center', cursor: 'pointer', fontSize: 16,
           }}>
@@ -314,7 +314,7 @@ export default function Jogadores({ profile }) {
         </div>
 
         {/* Search */}
-        <div style={{ position: 'relative', marginBottom: 12 }}>
+        <div style={{ position: 'relative', marginBottom: 8 }}>
           <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="2" strokeLinecap="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
@@ -327,7 +327,7 @@ export default function Jogadores({ profile }) {
             style={{
               paddingLeft: 40, width: '100%', boxSizing: 'border-box',
               background: 'var(--bg-card)', border: '1px solid var(--border)',
-              borderRadius: 12, padding: '12px 14px 12px 40px',
+              borderRadius: 10, padding: '9px 12px 9px 36px',
               fontSize: 14, color: '#F8FAFC', fontFamily: "'Inter',sans-serif",
               outline: 'none', transition: 'border-color 0.2s',
             }}
@@ -338,7 +338,7 @@ export default function Jogadores({ profile }) {
 
         {/* Filters */}
         <div style={{
-          display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 16,
+          display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 10,
           scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch',
         }} className="hide-scrollbar">
           {FILTROS.map(f => {
@@ -348,7 +348,7 @@ export default function Jogadores({ profile }) {
                 key={f.key}
                 onClick={() => setFiltroAtivo(f.key)}
                 style={{
-                  flexShrink: 0, padding: '8px 16px', borderRadius: 20,
+                  flexShrink: 0, padding: '6px 12px', borderRadius: 16,
                   border: active ? 'none' : '1px solid #333',
                   background: active ? '#C8F135' : 'transparent',
                   color: active ? '#FFFFFF' : '#8A8A9A',
@@ -364,7 +364,7 @@ export default function Jogadores({ profile }) {
 
         {/* List */}
         {loading ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {[1, 2, 3, 4].map(idx => (
               <div key={idx} className="skeleton" style={{ height: 72, borderRadius: 14 }} />
             ))}
@@ -376,7 +376,7 @@ export default function Jogadores({ profile }) {
             <p>Selecione outro filtro ou altere sua busca.</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {filtrados.map((j, i) => {
               const rankVal = ranks[j.id] || 0;
               const hasVoted = j.ja_votou_hoje;
@@ -389,8 +389,8 @@ export default function Jogadores({ profile }) {
                   onClick={() => setSelectedPlayer({ ...j, rank: rankVal })}
                   style={{
                     background: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.05)',
-                    borderRadius: 14, padding: '12px 14px',
-                    display: 'flex', alignItems: 'center', gap: 12,
+                    borderRadius: 10, padding: '8px 10px',
+                    display: 'flex', alignItems: 'center', gap: 8,
                     cursor: 'pointer', transition: 'transform 0.15s',
                     animationDelay: `${i * 20}ms`,
                   }}
@@ -399,14 +399,14 @@ export default function Jogadores({ profile }) {
                     fotoUrl={j.foto_url}
                     nome={j.nome}
                     posicao={j.posicao}
-                    size={44}
+                    size={36}
                     isFirst={isFirst}
                   />
 
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, overflow: 'hidden' }}>
                       <span style={{
-                        fontSize: 15, fontWeight: 700, color: 'var(--text-primary)',
+                        fontSize: 13, fontWeight: 700, color: 'var(--text-primary)',
                         fontFamily: "'Inter',sans-serif",
                         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                       }}>
@@ -431,7 +431,7 @@ export default function Jogadores({ profile }) {
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0, gap: 2 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                       <span style={{
-                        fontSize: 18, fontWeight: 800, color: 'var(--text-primary)',
+                        fontSize: 15, fontWeight: 800, color: 'var(--text-primary)',
                         fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 1,
                       }}>
                         {j.total_votos >= 1 ? score.toFixed(1) : 'S/N'}
@@ -453,7 +453,7 @@ export default function Jogadores({ profile }) {
                     <button
                       onClick={(e) => handleOpenVote(j, e)}
                       style={{
-                        width: 40, height: 28, borderRadius: 8,
+                        width: 34, height: 24, borderRadius: 8,
                         background: '#C8F135', border: 'none',
                         color: '#0C0C14', fontSize: 11, fontWeight: 700,
                         cursor: 'pointer', fontFamily: "'Inter',sans-serif",
@@ -469,7 +469,7 @@ export default function Jogadores({ profile }) {
             })}
 
             <div style={{
-              padding: '20px 0 40px', textAlign: 'center',
+              padding: '12px 0 24px', textAlign: 'center',
               color: 'var(--text-muted)', fontSize: 12, fontFamily: "'Inter',sans-serif",
             }}>
               Mais jogadores em breve
@@ -486,17 +486,17 @@ export default function Jogadores({ profile }) {
             <h3 style={{ fontWeight: 900, fontSize: 18, marginBottom: 2, textAlign: 'center' }}>
               Avaliar {votingPlayer.apelido || votingPlayer.nome}
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 14, textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 8, textAlign: 'center' }}>
               Dê uma nota de 1 a 5 estrelas para cada habilidade:
             </p>
 
-            <form onSubmit={handleSubmitVote} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <form onSubmit={handleSubmitVote} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
               {fundamentos.map((f, i) => {
                 const val = estrelasVoto[f.key] || 0;
                 return (
                   <div key={f.key} style={{
                     background: val > 0 ? 'var(--accent-dim)' : 'var(--bg-secondary)',
-                    padding: '8px 12px', borderRadius: 10,
+                    padding: '6px 10px', borderRadius: 8,
                     border: val > 0 ? '1.5px solid var(--border)' : '1px solid var(--border)',
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
@@ -537,10 +537,10 @@ export default function Jogadores({ profile }) {
               )}
 
               <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setVotingPlayer(null)} disabled={enviandoVoto} style={{ flex: 1, padding: '10px 0' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setVotingPlayer(null)} disabled={enviandoVoto} style={{ flex: 1, padding: '8px 0' }}>
                   Cancelar
                 </button>
-                <button type="submit" className="btn btn-primary" disabled={enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])} style={{ flex: 2, padding: '10px 0' }}>
+                <button type="submit" className="btn btn-primary" disabled={enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])} style={{ flex: 2, padding: '8px 0' }}>
                   {enviandoVoto ? <div className="spinner" /> : 'Salvar'}
                 </button>
               </div>

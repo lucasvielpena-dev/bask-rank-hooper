@@ -7,16 +7,16 @@ function StatCard({ icon, label, value, color }) {
     <div style={{
       background: 'var(--bg-card)',
       border: '1px solid var(--border)',
-      borderRadius: '14px',
-      padding: '16px',
+      borderRadius: '10px',
+      padding: '10px',
       display: 'flex',
       flexDirection: 'column',
-      gap: 8
+      gap: 6
     }}>
       <div style={{
-        width: 40,
-        height: 40,
-        borderRadius: 12,
+        width: 34,
+        height: 34,
+        borderRadius: 10,
         background: 'var(--accent-dim)',
         display: 'flex',
         alignItems: 'center',
@@ -24,7 +24,7 @@ function StatCard({ icon, label, value, color }) {
       }}>
         {icon}
       </div>
-      <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)' }}>{value}</div>
+      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)' }}>{value}</div>
       <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>{label}</div>
     </div>
   );
@@ -32,17 +32,17 @@ function StatCard({ icon, label, value, color }) {
 
 function HighlightSection({ title, icon, children }) {
   return (
-    <div style={{ marginBottom: 28 }}>
+    <div style={{ marginBottom: 16 }}>
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: 10,
-        marginBottom: 16
+        gap: 6,
+        marginBottom: 10
       }}>
         <div style={{
-          width: 36,
-          height: 36,
-          borderRadius: 10,
+          width: 30,
+          height: 30,
+          borderRadius: 8,
               background: 'var(--accent-dim)',
           display: 'flex',
           alignItems: 'center',
@@ -50,7 +50,7 @@ function HighlightSection({ title, icon, children }) {
         }}>
           {icon}
         </div>
-        <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em' }}>{title}</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em' }}>{title}</div>
       </div>
       {children}
     </div>
@@ -93,7 +93,7 @@ export default function Destaques({ profile, onNavigate }) {
 
   if (loading) {
     return (
-      <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+      <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '30vh' }}>
         <div className="spinner" />
       </div>
     );
@@ -104,7 +104,7 @@ export default function Destaques({ profile, onNavigate }) {
       <div className="home-container">
 
         {/* Header */}
-        <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 14 }}>
           <button
             onClick={() => onNavigate('inicio')}
             style={{
@@ -115,11 +115,11 @@ export default function Destaques({ profile, onNavigate }) {
               fontSize: 13,
               fontWeight: 600,
               padding: 0,
-              marginBottom: 8,
+              marginBottom: 4,
               fontFamily: 'inherit',
               display: 'flex',
               alignItems: 'center',
-              gap: 6
+              gap: 4
             }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -127,10 +127,10 @@ export default function Destaques({ profile, onNavigate }) {
             </svg>
             Voltar
           </button>
-          <h1 style={{ fontSize: 24, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1.2, fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <h1 style={{ fontSize: 20, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1.2, fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Destaques
           </h1>
-          <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 4 }}>
+          <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 2 }}>
             O melhor de {city} - {uf} esta semana
           </p>
         </div>
@@ -140,7 +140,7 @@ export default function Destaques({ profile, onNavigate }) {
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
           gap: 10,
-          marginBottom: 28
+          marginBottom: 16
         }}>
           <StatCard
             icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
@@ -173,9 +173,9 @@ export default function Destaques({ profile, onNavigate }) {
           title="Top Ranking"
           icon={<IconRanking size={18} color="var(--accent)" />}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {topJogadores.length === 0 ? (
-              <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
+              <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '12px 0' }}>
                 Nenhum jogador no ranking ainda
               </div>
             ) : (
@@ -183,16 +183,16 @@ export default function Destaques({ profile, onNavigate }) {
                 <div key={jogador.id} style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 12,
+                  gap: 8,
                   background: 'var(--bg-card)',
                   border: '1px solid var(--border)',
-                  borderRadius: '12px',
-                  padding: '12px 14px'
+                  borderRadius: '10px',
+                  padding: '8px 10px'
                 }}>
                   <div style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 8,
+                    width: 26,
+                    height: 26,
+                    borderRadius: 6,
                     background: i === 0 ? 'rgba(200,241,53,0.12)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--accent-dim)',
                     display: 'flex',
                     alignItems: 'center',
@@ -205,7 +205,7 @@ export default function Destaques({ profile, onNavigate }) {
                     {i + 1}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {jogador.nome}
                     </div>
                     <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
@@ -232,26 +232,26 @@ export default function Destaques({ profile, onNavigate }) {
           <div style={{
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
-            borderRadius: '14px',
-            padding: '18px',
+            borderRadius: '10px',
+            padding: '12px',
             textAlign: 'center'
           }}>
             <div style={{
-              width: 48,
-              height: 48,
-              borderRadius: 14,
+              width: 38,
+              height: 38,
+              borderRadius: 10,
           background: 'var(--accent-dim)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '0 auto 12px'
+              margin: '0 auto 8px'
             }}>
               <IconCalendario size={24} color="var(--accent)" />
             </div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 }}>
               {stats.torneios > 0 ? `${stats.torneios} torneio(s) ativo(s)` : 'Nenhum torneio ativo'}
             </div>
-            <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 14 }}>
+            <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8 }}>
               {stats.torneios > 0
                 ? 'Participe dos torneios da sua cidade'
                 : 'Novos torneios em breve'}
@@ -262,8 +262,8 @@ export default function Destaques({ profile, onNavigate }) {
                 background: 'var(--accent)',
                 color: '#fff',
                 border: 'none',
-                borderRadius: '10px',
-                padding: '10px 20px',
+                borderRadius: '8px',
+                padding: '8px 14px',
                 fontSize: 13,
                 fontWeight: 700,
                 cursor: 'pointer',
@@ -278,17 +278,17 @@ export default function Destaques({ profile, onNavigate }) {
         {/* Ação Rápida */}
         <div style={{
           background: 'linear-gradient(135deg, rgba(200,241,53,0.15) 0%, rgba(200,241,53,0.05) 100%)',
-          borderRadius: '16px',
-          padding: '20px',
+          borderRadius: '12px',
+          padding: '14px',
           display: 'flex',
           alignItems: 'center',
-          gap: 14,
+          gap: 8,
           boxShadow: '0 4px 16px rgba(200,241,53,0.15)'
         }}>
           <div style={{
-            width: 48,
-            height: 48,
-            borderRadius: 14,
+            width: 38,
+            height: 38,
+            borderRadius: 10,
             background: 'rgba(255,255,255,0.16)',
             display: 'flex',
             alignItems: 'center',
@@ -298,7 +298,7 @@ export default function Destaques({ profile, onNavigate }) {
             <IconBasquete size={24} color="#fff" />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 2 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 1 }}>
               Avalie um jogador
             </div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>
@@ -310,8 +310,8 @@ export default function Destaques({ profile, onNavigate }) {
             style={{
               background: 'rgba(255,255,255,0.2)',
               border: 'none',
-              borderRadius: '10px',
-              padding: '10px 16px',
+              borderRadius: '8px',
+              padding: '8px 12px',
               color: '#fff',
               fontSize: 13,
               fontWeight: 700,

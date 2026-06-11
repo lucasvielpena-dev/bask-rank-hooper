@@ -438,11 +438,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     <div className="page-content">
       {/* TELA 1: LISTAGEM DE PARTIDAS / HISTÓRICO */}
       {tela === 'lista' && (
-        <div style={{ padding: '20px 20px 0' }}>
+        <div style={{ padding: '12px 12px 0' }}>
           {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 40, height: 40, background: 'rgba(200,241,53,0.12)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{ width: 34, height: 34, background: 'rgba(200,241,53,0.12)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {aba === 'torneios' ? (
                   <IconCalendario size={20} color="var(--accent)" />
                 ) : (
@@ -450,7 +450,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 )}
               </div>
               <div>
-                <h2 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 20 }}>
+                <h2 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 17 }}>
                   {aba === 'torneios' ? 'Torneios Regionais' : 'Jogos da Noite'}
                 </h2>
                 <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>
@@ -468,14 +468,14 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           </div>
  
           {/* Tabs */}
-          <div className="tabs" style={{ marginBottom: 16 }}>
+          <div className="tabs" style={{ marginBottom: 10 }}>
             <button className={`tab ${aba === 'jogos' ? 'active' : ''}`} onClick={() => setAba('jogos')}>
               Partida Ativa
             </button>
             <button className={`tab ${aba === 'historico' ? 'active' : ''}`} onClick={() => setAba('historico')}>
               Histórico
               {historico.length > 0 && (
-                <span style={{ background: 'var(--accent)', color: '#0C0C14', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{historico.length}</span>
+                <span style={{ background: 'var(--accent)', color: '#0C0C14', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{historico.length}</span>
               )}
             </button>
             <button className={`tab ${aba === 'torneios' ? 'active' : ''}`} onClick={() => setAba('torneios')}>
@@ -489,12 +489,12 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           ) : loading ? (
             aba === 'jogos' ? (
               <div className="responsive-card-grid">
-                <div className="skeleton" style={{ height: 170, borderRadius: '16px' }} />
+                <div className="skeleton" style={{ height: 130, borderRadius: '12px' }} />
               </div>
             ) : (
               <div className="responsive-card-grid">
                 {[1, 2, 3].map(idx => (
-                  <div key={idx} className="skeleton" style={{ height: 96, borderRadius: '16px' }} />
+                  <div key={idx} className="skeleton" style={{ height: 72, borderRadius: '12px' }} />
                 ))}
               </div>
             )
@@ -512,20 +512,20 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               ) : (
                 <div className="responsive-card-grid">
                   {partidas.map((p, i) => (
-                    <div key={p.id} className="card card-enter" style={{ display: 'flex', flexDirection: 'column', gap: 12, animationDelay: `${i * 30}ms` }}>
+                    <div key={p.id} className="card card-enter" style={{ display: 'flex', flexDirection: 'column', gap: 8, animationDelay: `${i * 30}ms` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ background: 'rgba(34,197,94,0.15)', color: '#4ade80', padding: '3px 10px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>EM ANDAMENTO</span>
                         <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span>
                       </div>
-                      <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'center', gap: 24, margin: '10px 0' }}>
+                      <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'center', gap: 16, margin: '6px 0' }}>
                         <div style={{ textAlign: 'center', flex: 1 }}>
                           <div style={{ fontWeight: 800, fontSize: 18 }}>{p.time_a}</div>
-                          <div style={{ fontSize: 32, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_a}</div>
+                          <div style={{ fontSize: 26, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_a}</div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', fontSize: 20, color: 'var(--text-muted)', fontWeight: 800 }}>x</div>
                         <div style={{ textAlign: 'center', flex: 1 }}>
                           <div style={{ fontWeight: 800, fontSize: 18 }}>{p.time_b}</div>
-                          <div style={{ fontSize: 32, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_b}</div>
+                          <div style={{ fontSize: 26, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_b}</div>
                         </div>
                       </div>
                       <button className="btn btn-primary" onClick={() => {
@@ -551,13 +551,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <p>Partidas finalizadas aparecerão aqui.</p>
                 </div>
               ) : (
-                <div className="responsive-card-grid" style={{ paddingBottom: 20 }}>
+                <div className="responsive-card-grid" style={{ paddingBottom: 12 }}>
                   {historico.map((p, i) => {
                     const venceA = p.placar_time_a > p.placar_time_b;
                     const venceB = p.placar_time_b > p.placar_time_a;
                     return (
                       <div key={p.id} className="card card-enter" style={{ borderLeft: `4px solid ${venceA ? '#4ade80' : venceB ? '#f87171' : '#64748b'}`, animationDelay: `${i * 30}ms` }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>
                           <span>{p.cidade} • {p.uf}</span>
                           <span>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span>
                         </div>
@@ -565,7 +565,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                           <div style={{ flex: 1 }}>
                             <span style={{ fontWeight: venceA ? 800 : 500, color: venceA ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_a}</span>
                           </div>
-                          <div style={{ display: 'flex', gap: 8, padding: '4px 10px', background: 'var(--bg-secondary)', borderRadius: 8, fontWeight: 800, fontSize: 15 }}>
+                          <div style={{ display: 'flex', gap: 6, padding: '3px 8px', background: 'var(--bg-secondary)', borderRadius: 6, fontWeight: 800, fontSize: 13 }}>
                             <span style={{ color: venceA ? '#22c55e' : 'var(--text-primary)' }}>{p.placar_time_a}</span>
                             <span style={{ color: 'var(--text-muted)' }}>x</span>
                             <span style={{ color: venceB ? '#22c55e' : 'var(--text-primary)' }}>{p.placar_time_b}</span>
@@ -574,7 +574,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             <span style={{ fontWeight: venceB ? 800 : 500, color: venceB ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_b}</span>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', marginTop: 8, paddingTop: 6 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', marginTop: 4, paddingTop: 6 }}>
                           <span>Duração: {p.tempo_total}</span>
                           <span>Períodos: {p.periodos}</span>
                         </div>
@@ -590,15 +590,15 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
       {/* TELA 2: WIZARD / CADASTRO DE TIMES */}
       {tela === 'novo' && (
-        <div style={{ padding: '20px' }}>
-          <h3 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 22, marginBottom: 4 }}>Configurar Partida</h3>
-          <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>Configure as equipes e a lista de atletas antes de iniciar o cronômetro.</p>
+        <div style={{ padding: '12px' }}>
+          <h3 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 18, marginBottom: 2 }}>Configurar Partida</h3>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 12 }}>Configure as equipes e a lista de atletas antes de iniciar o cronômetro.</p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {/* Input nomes dos times */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               <div>
-                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome Time A *</label>
+                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>Nome Time A *</label>
                 <input
                   value={timeANome}
                   onChange={e => setTimeANome(e.target.value)}
@@ -606,7 +606,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 />
               </div>
               <div>
-                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome Time B *</label>
+                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>Nome Time B *</label>
                 <input
                   value={timeBNome}
                   onChange={e => setTimeBNome(e.target.value)}
@@ -617,8 +617,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
             {/* Duração do Quarto */}
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700, display: 'block', marginBottom: 8 }}>Duração do Quarto</label>
-              <div style={{ display: 'flex', gap: 16 }}>
+              <label style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700, display: 'block', marginBottom: 4 }}>Duração do Quarto</label>
+              <div style={{ display: 'flex', gap: 10 }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text-primary)' }}>
                   <input
                     type="radio"
@@ -629,7 +629,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   />
                   10 minutos
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text-primary)' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 14, color: 'var(--text-primary)' }}>
                   <input
                     type="radio"
                     name="duracaoQuarto"
@@ -644,10 +644,10 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
             {/* Listagem de jogadores e seleção rápida */}
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700, display: 'block', marginBottom: 4 }}>Escalar Jogadores</label>
-              <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>Distribua os jogadores entre as duas equipes:</p>
+              <label style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700, display: 'block', marginBottom: 2 }}>Escalar Jogadores</label>
+              <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8 }}>Distribua os jogadores entre as duas equipes:</p>
               
-              <div style={{ maxHeight: '50vh', overflowY: 'auto', background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 12, padding: '0 16px' }}>
+              <div style={{ maxHeight: '50vh', overflowY: 'auto', background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 10, padding: '0 12px' }}>
                 {jogadores.length === 0 ? (
                   <p style={{ textAlign: 'center', padding: '20px 0', color: 'var(--text-secondary)', fontSize: 13 }}>Cadastre jogadores na aba Jogadores antes.</p>
                 ) : (
@@ -655,7 +655,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     const noA = timeAJogadores.includes(j.id);
                     const noB = timeBJogadores.includes(j.id);
                     return (
-                      <div key={j.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
+                      <div key={j.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
                         <div>
                           <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 14 }}>{j.nome}</div>
                           {j.apelido && <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>"{j.apelido}" • {j.posicao}</div>}
@@ -692,7 +692,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             </div>
 
             {/* Botões do Wizard */}
-            <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
+            <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
               <button className="btn btn-secondary" onClick={() => setTela('lista')} style={{ flex: 1 }}>Cancelar</button>
               <button className="btn btn-primary" onClick={handleIniciarJogo} disabled={salvando} style={{ flex: 2 }}>
                 {salvando ? <><div className="spinner" /> Salvando...</> : 'Iniciar Partida'}
@@ -704,9 +704,9 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
       {/* TELA 3: PAINEL DA PARTIDA ATIVA */}
       {tela === 'partida' && partidaAtiva && (
-        <div style={{ padding: '20px' }}>
+        <div style={{ padding: '12px' }}>
           {/* Header Placar Ao Vivo */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <button 
               onClick={() => { setTimerAtivo(false); sincronizarPlacarBanco(); setTela('lista'); }} 
               style={{
@@ -739,10 +739,10 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            marginBottom: 16
+            marginBottom: 10
           }}>
             <span className={timerAtivo ? 'timer-active-pulse-text' : ''} style={{
-              fontSize: 'clamp(52px, 15vw, 84px)',
+              fontSize: 'clamp(44px, 12vw, 72px)',
               fontFamily: 'monospace',
               fontWeight: 800,
               color: 'var(--text-primary)',
@@ -755,14 +755,14 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
           {/* Placar Central (Unified Scoreboard Card) */}
           <div className="card live-scoreboard-card" style={{
-            padding: '20px 16px',
+            padding: '14px 12px',
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
-            borderRadius: '16px',
+            borderRadius: '12px',
             display: 'grid',
             gridTemplateColumns: '1fr auto 1fr',
             alignItems: 'center',
-            gap: 12,
+            gap: 8,
             position: 'relative'
           }}>
             {/* Floating Feedbacks Time A */}
@@ -861,9 +861,9 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           <div style={{
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
-            borderRadius: '12px',
-            padding: '12px 14px',
-            marginBottom: 20,
+            borderRadius: '8px',
+            padding: '8px 10px',
+            marginBottom: 12,
             overflowX: 'auto'
           }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'center' }}>
@@ -909,13 +909,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
           {/* Seção de Transição de Período Dinâmica (Ao zerar o cronômetro) */}
           {tempo === 0 && (
-            <div style={{ marginBottom: 20 }}>
+            <div style={{ marginBottom: 12 }}>
               {periodo < 4 ? (
                 <div className="card" style={{
-                  padding: '16px',
+                  padding: '10px',
                   background: 'var(--card-team-a-bg)',
                   border: '1px solid var(--border)',
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   textAlign: 'center'
                 }}>
                   <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
@@ -926,22 +926,22 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     color: '#0C0C14',
                     border: 'none',
                     borderRadius: '8px',
-                    padding: '8px 20px',
+                    padding: '6px 14px',
                     fontSize: '13px',
                     fontWeight: 700,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
-                    marginTop: 8
+                    marginTop: 4
                   }}>
                     ▶ Iniciar {periodo + 1}º Quarto
                   </button>
                 </div>
               ) : (placarA === placarB) ? (
                 <div className="card" style={{
-                  padding: '16px',
+                  padding: '10px',
                   background: 'var(--card-team-b-bg)',
                   border: '1px solid var(--border)',
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   textAlign: 'center'
                 }}>
                   <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
@@ -952,12 +952,12 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     color: '#0C0C14',
                     border: 'none',
                     borderRadius: '8px',
-                    padding: '8px 20px',
+                    padding: '6px 14px',
                     fontSize: '13px',
                     fontWeight: 700,
                     cursor: 'pointer',
                     fontFamily: 'inherit',
-                    marginTop: 8
+                    marginTop: 4
                   }}>
                     ▶ Iniciar Prorrogação (5 min)
                   </button>
@@ -967,7 +967,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   padding: '14px 16px',
                   background: 'rgba(239, 68, 68, 0.1)',
                   border: '1px solid rgba(239, 68, 68, 0.25)',
-                  borderRadius: '12px',
+                  borderRadius: '8px',
                   textAlign: 'center'
                 }}>
                   <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#EF4444', marginBottom: 2 }}>
@@ -985,21 +985,21 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           <div className="live-game-controls-grid">
             {/* Controles Time A */}
             <div style={{
-              padding: '12px',
+              padding: '8px',
               background: 'var(--bg-card)',
               border: '1px solid rgba(200,241,53,0.12)',
-              borderRadius: '12px',
+              borderRadius: '8px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 8
+              gap: 6
             }}>
               <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                 + Pontuar {timeANome.substring(0,6)}
               </span>
               <div style={{ display: 'flex', gap: 6, width: '100%' }}>
                 <button onClick={() => ajustarPlacar('A', 1)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-a-bg-1)', border: '1px solid var(--time-a-border-1)', color: 'var(--time-a-color-1)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
-                <button onClick={() => ajustarPlacar('A', 2)} style={{ flex: 1.2, padding: '8px 0', background: 'var(--time-a-bg-2)', border: 'var(--time-a-border-2)', color: 'var(--time-a-color-2)', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
+                <button onClick={() => ajustarPlacar('A', 2)} style={{ flex: 1.2, padding: '6px 0', background: 'var(--time-a-bg-2)', border: 'var(--time-a-border-2)', color: 'var(--time-a-color-2)', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
                 <button onClick={() => ajustarPlacar('A', 3)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-a-bg-3)', border: '1px solid var(--time-a-border-3)', color: 'var(--time-a-color-3)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
               </div>
               <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center' }}>
@@ -1010,21 +1010,21 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
             {/* Controles Time B */}
             <div style={{
-              padding: '12px',
+              padding: '8px',
               background: 'var(--bg-card)',
               border: '1px solid rgba(200, 241, 53, 0.2)',
-              borderRadius: '12px',
+              borderRadius: '8px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 8
+              gap: 6
             }}>
               <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                 + Pontuar {timeBNome.substring(0,6)}
               </span>
               <div style={{ display: 'flex', gap: 6, width: '100%' }}>
                 <button onClick={() => ajustarPlacar('B', 1)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-b-bg-1)', border: '1px solid var(--time-b-border-1)', color: 'var(--time-b-color-1)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
-                <button onClick={() => ajustarPlacar('B', 2)} style={{ flex: 1.2, padding: '8px 0', background: 'var(--time-b-bg-2)', border: 'var(--time-b-border-2)', color: 'var(--time-b-color-2)', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
+                <button onClick={() => ajustarPlacar('B', 2)} style={{ flex: 1.2, padding: '6px 0', background: 'var(--time-b-bg-2)', border: 'var(--time-b-border-2)', color: 'var(--time-b-color-2)', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
                 <button onClick={() => ajustarPlacar('B', 3)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-b-bg-3)', border: '1px solid var(--time-b-border-3)', color: 'var(--time-b-color-3)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
               </div>
               <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center' }}>

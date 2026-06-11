@@ -138,7 +138,7 @@ export default function Home({ profile, onNavigate }) {
           borderRadius: 20, padding: '14px 16px 12px', marginBottom: 14,
         }}>
           {/* Top badge */}
-          <div style={{
+          <div className="hero-badge" style={{
             display: 'inline-flex', alignItems: 'center', gap: 5,
             background: myRank !== '--' ? 'rgba(200,241,53,0.12)' : 'rgba(106,106,130,0.12)',
             border: myRank !== '--' ? '1px solid rgba(200,241,53,0.2)' : '1px solid rgba(106,106,130,0.2)',
@@ -148,7 +148,7 @@ export default function Home({ profile, onNavigate }) {
               <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
               <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
             </svg>
-            <span style={{
+            <span className="hero-badge-text" style={{
               fontSize: 10, fontWeight: 700, color: myRank !== '--' ? '#C8F135' : '#6A6A82',
               fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.08em',
             }}>
@@ -170,14 +170,14 @@ export default function Home({ profile, onNavigate }) {
                   {myRank}
                 </span>
               </div>
-              <div style={{
+              <div className="hero-name" style={{
                 fontSize: 18, fontWeight: 700, color: 'var(--text-primary)',
                 fontFamily: "'Inter',sans-serif", lineHeight: 1.2, marginBottom: 1,
                 overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
               }}>
                 {myPlayerInfo?.nome || greetingName}
               </div>
-              <div style={{
+              <div className="hero-position" style={{
                 fontSize: 12, color: getPositionColor(myPlayerInfo?.posicao), fontWeight: 600,
                 fontFamily: "'Inter',sans-serif", marginBottom: 8,
               }}>
@@ -261,6 +261,7 @@ export default function Home({ profile, onNavigate }) {
 
           {/* Button */}
           <button
+            className="hero-btn"
             onClick={() => onNavigate('ranking')}
             style={{
               width: '100%', height: 40, borderRadius: 12, marginTop: 10,
@@ -269,7 +270,7 @@ export default function Home({ profile, onNavigate }) {
               cursor: 'pointer', fontFamily: "'Inter',sans-serif",
               textTransform: 'uppercase', letterSpacing: '0.06em',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              transition: 'background 0.2s',
+              transition: 'background 0.2s, box-shadow 0.2s',
             }}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
@@ -293,6 +294,7 @@ export default function Home({ profile, onNavigate }) {
             {topPlayers.map((player, i) => (
               <div
                 key={player.id}
+                className="highlight-item"
                 onClick={() => onNavigate('jogadores', { selectedPlayer: { ...player, rank: i + 1 } })}
                 style={{
                   background: 'var(--bg-card)',
@@ -303,7 +305,7 @@ export default function Home({ profile, onNavigate }) {
                   alignItems: 'center',
                   gap: 10,
                   cursor: 'pointer',
-                  transition: 'transform 0.15s',
+                  transition: 'transform 0.15s, box-shadow 0.2s',
                 }}
               >
                 {player.foto_url ? (
@@ -317,7 +319,7 @@ export default function Home({ profile, onNavigate }) {
                     }}
                   />
                 ) : (
-                  <div style={{
+                  <div className="highlight-avatar-fallback" style={{
                     width: 52, height: 52, borderRadius: 10, flexShrink: 0,
                     background: `linear-gradient(135deg, ${getPositionColor(player.posicao)}22, ${getPositionColor(player.posicao)}44)`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -335,7 +337,7 @@ export default function Home({ profile, onNavigate }) {
                 <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <RankBadge rank={i + 1} />
-                    <span style={{
+                    <span className="highlight-name" style={{
                       fontSize: 14, fontWeight: 700, color: 'var(--text-primary)',
                       fontFamily: "'Inter',sans-serif", lineHeight: 1.2,
                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
@@ -344,7 +346,7 @@ export default function Home({ profile, onNavigate }) {
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{
+                    <span className="highlight-position" style={{
                       fontSize: 11, color: getPositionColor(player.posicao), fontWeight: 600,
                       fontFamily: "'Inter',sans-serif",
                     }}>
@@ -353,7 +355,7 @@ export default function Home({ profile, onNavigate }) {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                     <StarIcon size={12} />
-                    <span style={{
+                    <span className="highlight-score" style={{
                       fontSize: 13, fontWeight: 800, color: 'var(--text-primary)',
                       fontFamily: "'Barlow Condensed',sans-serif",
                     }}>

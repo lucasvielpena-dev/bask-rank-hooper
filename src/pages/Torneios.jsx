@@ -64,12 +64,12 @@ export default function Torneios({ profile, isNested = false }) {
           onBack={() => { setSelectedTorneio(null); carregarTorneios(); }} 
         />
       ) : (
-        <div style={{ padding: isNested ? '0' : '20px 20px 0' }}>
+        <div style={{ padding: isNested ? '0' : '12px 12px 0' }}>
           {/* Header */}
           {!isNested ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 40, height: 40, background: 'rgba(200,241,53,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 34, height: 34, background: 'rgba(200,241,53,0.15)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <IconCalendario size={20} color="var(--accent)" />
                 </div>
                 <div>
@@ -83,7 +83,7 @@ export default function Torneios({ profile, isNested = false }) {
               </button>
             </div>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
               <h3 style={{ fontWeight: 800, fontSize: 16 }}>Torneios Regionais</h3>
               <button className="btn btn-primary btn-sm" onClick={() => setShowCriar(true)}>
                 Criar Torneio
@@ -93,9 +93,9 @@ export default function Torneios({ profile, isNested = false }) {
 
           {/* Listagem */}
           {loading ? (
-            <div className="responsive-card-grid" style={{ paddingBottom: 24 }}>
+            <div className="responsive-card-grid" style={{ paddingBottom: 16 }}>
               {[1, 2, 3].map(idx => (
-                <div key={idx} className="skeleton" style={{ height: 130, borderRadius: '16px' }} />
+                <div key={idx} className="skeleton" style={{ height: 100, borderRadius: '12px' }} />
               ))}
             </div>
           ) : torneios.length === 0 ? (
@@ -110,7 +110,7 @@ export default function Torneios({ profile, isNested = false }) {
               </button>
             </div>
           ) : (
-            <div className="responsive-card-grid" style={{ paddingBottom: 24 }}>
+            <div className="responsive-card-grid" style={{ paddingBottom: 16 }}>
               {torneios.map((t, i) => {
                 const stat = STATUS_TORNEIO[t.status] || { label: t.status, color: '#94a3b8', bg: 'rgba(0,0,0,0.1)' };
                 return (
@@ -120,7 +120,7 @@ export default function Torneios({ profile, isNested = false }) {
                     onClick={() => setSelectedTorneio(t)}
                     style={{ cursor: 'pointer', transition: 'transform 0.2s', borderLeft: `4px solid ${stat.color}`, animationDelay: `${i * 30}ms` }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
                       <span style={{ fontSize: 11, background: stat.bg, color: stat.color, padding: '3px 10px', borderRadius: 50, fontWeight: 700 }}>
                         {stat.label.toUpperCase()}
                       </span>
@@ -128,11 +128,11 @@ export default function Torneios({ profile, isNested = false }) {
                         {new Date(t.data_inicio).toLocaleDateString('pt-BR')}
                       </span>
                     </div>
-                    <h3 style={{ fontWeight: 800, fontSize: 17, color: 'var(--text-primary)', marginBottom: 6 }}>{t.nome}</h3>
+                    <h3 style={{ fontWeight: 800, fontSize: 17, color: 'var(--text-primary)', marginBottom: 4 }}>{t.nome}</h3>
                     <p style={{ fontSize: 13, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 4 }}>
                       {t.local_quadra} {t.cidade && `(${t.cidade})`}
                     </p>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12, fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: 6 }}>
                       <span>Formato: {t.formato === 'eliminatoria_simples' ? 'Mata-Mata' : 'Pontos Corridos'}</span>
                       <span>Organizador: {t.organizador?.nome_completo?.split(' ')[0]}</span>
                     </div>
@@ -205,19 +205,19 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
       <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440 }}>
         <div className="modal-handle" />
         <h3 style={{ fontWeight: 900, fontSize: 20, marginBottom: 4 }}>🏆 Novo Torneio</h3>
-        <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 16 }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 10 }}>
           Preencha as informações básicas para iniciar as inscrições na sua cidade.
         </p>
 
         {erro && <div style={{ color: '#f87171', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: 10, borderRadius: 8, fontSize: 13, marginBottom: 14 }}>⚠️ {erro}</div>}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div>
             <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome do Torneio *</label>
             <input required type="text" placeholder="Ex: Copa Altamira 2026" value={form.nome} onChange={e => setForm(p => ({ ...p, nome: e.target.value }))} />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             <div>
               <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Data de Início *</label>
               <input required type="date" value={form.data_inicio} onChange={e => setForm(p => ({ ...p, data_inicio: e.target.value }))} />
@@ -233,7 +233,7 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
             <input required type="text" placeholder="Ex: Ginásio Municipal" value={form.local_quadra} onChange={e => setForm(p => ({ ...p, local_quadra: e.target.value }))} />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             <div>
               <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Máx. Equipes</label>
               <select value={form.max_equipes} onChange={e => setForm(p => ({ ...p, max_equipes: parseInt(e.target.value) }))}>
@@ -251,7 +251,7 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             <div>
               <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Taxa (R$)</label>
               <input type="number" min="0" value={form.taxa_inscricao} onChange={e => setForm(p => ({ ...p, taxa_inscricao: parseFloat(e.target.value) || 0 }))} />
@@ -267,7 +267,7 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
             <textarea rows="2" style={{ resize: 'none' }} placeholder="Detalhes do evento..." value={form.descricao} onChange={e => setForm(p => ({ ...p, descricao: e.target.value }))} />
           </div>
 
-          <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
+          <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
             <button type="button" className="btn btn-secondary" onClick={onClose} disabled={salvando} style={{ flex: 1 }}>Cancelar</button>
             <button type="submit" className="btn btn-primary" disabled={salvando} style={{ flex: 2 }}>
               {salvando ? <div className="spinner" /> : 'Criar Torneio'}
@@ -548,7 +548,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
       {/* Hero Header Section */}
       <div style={{
         background: 'linear-gradient(180deg, rgba(11,15,20,0.5) 0%, rgba(17,24,30,0.95) 100%)',
-        padding: 'clamp(12px, 3vw, 16px) clamp(14px, 3vw, 20px) clamp(14px, 3vw, 20px)',
+        padding: 'clamp(8px, 2vw, 12px) clamp(10px, 2vw, 14px) clamp(10px, 2vw, 14px)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -556,7 +556,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
         flexShrink: 0
       }}>
         {/* Row 1: Botão Voltar & Status Badge */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2px' }}>
           <button onClick={onBack} style={{
             background: 'rgba(255, 255, 255, 0.08)',
             border: 'none',
@@ -592,7 +592,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
         <div style={{ marginTop: 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '20px' }}>🏆</span>
-            <h2 style={{ fontWeight: 900, fontSize: '22px', color: '#F8FAFC', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
+            <h2 style={{ fontWeight: 900, fontSize: '18px', color: '#F8FAFC', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
               {torneio.nome}
             </h2>
           </div>
@@ -606,11 +606,11 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginTop: '12px',
+          marginTop: '8px',
           borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-          paddingTop: '10px'
+          paddingTop: '6px'
         }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#94A3B8', fontSize: '11px' }}>
               {torneio.local_quadra}
             </div>
@@ -628,8 +628,8 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: 'clamp(6px, 1.5vw, 8px)',
-        padding: 'clamp(10px, 2.5vw, 16px) clamp(14px, 3vw, 20px) 0',
+        gap: '4px',
+        padding: 'clamp(6px, 1.5vw, 10px) clamp(10px, 2.5vw, 14px) 0',
         flexShrink: 0
       }}>
         {[
@@ -643,13 +643,13 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '12px 6px',
-            borderRadius: '20px',
+            padding: '8px 4px',
+            borderRadius: '14px',
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
             boxShadow: 'var(--shadow)'
           }}>
-            <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '4px' }}>
+            <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '2px' }}>
               {item.label}
             </span>
             <span style={{
@@ -671,12 +671,12 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
       <div style={{
         display: 'flex',
         borderBottom: '1px solid var(--border)',
-        padding: '0 20px',
+        padding: '0 12px',
         overflowX: 'auto',
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
-        gap: '20px',
-        marginTop: '12px',
+        gap: '12px',
+        marginTop: '6px',
         flexShrink: 0
       }}>
         {[
@@ -698,7 +698,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
                 fontWeight: isActive ? 800 : 600,
                 fontSize: '13px',
-                padding: '8px 4px 12px',
+                padding: '6px 3px 8px',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
                 whiteSpace: 'nowrap',
@@ -712,10 +712,10 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
       </div>
 
       {/* Tab Content Panel */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '20px 20px 60px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '12px 12px 40px' }}>
         {/* TAB 1: INFORMAÇÕES */}
         {aba === 'info' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
@@ -730,8 +730,8 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 { label: 'INSCRIÇÃO', value: torneio.taxa_inscricao > 0 ? `R$ ${torneio.taxa_inscricao}` : 'Gratuito' }
               ].map((info, idx) => (
                 <div key={idx} className="card" style={{
-                  padding: '16px',
-                  borderRadius: '16px',
+                  padding: '10px',
+                  borderRadius: '12px',
                   background: 'var(--bg-card)',
                   border: '1px solid var(--border)',
                   boxShadow: 'var(--shadow)',
@@ -755,8 +755,8 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
 
             {torneio.descricao && (
               <div className="card" style={{
-                padding: '16px',
-                borderRadius: '16px',
+                padding: '10px',
+                borderRadius: '12px',
                 background: 'var(--bg-card)',
                 border: '1px solid var(--border)',
                 boxShadow: 'var(--shadow)'
@@ -773,13 +773,13 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
             {/* Painel do Organizador (Central de Controle) */}
             {isOrganizador && (
               <div className="card" style={{
-                padding: '20px',
-                borderRadius: '20px',
+                padding: '14px',
+                borderRadius: '14px',
                 background: 'var(--bg-secondary)',
                 border: '1px solid var(--border)',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '12px',
+                gap: '8px',
                 boxShadow: 'var(--shadow)'
               }}>
                 <h4 style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '4px' }}>
@@ -793,10 +793,10 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       background: 'var(--accent)',
                       color: 'var(--text-primary)',
                       border: 'none',
-                      height: '56px',
-                      borderRadius: '16px',
+                      height: '44px',
+                      borderRadius: '10px',
                       fontWeight: 800,
-                      fontSize: '15px',
+                      fontSize: '13px',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -835,12 +835,12 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   </button>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '4px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginTop: '2px' }}>
                   <button onClick={() => setAba('equipes')} style={{
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
-                    borderRadius: '12px',
-                    padding: '12px 10px',
+                    borderRadius: '8px',
+                    padding: '8px 8px',
                     color: 'var(--text-primary)',
                     fontSize: '12px',
                     fontWeight: 700,
@@ -856,8 +856,8 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   <button onClick={() => setAba('jogos')} style={{
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
-                    borderRadius: '12px',
-                    padding: '12px 10px',
+                    borderRadius: '8px',
+                    padding: '8px 8px',
                     color: 'var(--text-primary)',
                     fontSize: '12px',
                     fontWeight: 700,
@@ -873,8 +873,8 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   <button onClick={() => setAba('destaques')} style={{
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
-                    borderRadius: '12px',
-                    padding: '12px 10px',
+                    borderRadius: '8px',
+                    padding: '8px 8px',
                     color: 'var(--text-primary)',
                     fontSize: '12px',
                     fontWeight: 700,
@@ -890,8 +890,8 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   <button onClick={() => setAba('equipes')} style={{
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
-                    borderRadius: '12px',
-                    padding: '12px 10px',
+                    borderRadius: '8px',
+                    padding: '8px 8px',
                     color: 'var(--text-primary)',
                     fontSize: '12px',
                     fontWeight: 700,
@@ -916,13 +916,13 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   background: 'none',
                   border: '1px solid rgba(239, 68, 68, 0.3)',
                   color: '#EF4444',
-                  borderRadius: '16px',
-                  padding: '14px 20px',
-                  fontSize: '14px',
+                  borderRadius: '10px',
+                  padding: '10px 14px',
+                  fontSize: '12px',
                   fontWeight: 700,
                   cursor: 'pointer',
                   width: '100%',
-                  marginTop: '16px',
+                  marginTop: '10px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -938,7 +938,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
 
         {/* TAB 2: EQUIPES */}
         {aba === 'equipes' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>Equipes Inscritas ({equipes.length})</h3>
               {torneio.status === 'inscricoes_abertas' && (
@@ -1381,7 +1381,7 @@ function InscricaoEquipeModal({ torneio, profile, onClose, onSuccess }) {
             <input required type="text" placeholder="Ex: Bulls de Altamira" value={nomeEquipe} onChange={e => setNomeEquipe(e.target.value)} />
           </div>
 
-          <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
+          <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
             <button type="button" className="btn btn-secondary" onClick={onClose} disabled={salvando} style={{ flex: 1 }}>Voltar</button>
             <button type="submit" className="btn btn-primary" disabled={salvando} style={{ flex: 2 }}>Registrar Equipe</button>
           </div>
