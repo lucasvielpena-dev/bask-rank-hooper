@@ -46,6 +46,7 @@ export default function Layout({ page, onNavigate, children }) {
   const { themePref, setThemePref } = useTheme();
   
   // Parallax Logic
+  const [bgLoaded, setBgLoaded] = useState(false);
   const parallaxRef = useRef(null);
   
   useEffect(() => {
@@ -72,6 +73,31 @@ export default function Layout({ page, onNavigate, children }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Preload background images
+  useEffect(() => {
+    let mounted = true;
+    const img1 = new Image();
+    const img2 = new Image();
+    
+    let loadedCount = 0;
+    const checkLoad = () => {
+      loadedCount++;
+      if (loadedCount >= 2 && mounted) {
+        setBgLoaded(true);
+      }
+    };
+
+    img1.onload = checkLoad;
+    img1.onerror = checkLoad; // in case of error, still show
+    img1.src = '/images/bg-1.png';
+
+    img2.onload = checkLoad;
+    img2.onerror = checkLoad;
+    img2.src = '/images/bg-2.png';
+
+    return () => { mounted = false; };
+  }, []);
+
   const isHome = page === 'inicio';
   const bgFilter = themePref === 'light' ? 'blur(3px) brightness(0.92) sepia(0.15)' : 'blur(3px) brightness(0.35)';
 
@@ -85,7 +111,9 @@ export default function Layout({ page, onNavigate, children }) {
           inset: 0,
           zIndex: 0,
           pointerEvents: 'none',
-          willChange: 'transform'
+          opacity: bgLoaded ? 1 : 0,
+          transition: 'opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1)',
+          willChange: 'transform, opacity'
         }}
       >
         {/* Background 1 (Home) */}
