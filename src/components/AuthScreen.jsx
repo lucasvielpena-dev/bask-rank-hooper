@@ -295,13 +295,13 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
       `}</style>
 
       {/* VIDEO BACKGROUND */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#000000' }}>
         <video 
           autoPlay 
           loop 
           muted 
           playsInline
-          style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.6)' }}
+          style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'top center', filter: 'brightness(0.8)' }}
         >
           <source src="/images/login-video.mp4" type="video/mp4" />
         </video>
