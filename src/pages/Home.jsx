@@ -325,7 +325,7 @@ export default function Home({ profile, onNavigate }) {
               <div
                 key={player.id}
                 className={i === 0 ? "premium-card premium-card-border-green" : "premium-card"}
-                onClick={() => onNavigate('jogadores', { selectedPlayer: { ...player, rank: i + 1 } })}
+                onClick={() => onNavigate('atletas', { selectedPlayer: { ...player, rank: i + 1 } })}
                 style={{
                   background: i === 0 ? 'linear-gradient(145deg, rgba(182, 255, 28, 0.05), #101722)' : 'linear-gradient(145deg, var(--bg-elevated), #101722)',
                   borderRadius: 14,

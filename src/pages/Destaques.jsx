@@ -306,7 +306,7 @@ export default function Destaques({ profile, onNavigate }) {
             </div>
           </div>
           <button
-            onClick={() => onNavigate('jogadores')}
+            onClick={() => onNavigate('atletas')}
             style={{
               background: 'rgba(255,255,255,0.2)',
               border: 'none',
