@@ -53,38 +53,46 @@ export const RankingBackground = () => (
   <BgWrapper>
     <style>{`
       @keyframes rankShootArm {
-        0% { transform: rotate(0deg); }
-        15% { transform: rotate(-25deg); }
-        30% { transform: rotate(160deg); }
-        38% { transform: rotate(150deg); }
-        45% { transform: rotate(155deg); }
+        0%, 100% { transform: rotate(0deg); }
+        15% { transform: rotate(15deg); }
+        30% { transform: rotate(-50deg); }
+        40% { transform: rotate(-40deg); }
         60% { transform: rotate(0deg); }
-        100% { transform: rotate(0deg); }
-      }
-      @keyframes rankShootBall {
-        0%, 30% { transform: translate(0, 0) scale(1); opacity: 1; }
-        45% { transform: translate(-200px, 150px) scale(0.6); opacity: 0; }
-        60% { transform: translate(0, 0) scale(1); opacity: 0; }
-        70%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
       }
       @keyframes rankShootTorso {
         0%, 100% { transform: translateY(0); }
-        15% { transform: translateY(12px); }
-        30% { transform: translateY(-5px); }
+        15% { transform: translateY(15px); }
+        30% { transform: translateY(-10px); }
         45% { transform: translateY(0); }
       }
+      @keyframes rankShootBall {
+        0%, 30% { transform: translate(0, 0) scale(1); opacity: 1; }
+        50% { transform: translate(250px, 50px) scale(0.6); opacity: 0; }
+        60% { transform: translate(0, 0) scale(1); opacity: 0; }
+        70%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+      }
     `}</style>
-    <svg viewBox="0 0 600 600" width="100%" height="100%">
-      <g strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" transform="translate(150, 150) scale(1.6)">
+    <svg viewBox="0 0 600 600" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+      <g strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" transform="translate(150, 150) scale(1.6)">
         <g style={{ animation: 'rankShootTorso 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite' }}>
-          <path d="M100 100 L110 180 L120 180 L130 100 Z" stroke="var(--text-primary)" />
-          <path d="M110 180 L100 240 M120 180 L130 240" stroke="var(--text-primary)" />
-          <circle cx="115" cy="70" r="18" stroke="var(--text-primary)" />
+          {/* Head */}
+          <circle cx="100" cy="70" r="15" stroke="var(--text-primary)" />
+          {/* Torso */}
+          <path d="M 100 85 L 100 160" stroke="var(--text-primary)" />
+          {/* Left Leg */}
+          <path d="M 100 160 L 90 200 L 110 240" stroke="var(--text-primary)" />
+          {/* Right Leg */}
+          <path d="M 100 160 L 130 240" stroke="var(--text-primary)" />
+          {/* Left Arm (Balance) */}
+          <path d="M 100 100 L 70 120 L 60 100" stroke="var(--text-primary)" />
+          
+          {/* Right Arm (Shooting) */}
           <g style={{ animation: 'rankShootArm 4.5s cubic-bezier(0.34, 1.56, 0.64, 1) infinite' }} transformOrigin="100px 100px">
-            <path d="M100 100 L70 120 L70 150" stroke="var(--text-primary)" />
-            <g style={{ animation: 'rankShootBall 4.5s cubic-bezier(0.2, 0, 0, 1) infinite' }}>
-              <circle cx="70" cy="165" r="12" stroke="var(--accent)" />
-              <path d="M58 165 Q70 177 82 165 M58 165 Q70 153 82 165" strokeWidth="2" stroke="var(--accent)" />
+            <path d="M 100 100 L 130 130 L 150 90" stroke="var(--text-primary)" />
+            {/* Ball */}
+            <g style={{ animation: 'rankShootBall 4.5s cubic-bezier(0.2, 0, 0, 1) infinite' }} transformOrigin="160px 80px">
+              <circle cx="160" cy="80" r="12" stroke="var(--accent)" />
+              <path d="M 148 80 Q 160 92 172 80 M 148 80 Q 160 68 172 80" strokeWidth="2" stroke="var(--accent)" />
             </g>
           </g>
         </g>
@@ -99,35 +107,44 @@ export const JogadoresBackground = () => (
     <style>{`
       @keyframes dribbleBall {
         0% { transform: translateY(0px) scale(1, 1); animation-timing-function: cubic-bezier(0.5, 0, 1, 1); }
-        45% { transform: translateY(80px) scale(1, 1); animation-timing-function: linear; }
-        50% { transform: translateY(85px) scale(1.4, 0.6); animation-timing-function: cubic-bezier(0, 0, 0.5, 1); }
+        45% { transform: translateY(50px) scale(1, 1); animation-timing-function: linear; }
+        50% { transform: translateY(55px) scale(1.4, 0.6); animation-timing-function: cubic-bezier(0, 0, 0.5, 1); }
         100% { transform: translateY(0px) scale(1, 1); animation-timing-function: cubic-bezier(0.5, 0, 1, 1); }
       }
       @keyframes dribbleArm {
-        0% { transform: rotate(0deg); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
-        50% { transform: rotate(25deg); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
-        100% { transform: rotate(0deg); }
+        0% { transform: rotate(-30deg); animation-timing-function: cubic-bezier(0.5, 0, 1, 1); }
+        50% { transform: rotate(10deg); animation-timing-function: cubic-bezier(0, 0, 0.5, 1); }
+        100% { transform: rotate(-30deg); }
       }
       @keyframes dribbleBody {
-        0% { transform: translateY(0); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
-        50% { transform: translateY(4px); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+        0% { transform: translateY(0); animation-timing-function: cubic-bezier(0.5, 0, 1, 1); }
+        50% { transform: translateY(4px); animation-timing-function: cubic-bezier(0, 0, 0.5, 1); }
         100% { transform: translateY(0); }
       }
     `}</style>
-    <svg viewBox="0 0 600 600" width="100%" height="100%">
+    <svg viewBox="0 0 600 600" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
       <g strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" transform="translate(150, 150) scale(1.5)">
         <g style={{ animation: 'dribbleBody 0.8s infinite' }}>
-          <circle cx="100" cy="50" r="20" stroke="var(--text-primary)" />
-          <path d="M100 70 L110 150 L90 150 Z" stroke="var(--text-primary)" />
-          <path d="M110 150 L130 220 M90 150 L70 220" stroke="var(--text-primary)" />
-          <path d="M100 85 L80 120 L90 140" stroke="var(--text-primary)" />
-          <g style={{ animation: 'dribbleArm 0.8s infinite' }} transformOrigin="100px 85px">
-            <path d="M100 85 L130 120 L120 160" stroke="var(--text-primary)" />
+          {/* Head */}
+          <circle cx="100" cy="50" r="15" stroke="var(--text-primary)" />
+          {/* Torso (leaning forward) */}
+          <path d="M 100 65 L 120 130" stroke="var(--text-primary)" />
+          {/* Left Leg (back) */}
+          <path d="M 120 130 L 90 180 L 110 220" stroke="var(--text-primary)" />
+          {/* Right Leg (front) */}
+          <path d="M 120 130 L 140 180 L 130 220" stroke="var(--text-primary)" />
+          {/* Left Arm (guarding) */}
+          <path d="M 100 80 L 130 90 L 150 70" stroke="var(--text-primary)" />
+          
+          {/* Right Arm (dribbling) */}
+          <g style={{ animation: 'dribbleArm 0.8s infinite' }} transformOrigin="100px 80px">
+            <path d="M 100 80 L 110 120 L 140 140" stroke="var(--text-primary)" />
           </g>
         </g>
-        <g style={{ animation: 'dribbleBall 0.8s infinite' }} transformOrigin="120px 175px">
-          <circle cx="120" cy="175" r="15" stroke="var(--accent)" />
-          <path d="M105 175 Q120 190 135 175 M105 175 Q120 160 135 175" strokeWidth="2" stroke="var(--accent)" />
+        {/* Ball */}
+        <g style={{ animation: 'dribbleBall 0.8s infinite' }} transformOrigin="140px 150px">
+          <circle cx="140" cy="150" r="14" stroke="var(--accent)" />
+          <path d="M 126 150 Q 140 164 154 150 M 126 150 Q 140 136 154 150" strokeWidth="2" stroke="var(--accent)" />
         </g>
       </g>
     </svg>
