@@ -62,10 +62,10 @@ export const RankingBackground = () => (
         100% { transform: rotate(0deg); }
       }
       @keyframes rankShootBall {
-        0%, 15% { transform: translate(0, 0); opacity: 1; }
-        30% { transform: translate(40px, -200px); opacity: 1; }
-        45% { transform: translate(160px, -50px) scale(0.6); opacity: 0; }
-        100% { transform: translate(0, 0); opacity: 0; }
+        0%, 30% { transform: translate(0, 0) scale(1); opacity: 1; }
+        45% { transform: translate(-200px, 150px) scale(0.6); opacity: 0; }
+        60% { transform: translate(0, 0) scale(1); opacity: 0; }
+        70%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
       }
       @keyframes rankShootTorso {
         0%, 100% { transform: translateY(0); }
