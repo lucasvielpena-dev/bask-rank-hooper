@@ -125,14 +125,13 @@ export default function Layout({ page, onNavigate, children }) {
       )}
 
       <div style={{ flex: 1, position: 'relative', overflowX: 'hidden' }}>
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           <motion.div 
             key={page} 
-            className="page-transition"
-            initial={{ opacity: 0, x: 15 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -15 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.15, ease: "easeInOut" }}
             style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
           >
             {children}
