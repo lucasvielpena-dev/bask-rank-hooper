@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Line, Radar, Bar } from 'react-chartjs-2';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
 

@@ -1,7 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { supabase, denunciasAPI, votacaoAPI } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
-import { StarPicker } from './StarPicker';
 import AnimatedCounter from './AnimatedCounter';
 
 const fundamentos = [
