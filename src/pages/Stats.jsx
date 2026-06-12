@@ -335,7 +335,7 @@ export default function Stats({ profile, onNavigate }) {
   }
 
   return (
-    <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
+    <div className="page-content home-page">
       <div style={{ padding: '12px 12px 0' }}>
         
         {/* Cabeçalho Voltar */}
