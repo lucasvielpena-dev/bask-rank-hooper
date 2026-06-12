@@ -436,10 +436,10 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   // (Removido o early return para permitir renderizar o shell da lista com esqueletos shimmer)
 
   return (
-    <div className="page-content">
+    <div className="page-content home-page">
       {/* TELA 1: LISTAGEM DE PARTIDAS / HISTÓRICO */}
       {tela === 'lista' && (
-        <div style={{ padding: '12px 12px 0' }}>
+        <div className="home-container" style={{ padding: '12px 12px 0' }}>
           {/* Header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
