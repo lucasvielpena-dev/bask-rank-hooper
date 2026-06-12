@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { authAPI } from '../lib/supabase';
 
 export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
@@ -14,6 +14,58 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
 
   const [isShooting, setIsShooting] = useState(false);
   const [isShake, setIsShake] = useState(false);
+  
+  // 'idle' | 'css' (crouch & prep) | 'js' (flight)
+  const [ballPhase, setBallPhase] = useState('idle');
+  
+  const ballRef = useRef(null);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    if (isShooting) {
+      setBallPhase('css');
+      
+      const flightTimeout = setTimeout(() => {
+        setBallPhase('js');
+        
+        let x = 0;
+        let y = 0;
+        let vx = 3;
+        let vy = -12;
+        let gravity = 0.6;
+        let rot = 0;
+        let scale = 1;
+
+        const animate = () => {
+          x += vx;
+          y += vy;
+          vy += gravity;
+          rot += 4;
+          
+          if (scale > 0.3) scale -= 0.012; // Gradual scaling down
+
+          if (ballRef.current) {
+            // Squash & stretch in flight (scaleX 0.9, scaleY 1.1) + overall distance scale + rotation
+            ballRef.current.setAttribute('transform', `translate(${x}, ${y}) scale(${scale * 0.9}, ${scale * 1.1}) rotate(${rot})`);
+          }
+
+          if (y < 400 && scale > 0) {
+            rafRef.current = requestAnimationFrame(animate);
+          }
+        };
+        
+        rafRef.current = requestAnimationFrame(animate);
+        
+      }, 600); // 600ms corresponds to the exact moment the CSS arm reaches 180deg
+
+      return () => {
+        clearTimeout(flightTimeout);
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      };
+    } else {
+      setBallPhase('idle');
+    }
+  }, [isShooting]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -26,7 +78,6 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
         const { error } = await authAPI.login(email, senha);
         if (error) throw error;
         
-        // SUCCESS LOGIN
         if (onStartAnimation) onStartAnimation();
         setIsShooting(true);
         setTimeout(() => {
@@ -63,7 +114,6 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
     try {
       const { error } = await authAPI.loginGoogle();
       if (error) throw error;
-      // Google redirect happens quickly, but we start animation anyway
       if (onStartAnimation) onStartAnimation();
       setIsShooting(true);
     } catch (err) {
@@ -76,101 +126,128 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
 
   const showHint = touched.senha && senha.length > 0 && senha.length < 6;
 
+  // Stagger delays for particles
+  const particles = Array.from({ length: 6 }).map((_, i) => ({
+    id: i,
+    delay: Math.random() * 0.2, // 0 to 200ms
+    angle: (i * 60) + (Math.random() * 20 - 10),
+  }));
+
   return (
     <div className={`app-shell auth-screen ${isShooting ? 'is-shooting' : ''}`} style={{ minHeight: '100dvh', background: 'var(--bg-primary, #0C0C14)', position: 'relative', overflow: 'hidden' }}>
       <style>{`
         .auth-screen.is-shooting {
-          animation: fadeOutApp 0.5s ease-in-out 1.7s forwards;
+          animation: fadeOutApp 0.5s cubic-bezier(0.36, 0, 0.66, -0.56) 1.7s forwards;
         }
 
-        /* IDLE ANIMATIONS */
+        /* IDLE ANIMATIONS (Cubic-bezier gerais) */
         .idle-breathe {
-          animation: breathe 2.5s ease-in-out infinite;
+          animation: breathe 2.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
         }
         .idle-sway {
-          animation: sway 3s ease-in-out infinite;
+          animation: sway 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
           transform-origin: 200px 450px;
         }
         .idle-bounce {
-          animation: bounce 0.8s cubic-bezier(0.33, 0, 0.66, 1) infinite;
-          transform-origin: 160px 380px;
+          animation: bounce 0.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
         }
-        .line-draw {
-          stroke-dasharray: 1000;
-          stroke-dashoffset: 1000;
-          animation: drawLine 1.2s ease-in-out forwards;
+
+        /* SQUASH & STRETCH BALL (IDLE) */
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0) scale(1); }
+          40% { transform: translateY(20px) scale(0.85, 1.2); } /* Stretching down */
+          50% { transform: translateY(22px) scale(1.4, 0.65); } /* Squash on ground */
+          60% { transform: translateY(18px) scale(0.85, 1.2); } /* Stretching up */
         }
-        .line-draw-delay-1 { animation-delay: 0.08s; }
-        .line-draw-delay-2 { animation-delay: 0.16s; }
-        .line-draw-delay-3 { animation-delay: 0.24s; }
-        .line-draw-delay-4 { animation-delay: 0.32s; }
-        .line-draw-delay-5 { animation-delay: 0.40s; }
 
         @keyframes breathe {
           0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-3px); }
+          50% { transform: translateY(-4px); }
         }
         @keyframes sway {
           0%, 100% { transform: rotateZ(-1deg); }
           50% { transform: rotateZ(1deg); }
         }
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(18px) scaleX(1.3) scaleY(0.7); }
+
+        /* DRAW LINES WITH STAGGER */
+        .line-draw {
+          stroke-dasharray: 1000;
+          stroke-dashoffset: 1000;
+          animation: drawLine 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
+        .line-draw-delay-1 { animation-delay: 0.06s; }
+        .line-draw-delay-2 { animation-delay: 0.12s; }
+        .line-draw-delay-3 { animation-delay: 0.18s; }
+        .line-draw-delay-4 { animation-delay: 0.24s; }
+        .line-draw-delay-5 { animation-delay: 0.30s; }
+
         @keyframes drawLine {
           to { stroke-dashoffset: 0; }
         }
 
-        /* SHOOTING ANIMATIONS */
-        .is-shooting .torso {
+        /* SHOOTING ANIMATIONS (Disney Principles) */
+        
+        .shot-torso {
           animation: shotTorso 2.2s forwards;
         }
-        .is-shooting .braco-dir {
-          animation: shotArm 2.2s forwards;
-          transform-origin: 185px 225px;
-        }
-        .is-shooting .bola-wrap {
-          animation: shotBall 2.2s forwards;
-        }
-        .is-shooting .cesta {
-          animation: shotHoop 2.2s forwards;
-        }
-
         @keyframes shotTorso {
           0% { transform: translateY(0); }
-          13.6% { transform: translateY(12px); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
-          27.2% { transform: translateY(-30px); animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
-          60% { transform: translateY(0); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+          6.8% { transform: translateY(6px); animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); } /* Anticipation (150ms) */
+          25% { transform: translateY(-24px); animation-timing-function: cubic-bezier(0.2, 0, 0, 1); } /* Explosive Jump (400ms) */
+          54.5% { transform: translateY(-24px); } /* Hold in air */
+          59% { transform: translateY(8px); animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); } /* Land & Squash */
+          68% { transform: translateY(0); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); } /* Spring back */
           100% { transform: translateY(0); }
         }
 
+        .shot-arm {
+          animation: shotArm 2.2s forwards;
+          transform-origin: 185px 225px;
+        }
         @keyframes shotArm {
           0% { transform: rotate(0deg); }
-          13.6% { transform: rotate(45deg); animation-timing-function: ease-in-out; }
-          27.2% { transform: rotate(-135deg); animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
-          100% { transform: rotate(-135deg); }
+          13.6% { transform: rotate(0deg); } /* Wait for jump to start */
+          19% { transform: rotate(-15deg); animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); } /* Anticipation back (120ms) */
+          27.2% { transform: rotate(180deg); animation-timing-function: cubic-bezier(0.2, 0, 0, 1); } /* Explosive throw */
+          35% { transform: rotate(170deg); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); } /* Follow-through spring */
+          45.4% { transform: rotate(175deg); } /* Settles */
+          100% { transform: rotate(175deg); }
         }
 
-        @keyframes shotBall {
-          0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-          13.6% { transform: translate(-10px, 12px) scale(1) rotate(0deg); animation-timing-function: ease-in-out; }
-          27.2% { transform: translate(-10px, -40px) scale(1) rotate(0deg); animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
-          63.6% { transform: translate(140px, -230px) scale(0.3) rotate(360deg); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
-          77.2% { transform: translate(140px, -150px) scale(0.25) rotate(400deg); animation-timing-function: ease-in; }
-          100% { transform: translate(140px, -50px) scale(0) rotate(450deg); }
+        /* Ball Compression before release */
+        .shot-ball-compress {
+          animation: ballCompress 2.2s forwards;
+        }
+        @keyframes ballCompress {
+          0%, 23.6% { transform: scale(1); }
+          27.2% { transform: scale(0.9); } /* Squash right before release at 600ms */
+          100% { transform: scale(0.9); }
         }
 
+        .shot-hoop {
+          animation: shotHoop 2.2s forwards;
+        }
         @keyframes shotHoop {
-          0%, 63.6% { opacity: 0; }
-          65% { opacity: 1; transform: scale(1.1); }
-          77.2% { opacity: 1; transform: scale(1); }
-          100% { opacity: 0; }
+          0%, 63.6% { opacity: 0; transform: translateY(20px); }
+          68% { opacity: 1; transform: translateY(-5px); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); } /* Spring entrance */
+          77.2% { opacity: 1; transform: translateY(0) scaleX(0.8) scaleY(1.15); } /* Squash from ball */
+          82% { opacity: 1; transform: translateY(0) scaleX(1) scaleY(1); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); } /* Spring back */
+          100% { opacity: 1; }
         }
 
         @keyframes fadeOutApp {
           0% { opacity: 1; transform: scale(1); }
-          100% { opacity: 0; transform: scale(1.05); }
+          100% { opacity: 0; transform: scale(1.05); } /* Exit with Anticipation easing */
+        }
+
+        /* PARTICLE EXPLOSION */
+        .particle {
+          animation: explode 0.8s cubic-bezier(0.2, 0, 0, 1) forwards;
+          opacity: 0;
+        }
+        @keyframes explode {
+          0% { opacity: 1; transform: translate(0, 0) scale(1); }
+          100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
         }
 
         /* FORM STYLES */
@@ -207,33 +284,45 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
         }
 
         .shake-animation {
-          animation: shakeX 0.3s ease-in-out;
+          animation: shakeX 0.3s cubic-bezier(0.36, 0, 0.66, -0.56);
         }
-
         @keyframes shakeX {
           0%, 100% { transform: translateX(0); }
           25% { transform: translateX(-8px); }
           50% { transform: translateX(8px); }
           75% { transform: translateX(-4px); }
         }
-
       `}</style>
 
       {/* BACKGROUND SVG LINE ART */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <svg viewBox="0 0 400 600" style={{ width: '100%', height: '100%', maxWidth: '500px' }}>
           
-          <g id="cesta" className="cesta" opacity="0">
+          <g id="cesta" className={isShooting ? 'shot-hoop' : ''} opacity="0">
             {/* Hoop & Net */}
             <ellipse cx="300" cy="150" rx="30" ry="10" fill="none" stroke="#FF6B1A" strokeWidth="3" />
             <path d="M275 155 L285 190 L315 190 L325 155" fill="none" stroke="#FFFFFF" strokeWidth="1" opacity="0.5" strokeDasharray="2 2" />
             <path d="M285 155 L295 190 M315 155 L305 190 M300 155 L300 190" fill="none" stroke="#FFFFFF" strokeWidth="1" opacity="0.5" strokeDasharray="2 2" />
             {/* Flash */}
             <circle cx="300" cy="160" r="40" fill="#FF6B1A" opacity="0.2" filter="blur(10px)" />
+            
+            {/* Particles that explode around 1400ms */}
+            {isShooting && particles.map(p => (
+              <circle
+                key={p.id}
+                cx="300" cy="150" r="2.5" fill="#FF6B1A"
+                className="particle"
+                style={{
+                  animationDelay: `${1.4 + p.delay}s`,
+                  '--tx': `${Math.cos(p.angle * Math.PI / 180) * 40}px`,
+                  '--ty': `${Math.sin(p.angle * Math.PI / 180) * 40}px`
+                }}
+              />
+            ))}
           </g>
 
           <g id="jogador" className={!isShooting ? 'idle-sway' : ''}>
-            <g id="torso" className={`torso ${!isShooting ? 'idle-breathe' : ''}`}>
+            <g id="torso" className={`torso ${isShooting ? 'shot-torso' : 'idle-breathe'}`}>
               
               {/* Cabeça */}
               <g id="cabeca">
@@ -250,13 +339,13 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
               {/* Perna Esq */}
               <g id="perna-esq">
                 <path d="M195 300 L185 360 L170 420" fill="none" stroke="#FFFFFF" strokeWidth="2" opacity="0.85" className="line-draw line-draw-delay-3" />
-                <path d="M170 420 L185 425" fill="none" stroke="#FF6B1A" strokeWidth="2" className="line-draw line-draw-delay-4" /> {/* Tênis */}
+                <path d="M170 420 L185 425" fill="none" stroke="#FF6B1A" strokeWidth="2" className="line-draw line-draw-delay-4" />
               </g>
 
               {/* Perna Dir */}
               <g id="perna-dir">
                 <path d="M205 300 L215 350 L230 420" fill="none" stroke="#FFFFFF" strokeWidth="2" opacity="0.85" className="line-draw line-draw-delay-3" />
-                <path d="M230 420 L245 425" fill="none" stroke="#FF6B1A" strokeWidth="2" className="line-draw line-draw-delay-4" /> {/* Tênis */}
+                <path d="M230 420 L245 425" fill="none" stroke="#FF6B1A" strokeWidth="2" className="line-draw line-draw-delay-4" />
               </g>
 
               {/* Braço Esq */}
@@ -265,20 +354,35 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
               </g>
 
               {/* Braço Dir (Arremesso) */}
-              <g id="braco-dir" className="braco-dir">
+              <g id="braco-dir" className={`braco-dir ${isShooting ? 'shot-arm' : ''}`}>
                 <path d="M185 225 L160 250 L160 280" fill="none" stroke="#FFFFFF" strokeWidth="2" opacity="0.85" className="line-draw line-draw-delay-4" />
+                
+                {/* Bola pré-voo ancorada na mão */}
+                {ballPhase === 'css' && (
+                  <g className="shot-ball-compress" style={{ transformOrigin: '160px 290px' }}>
+                    <circle cx="160" cy="290" r="14" fill="none" stroke="#FF6B1A" strokeWidth="2" />
+                  </g>
+                )}
               </g>
 
             </g>
           </g>
 
-          {/* Bola */}
-          <g id="bola-wrap" className="bola-wrap">
-            <g id="bola" className={!isShooting ? 'idle-bounce' : ''}>
+          {/* BOLA IDLE */}
+          {ballPhase === 'idle' && (
+            <g className="idle-bounce" style={{ transformOrigin: '160px 304px' }}>
               <circle cx="160" cy="290" r="14" fill="none" stroke="#FF6B1A" strokeWidth="2" className="line-draw line-draw-delay-5" />
               <path d="M150 280 Q160 290 170 300 M170 280 Q160 290 150 300" fill="none" stroke="#FF6B1A" strokeWidth="1" className="line-draw line-draw-delay-5" opacity="0.7" />
             </g>
-          </g>
+          )}
+
+          {/* BOLA JS FLIGHT */}
+          {ballPhase === 'js' && (
+            <g ref={ballRef} style={{ transformOrigin: '210px 160px' }}>
+              <circle cx="210" cy="160" r="14" fill="none" stroke="#FF6B1A" strokeWidth="2" />
+              <path d="M200 150 Q210 160 220 170 M220 150 Q210 160 200 170" fill="none" stroke="#FF6B1A" strokeWidth="1" opacity="0.7" />
+            </g>
+          )}
 
         </svg>
       </div>
