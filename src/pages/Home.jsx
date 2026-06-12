@@ -109,8 +109,7 @@ export default function Home({ profile, onNavigate }) {
   };
 
   const getPositionColor = (pos) => {
-    const map = { 'Ala': '#3B82F6', 'Ala-Armador': '#8B5CF6', 'Armador': '#A855F7', 'Ala-Pivô': '#06B6D4', 'Pivô': '#10B981' };
-    return map[pos] || '#6A6A82';
+    return '#6A6A82';
   };
 
   if (loading) {
@@ -123,19 +122,19 @@ export default function Home({ profile, onNavigate }) {
 
   return (
     <div className="page-content home-page">
-      <div className="home-container">
+      <div className="home-container" style={{ paddingBottom: 80 }}>
 
-        <div className="home-greeting">
-          <div className="home-greeting-title">
-            {getGreeting()}, <span className="home-greeting-name">{greetingName}</span>
+        <div className="home-greeting" style={{ marginBottom: 12 }}>
+          <div className="home-greeting-title" style={{ fontSize: 14, color: '#6A6A82', fontFamily: "'Inter', sans-serif", fontWeight: 400, textTransform: 'uppercase', letterSpacing: 0, display: 'flex', alignItems: 'baseline', gap: 6 }}>
+            {getGreeting()}, <span className="home-greeting-name" style={{ fontSize: 24, color: '#C8F135', fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 'bold', letterSpacing: '1px' }}>{greetingName}</span>
           </div>
-          <div className="home-greeting-sub">
+          <div className="home-greeting-sub" style={{ fontSize: 13, color: '#6A6A82' }}>
             Você está entre os melhores atletas de {city}.
           </div>
         </div>
 
         <div className="hero-card" style={{
-          borderRadius: 20, padding: '14px 16px 12px', marginBottom: 14,
+          borderRadius: 20, padding: '14px 16px 12px', marginBottom: 16,
         }}>
           {/* Top badge */}
           <div className="hero-badge" style={{
@@ -290,20 +289,22 @@ export default function Home({ profile, onNavigate }) {
               Ver todos
             </button>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {topPlayers.map((player, i) => (
               <div
                 key={player.id}
                 className="highlight-item"
                 onClick={() => onNavigate('jogadores', { selectedPlayer: { ...player, rank: i + 1 } })}
                 style={{
-                  background: 'var(--bg-card)',
-                  border: i === 0 ? '1px solid rgba(200,241,53,0.15)' : '1px solid var(--border)',
+                  background: i === 0 ? 'rgba(200,241,53,0.06)' : 'var(--bg-card)',
+                  border: '1px solid var(--border)',
+                  borderTop: i === 0 ? '2px solid #C8F135' : '1px solid var(--border)',
                   borderRadius: 12,
-                  padding: '10px 12px',
+                  padding: 14,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 10,
+                  gap: 14,
+                  minHeight: 72,
                   cursor: 'pointer',
                   transition: 'transform 0.15s, box-shadow 0.2s',
                 }}
@@ -313,20 +314,20 @@ export default function Home({ profile, onNavigate }) {
                     src={player.foto_url}
                     alt={player.nome}
                     style={{
-                      width: 52, height: 52, borderRadius: 10, objectFit: 'cover',
-                      border: i === 0 ? '2px solid rgba(200,241,53,0.25)' : '1px solid var(--border)',
+                      width: 48, height: 48, borderRadius: 12, objectFit: 'cover',
+                      border: '1.5px solid rgba(200,241,53,0.3)',
                       flexShrink: 0,
                     }}
                   />
                 ) : (
                   <div className="highlight-avatar-fallback" style={{
-                    width: 52, height: 52, borderRadius: 10, flexShrink: 0,
-                    background: `linear-gradient(135deg, ${getPositionColor(player.posicao)}22, ${getPositionColor(player.posicao)}44)`,
+                    width: 48, height: 48, borderRadius: 12, flexShrink: 0,
+                    background: '#13131F',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    border: i === 0 ? '2px solid rgba(200,241,53,0.25)' : '1px solid var(--border)',
+                    border: '1.5px solid rgba(200,241,53,0.3)',
                   }}>
                     <span style={{
-                      fontSize: 20, fontWeight: 800, color: getPositionColor(player.posicao),
+                      fontSize: 20, fontWeight: 800, color: '#6A6A82',
                       fontFamily: "'Barlow Condensed',sans-serif",
                     }}>
                       {player.nome ? player.nome.charAt(0).toUpperCase() : '?'}
@@ -334,65 +335,36 @@ export default function Home({ profile, onNavigate }) {
                   </div>
                 )}
 
-                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <RankBadge rank={i + 1} />
-                    <span className="highlight-name" style={{
-                      fontSize: 14, fontWeight: 700, color: 'var(--text-primary)',
-                      fontFamily: "'Inter',sans-serif", lineHeight: 1.2,
-                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                    }}>
-                      {player.nome}
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span className="highlight-position" style={{
-                      fontSize: 11, color: getPositionColor(player.posicao), fontWeight: 600,
-                      fontFamily: "'Inter',sans-serif",
-                    }}>
-                      {player.posicao || 'Ala'}
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                    <StarIcon size={12} />
-                    <span className="highlight-score" style={{
-                      fontSize: 13, fontWeight: 800, color: 'var(--text-primary)',
-                      fontFamily: "'Barlow Condensed',sans-serif",
-                    }}>
-                      {Number(player.media_estrelas || 0).toFixed(1)}
-                    </span>
-                  </div>
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+                  <span className="highlight-name" style={{
+                    fontSize: 14, fontWeight: 'bold', color: 'var(--text-primary)',
+                    fontFamily: "'Inter',sans-serif", lineHeight: 1.2,
+                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  }}>
+                    {player.nome}
+                  </span>
+                  <span className="highlight-position" style={{
+                    fontSize: 12, color: '#6A6A82', fontWeight: 600,
+                    fontFamily: "'Inter',sans-serif", marginTop: 2,
+                  }}>
+                    {player.posicao || 'Ala'}
+                  </span>
                 </div>
 
-                {i === 0 && (
-                  <MedalIcon rank={1} />
-                )}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
+                  <div className="highlight-score" style={{ fontSize: 14, fontWeight: 700, color: '#C8F135', fontFamily: "'Barlow Condensed',sans-serif" }}>
+                    ★ {Number(player.media_estrelas || 0).toFixed(1)}
+                  </div>
+                  <div className="highlight-progress-bg" style={{ width: 60, height: 3, background: '#1A1A28', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
+                    <div style={{ width: `${(Number(player.media_estrelas || 0) / 5) * 100}%`, height: '100%', background: '#C8F135', borderRadius: 2 }} />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="home-actions-section">
-          <div className="home-section-label">Ações Rápidas</div>
-          <div className="acoes-rapidas-grid">
-            {[
-              { icon: <IconAvaliar size={20} color="var(--accent)" />, label: 'Avaliar atleta', action: () => onNavigate('jogadores') },
-              { icon: <IconBasquete size={20} color="var(--accent)" />, label: 'Meus jogos', action: () => onNavigate('jogos') },
-              { icon: <IconRanking size={20} color="var(--accent)" />, label: 'Ver ranking', action: () => onNavigate('ranking') },
-              { icon: <IconTrofeu size={20} color="var(--accent)" />, label: 'Ver torneios', action: () => onNavigate('jogos', { aba: 'torneios' }) }
-            ].map((item) => (
-              <button key={item.label} className="home-quick-action" onClick={item.action}>
-                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', width:'100%' }}>
-                  <div className="home-quick-action-icon">
-                    {item.icon}
-                  </div>
-                  <ChevronArrow />
-                </div>
-                <div className="home-quick-action-label">{item.label}</div>
-              </button>
-            ))}
-          </div>
-        </div>
+
 
       </div>
     </div>

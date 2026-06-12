@@ -544,7 +544,8 @@ input:focus { border-color:#C8F135; }
 
 /* Highlights overrides */
 .light-theme .highlight-item { background:#FFFFFF !important; border:1px solid rgba(0,0,0,0.05) !important; box-shadow:0 4px 12px rgba(0,0,0,0.04) !important; }
-.light-theme .highlight-avatar-fallback { background:#F0F0F5 !important; border:none !important; }
+.light-theme .highlight-avatar-fallback { background:#F0F0F5 !important; }
+.light-theme .highlight-progress-bg { background:rgba(0,0,0,0.05) !important; }
 .light-theme .highlight-name { color:#1A1A2E !important; font-size:14px !important; font-weight:600 !important; }
 .light-theme .highlight-position { color:#6A6A82 !important; font-size:11px !important; }
 .light-theme .highlight-score { color:#C8F135 !important; font-size:14px !important; font-weight:700 !important; font-family:'Barlow Condensed',sans-serif !important; }
