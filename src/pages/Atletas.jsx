@@ -251,7 +251,7 @@ export default function Atletas({ profile }) {
   };
 
   return (
-    <div className="page-content" style={{ background: '#09090B', minHeight: '100vh', paddingBottom: 80 }}>
+    <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
       <div style={{ padding: '20px 16px 0' }}>
 
         {/* Header */}
