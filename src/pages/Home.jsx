@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
 import { IconTrofeu, IconAvaliar, IconBasquete, IconRanking } from '../components/Icons';
+import { HomeBackground } from '../components/AnimatedBackgrounds';
 
 const ChevronArrow = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -153,8 +154,9 @@ export default function Home({ profile, onNavigate }) {
   }
 
   return (
-    <div className="page-content home-page">
-      <div className="home-container" style={{ paddingBottom: 80 }}>
+    <div className="page-content home-page" style={{ position: 'relative' }}>
+      <HomeBackground />
+      <div className="home-container" style={{ paddingBottom: 80, position: 'relative', zIndex: 1 }}>
 
         <div className="home-greeting" style={{ marginBottom: 12 }}>
           <div className="home-greeting-title" style={{ fontSize: 14, color: '#6A6A82', fontFamily: "'Inter', sans-serif", fontWeight: 400, textTransform: 'uppercase', letterSpacing: 0, display: 'flex', alignItems: 'baseline', gap: 6 }}>

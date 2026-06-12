@@ -3,6 +3,7 @@ import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedCounter from '../components/AnimatedCounter';
+import { RankingBackground, JogadoresBackground } from '../components/AnimatedBackgrounds';
 
 const FILTROS = [
   { key: 'ranking', label: 'Ranking' },
@@ -261,8 +262,9 @@ export default function Atletas({ profile }) {
   };
 
   return (
-    <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
-      <div style={{ padding: '20px 16px 0' }}>
+    <div className="page-content" style={{ background: 'var(--bg-primary)', position: 'relative' }}>
+      {(filtroAtivo === 'ranking' || filtroAtivo === 'elite') ? <RankingBackground /> : <JogadoresBackground />}
+      <div style={{ padding: '20px 16px 0', position: 'relative', zIndex: 1 }}>
 
         {/* Header */}
         <div style={{ marginBottom: 16 }}>

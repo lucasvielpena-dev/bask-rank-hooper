@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase, torneiosAPI, equipesAPI, torneioJogosAPI, profilesAPI } from '../lib/supabase';
 import { IconCalendario } from '../components/Icons';
+import { TorneiosBackground } from '../components/AnimatedBackgrounds';
 
 // Formatos de Torneio Traduzidos
 const FORMATOS = {
@@ -56,7 +57,8 @@ export default function Torneios({ profile, isNested = false }) {
   }
 
   return (
-    <div className={isNested ? "" : "page-content"} style={isNested ? { padding: 0 } : {}}>
+    <div className={isNested ? "" : "page-content"} style={isNested ? { padding: 0 } : { position: 'relative' }}>
+      {!isNested && <TorneiosBackground />}
       {selectedTorneio ? (
         <TorneioDetalhes 
           torneio={selectedTorneio} 
@@ -64,7 +66,7 @@ export default function Torneios({ profile, isNested = false }) {
           onBack={() => { setSelectedTorneio(null); carregarTorneios(); }} 
         />
       ) : (
-        <div style={{ padding: isNested ? '0' : '12px 12px 0' }}>
+        <div style={{ padding: isNested ? '0' : '12px 12px 0', position: 'relative', zIndex: 1 }}>
           {/* Header */}
           {!isNested ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>

@@ -3,6 +3,7 @@ import { partidasAPI, jogadoresAPI } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import Torneios from './Torneios';
 import { IconJogo, IconMais, IconCalendario } from '../components/Icons';
+import { JogosBackground, TorneiosBackground } from '../components/AnimatedBackgrounds';
 
 export default function Jogos({ profile, initialAba = 'jogos' }) {
   const [tela, setTela] = useState('lista'); // 'lista' | 'novo' | 'partida'
@@ -436,10 +437,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   // (Removido o early return para permitir renderizar o shell da lista com esqueletos shimmer)
 
   return (
-    <div className="page-content home-page">
+    <div className="page-content home-page" style={{ position: 'relative' }}>
+      {aba === 'torneios' ? <TorneiosBackground /> : <JogosBackground />}
       {/* TELA 1: LISTAGEM DE PARTIDAS / HISTÓRICO */}
       {tela === 'lista' && (
-        <div className="home-container" style={{ padding: '12px 12px 0' }}>
+        <div className="home-container" style={{ padding: '12px 12px 0', position: 'relative', zIndex: 1 }}>
           {/* Header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
+import { StatsBackground } from '../components/AnimatedBackgrounds';
 
 const fundamentos = [
   { key: 'arremesso', label: 'Arremesso' },
@@ -335,8 +336,9 @@ export default function Stats({ profile, onNavigate }) {
   }
 
   return (
-    <div className="page-content home-page">
-      <div style={{ padding: '12px 12px 0' }}>
+    <div className="page-content home-page" style={{ position: 'relative' }}>
+      <StatsBackground />
+      <div style={{ padding: '12px 12px 0', position: 'relative', zIndex: 1 }}>
         
         {/* Cabeçalho Voltar */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
