@@ -29,6 +29,8 @@ export function AuthProvider({ children }) {
   const [notificacoes, setNotificacoes] = useState([]);
   const [showNotificacoes, setShowNotificacoes] = useState(false);
 
+  const [isLoginAnimating, setIsLoginAnimating] = useState(false);
+
   const [editApelido, setEditApelido] = useState('');
   const [editPosicao, setEditPosicao] = useState('');
   const [editAltura, setEditAltura] = useState('');
@@ -530,16 +532,19 @@ export function AuthProvider({ children }) {
     }
   }, [user]);
 
+  if (!user || isLoginAnimating) {
+    return <AuthScreen 
+      onStartAnimation={() => setIsLoginAnimating(true)} 
+      onFinishAnimation={() => setIsLoginAnimating(false)} 
+    />;
+  }
+
   if (user && loadingProfile) {
     return (
       <div className="app-shell" style={{ justifyContent: 'center', minHeight: '100dvh' }}>
         <div className="loading" style={{ position: 'relative', zIndex: 1 }}><div className="spinner" />Carregando perfil...</div>
       </div>
     );
-  }
-
-  if (!user) {
-    return <AuthScreen />;
   }
 
   if (!profile || !profile.cadastro_completo) {
