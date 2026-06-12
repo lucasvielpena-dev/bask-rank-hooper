@@ -294,8 +294,21 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
         }
       `}</style>
 
-      {/* BACKGROUND SVG LINE ART */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      {/* VIDEO BACKGROUND */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.6)' }}
+        >
+          <source src="/images/login-video.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      {/* BACKGROUND SVG LINE ART (Desativado a pedido do vídeo) */}
+      <div style={{ display: 'none', position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, justifyContent: 'center', alignItems: 'center' }}>
         <svg viewBox="0 0 400 600" style={{ width: '100%', height: '100%', maxWidth: '500px' }}>
           
           <g id="cesta" className={isShooting ? 'shot-hoop' : ''} opacity="0">
