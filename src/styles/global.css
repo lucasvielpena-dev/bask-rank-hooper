@@ -716,3 +716,22 @@ input:focus { border-color:#C8F135; }
   text-shadow: 0 0 12px rgba(182, 255, 28, 0.5);
 }
 
+.premium-nav-item svg {
+  transition: transform 0.2s ease;
+  will-change: transform;
+}
+
+.premium-nav-item.active svg,
+.premium-nav-item:hover svg {
+  transform: perspective(200px) translateZ(8px) scale(1.1);
+}
+
+.home-highlights-section .premium-card {
+  transition: transform 0.25s ease, box-shadow 0.2s;
+  will-change: transform;
+}
+
+.home-highlights-section .premium-card:hover,
+.home-highlights-section .premium-card:active {
+  transform: perspective(800px) rotateX(-3deg) translateY(-4px);
+}

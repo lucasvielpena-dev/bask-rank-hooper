@@ -60,6 +60,7 @@ export default function Home({ profile, onNavigate }) {
   const [myPlayerInfo, setMyPlayerInfo] = useState(null);
   const [myRank, setMyRank] = useState('--');
   const [loading, setLoading] = useState(true);
+  const [heroTransform, setHeroTransform] = useState('rotateX(6deg) rotateY(-6deg)');
 
   const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
   const uf = profile?.uf || 'PA';
@@ -99,6 +100,28 @@ export default function Home({ profile, onNavigate }) {
     setLoading(false);
   }
 
+  const handleHeroMove = (e) => {
+    const isTouch = e.touches && e.touches.length > 0;
+    const clientX = isTouch ? e.touches[0].clientX : e.clientX;
+    const clientY = isTouch ? e.touches[0].clientY : e.clientY;
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateY = ((x - centerX) / centerX) * 15;
+    const rotateX = -((y - centerY) / centerY) * 15;
+    
+    setHeroTransform(`rotateX(${rotateX}deg) rotateY(${rotateY}deg)`);
+  };
+
+  const handleHeroLeave = () => {
+    setHeroTransform('rotateX(6deg) rotateY(-6deg)');
+  };
+
   const greetingName = profile?.apelido || profile?.nome_completo?.split(' ')[0] || 'Atleta';
 
   const getGreeting = () => {
@@ -133,9 +156,21 @@ export default function Home({ profile, onNavigate }) {
           </div>
         </div>
 
-        <div className="premium-card premium-card-border-green" style={{
-          padding: '16px', marginBottom: 20,
-        }}>
+        <div style={{ perspective: '600px', marginBottom: 20 }}>
+          <div 
+            className="premium-card premium-card-border-green" 
+            onMouseMove={handleHeroMove}
+            onMouseLeave={handleHeroLeave}
+            onTouchMove={handleHeroMove}
+            onTouchEnd={handleHeroLeave}
+            style={{
+              padding: '16px', 
+              transform: heroTransform,
+              transformStyle: 'preserve-3d',
+              transition: 'transform 0.4s ease',
+              willChange: 'transform'
+            }}
+          >
           {/* Top badge */}
           <div className="premium-badge" style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -275,6 +310,7 @@ export default function Home({ profile, onNavigate }) {
             </svg>
             Ver Ranking Completo
           </button>
+        </div>
         </div>
 
         <div className="home-highlights-section">
