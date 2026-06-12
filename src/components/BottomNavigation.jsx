@@ -2,9 +2,8 @@ import { memo } from 'react';
 
 export const PAGES = {
   inicio: { label: 'Início', icon: 'court' },
-  ranking: { label: 'Ranking', icon: 'trophy' },
+  atletas: { label: 'Atletas', icon: 'users' },
   jogos: { label: 'Jogos', icon: 'basketball' },
-  jogadores: { label: 'Jogadores', icon: 'users' },
   perfil: { label: 'Perfil', icon: 'perfil' },
 };
 

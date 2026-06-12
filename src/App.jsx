@@ -6,8 +6,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
 
 import Home from './pages/Home';
-import Ranking from './pages/Ranking';
-import Jogadores from './pages/Jogadores';
+import Atletas from './pages/Atletas';
 import Jogos from './pages/Jogos';
 import Stats from './pages/Stats';
 import Destaques from './pages/Destaques';
@@ -55,8 +54,7 @@ function AppRoutes() {
   function renderPage() {
     switch (page) {
       case 'inicio': return <Home profile={profile} onNavigate={navigate} />;
-      case 'ranking': return <Ranking profile={profile} />;
-      case 'jogadores': return <Jogadores profile={profile} initialOpenAdd={pageProps.openAdd} />;
+      case 'atletas': return <Atletas profile={profile} initialOpenAdd={pageProps.openAdd} />;
       case 'torneios': return <Jogos profile={profile} initialAba="torneios" />;
       case 'jogos': return <Jogos profile={profile} initialAba={pageProps.aba || 'jogos'} />;
       case 'perfil': return <Stats profile={profile} onNavigate={navigate} />;

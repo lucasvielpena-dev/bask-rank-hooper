@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Rank Hooper</string>
+    <string name="title_activity_main">Rank Hooper</string>
+    <string name="package_name">com.rankhooper.app</string>
+    <string name="custom_url_scheme">com.rankhooper.app</string>
+</resources>
