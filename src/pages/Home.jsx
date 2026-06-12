@@ -303,7 +303,7 @@ export default function Home({ profile, onNavigate }) {
           {/* Button */}
           <button
             className="hero-btn btn-primary"
-            onClick={() => onNavigate('ranking')}
+            onClick={() => onNavigate('atletas')}
             style={{
               width: '100%', height: 40, borderRadius: 12, marginTop: 10,
               fontSize: 13, fontWeight: 700,
