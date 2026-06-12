@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
+import { Line, Radar, Bar } from 'react-chartjs-2';
+import { motion, AnimatePresence } from 'framer-motion';
 import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
 
 const fundamentos = [
@@ -960,7 +962,20 @@ export default function Stats({ profile, onNavigate }) {
         </div>
       )}
 
-      {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
+      <AnimatePresence>
+        {toast && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50, scale: 0.9 }} 
+            animate={{ opacity: 1, y: 0, scale: 1 }} 
+            exit={{ opacity: 0, scale: 0.9, y: 20 }} 
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            className={`toast ${toast.type}`} 
+            style={{ zIndex: 9999 }}
+          >
+            {toast.msg}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

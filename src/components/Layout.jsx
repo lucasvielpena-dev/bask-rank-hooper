@@ -3,6 +3,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import Header from './Header';
 import BottomNavigation from './BottomNavigation';
 import { IconSino, IconLocalizacao } from './Icons';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Layout({ page, onNavigate, children }) {
   const {
@@ -123,9 +124,18 @@ export default function Layout({ page, onNavigate, children }) {
         </div>
       )}
 
-      <div key={page} className="page-transition">
-        {children}
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div 
+          key={page} 
+          className="page-transition"
+          initial={{ opacity: 0, x: 15 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -15 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        >
+          {children}
+        </motion.div>
+      </AnimatePresence>
 
       <BottomNavigation page={page} onNavigate={onNavigate} isMaster={isMaster} />
 

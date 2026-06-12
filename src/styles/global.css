@@ -585,6 +585,63 @@ input:focus { border-color:#C8F135; }
 .hide-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
 .hide-scrollbar::-webkit-scrollbar { display:none; }
 
-/* Feedback tactile */
-.btn:active,button:not(.nav-item):not(.btn-counter):active { transform:scale(0.95); transition:transform 150ms cubic-bezier(0.4,0,0.2,1); }
-.btn-counter:active { transform:scale(1.1) !important; transition:transform 120ms cubic-bezier(0.175,0.885,0.32,1.275) !important; }
+/* -------------------------------------- */
+/* PROFESSIONAL ANIMATIONS (CSS)          */
+/* -------------------------------------- */
+
+/* Card hover levanta com sombra lima */
+@media (hover: hover) and (pointer: fine) {
+  .card {
+    transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(200, 241, 53, 0.12);
+  }
+}
+
+/* Score bar cresce suavemente */
+.bar-grow-fill {
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Button press tactile feedback */
+.btn:active, button:not(.nav-item):not(.btn-counter):active {
+  transform: scale(0.96);
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-counter:active {
+  transform: scale(1.1) !important;
+  transition: transform 120ms cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+/* Avatar first-place pulsa */
+@keyframes pulse-lima {
+  0% { box-shadow: 0 0 0 0 rgba(200, 241, 53, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(200, 241, 53, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(200, 241, 53, 0); }
+}
+.avatar-pulse {
+  animation: pulse-lima 2s infinite;
+}
+
+/* Loading skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--border) 50%, var(--bg-elevated) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

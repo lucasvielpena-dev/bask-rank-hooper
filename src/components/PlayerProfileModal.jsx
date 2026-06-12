@@ -1,5 +1,8 @@
 import { useState, useEffect, memo } from 'react';
 import { supabase, denunciasAPI, votacaoAPI } from '../lib/supabase';
+import { motion, AnimatePresence } from 'framer-motion';
+import { StarPicker } from './StarPicker';
+import AnimatedCounter from './AnimatedCounter';
 
 const fundamentos = [
   { key: 'arremesso', label: 'Arremesso' },
@@ -274,7 +277,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 <div>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
                     <span style={{ fontSize: 24, fontWeight: 800, color: '#C8F135', fontFamily: "'Barlow Condensed',sans-serif" }}>
-                      {starsVal > 0 ? Number(starsVal).toFixed(1) : '--'}
+                      {starsVal > 0 ? <AnimatedCounter value={starsVal} /> : '--'}
                     </span>
                     <span style={{ fontSize: 14, color: '#C8F135' }}>&#9733;</span>
                     <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif", fontWeight: 400 }}> Nota média</span>
@@ -310,7 +313,12 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               {/* Evolution Timeline */}
               <div style={{ padding: '0 16px 16px' }}>
                 <div style={{ fontSize: 11, fontWeight: 400, color: '#6B7280', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: 12 }}>Linha de Evolução</div>
-                <div style={{ display: 'flex', alignItems: 'flex-start', position: 'relative', padding: '0 8px' }}>
+                <motion.div 
+                  initial="hidden" 
+                  animate="show" 
+                  variants={{ show: { transition: { staggerChildren: 0.1 } } }}
+                  style={{ display: 'flex', alignItems: 'flex-start', position: 'relative', padding: '0 8px' }}
+                >
                   <div style={{ position: 'absolute', top: 10, left: 24, right: 24, height: 2, background: 'rgba(255,255,255,0.06)' }} />
                   <div style={{ position: 'absolute', top: 10, left: 24, width: `${evolutionIndex * 33.3}%`, maxWidth: 'calc(100% - 48px)', height: 2, background: '#C8F135', transition: 'width 0.6s ease' }} />
                   {[
@@ -322,7 +330,11 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     const isCompleted = evolutionIndex >= step.val;
                     const isActive = evolutionIndex === step.val;
                     return (
-                      <div key={step.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 2 }}>
+                      <motion.div 
+                        key={step.label} 
+                        variants={{ hidden: { scale: 0 }, show: { scale: 1, transition: { type: 'spring', stiffness: 300, damping: 20 } } }}
+                        style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 2 }}
+                      >
                         <div style={{
                           width: 20, height: 20, borderRadius: '50%',
                           background: isCompleted ? '#C8F135' : 'transparent',
@@ -336,14 +348,14 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                         </div>
                         <div style={{ fontSize: 10, fontWeight: isCompleted ? 700 : 400, color: isCompleted ? 'var(--text-primary)' : '#444', fontFamily: "'Inter',sans-serif", textAlign: 'center' }}>{step.label}</div>
                         <div style={{ fontSize: 9, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif", marginTop: 1 }}>{step.year}</div>
-                      </div>
+                      </motion.div>
                     );
                   })}
-                </div>
+                </motion.div>
               </div>
 
               {/* Tabs */}
-              <div style={{ borderBottom: '1px solid var(--border)', display: 'flex', padding: '0 16px' }}>
+              <div style={{ display: 'flex', padding: '0 16px', position: 'relative', borderBottom: '1px solid var(--border)' }}>
                 {tabs.map(t => {
                   const active = perfilTab === t.key;
                   return (
@@ -351,15 +363,28 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       key={t.key}
                       onClick={() => setPerfilTab(t.key)}
                       style={{
-                        flex: 1, padding: '12px 16px 10px', background: 'none', border: 'none',
-                        borderBottom: active ? '2px solid #C8F135' : '2px solid transparent',
+                        position: 'relative', flex: 1, padding: '12px 16px 10px', background: 'none', border: 'none',
                         color: active ? '#C8F135' : '#6A6A82',
                         fontSize: active ? 14 : 12, fontWeight: active ? 700 : 400, cursor: 'pointer',
                         fontFamily: active ? "'Barlow Condensed',sans-serif" : "'Inter',sans-serif",
-                        transition: 'all 0.2s',
+                        transition: 'color 0.2s, font-size 0.2s',
                       }}
                     >
                       {t.label}
+                      {active && (
+                        <motion.div
+                          layoutId="underline"
+                          style={{
+                            position: 'absolute',
+                            bottom: -1,
+                            left: 0,
+                            right: 0,
+                            height: 2,
+                            background: '#C8F135',
+                            borderRadius: '2px 2px 0 0'
+                          }}
+                        />
+                      )}
                     </button>
                   );
                 })}

@@ -1,6 +1,8 @@
 import { useState, useEffect, memo } from 'react';
 import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import PlayerProfileModal from '../components/PlayerProfileModal';
+import { motion, AnimatePresence } from 'framer-motion';
+import AnimatedCounter from '../components/AnimatedCounter';
 
 const FILTROS = [
   { key: 'ranking', label: 'Ranking' },
@@ -27,19 +29,18 @@ const getGradientForName = (name) => {
   return `linear-gradient(135deg, ${colors[Math.abs(hash) % colors.length][0]} 0%, ${colors[Math.abs(hash) % colors.length][1]} 100%)`;
 };
 
-function PlayerAvatar({ fotoUrl, nome, size = 48 }) {
+function PlayerAvatar({ fotoUrl, nome, size = 48, className = '' }) {
   const initial = nome ? nome.charAt(0).toUpperCase() : '?';
 
   const wrapperStyle = {
     position: 'relative',
-    display: 'inline-flex',
-    flexShrink: 0,
+    display: 'inline-block',
   };
 
   const imgStyle = {
     width: size,
     height: size,
-    borderRadius: 12,
+    borderRadius: '50%',
     objectFit: 'cover',
     border: '1.5px solid rgba(200,241,53,0.3)',
   };
@@ -47,29 +48,25 @@ function PlayerAvatar({ fotoUrl, nome, size = 48 }) {
   const initialsStyle = {
     width: size,
     height: size,
-    borderRadius: 12,
+    borderRadius: '50%',
     background: getGradientForName(nome),
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#FFF',
+    color: '#0C0C14',
     fontWeight: 800,
     fontSize: size * 0.4,
     fontFamily: "'Barlow Condensed',sans-serif",
     border: '1.5px solid rgba(200,241,53,0.3)',
   };
 
-  if (fotoUrl) {
-    return (
-      <div style={wrapperStyle}>
-        <img src={fotoUrl} alt={nome} style={imgStyle} />
-      </div>
-    );
-  }
-
   return (
     <div style={wrapperStyle}>
-      <div style={initialsStyle}>{initial}</div>
+      {fotoUrl ? (
+        <img src={fotoUrl} alt={nome} style={imgStyle} className={className} />
+      ) : (
+        <div style={initialsStyle} className={className}>{initial}</div>
+      )}
     </div>
   );
 }
@@ -250,6 +247,19 @@ export default function Atletas({ profile }) {
     return `#${index + 1}`;
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+  };
+
   return (
     <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
       <div style={{ padding: '20px 16px 0' }}>
@@ -298,13 +308,24 @@ export default function Atletas({ profile }) {
                 key={f.key}
                 onClick={() => setFiltroAtivo(f.key)}
                 style={{
+                  position: 'relative',
                   flex: 1, padding: '8px 0', borderRadius: 8,
-                  border: 'none', background: active ? '#27272A' : 'transparent',
+                  border: 'none', background: 'transparent',
                   color: active ? '#FFFFFF' : '#A1A1AA',
                   fontWeight: active ? 600 : 500, fontSize: 13, cursor: 'pointer',
-                  fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
+                  fontFamily: "'Inter',sans-serif", transition: 'color 0.2s',
+                  zIndex: 1
                 }}
               >
+                {active && (
+                  <motion.div
+                    layoutId="filterPill"
+                    style={{
+                      position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                      background: '#27272A', borderRadius: 8, zIndex: -1
+                    }}
+                  />
+                )}
                 {f.label}
               </button>
             );
@@ -325,7 +346,12 @@ export default function Atletas({ profile }) {
             <p style={{ color: '#A1A1AA', fontSize: 14, fontFamily: "'Inter',sans-serif" }}>Tente ajustar os filtros ou a sua busca.</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
+          >
             {filtrados.map((j, i) => {
               const score = j.total_votos >= 1 ? Number(j.media_estrelas) : 0;
               const hasVoted = j.ja_votou_hoje;
@@ -333,8 +359,9 @@ export default function Atletas({ profile }) {
               const isFirst = isRankingFilter && i === 0;
 
               return (
-                <div
+                <motion.div
                   key={j.id}
+                  variants={itemVariants}
                   style={{
                     background: isFirst ? 'rgba(200,241,53,0.06)' : '#13131F',
                     border: '1px solid rgba(200,241,53,0.15)',
@@ -362,7 +389,7 @@ export default function Atletas({ profile }) {
                   )}
                   
                   <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
-                    <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={48} />
+                    <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={48} className={isFirst ? 'avatar-pulse' : ''} />
                     
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ color: '#E8E8F0', fontSize: 16, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -376,9 +403,9 @@ export default function Atletas({ profile }) {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 2, color: '#C8F135', fontSize: 14, fontWeight: 700, fontFamily: "'Barlow Condensed',sans-serif" }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 13, fontWeight: 700, color: '#C8F135', fontFamily: "'Barlow Condensed',sans-serif", marginTop: 4 }}>
                         <span>★</span>
-                        <span>{j.total_votos >= 1 ? score.toFixed(1) : '--'}</span>
+                        <span>{j.total_votos >= 1 ? <AnimatedCounter value={score} /> : '--'}</span>
                       </div>
                       <div style={{ width: 80, height: 4, background: '#1A1A28', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
                         <div style={{ width: `${(score / 5) * 100}%`, height: '100%', background: '#C8F135', borderRadius: 2 }} />
@@ -421,10 +448,10 @@ export default function Atletas({ profile }) {
                       </button>
                     )}
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         )}
       </div>
 
@@ -505,7 +532,20 @@ export default function Atletas({ profile }) {
         />
       )}
 
-      {toast && <div className={`toast ${toast.type}`} style={{ zIndex: 9999 }}>{toast.msg}</div>}
+      <AnimatePresence>
+        {toast && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50, scale: 0.9 }} 
+            animate={{ opacity: 1, y: 0, scale: 1 }} 
+            exit={{ opacity: 0, scale: 0.9, y: 20 }} 
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            className={`toast ${toast.type}`} 
+            style={{ zIndex: 9999 }}
+          >
+            {toast.msg}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
