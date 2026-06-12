@@ -73,6 +73,7 @@ export default function Layout({ page, onNavigate, children }) {
   }, []);
 
   const isHome = page === 'inicio';
+  const bgFilter = themePref === 'light' ? 'blur(3px) brightness(0.92) sepia(0.15)' : 'blur(3px) brightness(0.35)';
 
   return (
     <div className="app-shell">
@@ -95,7 +96,7 @@ export default function Layout({ page, onNavigate, children }) {
           backgroundSize: 'cover',
           backgroundPosition: 'center bottom',
           backgroundRepeat: 'no-repeat',
-          filter: 'blur(3px) brightness(0.35)',
+          filter: bgFilter,
           opacity: isHome ? 1 : 0,
           transition: 'opacity 0.6s ease'
         }} />
@@ -108,7 +109,7 @@ export default function Layout({ page, onNavigate, children }) {
           backgroundSize: 'cover',
           backgroundPosition: 'center bottom',
           backgroundRepeat: 'no-repeat',
-          filter: 'blur(3px) brightness(0.35)',
+          filter: bgFilter,
           opacity: isHome ? 0 : 1,
           transition: 'opacity 0.6s ease'
         }} />
