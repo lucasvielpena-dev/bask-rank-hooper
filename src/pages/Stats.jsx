@@ -314,7 +314,7 @@ export default function Stats({ profile, onNavigate }) {
   }, [careerStats]);
 
   const starsVal = myPlayerInfo?.media_estrelas || 0;
-  const badgeText = starsVal >= 4.5 ? 'ELITE' : starsVal >= 4.0 ? 'DESTAQUE' : starsVal >= 3.5 ? 'PROMESSA' : 'EM DEV.';
+  const badgeText = starsVal >= 4.5 ? 'ELITE' : starsVal >= 4.0 ? 'DESTAQUE' : starsVal >= 3.5 ? 'PROMESSA' : '';
 
   let evolutionIndex = 0;
   if (starsVal >= 4.5) {
@@ -383,19 +383,21 @@ export default function Stats({ profile, onNavigate }) {
           <div style={{ zIndex: 2, padding: '16px', width: '100%' }}>
             <h3 style={{ fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)', marginBottom: 2 }} >{profile.nome_completo}</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4 }}>
-              <span style={{
-                background: 'rgba(200,241,53,0.12)',
-                color: 'var(--accent)',
-                border: '1px solid rgba(200,241,53,0.3)',
-                borderRadius: '6px',
-                padding: '2px 8px',
-                fontSize: '9px',
-                fontWeight: 800,
-                letterSpacing: '0.02em'
-              }}>
-                {badgeText}
-              </span>
-              <span style={{ color: '#94A3B8', fontSize: '11px' }}>{profile.posicao || myPlayerInfo?.posicao || 'Ala'}</span>
+              {badgeText && (
+                <span style={{
+                  background: 'rgba(200,241,53,0.12)',
+                  color: 'var(--accent)',
+                  border: '1px solid rgba(200,241,53,0.3)',
+                  borderRadius: '6px',
+                  padding: '2px 8px',
+                  fontSize: '9px',
+                  fontWeight: 800,
+                  letterSpacing: '0.02em'
+                }}>
+                  {badgeText}
+                </span>
+              )}
+              <span style={{ color: '#6A6A82', fontSize: '11px' }}>{profile.posicao || myPlayerInfo?.posicao || 'Ala'}</span>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>

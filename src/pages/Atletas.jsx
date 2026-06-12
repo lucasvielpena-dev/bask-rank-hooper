@@ -27,7 +27,7 @@ const getGradientForName = (name) => {
   return `linear-gradient(135deg, ${colors[Math.abs(hash) % colors.length][0]} 0%, ${colors[Math.abs(hash) % colors.length][1]} 100%)`;
 };
 
-function PlayerAvatar({ fotoUrl, nome, size = 56 }) {
+function PlayerAvatar({ fotoUrl, nome, size = 48 }) {
   const initial = nome ? nome.charAt(0).toUpperCase() : '?';
 
   const wrapperStyle = {
@@ -39,15 +39,15 @@ function PlayerAvatar({ fotoUrl, nome, size = 56 }) {
   const imgStyle = {
     width: size,
     height: size,
-    borderRadius: '50%',
+    borderRadius: 12,
     objectFit: 'cover',
-    border: '2px solid rgba(255,255,255,0.05)',
+    border: '1.5px solid rgba(200,241,53,0.3)',
   };
 
   const initialsStyle = {
     width: size,
     height: size,
-    borderRadius: '50%',
+    borderRadius: 12,
     background: getGradientForName(nome),
     display: 'flex',
     alignItems: 'center',
@@ -56,7 +56,7 @@ function PlayerAvatar({ fotoUrl, nome, size = 56 }) {
     fontWeight: 800,
     fontSize: size * 0.4,
     fontFamily: "'Barlow Condensed',sans-serif",
-    border: '2px solid rgba(255,255,255,0.05)',
+    border: '1.5px solid rgba(200,241,53,0.3)',
   };
 
   if (fotoUrl) {
@@ -336,14 +336,15 @@ export default function Atletas({ profile }) {
                 <div
                   key={j.id}
                   style={{
-                    background: '#141414',
-                    border: isFirst ? '2px solid #FFB800' : '1px solid #27272A',
-                    borderRadius: 20,
-                    padding: 16,
+                    background: isFirst ? 'rgba(200,241,53,0.06)' : '#13131F',
+                    border: '1px solid rgba(200,241,53,0.15)',
+                    borderTop: isFirst ? '2px solid #C8F135' : '1px solid rgba(200,241,53,0.15)',
+                    borderRadius: 14,
+                    padding: '12px 14px',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: 12,
-                    boxShadow: isFirst ? '0 4px 20px rgba(255, 184, 0, 0.15)' : 'none',
+                    gap: 8,
+                    boxShadow: isFirst ? '0 4px 20px rgba(200,241,53,0.15)' : 'none',
                     position: 'relative'
                   }}
                 >
@@ -360,29 +361,27 @@ export default function Atletas({ profile }) {
                     </div>
                   )}
                   
-                  <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                    <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={56} />
+                  <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+                    <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={48} />
                     
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ color: '#FFFFFF', fontSize: 16, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div style={{ color: '#E8E8F0', fontSize: 16, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {j.nome}
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
-                        <span style={{ color: '#A1A1AA', fontSize: 13, fontFamily: "'Inter',sans-serif" }}>{j.posicao || 'Ala'}</span>
-                        <span style={{ color: '#3F3F46', fontSize: 10 }}>•</span>
-                        <span style={{ color: '#A1A1AA', fontSize: 13, fontFamily: "'Inter',sans-serif" }}>{j.cidade}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                        <span style={{ color: '#6A6A82', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.posicao || 'Ala'}</span>
+                        <span style={{ color: '#6A6A82', fontSize: 10 }}>•</span>
+                        <span style={{ color: '#6A6A82', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.cidade}</span>
                       </div>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <span style={{ color: '#FFB800', fontSize: 20, fontWeight: 800, fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 1 }}>
-                          {j.total_votos >= 1 ? score.toFixed(1) : 'S/N'}
-                        </span>
-                        <span style={{ color: '#FFB800', fontSize: 12 }}>★</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 2, color: '#C8F135', fontSize: 14, fontWeight: 700, fontFamily: "'Barlow Condensed',sans-serif" }}>
+                        <span>★</span>
+                        <span>{j.total_votos >= 1 ? score.toFixed(1) : '--'}</span>
                       </div>
-                      <div style={{ color: '#A1A1AA', fontSize: 11, fontFamily: "'Inter',sans-serif", marginTop: 4 }}>
-                        {j.total_votos} {j.total_votos === 1 ? 'voto' : 'votos'}
+                      <div style={{ width: 80, height: 4, background: '#1A1A28', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
+                        <div style={{ width: `${(score / 5) * 100}%`, height: '100%', background: '#C8F135', borderRadius: 2 }} />
                       </div>
                     </div>
                   </div>
@@ -391,8 +390,8 @@ export default function Atletas({ profile }) {
                     <button
                       onClick={() => setSelectedPlayer(j)}
                       style={{
-                        flex: 1, background: '#27272A', border: 'none', borderRadius: 10,
-                        padding: '10px 0', color: '#FFFFFF', fontSize: 13, fontWeight: 600,
+                        flex: 1, background: '#C8F135', border: 'none', borderRadius: 10,
+                        padding: '10px 0', color: '#0C0C14', fontSize: 13, fontWeight: 600,
                         fontFamily: "'Inter',sans-serif", cursor: 'pointer', transition: 'background 0.2s'
                       }}
                     >
@@ -402,8 +401,8 @@ export default function Atletas({ profile }) {
                       <button
                         onClick={(e) => handleOpenVote(j, e)}
                         style={{
-                          flex: 1, background: '#FFB800', border: 'none', borderRadius: 10,
-                          padding: '10px 0', color: '#000000', fontSize: 13, fontWeight: 700,
+                          flex: 1, background: 'transparent', border: '1px solid #6A6A82', borderRadius: 10,
+                          padding: '10px 0', color: '#E8E8F0', fontSize: 13, fontWeight: 500,
                           fontFamily: "'Inter',sans-serif", cursor: 'pointer', transition: 'opacity 0.2s'
                         }}
                       >
@@ -413,12 +412,12 @@ export default function Atletas({ profile }) {
                       <button
                         disabled
                         style={{
-                          flex: 1, background: 'transparent', border: '1px solid #3F3F46', borderRadius: 10,
-                          padding: '10px 0', color: '#71717A', fontSize: 13, fontWeight: 600,
+                          flex: 1, background: 'rgba(200,241,53,0.1)', border: 'none', borderRadius: 10,
+                          padding: '10px 0', color: '#C8F135', fontSize: 11, fontWeight: 600,
                           fontFamily: "'Inter',sans-serif", cursor: 'not-allowed'
                         }}
                       >
-                        {profile?.player_id === j.id ? 'Seu Perfil' : 'Avaliado'}
+                        {profile?.player_id === j.id ? 'Seu Perfil' : '✓ Avaliado'}
                       </button>
                     )}
                   </div>

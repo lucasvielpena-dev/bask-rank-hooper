@@ -501,12 +501,14 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           ) : aba === 'jogos' ? (
             <>
               {partidas.length === 0 ? (
-                <div className="empty-state">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                  <h3>Nenhuma partida ativa</h3>
-                  <p>Cadastre os times e comece a partida da noite!</p>
-                  <button className="btn btn-primary" onClick={() => setTela('novo')} style={{ marginTop: 16 }}>
-                    Iniciar Novo Jogo
+                <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6A6A82' }}>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto' }}>
+                    <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/>
+                  </svg>
+                  <h3 style={{ color: '#E8E8F0', marginTop: 16, fontFamily: "'Inter',sans-serif", fontSize: 18, fontWeight: 700 }}>Nenhuma partida ativa</h3>
+                  <p style={{ fontSize: 12, margin: '8px 0', fontFamily: "'Inter',sans-serif" }}>Comece uma partida para ver aqui</p>
+                  <button onClick={() => setTela('novo')} style={{ background: '#C8F135', color: '#0C0C14', marginTop: 16, border: 'none', borderRadius: 12, padding: '12px 24px', fontWeight: 700, fontFamily: "'Inter',sans-serif", cursor: 'pointer' }}>
+                    + Novo Jogo
                   </button>
                 </div>
               ) : (

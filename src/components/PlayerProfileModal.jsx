@@ -194,8 +194,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
     { key: 'historico', label: 'Histórico' },
   ];
 
-  const positionColors = { 'Ala': '#3B82F6', 'Armador': '#8B5CF6', 'Pivô': '#10B981' };
-  const posColor = positionColors[localJogador.posicao] || '#C8F135';
+  const posColor = '#C8F135';
 
   return (
     <div className="modal-overlay" style={{ alignItems: 'flex-end', padding: 0 }}>
@@ -247,7 +246,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               </div>
 
               {/* Hero Section */}
-              <div style={{ position: 'relative', height: 220, margin: '8px 16px 0', borderRadius: '16px 16px 0 0', overflow: 'hidden', flexShrink: 0 }}>
+              <div style={{ position: 'relative', height: 200, margin: '8px 16px 0', borderRadius: '16px 16px 0 0', overflow: 'hidden', flexShrink: 0 }}>
                 {localJogador.foto_url ? (
                   <img src={localJogador.foto_url} alt={localJogador.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
@@ -293,11 +292,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               {/* Game Stats */}
               <div style={{ padding: '16px' }}>
                 {!hasAnyGameStats ? (
-                  <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" style={{ margin: '0 auto 12px', opacity: 0.5 }}>
-                      <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/>
-                    </svg>
-                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif" }}>Nenhuma partida registrada ainda</div>
+                  <div style={{ textAlign: 'center', padding: '20px', color: '#6A6A82' }}>
+                    🏀 Nenhuma partida registrada ainda
                   </div>
                 ) : (
                   <div style={{ display: 'grid', gridTemplateColumns: `repeat(${gameStats.length}, 1fr)`, gap: 8, textAlign: 'center' }}>
@@ -330,7 +326,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                         <div style={{
                           width: 20, height: 20, borderRadius: '50%',
                           background: isCompleted ? '#C8F135' : 'transparent',
-                          border: isCompleted ? 'none' : '2px dashed rgba(255,255,255,0.15)',
+                          border: isCompleted ? 'none' : '2px dashed #333344',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           boxShadow: isActive ? '0 0 12px rgba(200,241,53,0.4)' : 'none',
                           animation: isActive ? 'pulse 2s infinite' : 'none',
@@ -355,11 +351,12 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       key={t.key}
                       onClick={() => setPerfilTab(t.key)}
                       style={{
-                        flex: 1, padding: '12px 4px', background: 'none', border: 'none',
+                        flex: 1, padding: '12px 16px 10px', background: 'none', border: 'none',
                         borderBottom: active ? '2px solid #C8F135' : '2px solid transparent',
-                        color: active ? '#C8F135' : 'var(--text-muted)',
-                        fontSize: 13, fontWeight: active ? 700 : 500, cursor: 'pointer',
-                        fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
+                        color: active ? '#C8F135' : '#6A6A82',
+                        fontSize: active ? 14 : 12, fontWeight: active ? 700 : 400, cursor: 'pointer',
+                        fontFamily: active ? "'Barlow Condensed',sans-serif" : "'Inter',sans-serif",
+                        transition: 'all 0.2s',
                       }}
                     >
                       {t.label}
@@ -384,7 +381,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                           {item.icon}
                           <span style={{ fontSize: 11, color: '#6B7280', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 400 }}>{item.label}</span>
                         </div>
-                        <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Inter',sans-serif", textAlign: 'right' }}>{item.val}</span>
+                        <span style={{ fontSize: item.label === 'Posição' ? 12 : 15, fontWeight: item.label === 'Posição' ? 400 : 700, color: item.label === 'Posição' ? '#6A6A82' : 'var(--text-primary)', fontFamily: "'Inter',sans-serif", textAlign: 'right' }}>{item.val}</span>
                       </div>
                     ))}
                   </div>

@@ -153,9 +153,9 @@ export default function MasterDashboard({ onNavigate }) {
                 return (
                   <div key={card.key} style={{
                     background: 'var(--bg-card)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'clamp(12px, 2vw, 16px)',
-                    padding: 'clamp(12px, 3vw, 16px)',
+                    border: '1px solid rgba(200,241,53,0.15)',
+                    borderRadius: 14,
+                    padding: '12px 14px',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 10
@@ -231,10 +231,10 @@ export default function MasterDashboard({ onNavigate }) {
             </div>
 
             <div style={{
-              background: 'linear-gradient(135deg, var(--bg-card) 0%, var(--accent-dim) 100%)',
-              border: '1px solid var(--border)',
-              borderRadius: 'clamp(12px, 2vw, 16px)',
-              padding: 'clamp(14px, 3vw, 20px)',
+              background: 'rgba(200,241,53,0.08)',
+              border: '1px solid rgba(200,241,53,0.2)',
+              borderRadius: 14,
+              padding: '12px 14px',
               marginBottom: 16
             }}>
               <div style={{
@@ -247,7 +247,7 @@ export default function MasterDashboard({ onNavigate }) {
               }}>
                 Resumo do Sistema
               </div>
-              <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+              <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: '#E8E8F0', lineHeight: 1.6 }}>
                 Bem-vindo ao painel administrativo. Aqui você pode visualizar métricas gerais,
                 gerenciar usuários, jogadores, torneios e acompanhar a atividade da plataforma.
               </p>
@@ -265,9 +265,9 @@ export default function MasterDashboard({ onNavigate }) {
                   onClick={() => onNavigate(action.tab)}
                   style={{
                     background: 'var(--bg-card)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'clamp(10px, 2vw, 14px)',
-                    padding: 'clamp(12px, 3vw, 16px)',
+                    border: '1px solid rgba(200,241,53,0.15)',
+                    borderRadius: 14,
+                    padding: '12px 14px',
                     textAlign: 'left',
                     cursor: 'pointer',
                     fontFamily: 'inherit',
