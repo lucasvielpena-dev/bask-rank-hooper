@@ -476,7 +476,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <button className={`tab ${aba === 'historico' ? 'active' : ''}`} onClick={() => setAba('historico')}>
               Histórico
               {historico.length > 0 && (
-                <span style={{ background: 'var(--accent)', color: '#0C0C14', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{historico.length}</span>
+                <span style={{ background: 'var(--accent)', color: '#111111', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{historico.length}</span>
               )}
             </button>
             <button className={`tab ${aba === 'torneios' ? 'active' : ''}`} onClick={() => setAba('torneios')}>
@@ -502,13 +502,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           ) : aba === 'jogos' ? (
             <>
               {partidas.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6A6A82' }}>
+                <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)' }}>
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto' }}>
                     <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/>
                   </svg>
-                  <h3 style={{ color: '#E8E8F0', marginTop: 16, fontFamily: "'Inter',sans-serif", fontSize: 18, fontWeight: 700 }}>Nenhuma partida ativa</h3>
+                  <h3 style={{ color: 'var(--text-primary)', marginTop: 16, fontFamily: "'Inter',sans-serif", fontSize: 18, fontWeight: 700 }}>Nenhuma partida ativa</h3>
                   <p style={{ fontSize: 12, margin: '8px 0', fontFamily: "'Inter',sans-serif" }}>Comece uma partida para ver aqui</p>
-                  <button onClick={() => setTela('novo')} style={{ background: '#C8F135', color: '#0C0C14', marginTop: 16, border: 'none', borderRadius: 12, padding: '12px 24px', fontWeight: 700, fontFamily: "'Inter',sans-serif", cursor: 'pointer' }}>
+                  <button onClick={() => setTela('novo')} className="btn-primary" style={{ marginTop: 16, border: 'none', borderRadius: 12, padding: '12px 24px', fontWeight: 700, fontFamily: "'Inter',sans-serif", cursor: 'pointer' }}>
                     + Novo Jogo
                   </button>
                 </div>

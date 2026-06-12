@@ -259,15 +259,15 @@ export default function Home({ profile, onNavigate }) {
                 className="premium-photo"
                 style={{
                   width: 80, height: 80, borderRadius: 16, objectFit: 'cover',
-                  border: '2px solid rgba(255,255,255,0.1)', flexShrink: 0,
+                  border: '2px solid var(--border)', flexShrink: 0,
                 }}
               />
             ) : (
               <div className="premium-photo" style={{
                 width: 80, height: 80, borderRadius: 16, flexShrink: 0,
-                background: 'linear-gradient(135deg, rgba(182, 255, 28, 0.15), rgba(182, 255, 28, 0.05))',
+                background: 'rgba(182, 255, 28, 0.1)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: '2px solid rgba(255,255,255,0.06)',
+                border: '2px solid var(--border)',
               }}>
                 <span style={{
                   fontSize: 30, fontWeight: 800, color: 'var(--accent)',
@@ -282,7 +282,7 @@ export default function Home({ profile, onNavigate }) {
           {/* Location + Top % */}
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 8,
+            borderTop: '1px solid var(--border)', paddingTop: 8,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round">
@@ -302,19 +302,16 @@ export default function Home({ profile, onNavigate }) {
 
           {/* Button */}
           <button
-            className="hero-btn"
+            className="hero-btn btn-primary"
             onClick={() => onNavigate('ranking')}
             style={{
               width: '100%', height: 40, borderRadius: 12, marginTop: 10,
-              background: 'transparent', border: '1px solid rgba(255,255,255,0.1)',
-              color: 'var(--text-primary)', fontSize: 13, fontWeight: 700,
+              fontSize: 13, fontWeight: 700,
               cursor: 'pointer', fontFamily: "'Inter',sans-serif",
               textTransform: 'uppercase', letterSpacing: '0.06em',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              transition: 'background 0.2s, box-shadow 0.2s',
+              transition: 'transform 0.2s, box-shadow 0.2s',
             }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
@@ -339,7 +336,6 @@ export default function Home({ profile, onNavigate }) {
                 className={i === 0 ? `premium-card premium-card-border-green stagger-enter stagger-${i + 2}` : `premium-card stagger-enter stagger-${i + 2}`}
                 onClick={() => onNavigate('atletas', { selectedPlayer: { ...player, rank: i + 1 } })}
                 style={{
-                  background: i === 0 ? 'linear-gradient(145deg, rgba(182, 255, 28, 0.05), #101722)' : 'linear-gradient(145deg, var(--bg-elevated), #101722)',
                   borderRadius: 14,
                   padding: '12px 14px',
                   display: 'flex',

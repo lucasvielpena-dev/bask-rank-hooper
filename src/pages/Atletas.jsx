@@ -277,7 +277,7 @@ export default function Atletas({ profile }) {
         {/* Search */}
         <div style={{ position: 'relative', marginBottom: 16 }}>
           <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" strokeWidth="2" strokeLinecap="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
             </svg>
           </div>
@@ -285,33 +285,35 @@ export default function Atletas({ profile }) {
             value={busca}
             onChange={e => setBusca(e.target.value)}
             placeholder="Pesquisar atleta..."
+            className="search-input"
             style={{
               width: '100%', boxSizing: 'border-box',
-              background: '#141414', border: '1px solid #27272A',
+              background: 'var(--bg-card)', border: '1px solid var(--border)',
               borderRadius: 12, padding: '12px 12px 12px 42px',
-              fontSize: 15, color: '#FFFFFF', fontFamily: "'Inter',sans-serif",
+              fontSize: 15, color: 'var(--text-primary)', fontFamily: "'Inter',sans-serif",
               outline: 'none', transition: 'border-color 0.2s',
             }}
-            onFocus={e => e.target.style.borderColor = '#FFB800'}
-            onBlur={e => e.target.style.borderColor = '#27272A'}
+            onFocus={e => e.target.style.borderColor = 'var(--accent)'}
+            onBlur={e => e.target.style.borderColor = 'var(--border)'}
           />
         </div>
 
         {/* Segmented Control */}
-        <div style={{
-          display: 'flex', background: '#141414', borderRadius: 12, padding: 4, marginBottom: 20, border: '1px solid #27272A'
+        <div className="tabs" style={{
+          display: 'flex', background: 'var(--bg-card)', borderRadius: 12, padding: 4, marginBottom: 20, border: '1px solid var(--border)'
         }}>
           {FILTROS.map(f => {
             const active = filtroAtivo === f.key;
             return (
               <button
                 key={f.key}
+                className={active ? "tab active" : "tab"}
                 onClick={() => setFiltroAtivo(f.key)}
                 style={{
                   position: 'relative',
                   flex: 1, padding: '8px 0', borderRadius: 8,
                   border: 'none', background: 'transparent',
-                  color: active ? '#FFFFFF' : '#A1A1AA',
+                  color: active ? 'var(--text-primary)' : 'var(--text-muted)',
                   fontWeight: active ? 600 : 500, fontSize: 13, cursor: 'pointer',
                   fontFamily: "'Inter',sans-serif", transition: 'color 0.2s',
                   zIndex: 1
@@ -320,9 +322,10 @@ export default function Atletas({ profile }) {
                 {active && (
                   <motion.div
                     layoutId="filterPill"
+                    className="tab-indicator"
                     style={{
                       position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                      background: '#27272A', borderRadius: 8, zIndex: -1
+                      background: 'var(--border)', borderRadius: 8, zIndex: -1
                     }}
                   />
                 )}
@@ -336,14 +339,14 @@ export default function Atletas({ profile }) {
         {loading ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[1, 2, 3].map(idx => (
-              <div key={idx} className="skeleton" style={{ height: 110, borderRadius: 20, background: '#141414' }} />
+              <div key={idx} className="skeleton card" style={{ height: 110, borderRadius: 20 }} />
             ))}
           </div>
         ) : filtrados.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" strokeWidth="1.5" style={{ width: 48, height: 48, marginBottom: 16, opacity: 0.5, margin: '0 auto' }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <h3 style={{ color: '#FFFFFF', fontSize: 16, marginBottom: 8, fontFamily: "'Inter',sans-serif" }}>Nenhum atleta encontrado</h3>
-            <p style={{ color: '#A1A1AA', fontSize: 14, fontFamily: "'Inter',sans-serif" }}>Tente ajustar os filtros ou a sua busca.</p>
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.5" style={{ width: 48, height: 48, marginBottom: 16, opacity: 0.5, margin: '0 auto' }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <h3 style={{ color: 'var(--text-primary)', fontSize: 16, marginBottom: 8, fontFamily: "'Inter',sans-serif" }}>Nenhum atleta encontrado</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 14, fontFamily: "'Inter',sans-serif" }}>Tente ajustar os filtros ou a sua busca.</p>
           </div>
         ) : (
           <motion.div 
@@ -362,10 +365,11 @@ export default function Atletas({ profile }) {
                 <motion.div
                   key={j.id}
                   variants={itemVariants}
+                  className="card"
                   style={{
-                    background: isFirst ? 'rgba(200,241,53,0.06)' : '#13131F',
-                    border: '1px solid rgba(200,241,53,0.15)',
-                    borderTop: isFirst ? '2px solid #C8F135' : '1px solid rgba(200,241,53,0.15)',
+                    background: isFirst ? 'var(--bg-elevated)' : 'var(--bg-card)',
+                    borderColor: isFirst ? 'var(--border-active)' : 'var(--border)',
+                    borderTop: isFirst ? '2px solid var(--accent)' : '1px solid var(--border)',
                     borderRadius: 14,
                     padding: '12px 14px',
                     display: 'flex',
@@ -378,8 +382,8 @@ export default function Atletas({ profile }) {
                   {isRankingFilter && (
                     <div style={{
                       position: 'absolute', top: -10, right: 16,
-                      background: isFirst ? '#FFB800' : '#27272A',
-                      color: isFirst ? '#000000' : '#FFFFFF',
+                      background: isFirst ? 'var(--accent)' : 'var(--bg-elevated)',
+                      color: isFirst ? '#000000' : 'var(--text-primary)',
                       padding: '4px 10px', borderRadius: 12,
                       fontSize: 14, fontWeight: 800, fontFamily: "'Barlow Condensed',sans-serif",
                       boxShadow: '0 2px 4px rgba(0,0,0,0.5)', zIndex: 1
@@ -392,46 +396,40 @@ export default function Atletas({ profile }) {
                     <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={48} className={isFirst ? 'avatar-pulse' : ''} />
                     
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ color: '#E8E8F0', fontSize: 16, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div style={{ color: 'var(--text-primary)', fontSize: 16, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {j.nome}
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                        <span style={{ color: '#6A6A82', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.posicao || 'Ala'}</span>
-                        <span style={{ color: '#6A6A82', fontSize: 10 }}>•</span>
-                        <span style={{ color: '#6A6A82', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.cidade}</span>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.posicao || 'Ala'}</span>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: 10 }}>•</span>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.cidade}</span>
                       </div>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 13, fontWeight: 700, color: '#C8F135', fontFamily: "'Barlow Condensed',sans-serif", marginTop: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 13, fontWeight: 700, color: 'var(--accent)', fontFamily: "'Barlow Condensed',sans-serif", marginTop: 4 }}>
                         <span>★</span>
                         <span>{j.total_votos >= 1 ? <AnimatedCounter value={score} /> : '--'}</span>
                       </div>
-                      <div style={{ width: 80, height: 4, background: '#1A1A28', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
-                        <div style={{ width: `${(score / 5) * 100}%`, height: '100%', background: '#C8F135', borderRadius: 2 }} />
+                      <div style={{ width: 80, height: 4, background: 'var(--bg-secondary)', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
+                        <div style={{ width: `${(score / 5) * 100}%`, height: '100%', background: 'var(--accent)', borderRadius: 2 }} />
                       </div>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                     <button
+                      className="btn-primary"
                       onClick={() => setSelectedPlayer(j)}
-                      style={{
-                        flex: 1, background: '#C8F135', border: 'none', borderRadius: 10,
-                        padding: '10px 0', color: '#0C0C14', fontSize: 13, fontWeight: 600,
-                        fontFamily: "'Inter',sans-serif", cursor: 'pointer', transition: 'background 0.2s'
-                      }}
+                      style={{ flex: 1, padding: '10px 0', fontSize: 13, borderRadius: 10 }}
                     >
                       Perfil
                     </button>
                     {!hasVoted && profile?.player_id !== j.id ? (
                       <button
+                        className="btn-secondary"
                         onClick={(e) => handleOpenVote(j, e)}
-                        style={{
-                          flex: 1, background: 'transparent', border: '1px solid #6A6A82', borderRadius: 10,
-                          padding: '10px 0', color: '#E8E8F0', fontSize: 13, fontWeight: 500,
-                          fontFamily: "'Inter',sans-serif", cursor: 'pointer', transition: 'opacity 0.2s'
-                        }}
+                        style={{ flex: 1, padding: '10px 0', fontSize: 13, borderRadius: 10 }}
                       >
                         Avaliar
                       </button>
@@ -439,8 +437,8 @@ export default function Atletas({ profile }) {
                       <button
                         disabled
                         style={{
-                          flex: 1, background: 'rgba(200,241,53,0.1)', border: 'none', borderRadius: 10,
-                          padding: '10px 0', color: '#C8F135', fontSize: 11, fontWeight: 600,
+                          flex: 1, background: 'var(--bg-secondary)', border: 'none', borderRadius: 10,
+                          padding: '10px 0', color: 'var(--text-muted)', fontSize: 11, fontWeight: 600,
                           fontFamily: "'Inter',sans-serif", cursor: 'not-allowed'
                         }}
                       >
@@ -457,12 +455,12 @@ export default function Atletas({ profile }) {
 
       {votingPlayer && (
         <div className="modal-overlay" onClick={() => { if (!enviandoVoto) setVotingPlayer(null); }}>
-          <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 400, maxHeight: '90vh', overflowY: 'auto', background: '#141414' }}>
-            <div className="modal-handle" style={{ background: '#3F3F46' }} />
-            <h3 style={{ color: '#FFF', fontWeight: 900, fontSize: 18, marginBottom: 2, textAlign: 'center' }}>
+          <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 400, maxHeight: '90vh', overflowY: 'auto', background: 'var(--bg-elevated)' }}>
+            <div className="modal-handle" style={{ background: 'var(--border)' }} />
+            <h3 style={{ color: 'var(--text-primary)', fontWeight: 900, fontSize: 18, marginBottom: 2, textAlign: 'center' }}>
               Avaliar {votingPlayer.apelido || votingPlayer.nome}
             </h3>
-            <p style={{ color: '#A1A1AA', fontSize: 12, marginBottom: 12, textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 12, textAlign: 'center' }}>
               Dê uma nota de 1 a 5 estrelas para cada habilidade:
             </p>
 
@@ -471,21 +469,21 @@ export default function Atletas({ profile }) {
                 const val = estrelasVoto[f.key] || 0;
                 return (
                   <div key={f.key} style={{
-                    background: val > 0 ? 'rgba(255,184,0,0.1)' : '#18181B',
+                    background: val > 0 ? 'rgba(255,184,0,0.1)' : 'var(--bg-card)',
                     padding: '8px 12px', borderRadius: 12,
-                    border: val > 0 ? '1px solid rgba(255,184,0,0.3)' : '1px solid #27272A',
+                    border: val > 0 ? '1px solid rgba(255,184,0,0.3)' : '1px solid var(--border)',
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{
                           width: 20, height: 20, borderRadius: 6,
-                          background: val > 0 ? '#FFB800' : '#27272A',
-                          color: val > 0 ? '#000' : '#A1A1AA', fontSize: 11, fontWeight: 800,
+                          background: val > 0 ? 'var(--accent)' : 'var(--bg-secondary)',
+                          color: val > 0 ? '#000' : 'var(--text-muted)', fontSize: 11, fontWeight: 800,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>{i + 1}</span>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: '#FFF' }}>{f.label}</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
                       </div>
-                      <span style={{ fontSize: 12, color: val > 0 ? '#FFB800' : '#71717A', fontWeight: 700 }}>
+                      <span style={{ fontSize: 12, color: val > 0 ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 700 }}>
                         {val > 0 ? `\u2605 ${val}.0` : labelsNota[val] || 'Nota'}
                       </span>
                     </div>
