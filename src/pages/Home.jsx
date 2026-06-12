@@ -141,17 +141,13 @@ export default function Home({ profile, onNavigate }) {
             display: 'inline-flex', alignItems: 'center', gap: 5,
             background: myRank !== '--' ? 'rgba(200,241,53,0.12)' : 'rgba(106,106,130,0.12)',
             border: myRank !== '--' ? '1px solid rgba(200,241,53,0.2)' : '1px solid rgba(106,106,130,0.2)',
-            borderRadius: 20, padding: '3px 10px', marginBottom: 10,
+            borderRadius: 20, padding: '4px 10px', marginBottom: 10,
           }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={myRank !== '--' ? '#C8F135' : '#6A6A82'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-              <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
-            </svg>
             <span className="hero-badge-text" style={{
               fontSize: 10, fontWeight: 700, color: myRank !== '--' ? '#C8F135' : '#6A6A82',
               fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.08em',
             }}>
-              {myRank !== '--' ? 'Melhor da Cidade' : 'Sem Posição'}
+              {myRank !== '--' ? '👑 Melhor da Cidade' : 'Sem Posição'}
             </span>
           </div>
 
@@ -293,18 +289,17 @@ export default function Home({ profile, onNavigate }) {
             {topPlayers.map((player, i) => (
               <div
                 key={player.id}
-                className="highlight-item"
                 onClick={() => onNavigate('jogadores', { selectedPlayer: { ...player, rank: i + 1 } })}
                 style={{
-                  background: i === 0 ? 'rgba(200,241,53,0.06)' : 'var(--bg-card)',
-                  border: '1px solid var(--border)',
-                  borderTop: i === 0 ? '2px solid #C8F135' : '1px solid var(--border)',
-                  borderRadius: 12,
-                  padding: 14,
+                  background: i === 0 ? 'rgba(200,241,53,0.06)' : 'transparent',
+                  border: '1px solid rgba(200,241,53,0.15)',
+                  borderTop: i === 0 ? '2px solid #C8F135' : '1px solid rgba(200,241,53,0.15)',
+                  borderRadius: 14,
+                  padding: '12px 14px',
                   display: 'flex',
-                  alignItems: 'center',
+                  alignItems: 'flex-start',
                   gap: 14,
-                  minHeight: 72,
+                  minHeight: 64,
                   cursor: 'pointer',
                   transition: 'transform 0.15s, box-shadow 0.2s',
                 }}
@@ -320,7 +315,7 @@ export default function Home({ profile, onNavigate }) {
                     }}
                   />
                 ) : (
-                  <div className="highlight-avatar-fallback" style={{
+                  <div style={{
                     width: 48, height: 48, borderRadius: 12, flexShrink: 0,
                     background: '#13131F',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -335,16 +330,16 @@ export default function Home({ profile, onNavigate }) {
                   </div>
                 )}
 
-                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-                  <span className="highlight-name" style={{
-                    fontSize: 14, fontWeight: 'bold', color: 'var(--text-primary)',
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', marginRight: 2 }}>
+                  <span style={{
+                    fontSize: 14, fontWeight: 'bold', color: '#E8E8F0',
                     fontFamily: "'Inter',sans-serif", lineHeight: 1.2,
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   }}>
                     {player.nome}
                   </span>
-                  <span className="highlight-position" style={{
-                    fontSize: 12, color: '#6A6A82', fontWeight: 600,
+                  <span style={{
+                    fontSize: 12, color: '#6A6A82', fontWeight: 400,
                     fontFamily: "'Inter',sans-serif", marginTop: 2,
                   }}>
                     {player.posicao || 'Ala'}
@@ -352,10 +347,11 @@ export default function Home({ profile, onNavigate }) {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                  <div className="highlight-score" style={{ fontSize: 14, fontWeight: 700, color: '#C8F135', fontFamily: "'Barlow Condensed',sans-serif" }}>
-                    ★ {Number(player.media_estrelas || 0).toFixed(1)}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 14, fontWeight: 700, color: '#C8F135', fontFamily: "'Barlow Condensed',sans-serif" }}>
+                    <span>★</span>
+                    <span>{Number(player.media_estrelas || 0).toFixed(1)}</span>
                   </div>
-                  <div className="highlight-progress-bg" style={{ width: 60, height: 3, background: '#1A1A28', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
+                  <div style={{ width: 80, height: 4, background: '#1A1A28', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
                     <div style={{ width: `${(Number(player.media_estrelas || 0) / 5) * 100}%`, height: '100%', background: '#C8F135', borderRadius: 2 }} />
                   </div>
                 </div>
