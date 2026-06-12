@@ -124,18 +124,21 @@ export default function Layout({ page, onNavigate, children }) {
         </div>
       )}
 
-      <AnimatePresence mode="wait">
-        <motion.div 
-          key={page} 
-          className="page-transition"
-          initial={{ opacity: 0, x: 15 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -15 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-        >
-          {children}
-        </motion.div>
-      </AnimatePresence>
+      <div style={{ flex: 1, position: 'relative', overflowX: 'hidden' }}>
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={page} 
+            className="page-transition"
+            initial={{ opacity: 0, x: 15 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -15 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
       <BottomNavigation page={page} onNavigate={onNavigate} isMaster={isMaster} />
 
