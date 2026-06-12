@@ -134,35 +134,58 @@ export const JogadoresBackground = () => (
   </BgWrapper>
 );
 
-// PÁGINA JOGOS (Aba Jogos)
+// PÁGINA JOGOS / PARTIDAS ATIVAS
 export const JogosBackground = () => (
   <BgWrapper>
     <style>{`
-      @keyframes courtLinesMove {
-        0% { stroke-dashoffset: 400; }
-        100% { stroke-dashoffset: 0; }
-      }
       @keyframes courtBallBounce {
-        0% { transform: translateY(180px) scale(1.4, 0.6); animation-timing-function: cubic-bezier(0, 0, 0.5, 1); }
-        50% { transform: translateY(0) scale(1, 1); animation-timing-function: cubic-bezier(0.5, 0, 1, 1); }
-        100% { transform: translateY(180px) scale(1.4, 0.6); animation-timing-function: cubic-bezier(0, 0, 0.5, 1); }
+        0% { transform: translateY(220px) scale(1.4, 0.6); animation-timing-function: cubic-bezier(0, 0, 0.5, 1); }
+        50% { transform: translateY(0px) scale(1, 1); animation-timing-function: cubic-bezier(0.5, 0, 1, 1); }
+        100% { transform: translateY(220px) scale(1.4, 0.6); animation-timing-function: cubic-bezier(0, 0, 0.5, 1); }
       }
       @keyframes courtBallMove {
-        0% { transform: translateX(-350px); }
-        100% { transform: translateX(350px); }
+        0% { transform: translateX(-300px); }
+        100% { transform: translateX(300px); }
       }
     `}</style>
     <svg viewBox="0 0 800 800" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
-      <g strokeWidth="4" fill="none" opacity="0.7">
-        <path d="M400 300 L100 800 M400 300 L700 800 M100 800 L700 800 M250 600 L550 600 M325 450 L475 450" 
-              strokeDasharray="30 20" style={{ animation: 'courtLinesMove 4s linear infinite' }} stroke="var(--text-primary)" />
-        <circle cx="400" cy="400" r="60" stroke="var(--text-primary)" />
-        <path d="M200 800 Q400 500 600 800" stroke="var(--text-primary)" />
+      {/* Quadra Line Art */}
+      <g opacity="0.25" stroke="var(--text-primary)" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4">
+        {/* Limites da Quadra */}
+        <rect x="150" y="100" width="500" height="600" rx="4" />
+        
+        {/* Linha do Meio e Círculo Central */}
+        <line x1="150" y1="400" x2="650" y2="400" />
+        <circle cx="400" cy="400" r="80" />
+        
+        {/* Garrafão Superior */}
+        <rect x="310" y="100" width="180" height="160" />
+        {/* Arco Lance Livre Superior */}
+        <path d="M310 260 A 90 90 0 0 0 490 260" />
+        <path d="M490 260 A 90 90 0 0 0 310 260" strokeDasharray="12 12" />
+        {/* Linha de 3 Superior */}
+        <path d="M200 100 L200 160 A 200 200 0 0 0 600 160 L600 100" />
+        {/* Tabela e Aro Superior */}
+        <line x1="360" y1="120" x2="440" y2="120" strokeWidth="6" />
+        <circle cx="400" cy="135" r="15" stroke="var(--accent)" strokeWidth="3" />
+
+        {/* Garrafão Inferior */}
+        <rect x="310" y="540" width="180" height="160" />
+        {/* Arco Lance Livre Inferior */}
+        <path d="M490 540 A 90 90 0 0 0 310 540" />
+        <path d="M310 540 A 90 90 0 0 0 490 540" strokeDasharray="12 12" />
+        {/* Linha de 3 Inferior */}
+        <path d="M200 700 L200 640 A 200 200 0 0 1 600 640 L600 700" />
+        {/* Tabela e Aro Inferior */}
+        <line x1="360" y1="680" x2="440" y2="680" strokeWidth="6" />
+        <circle cx="400" cy="665" r="15" stroke="var(--accent)" strokeWidth="3" />
       </g>
-      <g style={{ animation: 'courtBallMove 8s linear infinite alternate' }}>
-        <g style={{ animation: 'courtBallBounce 0.9s infinite' }} transformOrigin="400px 500px">
-          <circle cx="400" cy="500" r="30" stroke="var(--accent)" strokeWidth="5" />
-          <path d="M370 500 Q400 530 430 500 M370 500 Q400 470 430 500" strokeWidth="2" stroke="var(--accent)" />
+      
+      {/* Bola Quicando Pela Quadra */}
+      <g style={{ animation: 'courtBallMove 7s linear infinite alternate' }}>
+        <g style={{ animation: 'courtBallBounce 0.8s infinite' }} transformOrigin="400px 400px">
+          <circle cx="400" cy="400" r="18" stroke="var(--accent)" strokeWidth="4" fill="none" />
+          <path d="M382 400 Q400 418 418 400 M382 400 Q400 382 418 400" strokeWidth="2" stroke="var(--accent)" fill="none" />
         </g>
       </g>
     </svg>
