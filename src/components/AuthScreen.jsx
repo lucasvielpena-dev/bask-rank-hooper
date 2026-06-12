@@ -77,7 +77,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
   const showHint = touched.senha && senha.length > 0 && senha.length < 6;
 
   return (
-    <div className={`app-shell auth-screen ${isShooting ? 'is-shooting' : ''}`} style={{ minHeight: '100dvh', background: '#0D0D0D', position: 'relative', overflow: 'hidden' }}>
+    <div className={`app-shell auth-screen ${isShooting ? 'is-shooting' : ''}`} style={{ minHeight: '100dvh', background: 'var(--bg-primary, #0C0C14)', position: 'relative', overflow: 'hidden' }}>
       <style>{`
         .auth-screen.is-shooting {
           animation: fadeOutApp 0.5s ease-in-out 1.7s forwards;
@@ -124,40 +124,41 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
 
         /* SHOOTING ANIMATIONS */
         .is-shooting .torso {
-          animation: shotTorso 2.2s linear forwards;
+          animation: shotTorso 2.2s forwards;
         }
         .is-shooting .braco-dir {
-          animation: shotArm 2.2s linear forwards;
+          animation: shotArm 2.2s forwards;
           transform-origin: 185px 225px;
         }
         .is-shooting .bola-wrap {
-          animation: shotBall 2.2s linear forwards;
+          animation: shotBall 2.2s forwards;
         }
         .is-shooting .cesta {
-          animation: shotHoop 2.2s linear forwards;
+          animation: shotHoop 2.2s forwards;
         }
 
         @keyframes shotTorso {
           0% { transform: translateY(0); }
-          13.6% { transform: translateY(12px); animation-timing-function: ease-in; }
-          27.2% { transform: translateY(-20px); animation-timing-function: cubic-bezier(0.33, 0, 0.1, 1); }
-          100% { transform: translateY(-20px); }
+          13.6% { transform: translateY(12px); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+          27.2% { transform: translateY(-30px); animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
+          60% { transform: translateY(0); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+          100% { transform: translateY(0); }
         }
 
         @keyframes shotArm {
           0% { transform: rotate(0deg); }
-          13.6% { transform: rotate(45deg); }
-          27.2% { transform: rotate(-135deg); }
+          13.6% { transform: rotate(45deg); animation-timing-function: ease-in-out; }
+          27.2% { transform: rotate(-135deg); animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
           100% { transform: rotate(-135deg); }
         }
 
         @keyframes shotBall {
           0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-          13.6% { transform: translate(-10px, 12px) scale(1) rotate(0deg); }
-          27.2% { transform: translate(-10px, -40px) scale(1) rotate(0deg); animation-timing-function: cubic-bezier(0.33, 0, 0.66, 1); }
-          63.6% { transform: translate(140px, -230px) scale(0.3) rotate(360deg); }
-          77.2% { transform: translate(140px, -180px) scale(0.25) rotate(400deg); }
-          100% { transform: translate(140px, -180px) scale(0) rotate(400deg); }
+          13.6% { transform: translate(-10px, 12px) scale(1) rotate(0deg); animation-timing-function: ease-in-out; }
+          27.2% { transform: translate(-10px, -40px) scale(1) rotate(0deg); animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
+          63.6% { transform: translate(140px, -230px) scale(0.3) rotate(360deg); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+          77.2% { transform: translate(140px, -150px) scale(0.25) rotate(400deg); animation-timing-function: ease-in; }
+          100% { transform: translate(140px, -50px) scale(0) rotate(450deg); }
         }
 
         @keyframes shotHoop {
@@ -202,7 +203,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
           color: rgba(255,255,255,0.4);
         }
         .glass-input:focus {
-          border-color: #FF6B1A;
+          border-color: #C8F135;
         }
 
         .shake-animation {
@@ -290,13 +291,13 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
           <div style={{
             width: 64, height: 64, background: 'rgba(255,255,255,0.05)', borderRadius: 18,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 12px', border: '1px solid rgba(255,107,26,0.3)',
+            margin: '0 auto 12px', border: '1px solid rgba(200,241,53,0.3)',
             backdropFilter: 'blur(10px)',
-            boxShadow: '0 0 30px rgba(255,107,26,0.1)',
+            boxShadow: '0 0 30px rgba(200,241,53,0.1)',
           }}>
             <span style={{
               fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800,
-              fontSize: 24, color: '#FF6B1A', letterSpacing: '-0.02em',
+              fontSize: 24, color: '#C8F135', letterSpacing: '-0.02em',
             }}>RH</span>
           </div>
           <h1 style={{
@@ -341,8 +342,8 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
                   onClick={() => { setTab(t.key); setErro(null); setSuccessMsg(null); }}
                   style={{
                     flex: 1, padding: '8px 4px', borderRadius: 8, border: 'none',
-                    background: tab === t.key ? '#FF6B1A' : 'transparent',
-                    color: tab === t.key ? '#FFFFFF' : 'rgba(255,255,255,0.5)',
+                    background: tab === t.key ? '#C8F135' : 'transparent',
+                    color: tab === t.key ? '#0C0C14' : 'rgba(255,255,255,0.5)',
                     fontSize: 13, fontWeight: 700, cursor: 'pointer',
                     fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
                   }}
@@ -403,7 +404,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
                 
                 {tab === 'login' && (
                   <div style={{ textAlign: 'right' }}>
-                    <button type="button" onClick={() => { setTab('forgot'); setErro(null); setSuccessMsg(null); }} style={{ background: 'none', border: 'none', color: '#FF6B1A', cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: 0, fontFamily: "'Inter',sans-serif" }}>
+                    <button type="button" onClick={() => { setTab('forgot'); setErro(null); setSuccessMsg(null); }} style={{ background: 'none', border: 'none', color: '#C8F135', cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: 0, fontFamily: "'Inter',sans-serif" }}>
                       Esqueci minha senha
                     </button>
                   </div>
