@@ -1,28 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg-primary: #0C0C14;
-  --bg-secondary: #13131F;
-  --bg-card: #13131F;
-  --bg-card-hover: #1A1A28;
-  --bg-elevated: #1A1A28;
-  --accent: #C8F135;
-  --accent-dim: rgba(200,241,53,0.14);
-  --accent-hover: #B8E030;
-  --text-primary: #E8E8F0;
-  --text-secondary: #6A6A82;
-  --text-muted: #444458;
-  --border: rgba(255,255,255,0.06);
-  --border-active: rgba(200,241,53,0.4);
-  --shadow: none;
-  --shadow-elevated: none;
-  --radius: 22px;
+  --bg-primary: #05080D;
+  --bg-secondary: #0B111A;
+  --bg-card: #131C27;
+  --bg-card-hover: #182231;
+  --bg-elevated: #1A2433;
+  --accent: #B6FF1C;
+  --accent-dim: rgba(182, 255, 28, 0.14);
+  --accent-hover: #A0E610;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #475569;
+  --border: rgba(255, 255, 255, 0.10);
+  --border-active: rgba(182, 255, 28, 0.4);
+  --shadow: 0 8px 16px rgba(0,0,0,0.3);
+  --shadow-elevated: 0 18px 35px rgba(0,0,0,0.45);
+  --shadow-neon: 0 0 15px rgba(182, 255, 28, 0.3);
+  --border-inset: inset 0 1px 0 rgba(255,255,255,0.08);
+  --radius: 24px;
   --radius-sm: 12px;
   --nav-height: 64px;
   --header-height: 72px;
-  --nav-active-color: #C8F135;
-  --nav-inactive-color: #2A2A3A;
-  --header-bg: rgba(12,12,20,0.95);
+  --nav-active-color: #B6FF1C;
+  --nav-inactive-color: #475569;
+  --header-bg: rgba(5, 8, 13, 0.90);
   --chart-bg: #13131F;
   --chart-grid: rgba(255,255,255,0.06);
   --chart-text: #E8E8F0;
@@ -674,3 +676,43 @@ input:focus { border-color:#C8F135; }
 .ball1 { animation: float1 6s ease-in-out infinite; }
 .ball2 { animation: float2 6s ease-in-out infinite; animation-delay: 2s; }
 .ball3 { animation: float3 6s ease-in-out infinite; animation-delay: 4s; }
+
+/* 3D Premium Core Classes */
+.premium-card {
+  background: linear-gradient(145deg, var(--bg-elevated), #101722);
+  border: 1px solid var(--border);
+  box-shadow: var(--border-inset), var(--shadow-elevated);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-card-border-green {
+  border: 1px solid rgba(182, 255, 28, 0.25);
+  box-shadow: var(--border-inset), var(--shadow-elevated), var(--shadow-neon);
+}
+
+.premium-badge {
+  background: rgba(182, 255, 28, 0.12);
+  border: 1px solid rgba(182, 255, 28, 0.25);
+  border-radius: 20px;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), 0 4px 10px rgba(182, 255, 28, 0.15);
+  color: var(--accent);
+}
+
+.premium-photo {
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,0.6));
+}
+
+.premium-nav {
+  background: linear-gradient(to top, rgba(5,8,13,0.98), rgba(11,17,26,0.92));
+  backdrop-filter: blur(10px);
+  box-shadow: 0 -10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.premium-nav-item.active {
+  color: var(--nav-active-color);
+  text-shadow: 0 0 12px rgba(182, 255, 28, 0.5);
+}
+

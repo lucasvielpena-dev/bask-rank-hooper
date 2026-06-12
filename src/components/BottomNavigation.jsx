@@ -47,11 +47,11 @@ export default memo(function BottomNavigation({ page, onNavigate, isMaster }) {
     : PAGES;
 
   return (
-    <nav className="bottom-nav">
+    <nav className="bottom-nav premium-nav">
       {Object.entries(allPages).map(([key, cfg]) => (
         <button
           key={key}
-          className={`nav-item ${page === key || (key === 'master' && page.startsWith('master')) ? 'active' : ''}`}
+          className={`nav-item premium-nav-item ${page === key || (key === 'master' && page.startsWith('master')) ? 'active' : ''}`}
           onClick={() => onNavigate(key)}
         >
           <NavIcon type={cfg.icon} active={page === key || (key === 'master' && page.startsWith('master'))} />

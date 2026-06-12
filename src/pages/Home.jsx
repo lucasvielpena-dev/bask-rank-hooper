@@ -133,18 +133,16 @@ export default function Home({ profile, onNavigate }) {
           </div>
         </div>
 
-        <div className="hero-card" style={{
-          borderRadius: 20, padding: '14px 16px 12px', marginBottom: 16,
+        <div className="premium-card premium-card-border-green" style={{
+          padding: '16px', marginBottom: 20,
         }}>
           {/* Top badge */}
-          <div className="hero-badge" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 5,
-            background: myRank !== '--' ? 'rgba(200,241,53,0.12)' : 'rgba(106,106,130,0.12)',
-            border: myRank !== '--' ? '1px solid rgba(200,241,53,0.2)' : '1px solid rgba(106,106,130,0.2)',
-            borderRadius: 20, padding: '4px 10px', marginBottom: 10,
+          <div className="premium-badge" style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '6px 12px', marginBottom: 12,
           }}>
             <span className="hero-badge-text" style={{
-              fontSize: 10, fontWeight: 700, color: myRank !== '--' ? '#C8F135' : '#6A6A82',
+              fontSize: 11, fontWeight: 700,
               fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.08em',
             }}>
               {myRank !== '--' ? '👑 Melhor da Cidade' : 'Sem Posição'}
@@ -211,20 +209,21 @@ export default function Home({ profile, onNavigate }) {
               <img
                 src={myPlayerInfo.foto_url}
                 alt={greetingName}
+                className="premium-photo"
                 style={{
                   width: 80, height: 80, borderRadius: 16, objectFit: 'cover',
                   border: '2px solid rgba(255,255,255,0.1)', flexShrink: 0,
                 }}
               />
             ) : (
-              <div style={{
+              <div className="premium-photo" style={{
                 width: 80, height: 80, borderRadius: 16, flexShrink: 0,
-                background: 'linear-gradient(135deg, rgba(200,241,53,0.15), rgba(200,241,53,0.05))',
+                background: 'linear-gradient(135deg, rgba(182, 255, 28, 0.15), rgba(182, 255, 28, 0.05))',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 border: '2px solid rgba(255,255,255,0.06)',
               }}>
                 <span style={{
-                  fontSize: 30, fontWeight: 800, color: '#C8F135',
+                  fontSize: 30, fontWeight: 800, color: 'var(--accent)',
                   fontFamily: "'Barlow Condensed',sans-serif",
                 }}>
                   {greetingName.charAt(0).toUpperCase()}
@@ -289,11 +288,10 @@ export default function Home({ profile, onNavigate }) {
             {topPlayers.map((player, i) => (
               <div
                 key={player.id}
+                className={i === 0 ? "premium-card premium-card-border-green" : "premium-card"}
                 onClick={() => onNavigate('jogadores', { selectedPlayer: { ...player, rank: i + 1 } })}
                 style={{
-                  background: i === 0 ? 'rgba(200,241,53,0.06)' : 'transparent',
-                  border: '1px solid rgba(200,241,53,0.15)',
-                  borderTop: i === 0 ? '2px solid #C8F135' : '1px solid rgba(200,241,53,0.15)',
+                  background: i === 0 ? 'linear-gradient(145deg, rgba(182, 255, 28, 0.05), #101722)' : 'linear-gradient(145deg, var(--bg-elevated), #101722)',
                   borderRadius: 14,
                   padding: '12px 14px',
                   display: 'flex',
@@ -308,18 +306,19 @@ export default function Home({ profile, onNavigate }) {
                   <img
                     src={player.foto_url}
                     alt={player.nome}
+                    className="premium-photo"
                     style={{
                       width: 48, height: 48, borderRadius: 12, objectFit: 'cover',
-                      border: '1.5px solid rgba(200,241,53,0.3)',
+                      border: '1.5px solid rgba(182, 255, 28, 0.3)',
                       flexShrink: 0,
                     }}
                   />
                 ) : (
-                  <div style={{
+                  <div className="premium-photo" style={{
                     width: 48, height: 48, borderRadius: 12, flexShrink: 0,
-                    background: '#13131F',
+                    background: '#131C27',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    border: '1.5px solid rgba(200,241,53,0.3)',
+                    border: '1.5px solid rgba(182, 255, 28, 0.3)',
                   }}>
                     <span style={{
                       fontSize: 20, fontWeight: 800, color: '#6A6A82',
@@ -347,12 +346,12 @@ export default function Home({ profile, onNavigate }) {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 14, fontWeight: 700, color: '#C8F135', fontFamily: "'Barlow Condensed',sans-serif" }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 14, fontWeight: 700, color: 'var(--accent)', fontFamily: "'Barlow Condensed',sans-serif" }}>
                     <span>★</span>
                     <span>{Number(player.media_estrelas || 0).toFixed(1)}</span>
                   </div>
-                  <div style={{ width: 80, height: 4, background: '#1A1A28', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
-                    <div style={{ width: `${(Number(player.media_estrelas || 0) / 5) * 100}%`, height: '100%', background: '#C8F135', borderRadius: 2 }} />
+                  <div style={{ width: 80, height: 4, background: '#1A2433', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
+                    <div style={{ width: `${(Number(player.media_estrelas || 0) / 5) * 100}%`, height: '100%', background: 'var(--accent)', borderRadius: 2, boxShadow: '0 0 8px rgba(182, 255, 28, 0.6)' }} />
                   </div>
                 </div>
               </div>
