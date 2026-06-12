@@ -645,3 +645,32 @@ input:focus { border-color:#C8F135; }
     scroll-behavior: auto !important;
   }
 }
+
+/* Floating Basketball Background */
+.rh-bg-ball {
+  stroke: #C8F135;
+  fill: none;
+}
+
+.light-theme .rh-bg-ball {
+  stroke: rgba(0, 0, 0, 0.15);
+}
+
+@keyframes float1 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes float2 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(20px); }
+}
+
+@keyframes float3 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+.ball1 { animation: float1 6s ease-in-out infinite; }
+.ball2 { animation: float2 6s ease-in-out infinite; animation-delay: 2s; }
+.ball3 { animation: float3 6s ease-in-out infinite; animation-delay: 4s; }

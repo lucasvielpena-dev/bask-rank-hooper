@@ -46,48 +46,44 @@ export default function Layout({ page, onNavigate, children }) {
 
   return (
     <div className="app-shell">
-      {/* Background SVG — court lines + basketballs */}
+      {/* Background SVG — Floating Basketballs */}
       <svg
         className="rh-bg"
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}
+        style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}
         viewBox="0 0 400 800"
         preserveAspectRatio="xMidYMin slice"
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
-          <radialGradient id="rh-glow" cx="50%" cy="15%" r="40%">
-            <stop offset="0%" stopColor="#C8F135" stopOpacity="0.05" />
+          <radialGradient id="rh-glow" cx="50%" cy="10%" r="50%">
+            <stop offset="0%" stopColor="#C8F135" stopOpacity="0.08" />
             <stop offset="100%" stopColor="#C8F135" stopOpacity="0" />
           </radialGradient>
         </defs>
         <rect width="400" height="800" fill="url(#rh-glow)" />
-        {/* Court outline */}
-        <g stroke="#C8F135" strokeWidth="0.8" fill="none" opacity="0.04">
-          <rect x="40" y="100" width="320" height="500" rx="0" />
-          <line x1="200" y1="100" x2="200" y2="600" />
-          <circle cx="200" cy="350" r="60" />
-          {/* 3-point arcs */}
-          <path d="M 40 250 Q 120 350 40 450" />
-          <path d="M 360 250 Q 280 350 360 450" />
-          {/* Free throw areas */}
-          <rect x="40" y="230" width="120" height="140" />
-          <rect x="240" y="230" width="120" height="140" />
-          <circle cx="160" cy="350" r="30" />
-          <circle cx="240" cy="350" r="30" />
+        
+        {/* Bola 1 (Grande, top-right) */}
+        <g className="ball1 rh-bg-ball" opacity="0.04">
+          <circle cx="290" cy="100" r="70" strokeWidth="1.5" />
+          <path d="M 290 30 Q 330 100 290 170" strokeWidth="1.5" />
+          <path d="M 290 30 Q 250 100 290 170" strokeWidth="1.5" />
+          <line x1="220" y1="100" x2="360" y2="100" strokeWidth="1.5" />
         </g>
-        {/* Large basketball top-right */}
-        <g transform="translate(310, 60)" stroke="#C8F135" strokeWidth="1.2" fill="none" opacity="0.045">
-          <circle cx="0" cy="0" r="40" />
-          <path d="M 0 -40 Q 20 0 0 40" />
-          <path d="M 0 -40 Q -20 0 0 40" />
-          <line x1="-40" y1="0" x2="40" y2="0" />
+
+        {/* Bola 2 (Média, bottom-left) */}
+        <g className="ball2 rh-bg-ball" opacity="0.03">
+          <circle cx="50" cy="600" r="50" strokeWidth="1.2" />
+          <path d="M 50 550 Q 80 600 50 650" strokeWidth="1.2" />
+          <path d="M 50 550 Q 20 600 50 650" strokeWidth="1.2" />
+          <line x1="0" y1="600" x2="100" y2="600" strokeWidth="1.2" />
         </g>
-        {/* Small basketball bottom-left */}
-        <g transform="translate(60, 720)" stroke="#C8F135" strokeWidth="1" fill="none" opacity="0.03">
-          <circle cx="0" cy="0" r="28" />
-          <path d="M 0 -28 Q 14 0 0 28" />
-          <path d="M 0 -28 Q -14 0 0 28" />
-          <line x1="-28" y1="0" x2="28" y2="0" />
+
+        {/* Bola 3 (Pequena, middle) */}
+        <g className="ball3 rh-bg-ball" opacity="0.035">
+          <circle cx="280" cy="420" r="35" strokeWidth="1" />
+          <path d="M 280 385 Q 300 420 280 455" strokeWidth="1" />
+          <path d="M 280 385 Q 260 420 280 455" strokeWidth="1" />
+          <line x1="245" y1="420" x2="315" y2="420" strokeWidth="1" />
         </g>
       </svg>
       <Header />
