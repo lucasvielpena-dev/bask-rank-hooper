@@ -105,7 +105,7 @@ body {
 }
 
 /* Page Content */
-.page-content { flex:1; overflow-y:auto; overflow-x:hidden; padding-bottom:16px; scrollbar-width:none; position:relative; background:transparent; scroll-behavior:smooth; -webkit-overflow-scrolling:touch; }
+.page-content { flex:1; overflow-y:auto; overflow-x:hidden; padding-bottom:16px; scrollbar-width:none; position:relative; z-index:1; background:transparent; scroll-behavior:smooth; -webkit-overflow-scrolling:touch; }
 .page-content::-webkit-scrollbar { display:none; }
 
 /* Bottom Nav */
@@ -648,34 +648,7 @@ input:focus { border-color:#C8F135; }
   }
 }
 
-/* Floating Basketball Background */
-.rh-bg-ball {
-  stroke: #C8F135;
-  fill: none;
-}
-
-.light-theme .rh-bg-ball {
-  stroke: rgba(0, 0, 0, 0.15);
-}
-
-@keyframes float1 {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes float2 {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(20px); }
-}
-
-@keyframes float3 {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-}
-
-.ball1 { animation: float1 6s ease-in-out infinite; }
-.ball2 { animation: float2 6s ease-in-out infinite; animation-delay: 2s; }
-.ball3 { animation: float3 6s ease-in-out infinite; animation-delay: 4s; }
+/* SVG float animations removed */
 
 /* 3D Premium Core Classes */
 .home-container {
@@ -688,6 +661,7 @@ input:focus { border-color:#C8F135; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   position: relative;
+  filter: brightness(1.1); /* Aumento de brilho de 10% para legibilidade */
   
   /* 3D Base */
   transform-style: preserve-3d;

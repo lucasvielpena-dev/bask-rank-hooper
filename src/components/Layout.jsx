@@ -1,3 +1,4 @@
+import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import Header from './Header';
@@ -43,49 +44,75 @@ export default function Layout({ page, onNavigate, children }) {
   } = useAuth();
 
   const { themePref, setThemePref } = useTheme();
+  
+  // Parallax Logic
+  const parallaxRef = useRef(null);
+  
+  useEffect(() => {
+    // Disable parallax if reduced motion is preferred
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    let ticking = false;
+    
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (parallaxRef.current) {
+            const offset = window.scrollY * 0.3;
+            parallaxRef.current.style.transform = `scale(1.05) translateY(${offset}px)`;
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const isHome = page === 'inicio';
 
   return (
     <div className="app-shell">
-      {/* Background SVG — Floating Basketballs */}
-      <svg
-        className="rh-bg"
-        style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}
-        viewBox="0 0 400 800"
-        preserveAspectRatio="xMidYMin slice"
-        xmlns="http://www.w3.org/2000/svg"
+      {/* Background Images Parallax */}
+      <div 
+        ref={parallaxRef}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: 'none',
+          willChange: 'transform'
+        }}
       >
-        <defs>
-          <radialGradient id="rh-glow" cx="50%" cy="10%" r="50%">
-            <stop offset="0%" stopColor="#C8F135" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#C8F135" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <rect width="400" height="800" fill="url(#rh-glow)" />
+        {/* Background 1 (Home) */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: "url('/images/bg-1.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center bottom',
+          backgroundRepeat: 'no-repeat',
+          filter: 'blur(3px) brightness(0.35)',
+          opacity: isHome ? 1 : 0,
+          transition: 'opacity 0.6s ease'
+        }} />
         
-        {/* Bola 1 (Grande, top-right) */}
-        <g className="ball1 rh-bg-ball" opacity="0.04">
-          <circle cx="290" cy="100" r="70" strokeWidth="1.5" />
-          <path d="M 290 30 Q 330 100 290 170" strokeWidth="1.5" />
-          <path d="M 290 30 Q 250 100 290 170" strokeWidth="1.5" />
-          <line x1="220" y1="100" x2="360" y2="100" strokeWidth="1.5" />
-        </g>
-
-        {/* Bola 2 (Média, bottom-left) */}
-        <g className="ball2 rh-bg-ball" opacity="0.03">
-          <circle cx="50" cy="600" r="50" strokeWidth="1.2" />
-          <path d="M 50 550 Q 80 600 50 650" strokeWidth="1.2" />
-          <path d="M 50 550 Q 20 600 50 650" strokeWidth="1.2" />
-          <line x1="0" y1="600" x2="100" y2="600" strokeWidth="1.2" />
-        </g>
-
-        {/* Bola 3 (Pequena, middle) */}
-        <g className="ball3 rh-bg-ball" opacity="0.035">
-          <circle cx="280" cy="420" r="35" strokeWidth="1" />
-          <path d="M 280 385 Q 300 420 280 455" strokeWidth="1" />
-          <path d="M 280 385 Q 260 420 280 455" strokeWidth="1" />
-          <line x1="245" y1="420" x2="315" y2="420" strokeWidth="1" />
-        </g>
-      </svg>
+        {/* Background 2 (Other pages / Ranking) */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: "url('/images/bg-2.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center bottom',
+          backgroundRepeat: 'no-repeat',
+          filter: 'blur(3px) brightness(0.35)',
+          opacity: isHome ? 0 : 1,
+          transition: 'opacity 0.6s ease'
+        }} />
+      </div>
       <Header />
 
       {profile && profile.cadastro_completo && !profile.player_id && (
