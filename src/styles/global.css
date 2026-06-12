@@ -678,13 +678,25 @@ input:focus { border-color:#C8F135; }
 .ball3 { animation: float3 6s ease-in-out infinite; animation-delay: 4s; }
 
 /* 3D Premium Core Classes */
+.home-container {
+  perspective: 1200px;
+  perspective-origin: 50% 30%;
+}
+
 .premium-card {
   background: linear-gradient(145deg, var(--bg-elevated), #101722);
   border: 1px solid var(--border);
-  box-shadow: var(--border-inset), var(--shadow-elevated);
   border-radius: var(--radius);
   position: relative;
-  overflow: hidden;
+  
+  /* 3D Base */
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+  
+  transform: perspective(1000px) rotateX(0deg) translateZ(0px) translateY(0px);
+  box-shadow: var(--border-inset), 0 4px 16px rgba(0,0,0,0.3);
+  transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.35s ease;
 }
 
 .premium-card-border-green {
@@ -707,8 +719,11 @@ input:focus { border-color:#C8F135; }
 .premium-nav {
   background: linear-gradient(to top, rgba(5,8,13,0.98), rgba(11,17,26,0.92));
   backdrop-filter: blur(10px);
-  box-shadow: 0 -10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
   border-top: 1px solid rgba(255,255,255,0.05);
+  transform: perspective(600px) rotateX(6deg);
+  transform-origin: bottom center;
+  transform-style: preserve-3d;
 }
 
 .premium-nav-item.active {
@@ -721,17 +736,68 @@ input:focus { border-color:#C8F135; }
   will-change: transform;
 }
 
-.premium-nav-item.active svg,
-.premium-nav-item:hover svg {
-  transform: perspective(200px) translateZ(8px) scale(1.1);
+.premium-nav-item.active svg {
+  transform: perspective(200px) translateZ(16px) scale(1.15);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.home-highlights-section .premium-card {
-  transition: transform 0.25s ease, box-shadow 0.2s;
-  will-change: transform;
+.premium-nav-item:hover:not(.active) svg {
+  transform: perspective(200px) translateZ(8px) scale(1.05);
 }
 
-.home-highlights-section .premium-card:hover,
+.home-highlights-section .premium-card:hover {
+  transform: perspective(1000px) rotateX(-4deg) translateZ(12px) translateY(-6px);
+  box-shadow: var(--border-inset), 0 20px 40px rgba(0,0,0,0.5);
+}
+
 .home-highlights-section .premium-card:active {
-  transform: perspective(800px) rotateX(-3deg) translateY(-4px);
+  transform: perspective(1000px) rotateX(-2deg) translateZ(6px) translateY(-3px);
+}
+
+/* Stagger Animations */
+@keyframes pageEntry3D {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(12deg) translateY(40px) translateZ(-60px);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0deg) translateY(0px) translateZ(0px);
+  }
+}
+
+.stagger-enter {
+  opacity: 0;
+  animation: pageEntry3D 0.7s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.stagger-1 { animation-delay: 0ms; }
+.stagger-2 { animation-delay: 80ms; }
+.stagger-3 { animation-delay: 160ms; }
+.stagger-4 { animation-delay: 240ms; }
+.stagger-5 { animation-delay: 320ms; }
+.stagger-6 { animation-delay: 400ms; }
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .home-container {
+    perspective: 800px;
+  }
+  .home-highlights-section .premium-card:hover {
+    transform: perspective(1000px) rotateX(-2deg) translateZ(8px) translateY(-3px);
+  }
+}
+
+/* Prefers Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    transform: none !important;
+  }
 }

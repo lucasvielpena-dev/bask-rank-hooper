@@ -60,7 +60,8 @@ export default function Home({ profile, onNavigate }) {
   const [myPlayerInfo, setMyPlayerInfo] = useState(null);
   const [myRank, setMyRank] = useState('--');
   const [loading, setLoading] = useState(true);
-  const [heroTransform, setHeroTransform] = useState('rotateX(6deg) rotateY(-6deg)');
+  const [heroTransform, setHeroTransform] = useState('rotateX(4deg) rotateY(-4deg) translateZ(0px)');
+  const [heroShadow, setHeroShadow] = useState('0 20px 60px rgba(0,0,0,0.5), 0 6px 20px rgba(0,0,0,0.3)');
 
   const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
   const uf = profile?.uf || 'PA';
@@ -106,20 +107,28 @@ export default function Home({ profile, onNavigate }) {
     const clientY = isTouch ? e.touches[0].clientY : e.clientY;
     
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
     
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
+    // Calculate relative position (0 to 1)
+    const posX = (clientX - rect.left) / rect.width;
+    const posY = (clientY - rect.top) / rect.height;
     
-    const rotateY = ((x - centerX) / centerX) * 15;
-    const rotateX = -((y - centerY) / centerY) * 15;
+    // rotateX = (0.5 - posY) * 16 -> max ±8deg
+    // rotateY = (posX - 0.5) * 16 -> max ±8deg
+    const rotateX = (0.5 - posY) * 16;
+    const rotateY = (posX - 0.5) * 16;
     
-    setHeroTransform(`rotateX(${rotateX}deg) rotateY(${rotateY}deg)`);
+    setHeroTransform(`rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(0px)`);
+    
+    // box-shadow
+    const offsetX = rotateY * -2;
+    const offsetY = rotateX * 2;
+    const blur = 40 + Math.abs(rotateX + rotateY) * 2;
+    setHeroShadow(`${offsetX}px ${offsetY}px ${blur}px rgba(0,0,0,0.5), 0 6px 20px rgba(0,0,0,0.3)`);
   };
 
   const handleHeroLeave = () => {
-    setHeroTransform('rotateX(6deg) rotateY(-6deg)');
+    setHeroTransform('rotateX(4deg) rotateY(-4deg) translateZ(0px)');
+    setHeroShadow('0 20px 60px rgba(0,0,0,0.5), 0 6px 20px rgba(0,0,0,0.3)');
   };
 
   const greetingName = profile?.apelido || profile?.nome_completo?.split(' ')[0] || 'Atleta';
@@ -156,9 +165,9 @@ export default function Home({ profile, onNavigate }) {
           </div>
         </div>
 
-        <div style={{ perspective: '600px', marginBottom: 20 }}>
+        <div style={{ perspective: '1200px', marginBottom: 20 }}>
           <div 
-            className="premium-card premium-card-border-green" 
+            className="premium-card premium-card-border-green stagger-enter stagger-1" 
             onMouseMove={handleHeroMove}
             onMouseLeave={handleHeroLeave}
             onTouchMove={handleHeroMove}
@@ -166,15 +175,18 @@ export default function Home({ profile, onNavigate }) {
             style={{
               padding: '16px', 
               transform: heroTransform,
+              boxShadow: heroShadow,
               transformStyle: 'preserve-3d',
-              transition: 'transform 0.4s ease',
-              willChange: 'transform'
+              transition: 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
+              willChange: 'transform, box-shadow'
             }}
           >
           {/* Top badge */}
           <div className="premium-badge" style={{
             display: 'inline-flex', alignItems: 'center', gap: 6,
             padding: '6px 12px', marginBottom: 12,
+            transform: 'translateZ(20px)',
+            transition: 'transform 0.4s ease'
           }}>
             <span className="hero-badge-text" style={{
               fontSize: 11, fontWeight: 700,
@@ -324,7 +336,7 @@ export default function Home({ profile, onNavigate }) {
             {topPlayers.map((player, i) => (
               <div
                 key={player.id}
-                className={i === 0 ? "premium-card premium-card-border-green" : "premium-card"}
+                className={i === 0 ? `premium-card premium-card-border-green stagger-enter stagger-${i + 2}` : `premium-card stagger-enter stagger-${i + 2}`}
                 onClick={() => onNavigate('atletas', { selectedPlayer: { ...player, rank: i + 1 } })}
                 style={{
                   background: i === 0 ? 'linear-gradient(145deg, rgba(182, 255, 28, 0.05), #101722)' : 'linear-gradient(145deg, var(--bg-elevated), #101722)',
@@ -335,7 +347,6 @@ export default function Home({ profile, onNavigate }) {
                   gap: 14,
                   minHeight: 64,
                   cursor: 'pointer',
-                  transition: 'transform 0.15s, box-shadow 0.2s',
                 }}
               >
                 {player.foto_url ? (
@@ -366,10 +377,11 @@ export default function Home({ profile, onNavigate }) {
                 )}
 
                 <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', marginRight: 2 }}>
-                  <span style={{
+                  <span className="premium-name" style={{
                     fontSize: 14, fontWeight: 'bold', color: '#E8E8F0',
                     fontFamily: "'Inter',sans-serif", lineHeight: 1.2,
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    display: 'inline-block'
                   }}>
                     {player.nome}
                   </span>

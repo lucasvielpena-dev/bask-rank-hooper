@@ -1,12 +1,27 @@
-import { memo } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { IconMenu, IconSino } from './Icons';
 
 export default memo(function Header() {
   const { profile, notificacoes, setShowUserMenu, setShowNotificacoes } = useAuth();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <header className="app-header">
+    <header className="app-header" style={{
+      transform: scrolled ? 'perspective(800px) rotateX(0deg)' : 'perspective(800px) rotateX(2deg)',
+      transformOrigin: 'top center',
+      boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+      transition: 'transform 0.4s ease',
+      transformStyle: 'preserve-3d'
+    }}>
       <button
         onClick={() => setShowUserMenu(true)}
         style={{ background:'none', border:'none', color:'var(--text-primary)', cursor:'pointer', padding:4, display:'flex', alignItems:'center', justifyContent:'center' }}
@@ -14,7 +29,7 @@ export default memo(function Header() {
         <IconMenu size={22} color="var(--text-primary)" />
       </button>
 
-      <div style={{ display:'flex', alignItems:'center', gap:8, flex:1, justifyContent:'center' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:8, flex:1, justifyContent:'center', transform: 'translateZ(10px)', transition: 'transform 0.3s ease' }}>
         <div className="header-logo-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0C0C14" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/>
