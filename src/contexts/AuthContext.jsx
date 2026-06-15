@@ -30,21 +30,6 @@ export function AuthProvider({ children }) {
   const [showNotificacoes, setShowNotificacoes] = useState(false);
 
   const [isLoginAnimating, setIsLoginAnimating] = useState(false);
-  const [isPublicMode, setIsPublicMode] = useState(
-    window.location.pathname === '/ranking-publico' || 
-    window.location.pathname === '/publico'
-  );
-
-  useEffect(() => {
-    const handlePopState = () => {
-      setIsPublicMode(
-        window.location.pathname === '/ranking-publico' || 
-        window.location.pathname === '/publico'
-      );
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
 
   const [editApelido, setEditApelido] = useState('');
   const [editPosicao, setEditPosicao] = useState('');
@@ -547,16 +532,10 @@ export function AuthProvider({ children }) {
     }
   }, [user]);
 
-  if ((!user && !isPublicMode) || isLoginAnimating) {
+  if (!user || isLoginAnimating) {
     return <AuthScreen 
       onStartAnimation={() => setIsLoginAnimating(true)} 
       onFinishAnimation={() => setIsLoginAnimating(false)} 
-      onNavigate={(target) => {
-        if (target === 'rankingPublico') {
-          window.history.pushState({}, '', '/ranking-publico');
-          setIsPublicMode(true);
-        }
-      }}
     />;
   }
 
@@ -568,7 +547,7 @@ export function AuthProvider({ children }) {
     );
   }
 
-  if (user && (!profile || !profile.cadastro_completo)) {
+  if (!profile || !profile.cadastro_completo) {
     return (
       <CompleteProfileScreen
         profile={profile}

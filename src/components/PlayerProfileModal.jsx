@@ -41,7 +41,7 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
   );
 });
 
-export default function PlayerProfileModal({ jogador, rank, isPublicView, onClose }) {
+export default function PlayerProfileModal({ jogador, rank, onClose }) {
   const [localJogador, setLocalJogador] = useState(jogador);
   const [profileData, setProfileData] = useState(null);
   const [communityStats, setCommunityStats] = useState(null);
@@ -125,15 +125,13 @@ export default function PlayerProfileModal({ jogador, rank, isPublicView, onClos
 
       setCommunityStats({ games: totalGames, wins, losses, winRate, points: totalPoints, rebounds: totalRebounds, assists: totalAssists, steals: totalSteals, blocks: totalBlocks });
 
-      if (!isPublicView) {
-        const user = (await supabase.auth.getUser()).data.user;
-        if (user) {
-          setMinhaId(user.id);
-          const { data: av } = await supabase.from('avaliacoes').select('*').eq('avaliador_id', user.id).eq('jogador_id', jogador.id).maybeSingle();
-          if (av) {
-            setEstrelas({ arremesso: av.arremesso, defesa: av.defesa, controle_de_bola: av.controle_de_bola, explosao_fisica: av.explosao_fisica, visao_de_jogo: av.visao_de_jogo });
-            setJaAvaliou(true);
-          }
+      const user = (await supabase.auth.getUser()).data.user;
+      if (user) {
+        setMinhaId(user.id);
+        const { data: av } = await supabase.from('avaliacoes').select('*').eq('avaliador_id', user.id).eq('jogador_id', jogador.id).maybeSingle();
+        if (av) {
+          setEstrelas({ arremesso: av.arremesso, defesa: av.defesa, controle_de_bola: av.controle_de_bola, explosao_fisica: av.explosao_fisica, visao_de_jogo: av.visao_de_jogo });
+          setJaAvaliou(true);
         }
       }
     } catch (e) {
@@ -457,7 +455,7 @@ export default function PlayerProfileModal({ jogador, rank, isPublicView, onClos
             </div>
 
             {/* Bottom CTAs */}
-            {!isMe && !isPublicView && (
+            {!isMe && (
               <div style={{ padding: '12px 16px 20px', borderTop: '1px solid var(--border)', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
                 <button onClick={() => setShowAvaliar(true)} style={{ width: '100%', height: 52, borderRadius: 12, background: '#C8F135', border: 'none', color: '#0C0C14', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em', boxShadow: '0 4px 16px rgba(200,241,53,0.25)' }}>
                   {jaAvaliou ? 'Editar Avaliação' : 'Avaliar Este Jogador'}

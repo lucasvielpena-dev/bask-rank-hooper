@@ -18,17 +18,10 @@ import AdminTournaments from './pages/AdminTournaments';
 import AdminNotifications from './pages/AdminNotifications';
 import AdminReports from './pages/AdminReports';
 import AdminLogs from './pages/AdminLogs';
-import RankingPublico from './pages/RankingPublico';
 
 function AppRoutes() {
-  const { profile, user } = useAuth();
-  const [page, setPage] = useState(() => {
-    const path = window.location.pathname;
-    if (path === '/ranking-publico' || path === '/publico') {
-      return 'rankingPublico';
-    }
-    return 'inicio';
-  });
+  const { profile } = useAuth();
+  const [page, setPage] = useState('inicio');
   const [pageProps, setPageProps] = useState({});
 
   useEffect(() => {
@@ -53,31 +46,13 @@ function AppRoutes() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!user) {
-      setPage('rankingPublico');
-    }
-  }, [user]);
-
   function navigate(to, props = {}) {
-    if (to === 'rankingPublico') {
-      window.history.pushState({}, '', '/ranking-publico');
-    } else if (to === 'login') {
-      window.history.pushState({}, '', '/');
-      window.location.reload();
-      return;
-    } else {
-      if (window.location.pathname !== '/') {
-        window.history.pushState({}, '', '/');
-      }
-    }
     setPage(to);
     setPageProps(props);
   }
 
   function renderPage() {
     switch (page) {
-      case 'rankingPublico': return <RankingPublico onNavigate={navigate} />;
       case 'inicio': return <Home profile={profile} onNavigate={navigate} />;
       case 'atletas': return <Atletas profile={profile} initialOpenAdd={pageProps.openAdd} />;
       case 'torneios': return <Jogos profile={profile} initialAba="torneios" />;

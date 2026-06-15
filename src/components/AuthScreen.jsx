@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { authAPI } from '../lib/supabase';
 
-export default function AuthScreen({ onStartAnimation, onFinishAnimation, onNavigate }) {
+export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
   const [tab, setTab] = useState('login');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -575,33 +575,6 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, onNavi
               </button>
             )}
           </form>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.1)' }} />
-              <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11, fontWeight: 600 }}>VISITANTE</span>
-              <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.1)' }} />
-            </div>
-            
-            <button
-              type="button"
-              onClick={() => onNavigate('rankingPublico')}
-              style={{ 
-                width: '100%', height: 48, borderRadius: 12, border: '1px solid rgba(255,255,255,0.15)',
-                background: 'rgba(255,255,255,0.05)', color: '#FFFFFF', fontSize: 14, fontWeight: 700,
-                cursor: 'pointer', fontFamily: "'Inter',sans-serif",
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                transition: 'all 0.2s'
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 2a14.5 14.5 0 0 0 0 20"/>
-                <path d="M2 12h20"/>
-              </svg>
-              Ver Rankings Públicos
-            </button>
-          </div>
         </div>
 
       </div>

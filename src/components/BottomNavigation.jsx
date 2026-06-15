@@ -42,10 +42,6 @@ const NavIcon = memo(function NavIcon({ type, active }) {
 });
 
 export default memo(function BottomNavigation({ page, onNavigate, isMaster }) {
-  if (page === 'rankingPublico') {
-    return null;
-  }
-
   const allPages = isMaster
     ? { ...PAGES, master: { label: 'Admin', icon: 'shield' } }
     : PAGES;
