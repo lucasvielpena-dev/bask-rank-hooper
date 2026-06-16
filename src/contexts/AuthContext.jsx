@@ -146,7 +146,7 @@ export function AuthProvider({ children }) {
       verificarLocalizacao(profile);
       verificarEAutoCriarJogador(profile);
     }
-  }, [profile?.id]);
+  }, [profile?.id, esporte]);
 
   async function verificarEAutoCriarJogador(prof) {
     if (!prof.cadastro_completo) return;
@@ -154,74 +154,65 @@ export function AuthProvider({ children }) {
     playerCreationLock.current = true;
 
     try {
-      if (prof.player_id) {
-        const { data: existingJogador } = await supabase
-          .from('jogadores')
-          .select('id')
-          .eq('id', prof.player_id)
-          .maybeSingle();
+      // 1. Verificar se já existe um jogador associado a este usuário e modalidade/esporte ativa
+      const { data: existingJogador } = await supabase
+        .from('jogadores')
+        .select('id')
+        .eq('criado_por', prof.id)
+        .eq('esporte', esporte)
+        .maybeSingle();
 
-        if (existingJogador) return;
-
-        console.log('Jogador referenciado não existe mais. Recriando...');
-        const { error: clearErr } = await profilesAPI.atualizar(prof.id, { player_id: null });
-        if (clearErr) console.error('Erro ao limpar player_id:', clearErr);
-        prof = { ...prof, player_id: null };
-      }
-
-      if (!prof.player_id) {
-        const { data: alreadyExists } = await supabase
-          .from('jogadores')
-          .select('id')
-          .eq('criado_por', prof.id)
-          .maybeSingle();
-
-        if (alreadyExists) {
-          console.log('Jogador já existe por criado_por, vinculando...');
-          const { data: updatedProfile } = await profilesAPI.atualizar(prof.id, {
-            player_id: alreadyExists.id,
-            is_player: true
-          });
-          if (updatedProfile) setProfile(updatedProfile);
-          return;
-        }
-
-        console.log('Criando jogador para perfil...', prof.nome_completo, prof.id);
-        const { data: newJogador, error: jogError } = await supabase
-          .from('jogadores')
-          .insert([{
-            nome: prof.nome_completo || 'Jogador',
-            apelido: prof.apelido || 'Jogador',
-            foto_url: prof.foto_perfil || null,
-            criado_por: prof.id,
-            cidade: prof.cidade_atual || prof.cidade || 'Altamira',
-            uf: prof.uf || 'PA',
-            posicao: prof.posicao || cfg.posicoes[0],
-            esporte: esporte,
-            ativo: true,
-            total_votos: 0,
-            media_estrelas: 0.00
-          }])
-          .select()
-          .single();
-
-        if (jogError) {
-          console.error('Erro ao criar jogador:', jogError);
-          throw jogError;
-        }
-
-        if (newJogador) {
-          console.log('Jogador criado:', newJogador.id);
+      if (existingJogador) {
+        // Se existe mas o perfil aponta para outro ID (por exemplo, de outra modalidade), atualiza a referência
+        if (prof.player_id !== existingJogador.id) {
+          console.log(`Atualizando player_id do profile para o jogador de ${esporte}...`);
           const { data: updatedProfile, error: profError } = await profilesAPI.atualizar(prof.id, {
-            player_id: newJogador.id,
+            player_id: existingJogador.id,
             is_player: true
           });
           if (!profError && updatedProfile) {
             setProfile(updatedProfile);
-            console.log('Perfil atualizado com player_id:', newJogador.id);
-          } else {
-            console.error('Erro ao atualizar profile:', profError);
           }
+        }
+        return;
+      }
+
+      // 2. Se não existir jogador para esta modalidade/esporte, criamos um novo
+      console.log(`Criando jogador de ${esporte} para o perfil...`, prof.nome_completo, prof.id);
+      const { data: newJogador, error: jogError } = await supabase
+        .from('jogadores')
+        .insert([{
+          nome: prof.nome_completo || 'Jogador',
+          apelido: prof.apelido || 'Jogador',
+          foto_url: prof.foto_perfil || null,
+          criado_por: prof.id,
+          cidade: prof.cidade_atual || prof.cidade || 'Altamira',
+          uf: prof.uf || 'PA',
+          posicao: prof.posicao || cfg.posicoes[0],
+          esporte: esporte,
+          ativo: true,
+          total_votos: 0,
+          media_estrelas: 0.00
+        }])
+        .select()
+        .single();
+
+      if (jogError) {
+        console.error('Erro ao criar jogador:', jogError);
+        throw jogError;
+      }
+
+      if (newJogador) {
+        console.log(`Jogador de ${esporte} criado:`, newJogador.id);
+        const { data: updatedProfile, error: profError } = await profilesAPI.atualizar(prof.id, {
+          player_id: newJogador.id,
+          is_player: true
+        });
+        if (!profError && updatedProfile) {
+          setProfile(updatedProfile);
+          console.log('Perfil atualizado com player_id:', newJogador.id);
+        } else {
+          console.error('Erro ao atualizar profile:', profError);
         }
       }
     } catch (err) {

@@ -142,10 +142,10 @@ export default function Atletas({ profile }) {
       const userId = (await supabase.auth.getUser()).data.user?.id;
 
       const [{ data: jogs }, { data: votesStatus }, { data: minhasAvaliacoes }] = await Promise.all([
-        jogadoresAPI.listarPorEstado(stateUfVal),
+        jogadoresAPI.listarPorEstado(stateUfVal, esporte),
         votacaoAPI.getStatusHoje(),
         userId
-          ? supabase.from('avaliacoes').select('jogador_id').eq('avaliador_id', userId)
+          ? supabase.from('avaliacoes').select('jogador_id').eq('avaliador_id', userId).eq('esporte', esporte)
           : Promise.resolve({ data: [] })
       ]);
 

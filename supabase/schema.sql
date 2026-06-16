@@ -522,7 +522,8 @@ DROP FUNCTION IF EXISTS public.get_ranking();
 CREATE OR REPLACE FUNCTION public.get_ranking(
   p_cidade TEXT DEFAULT NULL,
   p_uf TEXT DEFAULT NULL,
-  p_limit INTEGER DEFAULT 20
+  p_limit INTEGER DEFAULT 20,
+  p_esporte TEXT DEFAULT 'basquete'
 )
 RETURNS TABLE (
   id UUID,
@@ -575,6 +576,7 @@ BEGIN
     AND j.total_votos >= 1
     AND (p_cidade IS NULL OR j.cidade = p_cidade)
     AND (p_uf IS NULL OR j.uf = p_uf)
+    AND j.esporte = p_esporte
   ORDER BY j.media_estrelas DESC, j.total_votos DESC
   LIMIT p_limit;
 END;
