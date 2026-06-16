@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { masterAPI } from '../lib/supabase';
 import { IconVoltar, IconBuscar, IconBasquete } from '../components/Icons';
+import { useEsporte } from '../contexts/EsporteContext';
 
 export default function AdminPlayers({ profile, onNavigate }) {
+  const { esporte } = useEsporte();
   const [players, setPlayers] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,12 +12,17 @@ export default function AdminPlayers({ profile, onNavigate }) {
   const [toast, setToast] = useState(null);
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [filterSport, setFilterSport] = useState(esporte);
 
   const isMaster = profile?.role === 'master';
 
   useEffect(() => {
     if (isMaster) loadPlayers();
   }, [isMaster]);
+
+  useEffect(() => {
+    setFilterSport(esporte);
+  }, [esporte]);
 
   useEffect(() => {
     let result = [...players];
@@ -36,8 +43,14 @@ export default function AdminPlayers({ profile, onNavigate }) {
       result = result.filter(p => !p.ativo);
     }
 
+    if (filterSport === 'basquete') {
+      result = result.filter(p => (p.esporte || 'basquete') === 'basquete');
+    } else if (filterSport === 'handebol') {
+      result = result.filter(p => p.esporte === 'handebol');
+    }
+
     setFiltered(result);
-  }, [search, players, filterStatus]);
+  }, [search, players, filterStatus, filterSport]);
 
   async function loadPlayers() {
     setLoading(true);
@@ -172,6 +185,38 @@ export default function AdminPlayers({ profile, onNavigate }) {
             placeholder="Buscar por nome, apelido, cidade ou posição..."
             style={{ paddingLeft: 40, width: '100%', boxSizing: 'border-box' }}
           />
+        </div>
+
+        {/* Filtros de Esporte */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12, overflowX: 'auto', scrollbarWidth: 'none' }} className="hide-scrollbar">
+          {[
+            { key: 'all', label: 'Todos os Esportes' },
+            { key: 'basquete', label: 'Basquete 🏀' },
+            { key: 'handebol', label: 'Handebol 🤾' }
+          ].map(f => {
+            const active = filterSport === f.key;
+            return (
+              <button
+                key={f.key}
+                onClick={() => setFilterSport(f.key)}
+                style={{
+                  flexShrink: 0,
+                  padding: '6px 14px',
+                  borderRadius: '30px',
+                  border: active ? '1.5px solid var(--accent)' : '1.5px solid var(--border)',
+                  background: active ? 'var(--accent-dim)' : 'var(--bg-card)',
+                  color: active ? 'var(--accent)' : 'var(--text-secondary)',
+                  fontWeight: 700,
+                  fontSize: 11,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                {f.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Filtros de Status */}
@@ -327,6 +372,18 @@ export default function AdminPlayers({ profile, onNavigate }) {
                         letterSpacing: '0.03em'
                       }}>
                         {player.ativo ? 'ATIVO' : 'SUSPENSO'}
+                      </span>
+                      {/* Badge de Esporte */}
+                      <span style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        padding: '2px 8px',
+                        borderRadius: 20,
+                        background: (player.esporte || 'basquete') === 'handebol' ? 'rgba(59,130,246,0.15)' : 'rgba(249,115,22,0.15)',
+                        color: (player.esporte || 'basquete') === 'handebol' ? '#3b82f6' : '#f97316',
+                        letterSpacing: '0.03em'
+                      }}>
+                        {(player.esporte || 'basquete').toUpperCase()}
                       </span>
                     </div>
                     <div style={{

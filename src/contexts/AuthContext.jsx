@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { supabase, authAPI, profilesAPI, notificacoesAPI, masterAPI } from '../lib/supabase';
+import { useEsporte } from './EsporteContext';
 import AuthScreen from '../components/AuthScreen';
 import CompleteProfileScreen from '../components/CompleteProfileScreen';
 
@@ -16,6 +17,7 @@ const ESTADO_TO_UF = {
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  const { esporte, cfg } = useEsporte();
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -48,7 +50,7 @@ export function AuthProvider({ children }) {
         setEditApelido(data.apelido || '');
         setEditAltura(data.altura ? data.altura.toString().replace('.', ',') : '');
         setEditIdade(data.idade || '');
-        setEditPosicao(data.posicao || 'Ala');
+        setEditPosicao(data.posicao || cfg.posicoes[0]);
         setLoadingProfile(false);
         masterAPI.touchLastSeen().catch(() => {});
         return data;
@@ -79,7 +81,7 @@ export function AuthProvider({ children }) {
           setEditApelido(createdData.apelido || '');
           setEditAltura(createdData.altura || '');
           setEditIdade(createdData.idade || '');
-          setEditPosicao(createdData.posicao || 'Ala');
+          setEditPosicao(createdData.posicao || cfg.posicoes[0]);
         } else {
           setProfile(fallbackProfile);
         }
@@ -194,7 +196,8 @@ export function AuthProvider({ children }) {
             criado_por: prof.id,
             cidade: prof.cidade_atual || prof.cidade || 'Altamira',
             uf: prof.uf || 'PA',
-            posicao: prof.posicao || 'Ala',
+            posicao: prof.posicao || cfg.posicoes[0],
+            esporte: esporte,
             ativo: true,
             total_votos: 0,
             media_estrelas: 0.00
@@ -333,6 +336,7 @@ export function AuthProvider({ children }) {
             cidade: detectedCity,
             uf: detectedUf,
             pais: detectedCountry,
+            esporte: esporte,
             ativo: true,
             total_votos: 0,
             media_estrelas: 0.00

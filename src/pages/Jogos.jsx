@@ -4,8 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Torneios from './Torneios';
 import { IconJogo, IconMais, IconCalendario } from '../components/Icons';
 import { JogosBackground, TorneiosBackground } from '../components/AnimatedBackgrounds';
+import { useEsporte } from '../contexts/EsporteContext';
 
 export default function Jogos({ profile, initialAba = 'jogos' }) {
+  const { esporte } = useEsporte();
   const [tela, setTela] = useState('lista'); // 'lista' | 'novo' | 'partida'
   const [aba, setAba] = useState(initialAba); // 'jogos' | 'historico' | 'torneios'
   
@@ -64,7 +66,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   useEffect(() => {
     loadDados();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [esporte]);
 
   // Efeito do cronômetro
   useEffect(() => {
@@ -104,7 +106,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     setLoading(true);
     try {
       // 1. Carregar jogadores para o formulário de times (filtrar pela cidade do usuário)
-      const { data: jogs } = await jogadoresAPI.listar();
+      const { data: jogs } = await jogadoresAPI.listar(esporte);
       const userCity = profile.cidade_atual || profile.cidade || 'Altamira';
       const userUf = profile.uf || '';
       setJogadores((jogs || []).filter(j => {
@@ -114,7 +116,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       }));
 
       // 2. Carregar partidas
-      const { data: parts } = await partidasAPI.listar();
+      const { data: parts } = await partidasAPI.listar(esporte);
       const todas = parts || [];
       
       const ativas = todas.filter(p => p.status === 'ativo');
@@ -246,7 +248,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
         periodos: 1,
         status: 'ativo',
         cidade: 'Altamira',
-        uf: 'PA'
+        uf: 'PA',
+        esporte: esporte
       };
 
       const { data, error } = await partidasAPI.criar(novaPartida);

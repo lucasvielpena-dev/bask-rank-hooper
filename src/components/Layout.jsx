@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { useEsporte } from '../contexts/EsporteContext';
 import Header from './Header';
 import BottomNavigation from './BottomNavigation';
 import { IconSino, IconLocalizacao } from './Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Layout({ page, onNavigate, children }) {
+  const { cfg } = useEsporte();
   const {
     profile,
     isMaster,
@@ -268,11 +270,9 @@ export default function Layout({ page, onNavigate, children }) {
                     value={editPosicao}
                     onChange={(e) => setEditPosicao(e.target.value)}
                   >
-                    <option value="Armador">Armador</option>
-                    <option value="Ala-Armador">Ala-Armador</option>
-                    <option value="Ala">Ala</option>
-                    <option value="Ala-Pivô">Ala-Pivô</option>
-                    <option value="Pivô">Pivô</option>
+                    {cfg.posicoes.map(p => (
+                      <option key={p} value={p}>{p}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -398,7 +398,7 @@ export default function Layout({ page, onNavigate, children }) {
                     className="btn btn-secondary"
                     onClick={() => {
                       setEditApelido(profile.apelido || '');
-                      setEditPosicao(profile.posicao || 'Ala');
+                      setEditPosicao(profile.posicao || cfg.posicoes[0]);
                       setEditFoto(profile.foto_perfil || '');
                       setIsEditingProfile(true);
                     }}

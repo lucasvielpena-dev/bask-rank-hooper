@@ -1,15 +1,8 @@
 import { useState, useEffect, memo } from 'react';
-import { supabase, denunciasAPI, votacaoAPI } from '../lib/supabase';
+import { supabase, denunciasAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import AnimatedCounter from './AnimatedCounter';
-
-const fundamentos = [
-  { key: 'arremesso', label: 'Arremesso' },
-  { key: 'controle_de_bola', label: 'Controle de Bola' },
-  { key: 'defesa', label: 'Defesa' },
-  { key: 'visao_de_jogo', label: 'Visão de Jogo' },
-  { key: 'explosao_fisica', label: 'Explosão Física' }
-];
+import { useEsporte } from '../contexts/EsporteContext';
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
 
@@ -42,6 +35,9 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
 });
 
 export default function PlayerProfileModal({ jogador, rank, onClose }) {
+  const { esporte, cfg } = useEsporte();
+  const fundamentos = cfg.habilidades;
+
   const [localJogador, setLocalJogador] = useState(jogador);
   const [profileData, setProfileData] = useState(null);
   const [communityStats, setCommunityStats] = useState(null);
@@ -57,7 +53,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
 
   const [minhaId, setMinhaId] = useState(null);
   const [showAvaliar, setShowAvaliar] = useState(false);
-  const [estrelas, setEstrelas] = useState({ arremesso: 0, defesa: 0, controle_de_bola: 0, explosao_fisica: 0, visao_de_jogo: 0 });
+  const [estrelas, setEstrelas] = useState(() => Object.fromEntries(cfg.habilidades.map(h => [h.key, 0])));
   const [enviandoAvaliacao, setEnviandoAvaliacao] = useState(false);
   const [jaAvaliou, setJaAvaliou] = useState(false);
 
@@ -153,7 +149,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   async function handleConfirmarAvaliacao() {
     if (fundamentos.some(f => !estrelas[f.key])) { showToast('Selecione uma nota para todos os 5 fundamentos', 'error'); return; }
     setEnviandoAvaliacao(true);
-    const { data, error } = await votacaoAPI.votar(jogador.id, estrelas);
+    const apiVoto = esporte === 'handebol' ? votacaoHandebolAPI : votacaoAPI;
+    const { data, error } = await apiVoto.votar(jogador.id, estrelas);
     if (error || !data?.sucesso) { showToast(data?.erro || error?.message || 'Erro ao registrar avaliação', 'error'); }
     else {
       showToast(`✓ Avaliação registrada! Média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
@@ -397,7 +394,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       { label: 'Cidade', val: `${localJogador.cidade} - ${localJogador.uf}`, icon: null },
                       { label: 'Idade', val: profileData?.idade ? `${profileData.idade} anos` : '--', icon: null },
                       { label: 'Altura', val: profileData?.altura ? `${Number(profileData.altura).toFixed(2)} m` : '--', icon: null },
-                      { label: 'Posição', val: localJogador.posicao || 'Ala', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8F135" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg> },
+                      { label: 'Posição', val: localJogador.posicao || cfg.posicoes[0], icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8F135" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg> },
                       { label: 'Equipe', val: localJogador.equipe || `${localJogador.cidade} Hooper`, icon: null },
                     ].map((item, i) => (
                       <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: i < 4 ? '1px solid rgba(255,255,255,0.04)' : 'none', minHeight: 48 }}>

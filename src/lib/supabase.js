@@ -10,22 +10,24 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // ============================================================
 
 export const jogadoresAPI = {
-  listar: async () => {
+  listar: async (esporte = 'basquete') => {
     const { data, error } = await supabase
       .from('jogadores')
       .select('*')
       .eq('ativo', true)
+      .eq('esporte', esporte)
       .order('media_estrelas', { ascending: false })
       .order('total_votos', { ascending: false });
     return { data, error };
   },
 
-  listarPorEstado: async (uf) => {
+  listarPorEstado: async (uf, esporte = 'basquete') => {
     const { data, error } = await supabase
       .from('jogadores')
       .select('*')
       .eq('ativo', true)
       .eq('uf', uf)
+      .eq('esporte', esporte)
       .order('media_estrelas', { ascending: false })
       .order('total_votos', { ascending: false });
     return { data, error };
@@ -34,20 +36,22 @@ export const jogadoresAPI = {
 };
 
 export const rankingAPI = {
-  get: async (cidade, uf, limit = 50) => {
+  get: async (cidade, uf, limit = 50, esporte = 'basquete') => {
     const { data, error } = await supabase.rpc('get_ranking', {
       p_cidade: cidade || null,
       p_uf: uf || null,
-      p_limit: limit
+      p_limit: limit,
+      p_esporte: esporte
     });
     return { data, error };
   },
 
-  getTop5: async (cidade, uf) => {
+  getTop5: async (cidade, uf, esporte = 'basquete') => {
     const { data, error } = await supabase.rpc('get_ranking', {
       p_cidade: cidade || null,
       p_uf: uf || null,
-      p_limit: 5
+      p_limit: 5,
+      p_esporte: esporte
     });
     return { data, error };
   },
@@ -76,11 +80,30 @@ export const votacaoAPI = {
   },
 };
 
+export const votacaoHandebolAPI = {
+  votar: async (jogadorId, avaliacao, metadata = {}) => {
+    const { data, error } = await supabase.rpc('registrar_avaliacao_handebol', {
+      p_jogador_id: jogadorId,
+      p_finalizacao: avaliacao.finalizacao,
+      p_defesa: avaliacao.defesa,
+      p_passes: avaliacao.passes,
+      p_explosao_fisica: avaliacao.explosao_fisica,
+      p_visao_de_jogo: avaliacao.visao_de_jogo,
+      p_ip: metadata.ip || null,
+      p_device_id: metadata.deviceId || null,
+      p_localizacao: metadata.localizacao || null,
+      p_comentario: avaliacao.comentario || null,
+    });
+    return { data, error };
+  },
+};
+
 export const jogosAPI = {
-  listar: async () => {
+  listar: async (esporte = 'basquete') => {
     const { data, error } = await supabase
       .from('jogos')
       .select('*')
+      .eq('esporte', esporte)
       .order('created_at', { ascending: false });
     return { data, error };
   },
@@ -89,7 +112,7 @@ export const jogosAPI = {
     const user = (await supabase.auth.getUser()).data.user;
     const { data, error } = await supabase
       .from('jogos')
-      .insert([{ ...jogo, criado_por: user?.id }])
+      .insert([{ ...jogo, esporte: jogo.esporte || 'basquete', criado_por: user?.id }])
       .select()
       .single();
     return { data, error };
@@ -107,7 +130,7 @@ export const jogosAPI = {
 };
 
 export const estatisticasPessoaisAPI = {
-  obterMinhas: async () => {
+  obterMinhas: async (esporte = 'basquete') => {
     const user = (await supabase.auth.getUser()).data.user;
     if (!user) return { data: [], error: new Error("Usuário não autenticado") };
     
@@ -115,6 +138,7 @@ export const estatisticasPessoaisAPI = {
       .from('estatisticas_pessoais')
       .select('*')
       .eq('usuario_id', user.id)
+      .eq('esporte', esporte)
       .order('data_partida', { ascending: false })
       .order('created_at', { ascending: false });
     return { data, error };
@@ -126,7 +150,7 @@ export const estatisticasPessoaisAPI = {
 
     const { data, error } = await supabase
       .from('estatisticas_pessoais')
-      .insert([{ ...stats, usuario_id: user.id }])
+      .insert([{ ...stats, esporte: stats.esporte || 'basquete', usuario_id: user.id }])
       .select()
       .single();
     return { data, error };
@@ -256,10 +280,11 @@ export const denunciasAPI = {
 };
 
 export const partidasAPI = {
-  listar: async () => {
+  listar: async (esporte = 'basquete') => {
     const { data, error } = await supabase
       .from('partidas')
       .select('*')
+      .eq('esporte', esporte)
       .order('created_at', { ascending: false });
     return { data, error };
   },
@@ -275,7 +300,7 @@ export const partidasAPI = {
   criar: async (partida) => {
     const { data, error } = await supabase
       .from('partidas')
-      .insert([partida])
+      .insert([{ ...partida, esporte: partida.esporte || 'basquete' }])
       .select()
       .single();
     return { data, error };
@@ -554,8 +579,18 @@ export const masterAPI = {
   },
 
   getPlayers: async () => {
-    const { data, error } = await supabase.rpc('admin_get_players');
-    return { data, error };
+    const { data, error } = await supabase
+      .from('jogadores')
+      .select('*, match_count:partida_jogadores(count)');
+    if (data) {
+      const mapped = data.map(p => ({
+        ...p,
+        match_count: p.match_count?.[0]?.count || 0,
+        total_partidas: p.match_count?.[0]?.count || 0
+      }));
+      return { data: mapped, error: null };
+    }
+    return { data: null, error };
   },
 
   togglePlayer: async (playerId, active) => {

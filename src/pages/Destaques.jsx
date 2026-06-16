@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
+import { useEsporte } from '../contexts/EsporteContext';
 import { IconRanking, IconCalendario, IconBasquete } from '../components/Icons';
 
 function StatCard({ icon, label, value, color }) {
@@ -58,6 +59,7 @@ function HighlightSection({ title, icon, children }) {
 }
 
 export default function Destaques({ profile, onNavigate }) {
+  const { esporte, cfg } = useEsporte();
   const [stats, setStats] = useState({ jogadores: 0, mediaGeral: 0, avaliacoes: 0, torneios: 0 });
   const [topJogadores, setTopJogadores] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,14 +69,14 @@ export default function Destaques({ profile, onNavigate }) {
 
   useEffect(() => {
     loadData();
-  }, [profile]);
+  }, [profile, esporte]);
 
   async function loadData() {
     setLoading(true);
     try {
       const [{ data: jogs }, { data: ranking }, { count: tCount }] = await Promise.all([
-        supabase.from('jogadores').select('*').eq('uf', uf),
-        rankingAPI.getTop5(city, uf),
+        supabase.from('jogadores').select('*').eq('uf', uf).eq('esporte', esporte),
+        rankingAPI.getTop5(city, uf, esporte),
         supabase.from('torneios').select('*', { count: 'exact', head: true })
       ]);
 
@@ -209,7 +211,7 @@ export default function Destaques({ profile, onNavigate }) {
                       {jogador.nome}
                     </div>
                     <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                      {jogador.posicao || 'Ala'} · {jogador.cidade}
+                      {jogador.posicao || cfg.posicoes[0]} · {jogador.cidade}
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>

@@ -2,16 +2,13 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
 import { StatsBackground } from '../components/AnimatedBackgrounds';
+import { useEsporte } from '../contexts/EsporteContext';
 
-const fundamentos = [
-  { key: 'arremesso', label: 'Arremesso' },
-  { key: 'controle_de_bola', label: 'Controle de Bola' },
-  { key: 'defesa', label: 'Defesa' },
-  { key: 'visao_de_jogo', label: 'Visão de Jogo' },
-  { key: 'explosao_fisica', label: 'Explosão Física' }
-];
+
 
 export default function Stats({ profile, onNavigate }) {
+  const { esporte, cfg } = useEsporte();
+  const fundamentos = cfg.habilidades;
   const [aba, setAba] = useState('sobre'); // 'sobre' | 'estatisticas' | 'historico'
   const [subAbaHistorico, setSubAbaHistorico] = useState('pessoal'); // 'pessoal' | 'quadra'
   const [historicoPrivado, setHistoricoPrivado] = useState([]);
@@ -61,13 +58,13 @@ export default function Stats({ profile, onNavigate }) {
       loadAllStats();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile]);
+  }, [profile, esporte]);
 
   async function loadAllStats() {
     setLoading(true);
     try {
       // 1. Carregar estatísticas privadas
-      const { data: privData } = await estatisticasPessoaisAPI.obterMinhas();
+      const { data: privData } = await estatisticasPessoaisAPI.obterMinhas(esporte);
       const hist = privData || [];
       setHistoricoPrivado(hist);
 
@@ -125,7 +122,7 @@ export default function Stats({ profile, onNavigate }) {
         }
 
         // Calcular rank
-        const { data: rankList } = await rankingAPI.get(city, uf, 200);
+        const { data: rankList } = await rankingAPI.get(city, uf, 200, esporte);
         if (rankList) {
           const myIndex = rankList.findIndex(j => j.id === profile.player_id);
           if (myIndex !== -1) {
@@ -263,7 +260,8 @@ export default function Stats({ profile, onNavigate }) {
         ...form,
         arremessos_tentados: tentados,
         arremessos_convertidos: convertidos,
-        pontos: pontos
+        pontos: pontos,
+        esporte: esporte
       };
       if (!showAvancado) {
         payload.lance_livre_tentados = 0;
@@ -400,7 +398,7 @@ export default function Stats({ profile, onNavigate }) {
                   {badgeText}
                 </span>
               )}
-              <span style={{ color: '#6A6A82', fontSize: '11px' }}>{profile.posicao || myPlayerInfo?.posicao || 'Ala'}</span>
+              <span style={{ color: '#6A6A82', fontSize: '11px' }}>{profile.posicao || myPlayerInfo?.posicao || cfg.posicoes[0]}</span>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -512,7 +510,7 @@ export default function Stats({ profile, onNavigate }) {
                 { label: 'Cidade', val: `${city} - ${uf}` },
                 { label: 'Idade', val: profile?.idade ? `${profile.idade} anos` : 'A definir' },
                 { label: 'Altura', val: profile?.altura ? `${Number(profile.altura).toFixed(2)} m` : 'A definir' },
-                { label: 'Posição', val: profile.posicao || myPlayerInfo?.posicao || 'Ala' },
+                { label: 'Posição', val: profile.posicao || myPlayerInfo?.posicao || cfg.posicoes[0] },
                 { label: 'Equipe', val: myPlayerInfo?.equipe || `${city} Hooper` },
               ].map(item => (
                   <div key={item.label} style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', paddingBottom: 4, borderBottom: '1px solid var(--border)' }}>

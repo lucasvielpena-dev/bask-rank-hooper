@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
+import { useEsporte } from '../contexts/EsporteContext';
 import { IconTrofeu, IconAvaliar, IconBasquete, IconRanking } from '../components/Icons';
 import { HomeBackground } from '../components/AnimatedBackgrounds';
 
@@ -57,6 +58,7 @@ const RankBadge = ({ rank }) => {
 };
 
 export default function Home({ profile, onNavigate }) {
+  const { esporte, cfg } = useEsporte();
   const [topPlayers, setTopPlayers] = useState([]);
   const [myPlayerInfo, setMyPlayerInfo] = useState(null);
   const [myRank, setMyRank] = useState('--');
@@ -69,7 +71,7 @@ export default function Home({ profile, onNavigate }) {
 
   useEffect(() => {
     if (profile) loadData(city, uf);
-  }, [profile, city, uf]);
+  }, [profile, city, uf, esporte]);
 
   useEffect(() => {
     if (!profile) return;
@@ -83,7 +85,7 @@ export default function Home({ profile, onNavigate }) {
   async function loadData(cityVal = city, ufVal = uf) {
     setLoading(true);
     try {
-      const { data: rankList } = await rankingAPI.get(cityVal, ufVal, 50);
+      const { data: rankList } = await rankingAPI.get(cityVal, ufVal, 50, esporte);
       if (rankList) {
         const sorted = [...rankList].sort((a, b) => (b.media_estrelas || 0) - (a.media_estrelas || 0));
         setTopPlayers(sorted.slice(0, 5));
@@ -387,7 +389,7 @@ export default function Home({ profile, onNavigate }) {
                     fontSize: 12, color: '#6A6A82', fontWeight: 400,
                     fontFamily: "'Inter',sans-serif", marginTop: 2,
                   }}>
-                    {player.posicao || 'Ala'}
+                    {player.posicao || cfg.posicoes[0]}
                   </span>
                 </div>
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, profilesAPI } from '../lib/supabase';
+import { useEsporte } from '../contexts/EsporteContext';
 
 const ESTADO_TO_UF = {
   'acre': 'AC', 'alagoas': 'AL', 'amapá': 'AP', 'amazonas': 'AM', 'bahia': 'BA',
@@ -12,8 +13,9 @@ const ESTADO_TO_UF = {
 };
 
 export default function CompleteProfileScreen({ profile, onComplete }) {
+  const { esporte, cfg } = useEsporte();
   const [apelido, setApelido] = useState(profile?.apelido || '');
-  const [posicao, setPosicao] = useState(profile?.posicao || 'Ala');
+  const [posicao, setPosicao] = useState(profile?.posicao || cfg.posicoes[0]);
   const [altura, setAltura] = useState(profile?.altura ? profile.altura.toString().replace('.', ',') : '');
   const [idade, setIdade] = useState(profile?.idade || '');
   const [avatarUrl, setAvatarUrl] = useState(profile?.foto_perfil || '');
@@ -183,6 +185,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               uf: uf,
               pais: pais,
               posicao: posicao,
+              esporte: esporte,
               ativo: true,
               total_votos: 0,
               media_estrelas: 0.00
@@ -366,11 +369,9 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               value={posicao}
               onChange={(e) => setPosicao(e.target.value)}
             >
-              <option value="Armador">Armador</option>
-              <option value="Ala-Armador">Ala-Armador</option>
-              <option value="Ala">Ala</option>
-              <option value="Ala-Pivô">Ala-Pivô</option>
-              <option value="Pivô">Pivô</option>
+              {cfg.posicoes.map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
             </select>
           </div>
 

@@ -3,6 +3,7 @@ import './styles/global.css';
 
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { EsporteProvider } from './contexts/EsporteContext';
 import Layout from './components/Layout';
 
 import Home from './pages/Home';
@@ -81,9 +82,11 @@ function AppRoutes() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <EsporteProvider>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </EsporteProvider>
     </ThemeProvider>
   );
 }

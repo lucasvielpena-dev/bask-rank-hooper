@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useEsporte } from '../contexts/EsporteContext';
 
 export const PAGES = {
   inicio: { label: 'Início', icon: 'court' },
@@ -26,6 +27,14 @@ const NavIcon = memo(function NavIcon({ type, active }) {
       <path d="M2 12h20"/>
     </svg>
   );
+  if (type === 'handball') return (
+    <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M12 2c-2 3-3 7-3 10s1 7 3 10"/>
+      <path d="M12 2c2 3 3 7 3 10s-1 7-3 10"/>
+      <path d="M2 12h20"/>
+    </svg>
+  );
   if (type === 'perfil') return (
     <svg {...s} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
@@ -42,9 +51,16 @@ const NavIcon = memo(function NavIcon({ type, active }) {
 });
 
 export default memo(function BottomNavigation({ page, onNavigate, isMaster }) {
+  const { esporte } = useEsporte();
+
+  const dynamicPages = {
+    ...PAGES,
+    jogos: { label: 'Jogos', icon: esporte === 'handebol' ? 'handball' : 'basketball' },
+  };
+
   const allPages = isMaster
-    ? { ...PAGES, master: { label: 'Admin', icon: 'shield' } }
-    : PAGES;
+    ? { ...dynamicPages, master: { label: 'Admin', icon: 'shield' } }
+    : dynamicPages;
 
   return (
     <nav className="bottom-nav premium-nav">

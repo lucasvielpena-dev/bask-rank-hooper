@@ -1,5 +1,6 @@
 import { useState, useEffect, memo } from 'react';
-import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
+import { supabase, jogadoresAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
+import { useEsporte } from '../contexts/EsporteContext';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedCounter from '../components/AnimatedCounter';
@@ -101,6 +102,7 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
 });
 
 export default function Atletas({ profile }) {
+  const { esporte, cfg } = useEsporte();
   const [jogadores, setJogadores] = useState([]);
   const [filtrados, setFiltrados] = useState([]);
   const [busca, setBusca] = useState('');
@@ -110,16 +112,10 @@ export default function Atletas({ profile }) {
   
   const selectedCity = profile?.cidade_atual || profile?.cidade || 'Altamira';
   
-  const fundamentos = [
-    { key: 'arremesso', label: 'Arremesso' },
-    { key: 'controle_de_bola', label: 'Controle de Bola' },
-    { key: 'defesa', label: 'Defesa' },
-    { key: 'visao_de_jogo', label: 'Visão de Jogo' },
-    { key: 'explosao_fisica', label: 'Explosão Física' }
-  ];
+  const fundamentos = cfg.habilidades;
 
   const [votingPlayer, setVotingPlayer] = useState(null);
-  const [estrelasVoto, setEstrelasVoto] = useState({ arremesso: 0, controle_de_bola: 0, defesa: 0, visao_de_jogo: 0, explosao_fisica: 0 });
+  const [estrelasVoto, setEstrelasVoto] = useState(Object.fromEntries(cfg.habilidades.map(h => [h.key, 0])));
   const [comentarioVoto, setComentarioVoto] = useState('');
   const [enviandoVoto, setEnviandoVoto] = useState(false);
   const [votosStatus, setVotosStatus] = useState(null);
@@ -127,7 +123,7 @@ export default function Atletas({ profile }) {
 
   useEffect(() => {
     if (profile) loadJogadores();
-  }, [profile]);
+  }, [profile, esporte]);
 
   useEffect(() => {
     if (!profile) return;
@@ -210,7 +206,7 @@ export default function Atletas({ profile }) {
       return;
     }
     setVotingPlayer(player);
-    setEstrelasVoto({ arremesso: 0, controle_de_bola: 0, defesa: 0, visao_de_jogo: 0, explosao_fisica: 0 });
+    setEstrelasVoto(Object.fromEntries(cfg.habilidades.map(h => [h.key, 0])));
     setComentarioVoto('');
   }
 
@@ -223,7 +219,8 @@ export default function Atletas({ profile }) {
     }
     setEnviandoVoto(true);
     try {
-      const { data, error } = await votacaoAPI.votar(votingPlayer.id, {
+      const apiVoto = esporte === 'handebol' ? votacaoHandebolAPI : votacaoAPI;
+      const { data, error } = await apiVoto.votar(votingPlayer.id, {
         ...estrelasVoto,
         comentario: comentarioVoto.trim() || null
       });
@@ -402,7 +399,7 @@ export default function Atletas({ profile }) {
                         {j.nome}
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                        <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.posicao || 'Ala'}</span>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.posicao || cfg.posicoes[0]}</span>
                         <span style={{ color: 'var(--text-secondary)', fontSize: 10 }}>•</span>
                         <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.cidade}</span>
                       </div>
