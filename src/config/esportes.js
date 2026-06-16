@@ -2,7 +2,10 @@
 export const ESPORTES = {
   basquete: {
     label: 'Basquete',
-    emoji: '🏀',
+    divisionName: 'Hoops Division',
+    divisionSlogan: 'A quadra oficial do basquete nacional',
+    goalLabel: 'Cestinha',
+    scoreUnit: 'PTS',
     posicoes: ['Armador', 'Ala-Armador', 'Ala', 'Ala-Pivô', 'Pivô'],
     habilidades: [
       { key: 'arremesso',        label: 'Arremesso' },
@@ -19,7 +22,10 @@ export const ESPORTES = {
   },
   handebol: {
     label: 'Handebol',
-    emoji: '🤾',
+    divisionName: 'Handball League',
+    divisionSlogan: 'A quadra oficial do handebol nacional',
+    goalLabel: 'Artilheiro',
+    scoreUnit: 'Gols',
     posicoes: ['Goleiro', 'Ponta-Esquerda', 'Ponta-Direita', 'Meia', 'Pivô', 'Armador'],
     habilidades: [
       { key: 'finalizacao',     label: 'Finalização' },

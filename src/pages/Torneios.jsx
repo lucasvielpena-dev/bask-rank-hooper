@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase, torneiosAPI, equipesAPI, torneioJogosAPI, profilesAPI } from '../lib/supabase';
-import { IconCalendario } from '../components/Icons';
+import { IconCalendario, IconSportDynamic } from '../components/Icons';
 import { TorneiosBackground } from '../components/AnimatedBackgrounds';
+import { useEsporte } from '../contexts/EsporteContext';
 
 // Formatos de Torneio Traduzidos
 const FORMATOS = {
@@ -285,6 +286,7 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
 // PÁGINA: DETALHES DO TORNEIO (MAIN HUB)
 // ============================================================
 function TorneioDetalhes({ torneio, profile, onBack }) {
+  const { esporte, cfg } = useEsporte();
   const [aba, setAba] = useState('info');
   const [equipes, setEquipes] = useState([]);
   const [jogos, setJogos] = useState([]);
@@ -870,7 +872,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     gap: '6px',
                     fontFamily: 'inherit'
                   }}>
-                    🏀 Gerenciar Jogos
+                    <IconSportDynamic sport={esporte} size={14} color="var(--text-primary)" /> Gerenciar Jogos
                   </button>
                   <button onClick={() => setAba('destaques')} style={{
                     background: 'var(--bg-card)',
@@ -1235,13 +1237,15 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
-                    <div style={{ fontSize: '24px' }}>🏀</div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28 }}>
+                      <IconSportDynamic sport={esporte} size={24} color="var(--accent)" />
+                    </div>
                     <div style={{ flex: 1 }}>
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.cestinha.nome}</strong>
-                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Cestinha do Torneio</span>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>{cfg.goalLabel} do Torneio</span>
                     </div>
                     <div style={{ fontSize: '22px', fontWeight: 900, color: 'var(--accent)', fontFamily: "'Bebas Neue', sans-serif" }}>
-                      {lideres.cestinha.pts} PTS
+                      {lideres.cestinha.pts} {cfg.scoreUnit.toUpperCase()}
                     </div>
                   </div>
                 )}
@@ -1282,10 +1286,12 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     <div style={{ fontSize: '24px' }}>💪</div>
                     <div style={{ flex: 1 }}>
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.rebotes.nome}</strong>
-                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Líder em Rebotes</span>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                        {esporte === 'handebol' ? 'Líder em Defesas (Goleiro)' : 'Líder em Rebotes'}
+                      </span>
                     </div>
                     <div style={{ fontSize: '22px', fontWeight: 900, color: 'var(--accent)', fontFamily: "'Bebas Neue', sans-serif" }}>
-                      {lideres.rebotes.reb} REB
+                      {lideres.rebotes.reb} {esporte === 'handebol' ? 'DEF' : 'REB'}
                     </div>
                   </div>
                 )}
@@ -1304,10 +1310,12 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     <div style={{ fontSize: '24px' }}>🚫</div>
                     <div style={{ flex: 1 }}>
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.tocos.nome}</strong>
-                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Líder em Tocos (Blocks)</span>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                        {esporte === 'handebol' ? 'Líder em Faltas Cometidas' : 'Líder em Tocos (Blocks)'}
+                      </span>
                     </div>
                     <div style={{ fontSize: '22px', fontWeight: 900, color: 'var(--accent)', fontFamily: "'Bebas Neue', sans-serif" }}>
-                      {lideres.tocos.tocos} BLK
+                      {lideres.tocos.tocos} {esporte === 'handebol' ? 'FLT' : 'BLK'}
                     </div>
                   </div>
                 )}
@@ -1397,6 +1405,7 @@ function InscricaoEquipeModal({ torneio, profile, onClose, onSuccess }) {
 // CONSOLE DO PLACAR: GERENCIADOR DE JOGO AO VIVO
 // ============================================================
 function ConsolePlacarJogo({ jogo, torneio, onBack }) {
+  const { esporte } = useEsporte();
   const [placarA, setPlacarA] = useState(jogo.placar_a || 0);
   const [placarB, setPlacarB] = useState(jogo.placar_b || 0);
   const [periodo, setPeriodo] = useState(jogo.periodos || 1);
@@ -2176,13 +2185,19 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
                   </span>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: 6 }}>
-                  {[
+                  {(esporte === 'handebol' ? [
+                    { label: 'GOL', key: 'pontos' },
+                    { label: 'DEF', key: 'rebotes' },
+                    { label: 'AST', key: 'assistencias' },
+                    { label: 'FLT', key: 'tocos' },
+                    { label: 'REC', key: 'roubos' }
+                  ] : [
                     { label: 'PTS', key: 'pontos' },
                     { label: 'REB', key: 'rebotes' },
                     { label: 'AST', key: 'assistencias' },
                     { label: 'BLK', key: 'tocos' },
                     { label: 'STL', key: 'roubos' }
-                  ].map(stat => (
+                  ]).map(stat => (
                     <div key={stat.key} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'var(--bg-secondary)', borderRadius: 6, padding: '4px 0', border: '1px solid var(--border)' }}>
                       <span style={{ fontSize: 9, color: 'var(--text-muted)', fontWeight: 800 }}>{stat.label}</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, margin: '2px 0' }}>

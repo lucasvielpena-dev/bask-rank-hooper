@@ -319,3 +319,25 @@ export function IconSino({ size = 24, color = '#F8FAFC' }) {
     </svg>
   );
 }
+
+export function IconHandebol({ size = 24, color = '#C8F135' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 2a8 8 0 0 0 8 8" />
+      <path d="M12 22a8 8 0 0 0-8-8" />
+      <path d="M2 12a8 8 0 0 0 8 8" />
+      <path d="M22 12a8 8 0 0 0-8-8" />
+      <path d="M6.5 6.5c2.5 0 4.5 2 4.5 4.5s-2 4.5-4.5 4.5" />
+      <path d="M17.5 17.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5" />
+    </svg>
+  );
+}
+
+export function IconSportDynamic({ sport, size = 24, color = '#C8F135' }) {
+  if (sport === 'handebol') {
+    return <IconHandebol size={size} color={color} />;
+  }
+  return <IconBasquete size={size} color={color} />;
+}
+

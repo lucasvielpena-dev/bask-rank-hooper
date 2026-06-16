@@ -3,6 +3,7 @@ import { supabase, denunciasAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/s
 import { motion } from 'framer-motion';
 import AnimatedCounter from './AnimatedCounter';
 import { useEsporte } from '../contexts/EsporteContext';
+import { IconSportDynamic } from './Icons';
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
 
@@ -291,8 +292,9 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
               {/* Game Stats */}
               <div style={{ padding: '16px' }}>
                 {!hasAnyGameStats ? (
-                  <div style={{ textAlign: 'center', padding: '20px', color: '#6A6A82' }}>
-                    🏀 Nenhuma partida registrada ainda
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '20px', color: '#6A6A82' }}>
+                    <IconSportDynamic sport={esporte} size={16} color="#6A6A82" />
+                    <span>Nenhuma partida registrada ainda</span>
                   </div>
                 ) : (
                   <div style={{ display: 'grid', gridTemplateColumns: `repeat(${gameStats.length}, 1fr)`, gap: 8, textAlign: 'center' }}>
@@ -394,7 +396,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                       { label: 'Cidade', val: `${localJogador.cidade} - ${localJogador.uf}`, icon: null },
                       { label: 'Idade', val: profileData?.idade ? `${profileData.idade} anos` : '--', icon: null },
                       { label: 'Altura', val: profileData?.altura ? `${Number(profileData.altura).toFixed(2)} m` : '--', icon: null },
-                      { label: 'Posição', val: localJogador.posicao || cfg.posicoes[0], icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8F135" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg> },
+                      { label: 'Posição', val: localJogador.posicao || cfg.posicoes[0], icon: <IconSportDynamic sport={esporte} size={14} color="#C8F135" /> },
                       { label: 'Equipe', val: localJogador.equipe || `${localJogador.cidade} Hooper`, icon: null },
                     ].map((item, i) => (
                       <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: i < 4 ? '1px solid rgba(255,255,255,0.04)' : 'none', minHeight: 48 }}>

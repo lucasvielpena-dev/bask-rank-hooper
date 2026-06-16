@@ -8,8 +8,10 @@ import {
   IconAvaliar,
   IconLocalizacao,
   IconNotificacao,
-  IconEstatisticas
+  IconEstatisticas,
+  IconSportDynamic
 } from '../components/Icons';
+import { useEsporte } from '../contexts/EsporteContext';
 
 const STAT_CARDS = [
   { key: 'total_users', label: 'Total Usuários', icon: IconJogador, color: 'blue' },
@@ -36,6 +38,7 @@ const TABS = [
 const ICON_COLOR = { blue: 'var(--accent)', gold: 'var(--accent)' };
 
 export default function MasterDashboard({ onNavigate }) {
+  const { esporte } = useEsporte();
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -148,7 +151,10 @@ export default function MasterDashboard({ onNavigate }) {
               marginBottom: 'clamp(12px, 3vw, 24px)'
             }}>
               {STAT_CARDS.map(card => {
-                const Icon = card.icon;
+                let Icon = card.icon;
+                if (Icon === IconBasquete) {
+                  Icon = (props) => <IconSportDynamic sport={esporte} {...props} />;
+                }
                 const value = stats[card.key] ?? 0;
                 return (
                   <div key={card.key} style={{
@@ -286,7 +292,7 @@ export default function MasterDashboard({ onNavigate }) {
                   }}>
                     {action.color === 'blue'
                       ? <IconJogador size={18} color="var(--accent)" />
-                      : <IconBasquete size={18} color="var(--accent)" />
+                      : <IconSportDynamic sport={esporte} size={18} color="var(--accent)" />
                     }
                   </div>
                   <div style={{ fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 700, color: 'var(--text-primary)' }}>

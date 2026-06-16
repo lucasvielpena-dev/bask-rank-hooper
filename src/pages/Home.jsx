@@ -1,61 +1,8 @@
 import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
 import { useEsporte } from '../contexts/EsporteContext';
-import { IconTrofeu, IconAvaliar, IconBasquete, IconRanking } from '../components/Icons';
+import { IconSportDynamic } from '../components/Icons';
 import { HomeBackground } from '../components/AnimatedBackgrounds';
-
-const ChevronArrow = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <path d="m9 18 6-6-6-6"/>
-  </svg>
-);
-
-const StarIcon = ({ size = 14 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-  </svg>
-);
-
-const MedalIcon = ({ rank }) => {
-  if (rank === 1) return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8F135" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
-    </svg>
-  );
-  if (rank === 2) return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
-    </svg>
-  );
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6A6A82" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
-    </svg>
-  );
-};
-
-const RankBadge = ({ rank }) => {
-  const colors = {
-    1: { bg: 'rgba(200,241,53,0.12)', color: '#C8F135', border: '1px solid rgba(200,241,53,0.25)' },
-    2: { bg: 'rgba(148,163,184,0.12)', color: '#94A3B8', border: '1px solid rgba(148,163,184,0.25)' },
-    3: { bg: 'rgba(106,106,130,0.12)', color: '#6A6A82', border: '1px solid rgba(106,106,130,0.25)' },
-  };
-  const c = colors[rank] || colors[3];
-  return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      width: 26, height: 26, borderRadius: 8,
-      background: c.bg, border: c.border, color: c.color,
-      fontSize: 12, fontWeight: 800, fontFamily: "'Barlow Condensed',sans-serif",
-      flexShrink: 0,
-    }}>
-      {rank}º
-    </span>
-  );
-};
 
 export default function Home({ profile, onNavigate }) {
   const { esporte, cfg } = useEsporte();
@@ -164,8 +111,8 @@ export default function Home({ profile, onNavigate }) {
           <div className="home-greeting-title" style={{ fontSize: 14, color: '#6A6A82', fontFamily: "'Inter', sans-serif", fontWeight: 400, textTransform: 'uppercase', letterSpacing: 0, display: 'flex', alignItems: 'baseline', gap: 6 }}>
             {getGreeting()}, <span className="home-greeting-name" style={{ fontSize: 24, color: '#C8F135', fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 'bold', letterSpacing: '1px' }}>{greetingName}</span>
           </div>
-          <div className="home-greeting-sub" style={{ fontSize: 13, color: '#6A6A82' }}>
-            Você está entre os melhores atletas de {city}.
+          <div className="home-greeting-sub" style={{ fontSize: 13, color: '#6A6A82', textTransform: 'uppercase', fontWeight: 600 }}>
+            {cfg.divisionName} — {cfg.divisionSlogan}
           </div>
         </div>
 
@@ -242,9 +189,7 @@ export default function Home({ profile, onNavigate }) {
                   </span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="2" strokeLinecap="round">
-                    <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/>
-                  </svg>
+                  <IconSportDynamic sport={esporte} size={13} color="var(--text-secondary)" />
                   <span style={{
                     fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)',
                     fontFamily: "'Inter',sans-serif",

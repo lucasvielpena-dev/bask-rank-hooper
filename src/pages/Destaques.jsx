@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
 import { useEsporte } from '../contexts/EsporteContext';
-import { IconRanking, IconCalendario, IconBasquete } from '../components/Icons';
+import { IconRanking, IconCalendario, IconSportDynamic } from '../components/Icons';
 
 function StatCard({ icon, label, value, color }) {
   return (
@@ -157,7 +157,7 @@ export default function Destaques({ profile, onNavigate }) {
             color="gold"
           />
           <StatCard
-            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>}
+            icon={<IconSportDynamic sport={esporte} size={20} color="var(--accent)" />}
             label="Avaliações"
             value={stats.avaliacoes}
             color="blue"
@@ -297,7 +297,7 @@ export default function Destaques({ profile, onNavigate }) {
             justifyContent: 'center',
             flexShrink: 0
           }}>
-            <IconBasquete size={24} color="#fff" />
+            <IconSportDynamic sport={esporte} size={24} color="#fff" />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 1 }}>

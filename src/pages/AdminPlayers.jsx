@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { masterAPI } from '../lib/supabase';
-import { IconVoltar, IconBuscar, IconBasquete } from '../components/Icons';
+import { IconVoltar, IconBuscar, IconSportDynamic } from '../components/Icons';
 import { useEsporte } from '../contexts/EsporteContext';
 
 export default function AdminPlayers({ profile, onNavigate }) {
@@ -191,8 +191,8 @@ export default function AdminPlayers({ profile, onNavigate }) {
         <div style={{ display: 'flex', gap: 8, marginBottom: 12, overflowX: 'auto', scrollbarWidth: 'none' }} className="hide-scrollbar">
           {[
             { key: 'all', label: 'Todos os Esportes' },
-            { key: 'basquete', label: 'Basquete 🏀' },
-            { key: 'handebol', label: 'Handebol 🤾' }
+            { key: 'basquete', label: 'Hoops' },
+            { key: 'handebol', label: 'Handball' }
           ].map(f => {
             const active = filterSport === f.key;
             return (
@@ -210,9 +210,15 @@ export default function AdminPlayers({ profile, onNavigate }) {
                   fontSize: 11,
                   cursor: 'pointer',
                   fontFamily: 'inherit',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6
                 }}
               >
+                {f.key !== 'all' && (
+                  <IconSportDynamic sport={f.key} size={12} color={active ? 'var(--accent)' : 'var(--text-secondary)'} />
+                )}
                 {f.label}
               </button>
             );
@@ -272,7 +278,7 @@ export default function AdminPlayers({ profile, onNavigate }) {
               marginBottom: 14,
               opacity: 0.6
             }}>
-              <IconBasquete size={26} color="var(--accent)" />
+              <IconSportDynamic sport={esporte} size={26} color="var(--accent)" />
             </div>
             <h3 style={{
               fontSize: 'clamp(14px, 3.5vw, 16px)',

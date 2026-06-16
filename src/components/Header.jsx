@@ -2,10 +2,11 @@ import { memo, useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useEsporte } from '../contexts/EsporteContext';
 import { ESPORTES } from '../config/esportes';
-import { IconMenu, IconSino } from './Icons';
+import { IconMenu, IconSino, IconBasquete, IconHandebol, IconSportDynamic } from './Icons';
 
 export default memo(function Header() {
   const { profile, notificacoes, setShowUserMenu, setShowNotificacoes } = useAuth();
+  const { esporte } = useEsporte();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -33,12 +34,8 @@ export default memo(function Header() {
 
       <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6, flex:1, justifyContent:'center', transform: 'translateZ(10px)', transition: 'transform 0.3s ease' }}>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <div className="header-logo-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0C0C14" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 2a14.5 14.5 0 0 1 0 20"/>
-              <path d="M2 12h20"/>
-            </svg>
+          <div className="header-logo-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <IconSportDynamic sport={esporte} size={18} color="#0C0C14" />
           </div>
           <div style={{ fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:'16px', letterSpacing:'0.08em', color:'var(--text-primary)', textTransform:'uppercase' }}>
             RANK <span style={{ color:'var(--accent)' }}>HOOPER</span>
@@ -82,26 +79,34 @@ const SportSwitcher = memo(function SportSwitcher() {
       padding: 3,
       gap: 2,
     }}>
-      {Object.entries(ESPORTES).map(([key, sportCfg]) => (
-        <button
-          key={key}
-          onClick={() => setEsporte(key)}
-          style={{
-            padding: '4px 12px',
-            borderRadius: 17,
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: 11,
-            fontWeight: 700,
-            fontFamily: "'DM Sans', sans-serif",
-            background: esporte === key ? '#C8F135' : 'transparent',
-            color: esporte === key ? '#0a0a0a' : 'var(--text-secondary)',
-            transition: 'all 0.2s ease',
-          }}
-        >
-          {sportCfg.emoji} {sportCfg.label}
-        </button>
-      ))}
+      {Object.entries(ESPORTES).map(([key, sportCfg]) => {
+        const isActive = esporte === key;
+        const Icon = key === 'handebol' ? IconHandebol : IconBasquete;
+        return (
+          <button
+            key={key}
+            onClick={() => setEsporte(key)}
+            style={{
+              padding: '4px 12px',
+              borderRadius: 17,
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: 11,
+              fontWeight: 700,
+              fontFamily: "'DM Sans', sans-serif",
+              background: isActive ? '#C8F135' : 'transparent',
+              color: isActive ? '#0a0a0a' : 'var(--text-secondary)',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+            }}
+          >
+            <Icon size={14} color={isActive ? '#0a0a0a' : 'var(--accent)'} />
+            {key === 'basquete' ? 'HOOPS' : 'HANDBALL'}
+          </button>
+        );
+      })}
     </div>
   );
 });
