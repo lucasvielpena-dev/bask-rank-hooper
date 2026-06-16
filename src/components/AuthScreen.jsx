@@ -303,7 +303,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
           playsInline
           style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'top center', filter: 'brightness(0.8)' }}
         >
-          <source src="/images/login-video.mp4" type="video/mp4" />
+          <source src="/images/site.mp4" type="video/mp4" />
         </video>
       </div>
 
