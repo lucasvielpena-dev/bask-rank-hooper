@@ -19,11 +19,8 @@ export default memo(function Header() {
 
   return (
     <header className="app-header" style={{
-      transform: scrolled ? 'perspective(800px) rotateX(0deg)' : 'perspective(800px) rotateX(2deg)',
-      transformOrigin: 'top center',
-      boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
-      transition: 'transform 0.4s ease',
-      transformStyle: 'preserve-3d'
+      boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.35)' : '0 1px 0 rgba(255,255,255,0.04)',
+      transition: 'box-shadow 0.3s ease'
     }}>
       <button
         onClick={() => setShowUserMenu(true)}
@@ -32,7 +29,7 @@ export default memo(function Header() {
         <IconMenu size={22} color="var(--text-primary)" />
       </button>
 
-      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6, flex:1, justifyContent:'center', transform: 'translateZ(10px)', transition: 'transform 0.3s ease' }}>
+      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6, flex:1, justifyContent:'center', transition: 'opacity 0.2s ease' }}>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
           <div className="header-logo-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <IconSportDynamic sport={esporte} size={18} color="#0C0C14" />
