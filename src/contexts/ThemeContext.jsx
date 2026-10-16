@@ -1,9 +1,23 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const ThemeContext = createContext(null);
+const STORAGE_KEY = 'rh_theme_pref';
 
 export function ThemeProvider({ children }) {
-  const [themePref, setThemePref] = useState('system');
+  const [themePref, setThemePrefState] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved === 'light' || saved === 'dark' || saved === 'system') return saved;
+    } catch (_) {}
+    return 'system';
+  });
+
+  const setThemePref = useCallback((pref) => {
+    setThemePrefState(pref);
+    try {
+      localStorage.setItem(STORAGE_KEY, pref);
+    } catch (_) {}
+  }, []);
 
   const applyTheme = useCallback(() => {
     let currentTheme = themePref;
@@ -13,8 +27,10 @@ export function ThemeProvider({ children }) {
     }
     if (currentTheme === 'light') {
       document.body.classList.add('light-theme');
+      document.documentElement.style.colorScheme = 'light';
     } else {
       document.body.classList.remove('light-theme');
+      document.documentElement.style.colorScheme = 'dark';
     }
   }, [themePref]);
 
