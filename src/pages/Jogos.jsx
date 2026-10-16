@@ -445,27 +445,18 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       {/* TELA 1: LISTAGEM DE PARTIDAS / HISTÓRICO */}
       {tela === 'lista' && (
         <div className="home-container" style={{ padding: '12px 12px 0', position: 'relative', zIndex: 1 }}>
-          {/* Header */}
+          {/* Header — sem ícone duplicado (já existe no menu inferior) */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <div style={{ width: 34, height: 34, background: 'rgba(200,241,53,0.12)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {aba === 'torneios' ? (
-                  <IconCalendario size={20} color="var(--accent)" />
-                ) : (
-                  <IconJogo size={20} color="var(--accent)" />
-                )}
-              </div>
-              <div>
-                <h2 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 17 }}>
-                  {aba === 'torneios' ? 'Torneios Regionais' : 'Jogos da Noite'}
-                </h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>
-                  {aba === 'torneios' ? 'Competições e campeonatos ativos' : 'Gerenciador de partidas'}
-                </p>
-              </div>
+            <div>
+              <h2 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 17, margin: 0 }}>
+                {aba === 'torneios' ? 'Torneios Regionais' : 'Jogos da Noite'}
+              </h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>
+                {aba === 'torneios' ? 'Competições e campeonatos ativos' : 'Gerenciador de partidas'}
+              </p>
             </div>
             
-            {partidas.length === 0 && aba !== 'torneios' && (
+            {aba !== 'torneios' && (
               <button className="btn btn-primary btn-sm" onClick={() => setTela('novo')}>
                 <IconMais size={14} color="currentColor" />
                 Novo Jogo
@@ -508,14 +499,10 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <>
               {partidas.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)' }}>
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto' }}>
-                    <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/>
-                  </svg>
-                  <h3 style={{ color: 'var(--text-primary)', marginTop: 16, fontFamily: "'Inter',sans-serif", fontSize: 18, fontWeight: 700 }}>Nenhuma partida ativa</h3>
-                  <p style={{ fontSize: 12, margin: '8px 0', fontFamily: "'Inter',sans-serif" }}>Comece uma partida para ver aqui</p>
-                  <button onClick={() => setTela('novo')} className="btn-primary" style={{ marginTop: 16, border: 'none', borderRadius: 12, padding: '12px 24px', fontWeight: 700, fontFamily: "'Inter',sans-serif", cursor: 'pointer' }}>
-                    + Novo Jogo
-                  </button>
+                  <h3 style={{ color: 'var(--text-primary)', marginTop: 8, fontFamily: "'Inter',sans-serif", fontSize: 18, fontWeight: 700 }}>Nenhuma partida ativa</h3>
+                  <p style={{ fontSize: 13, margin: '8px 0 0', fontFamily: "'Inter',sans-serif", color: 'var(--text-muted)' }}>
+                    Toque em <strong style={{ color: 'var(--accent)' }}>Novo Jogo</strong> acima para começar
+                  </p>
                 </div>
               ) : (
                 <div className="responsive-card-grid">
