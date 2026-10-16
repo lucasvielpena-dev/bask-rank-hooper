@@ -1,6 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { supabase, jogadoresAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
-import { sortByConfianca, labelConfianca, nivelConfianca } from '../lib/ranking';
+import { sortByConfianca } from '../lib/ranking';
 import { useEsporte } from '../contexts/EsporteContext';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { motion, AnimatePresence } from 'framer-motion';

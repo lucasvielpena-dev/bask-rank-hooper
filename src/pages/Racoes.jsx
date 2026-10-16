@@ -17,7 +17,6 @@ function countParts(r) {
 }
 
 export default function Racoes({ profile, onNavigate }) {
-  const { cfg } = useEsporte();
   const [lista, setLista] = useState([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState(null);
