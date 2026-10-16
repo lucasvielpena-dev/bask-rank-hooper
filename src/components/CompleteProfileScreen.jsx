@@ -173,17 +173,37 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
             })
             .eq('id', player_id);
         } else {
-          // Criar novo jogador — usa o UUID real da sessão (auth.users)
-          const { data: authData, error: authErr } = await supabase.auth.getUser();
-          const authUserId = authData?.user?.id;
-          if (authErr || !authUserId) {
-            throw new Error('Sessão expirada. Faça login novamente.');
+          // Resolve o UUID do usuário logado com vários fallbacks
+          // (getUser pode falhar em PWA/mobile; getSession e profile.id cobrem)
+          let authUserId = null;
+          let authEmail = profile?.email || null;
+
+          try {
+            const { data: userData } = await supabase.auth.getUser();
+            authUserId = userData?.user?.id || null;
+            authEmail = userData?.user?.email || authEmail;
+          } catch (_) {}
+
+          if (!authUserId) {
+            try {
+              const { data: sessData } = await supabase.auth.getSession();
+              authUserId = sessData?.session?.user?.id || null;
+              authEmail = sessData?.session?.user?.email || authEmail;
+            } catch (_) {}
           }
 
-          // Garante que o profile existe (necessário se FK aponta para profiles)
+          if (!authUserId && profile?.id) {
+            authUserId = profile.id;
+          }
+
+          if (!authUserId) {
+            throw new Error('Não foi possível identificar seu usuário. Saia e entre novamente.');
+          }
+
+          // Garante que o profile existe
           await supabase.from('profiles').upsert({
             id: authUserId,
-            email: authData.user.email || profile.email || null,
+            email: authEmail,
             nome_completo: profile.nome_completo || 'Jogador',
           }, { onConflict: 'id' });
 

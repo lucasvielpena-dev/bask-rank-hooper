@@ -179,8 +179,18 @@ export function AuthProvider({ children }) {
 
       // 2. Se não existir jogador para esta modalidade/esporte, criamos um novo
       console.log(`Criando jogador de ${esporte} para o perfil...`, prof.nome_completo, prof.id);
-      const { data: authData } = await supabase.auth.getUser();
-      const authUserId = authData?.user?.id || prof.id;
+      let authUserId = null;
+      try {
+        const { data: userData } = await supabase.auth.getUser();
+        authUserId = userData?.user?.id || null;
+      } catch (_) {}
+      if (!authUserId) {
+        try {
+          const { data: sessData } = await supabase.auth.getSession();
+          authUserId = sessData?.session?.user?.id || null;
+        } catch (_) {}
+      }
+      if (!authUserId) authUserId = prof?.id || null;
       if (!authUserId) {
         console.error('Sem usuário autenticado para criar jogador');
         return;
@@ -324,9 +334,19 @@ export function AuthProvider({ children }) {
         const detectedUf = ESTADO_TO_UF[stateName] || 'PA';
         const detectedCountry = address.country || 'Brasil';
 
-        const { data: authData } = await supabase.auth.getUser();
-        const authUserId = authData?.user?.id || profile.id;
-        if (!authUserId) throw new Error('Sessão expirada. Faça login novamente.');
+        let authUserId = null;
+        try {
+          const { data: userData } = await supabase.auth.getUser();
+          authUserId = userData?.user?.id || null;
+        } catch (_) {}
+        if (!authUserId) {
+          try {
+            const { data: sessData } = await supabase.auth.getSession();
+            authUserId = sessData?.session?.user?.id || null;
+          } catch (_) {}
+        }
+        if (!authUserId) authUserId = profile?.id || null;
+        if (!authUserId) throw new Error('Não foi possível identificar seu usuário. Saia e entre novamente.');
 
         const { data: newJogador, error: jogError } = await supabase
           .from('jogadores')
