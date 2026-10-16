@@ -119,10 +119,6 @@ export default function Racoes({ profile, onNavigate }) {
         jogadorId: profile?.player_id || null,
       });
       if (error) throw error;
-      // lotado check
-      if (countParts(r) + 1 >= r.max_jogadores) {
-        await racoesAPI.finalizar && null;
-      }
       showMsg('Você entrou no rachão!');
       await load();
     } catch (err) {

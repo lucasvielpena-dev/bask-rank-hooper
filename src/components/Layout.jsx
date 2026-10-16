@@ -12,6 +12,7 @@ export default function Layout({ page, onNavigate, children }) {
   const { cfg } = useEsporte();
   const {
     profile,
+    user,
     isMaster,
     showUserMenu,
     setShowUserMenu,
@@ -345,7 +346,7 @@ export default function Layout({ page, onNavigate, children }) {
                   )}
                   <div style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     <div style={{ fontWeight: 700 }}>{profile.nome_completo}</div>
-                    <div style={{ fontSize: 12, color: '#64748b' }}>{profile.email}</div>
+                    <div style={{ fontSize: 12, color: '#64748b' }}>{user?.email || ''}</div>
                   </div>
                 </div>
 

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { supabase, authAPI, profilesAPI, notificacoesAPI, masterAPI } from '../lib/supabase';
+import { supabase, authAPI, profilesAPI, notificacoesAPI, masterAPI, PROFILE_SAFE_COLUMNS } from '../lib/supabase';
 import { useEsporte } from './EsporteContext';
 import AuthScreen from '../components/AuthScreen';
 import CompleteProfileScreen from '../components/CompleteProfileScreen';
@@ -73,7 +73,7 @@ export function AuthProvider({ children }) {
         const { data: createdData } = await supabase
           .from('profiles')
           .insert([fallbackProfile])
-          .select()
+          .select(PROFILE_SAFE_COLUMNS)
           .single();
 
         if (createdData) {

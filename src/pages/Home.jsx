@@ -272,28 +272,6 @@ export default function Home({ profile, onNavigate }) {
         </div>
         </div>
 
-        <div className="home-actions-section" style={{ marginBottom: 16 }}>
-          <div className="home-section-label">Ações rápidas</div>
-          <div className="acoes-rapidas-grid">
-            <button type="button" className="home-quick-action home-quick-action-primary" onClick={() => onNavigate('racoes')}>
-              <div className="home-quick-action-icon">⚡</div>
-              <div className="home-quick-action-label">Rachões</div>
-            </button>
-            <button type="button" className="home-quick-action" onClick={() => onNavigate('atletas')}>
-              <div className="home-quick-action-icon">🏆</div>
-              <div className="home-quick-action-label">Ranking</div>
-            </button>
-            <button type="button" className="home-quick-action" onClick={() => onNavigate('jogos')}>
-              <div className="home-quick-action-icon">🏀</div>
-              <div className="home-quick-action-label">Jogos</div>
-            </button>
-            <button type="button" className="home-quick-action" onClick={() => onNavigate('jogos', { aba: 'torneios' })}>
-              <div className="home-quick-action-icon">🎖️</div>
-              <div className="home-quick-action-label">Torneios</div>
-            </button>
-          </div>
-        </div>
-
         <div className="home-highlights-section">
           <div className="home-highlights-header">
             <div className="home-section-label">Destaques da Semana</div>

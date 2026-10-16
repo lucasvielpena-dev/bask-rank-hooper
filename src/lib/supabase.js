@@ -1,7 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL || 'https://rmqloznmfalxhujvwywl.supabase.co';
-const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY || 'sb_publishable_6sC3nyq5WABhB3Jmf8tYQg_K8HT_lTs';
+const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  throw new Error(
+    'Variáveis de ambiente do Supabase ausentes. ' +
+    'Copie .env.example para .env.local e defina ' +
+    'REACT_APP_SUPABASE_URL e REACT_APP_SUPABASE_ANON_KEY.'
+  );
+}
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
@@ -10,6 +18,34 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     detectSessionInUrl: true,
   },
 });
+
+// Colunas de `profiles` seguras para expor no cliente.
+// `email` e as colunas de GPS NÃO estão aqui de propósito: o banco
+// revoga o SELECT dessas colunas de `authenticated` (ver
+// supabase/migration_rls_hardening.sql). Sempre que consultar `profiles`,
+// use esta lista — nunca `'*'` — ou a requisição falha por permissão.
+export const PROFILE_SAFE_COLUMNS = [
+  'id',
+  'nome_completo',
+  'apelido',
+  'foto_perfil',
+  'altura',
+  'idade',
+  'cadastro_completo',
+  'is_player',
+  'player_id',
+  'posicao',
+  'cidade',
+  'uf',
+  'pais',
+  'reputacao',
+  'cidade_atual',
+  'tema_preferido',
+  'role',
+  'is_active',
+  'created_at',
+  'updated_at',
+].join(', ');
 
 // ============================================================
 // API helpers
@@ -219,7 +255,7 @@ export const profilesAPI = {
   obterPerfil: async (id) => {
     const { data, error } = await supabase
       .from('profiles')
-      .select('*')
+      .select(PROFILE_SAFE_COLUMNS)
       .eq('id', id)
       .maybeSingle();
     return { data, error };
@@ -231,7 +267,7 @@ export const profilesAPI = {
       .from('profiles')
       .update(payload)
       .eq('id', id)
-      .select()
+      .select(PROFILE_SAFE_COLUMNS)
       .maybeSingle();
 
     // Se update não retornou linha (RLS/sessão), tenta upsert
@@ -239,7 +275,7 @@ export const profilesAPI = {
       const retry = await supabase
         .from('profiles')
         .upsert({ id, ...payload }, { onConflict: 'id' })
-        .select()
+        .select(PROFILE_SAFE_COLUMNS)
         .maybeSingle();
       data = retry.data;
       error = retry.error;
@@ -250,7 +286,7 @@ export const profilesAPI = {
   listarPorEstado: async (uf) => {
     const { data, error } = await supabase
       .from('profiles')
-      .select('*')
+      .select(PROFILE_SAFE_COLUMNS)
       .eq('uf', uf)
       .eq('cadastro_completo', true)
       .order('nome_completo');
@@ -258,26 +294,34 @@ export const profilesAPI = {
   },
 
   uploadAvatar: async (userId, file) => {
-    const fileExt = file.name.split('.').pop();
-    const filePath = `avatars/${userId}-${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
-    
-    // Tenta criar o bucket 'avatars' caso ele não exista (fallback de segurança)
-    try {
-      await supabase.storage.createBucket('avatars', { public: true });
-    } catch (e) {
-      console.warn('Erro ou permissão insuficiente para criar bucket:', e);
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+
+    const tipoOk = ALLOWED_TYPES.includes(file.type)
+      || (!file.type && /\.(jpe?g|png|webp|gif)$/i.test(file.name || ''));
+
+    if (!file || !tipoOk) {
+      return { error: new Error('Formato inválido. Envie uma imagem JPG, PNG, WEBP ou GIF.') };
     }
-    
+    if (file.size > MAX_BYTES) {
+      return { error: new Error('A imagem deve ter no máximo 5 MB.') };
+    }
+
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    const filePath = `avatars/${userId}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${ext}`;
+
+    // O bucket `avatars` deve ser criado UMA vez pelo administrador no painel
+    // do Supabase — nunca pelo cliente (isso era um vetor de abuso).
     const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(filePath, file, { upsert: true });
-      
+
     if (uploadError) return { error: uploadError };
-    
+
     const { data } = supabase.storage
       .from('avatars')
       .getPublicUrl(filePath);
-      
+
     return { publicUrl: data?.publicUrl, error: null };
   }
 };
@@ -445,7 +489,7 @@ export const equipesAPI = {
   obterJogadores: async (equipeId) => {
     const { data, error } = await supabase
       .from('equipe_jogadores')
-      .select('*, jogador:profiles(*)')
+      .select('*, jogador:profiles(id, nome_completo, apelido, foto_perfil)')
       .eq('equipe_id', equipeId);
     return { data, error };
   },

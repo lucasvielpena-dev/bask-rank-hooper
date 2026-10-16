@@ -22,6 +22,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
   const [uploading, setUploading] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
+  const [email, setEmail] = useState('');
 
   // Estados de Localização Automática
   const [locationStatus, setLocationStatus] = useState('prompt'); // 'prompt', 'requesting', 'success', 'denied', 'error'
@@ -33,6 +34,21 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
   useEffect(() => {
     obterLocalizacao();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // O email deixa de ser lido de `profiles` (coluna protegida no banco).
+  // Buscamos direto da sessão de autenticação.
+  useEffect(() => {
+    let active = true;
+    supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        if (active && data?.user?.email) setEmail(data.user.email);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
   }, []);
 
   async function obterLocalizacao() {
@@ -401,7 +417,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
             <input
               disabled
               type="text"
-              value={profile?.email || ''}
+              value={email || ''}
               style={{ opacity: 0.6, cursor: 'not-allowed' }}
             />
           </div>

@@ -18,7 +18,6 @@ const config: CapacitorConfig = {
     allowNavigation: [
       'https://*.vercel.app',
       'https://*.supabase.co',
-      'https://rmqloznmfalxhujvwywl.supabase.co',
       'https://accounts.google.com',
       'https://*.google.com',
     ],
