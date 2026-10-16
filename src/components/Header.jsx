@@ -9,58 +9,78 @@ export default memo(function Header() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const unread = (notificacoes || []).filter((n) => !n.lida).length;
+
   return (
-    <header className="app-header" style={{
-      boxShadow: scrolled ? '0 4px 20px rgba(0,0,0,0.35)' : '0 1px 0 rgba(255,255,255,0.04)',
-      transition: 'box-shadow 0.3s ease'
-    }}>
+    <header
+      className="app-header"
+      style={{
+        boxShadow: scrolled ? '0 8px 28px rgba(0,0,0,0.35)' : 'none',
+      }}
+    >
       <button
+        type="button"
+        className="header-icon-btn"
         onClick={() => setShowUserMenu(true)}
-        style={{ background:'none', border:'none', color:'var(--text-primary)', cursor:'pointer', padding:4, display:'flex', alignItems:'center', justifyContent:'center' }}
+        aria-label="Menu"
       >
-        <IconMenu size={22} color="var(--text-primary)" />
+        <IconMenu size={20} color="var(--text-primary)" />
       </button>
 
-      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6, flex:1, justifyContent:'center', transition: 'opacity 0.2s ease' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <div className="header-logo-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <IconSportDynamic sport={esporte} size={18} color="#0C0C14" />
-          </div>
-          <div style={{ fontFamily:"'Oswald',sans-serif", fontWeight:700, fontSize:'16px', letterSpacing:'0.08em', color:'var(--text-primary)', textTransform:'uppercase' }}>
-            RANK <span style={{ color:'var(--accent)' }}>HOOPER</span>
-          </div>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+        <div className="header-logo-icon">
+          <IconSportDynamic sport={esporte} size={17} color="#0B1208" />
         </div>
-        
+        <div className="header-brand">
+          RANK <span style={{ color: 'var(--accent)' }}>HOOPER</span>
+        </div>
       </div>
 
-      <div style={{ display:'flex', alignItems:'center', gap:14 }}>
-        <div style={{ position:'relative', cursor:'pointer', display:'flex', alignItems:'center' }} onClick={() => setShowNotificacoes(true)}>
-          <IconSino size={22} color="var(--text-primary)" />
-          {notificacoes.filter(n => !n.lida).length > 0 && (
-            <span className="header-notif-badge">
-              {notificacoes.filter(n => !n.lida).length > 9 ? '9+' : notificacoes.filter(n => !n.lida).length}
-            </span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <button
+          type="button"
+          className="header-icon-btn"
+          style={{ position: 'relative' }}
+          onClick={() => setShowNotificacoes(true)}
+          aria-label="Notificações"
+        >
+          <IconSino size={18} color="var(--text-primary)" />
+          {unread > 0 && (
+            <span className="header-notif-badge">{unread > 9 ? '9+' : unread}</span>
           )}
-        </div>
+        </button>
 
-        <div onClick={() => setShowUserMenu(true)} style={{ display:'flex', alignItems:'center', cursor:'pointer' }}>
-          {profile.foto_perfil ? (
-            <img src={profile.foto_perfil} alt="Avatar" style={{ width:32, height:32, borderRadius:'50%', border:'2px solid rgba(255,255,255,0.12)', objectFit:'cover' }} />
+        <button
+          type="button"
+          onClick={() => setShowUserMenu(true)}
+          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex' }}
+          aria-label="Perfil"
+        >
+          {profile?.foto_perfil ? (
+            <img src={profile.foto_perfil} alt="" className="header-avatar" />
           ) : (
-            <div style={{ width:32, height:32, borderRadius:'50%', background:'var(--accent-dim)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:700, color:'var(--accent)' }}>
-              {profile.nome_completo?.charAt(0).toUpperCase()}
+            <div
+              className="header-avatar"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'var(--accent-dim)',
+                color: 'var(--accent)',
+                fontWeight: 800,
+                fontSize: 13,
+              }}
+            >
+              {(profile?.nome_completo || profile?.apelido || '?').charAt(0).toUpperCase()}
             </div>
           )}
-        </div>
+        </button>
       </div>
     </header>
   );
 });
-
