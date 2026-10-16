@@ -220,7 +220,7 @@ body {
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 .modal-sheet {
   background:var(--bg-secondary); border-radius:18px 18px 0 0; border:1px solid var(--border);
-  padding:14px 12px; width:100%; max-width:480px; max-height:85dvh;
+  padding:14px 12px calc(14px + env(safe-area-inset-bottom)); width:100%; max-width:480px; max-height:85dvh;
   overflow-y:auto; overflow-x:hidden; animation:slideSheet 0.3s ease;
 }
 @keyframes slideSheet { from { transform:translateY(100%); } to { transform:translateY(0); } }

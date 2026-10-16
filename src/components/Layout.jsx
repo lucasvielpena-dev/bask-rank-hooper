@@ -182,7 +182,7 @@ export default function Layout({ page, onNavigate, children }) {
         </div>
       )}
 
-      <div style={{ flex: 1, position: 'relative', overflowX: 'hidden' }}>
+      <div style={{ flex: 1, position: 'relative', overflowX: 'hidden', zIndex: 120 }}>
         <AnimatePresence mode="popLayout">
           <motion.div 
             key={page} 

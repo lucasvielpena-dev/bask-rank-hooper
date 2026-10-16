@@ -136,3 +136,14 @@ Arquivos alterados/criados nesta rodada:
 - **`src/contexts/AuthContext.jsx`**, **`src/components/Layout.jsx`**, **`src/components/CompleteProfileScreen.jsx`** — email lido da sessão de auth, não mais de `profiles`.
 
 Ainda **pendentes** (não alterados): **A1** (conflito `migration_cleanup` × `registrar_avaliacao`), **A2** (overload `get_ranking`), **A4** (trigger de média × handebol), **M1/M2** (chaves EN/PT e `uf` ausente), **M5/M7/M8**.
+
+### Correção de UI — modais atrás da barra de navegação
+
+Os modais de página (ex.: "Finalizar Jogo" em `Jogos.jsx`, registrar avaliação em `Stats.jsx`, etc.) ficavam **embaixo da barra inferior** e o botão de confirmar não aparecia.
+
+Causa: as páginas renderizam os modais dentro de `.page-content`, que cria um **contexto de empilhamento** (`z-index:1`); a barra `.bottom-nav` tem `z-index:100`, então o overlay (mesmo com `z-index:150`) ficava preso abaixo dela.
+
+Correções:
+
+- **`src/components/Layout.jsx`** — o contêiner das páginas recebeu `zIndex: 120` (acima da barra, que é `100`), garantindo que qualquer modal da página fique acima da navegação.
+- **`src/styles/global.css`** — `.modal-sheet` ganhou `padding-bottom: calc(14px + env(safe-area-inset-bottom))` para o botão não colar na borda/área segura do aparelho.
