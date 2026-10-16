@@ -1,7 +1,7 @@
 import { memo, useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useEsporte } from '../contexts/EsporteContext';
-import { IconMenu, IconSino, IconSportDynamic } from './Icons';
+import { IconSino, IconSportDynamic } from './Icons';
 
 export default memo(function Header() {
   const { profile, notificacoes, setShowUserMenu, setShowNotificacoes } = useAuth();
@@ -23,16 +23,8 @@ export default memo(function Header() {
         boxShadow: scrolled ? '0 8px 28px rgba(0,0,0,0.35)' : 'none',
       }}
     >
-      <button
-        type="button"
-        className="header-icon-btn"
-        onClick={() => setShowUserMenu(true)}
-        aria-label="Menu"
-      >
-        <IconMenu size={20} color="var(--text-primary)" />
-      </button>
-
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+      {/* Logo + marca (sem menu de três linhas à esquerda) */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
         <div className="header-logo-icon">
           <IconSportDynamic sport={esporte} size={17} color="#0B1208" />
         </div>
@@ -59,7 +51,7 @@ export default memo(function Header() {
           type="button"
           onClick={() => setShowUserMenu(true)}
           style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex' }}
-          aria-label="Perfil"
+          aria-label="Perfil e menu"
         >
           {profile?.foto_perfil ? (
             <img src={profile.foto_perfil} alt="" className="header-avatar" />

@@ -5,7 +5,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
  * → o APK é um "shell" e sempre abre a versão mais recente do site.
  * Troque a URL se o domínio da Vercel for outro.
  */
-const LIVE_URL = process.env.CAPACITOR_SERVER_URL || 'https://bask-rank-hoops-3.vercel.app';
+const LIVE_URL = process.env.CAPACITOR_SERVER_URL || 'https://bask-rank-hooper.vercel.app';
 
 const config: CapacitorConfig = {
   appId: 'com.rankhooper.app',

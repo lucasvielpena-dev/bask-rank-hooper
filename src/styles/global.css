@@ -1630,3 +1630,74 @@ input:focus, select:focus, textarea:focus {
 .stagger-3 { animation-delay: 0.12s; }
 .stagger-4 { animation-delay: 0.16s; }
 .stagger-5 { animation-delay: 0.2s; }
+
+
+/* ============================================================
+   Remove bordas claras/brancas que "poluem" o dark UI
+   ============================================================ */
+body:not(.light-theme) .card,
+body:not(.light-theme) .premium-card,
+body:not(.light-theme) .premium-card-border-green,
+body:not(.light-theme) .hero-card,
+body:not(.light-theme) .home-stat-item,
+body:not(.light-theme) .home-highlight-card,
+body:not(.light-theme) .home-quick-action,
+body:not(.light-theme) .racao-card {
+  border-color: rgba(255, 255, 255, 0.045) !important;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+body:not(.light-theme) .premium-card-border-green,
+body:not(.light-theme) .hero-card {
+  border-color: rgba(200, 241, 53, 0.22) !important;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(200, 241, 53, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+body:not(.light-theme) .app-header {
+  border-bottom-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+body:not(.light-theme) .bottom-nav,
+body:not(.light-theme) .bottom-nav.premium-nav {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body:not(.light-theme) .btn-secondary {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body:not(.light-theme) input,
+body:not(.light-theme) select,
+body:not(.light-theme) textarea {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body:not(.light-theme) .tabs {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+body:not(.light-theme) .badge {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body:not(.light-theme) .header-icon-btn {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Hero ranking card — sem “anel” branco */
+body:not(.light-theme) .hero-card,
+body:not(.light-theme) .premium-card {
+  outline: none !important;
+}
+
+/* Esconde chrome residual em alguns browsers quando standalone */
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  html, body {
+    overscroll-behavior: none;
+  }
+}

@@ -12,7 +12,7 @@ export default function Home({ profile, onNavigate }) {
   const [myRank, setMyRank] = useState('--');
   const [loading, setLoading] = useState(true);
   const [heroTransform, setHeroTransform] = useState('rotateX(4deg) rotateY(-4deg) translateZ(0px)');
-  const [heroShadow, setHeroShadow] = useState('0 20px 60px rgba(0,0,0,0.5), 0 6px 20px rgba(0,0,0,0.3)');
+  const [heroShadow, setHeroShadow] = useState('0 16px 40px rgba(0,0,0,0.4)');
 
   const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
   const uf = profile?.uf || 'PA';
@@ -209,7 +209,7 @@ export default function Home({ profile, onNavigate }) {
                 className="premium-photo"
                 style={{
                   width: 80, height: 80, borderRadius: 16, objectFit: 'cover',
-                  border: '2px solid var(--border)', flexShrink: 0,
+                  border: '1px solid rgba(255,255,255,0.06)', flexShrink: 0,
                 }}
               />
             ) : (
@@ -217,7 +217,7 @@ export default function Home({ profile, onNavigate }) {
                 width: 80, height: 80, borderRadius: 16, flexShrink: 0,
                 background: 'rgba(182, 255, 28, 0.1)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: '2px solid var(--border)',
+                border: '1px solid rgba(255,255,255,0.06)',
               }}>
                 <span style={{
                   fontSize: 30, fontWeight: 800, color: 'var(--accent)',
@@ -324,7 +324,7 @@ export default function Home({ profile, onNavigate }) {
                     className="premium-photo"
                     style={{
                       width: 48, height: 48, borderRadius: 12, objectFit: 'cover',
-                      border: '1.5px solid rgba(182, 255, 28, 0.3)',
+                      border: '1px solid rgba(200, 241, 53, 0.18)',
                       flexShrink: 0,
                     }}
                   />
@@ -333,7 +333,7 @@ export default function Home({ profile, onNavigate }) {
                     width: 48, height: 48, borderRadius: 12, flexShrink: 0,
                     background: '#131C27',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    border: '1.5px solid rgba(182, 255, 28, 0.3)',
+                    border: '1px solid rgba(200, 241, 53, 0.18)',
                   }}>
                     <span style={{
                       fontSize: 20, fontWeight: 800, color: '#6A6A82',
