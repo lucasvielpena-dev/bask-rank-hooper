@@ -9,6 +9,7 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import Atletas from './pages/Atletas';
 import Jogos from './pages/Jogos';
+import Racoes from './pages/Racoes';
 import Stats from './pages/Stats';
 import Destaques from './pages/Destaques';
 import MasterDashboard from './pages/MasterDashboard';
@@ -58,6 +59,7 @@ function AppRoutes() {
       case 'atletas': return <Atletas profile={profile} initialOpenAdd={pageProps.openAdd} />;
       case 'torneios': return <Jogos profile={profile} initialAba="torneios" />;
       case 'jogos': return <Jogos profile={profile} initialAba={pageProps.aba || 'jogos'} />;
+      case 'racoes': return <Racoes profile={profile} onNavigate={navigate} />;
       case 'perfil': return <Stats profile={profile} onNavigate={navigate} />;
       case 'destaques': return <Destaques profile={profile} onNavigate={navigate} />;
       case 'master': return <MasterDashboard onNavigate={navigate} />;

@@ -3,6 +3,7 @@ import { supabase, rankingAPI } from '../lib/supabase';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from '../components/Icons';
 import { HomeBackground } from '../components/AnimatedBackgrounds';
+import { labelConfianca, nivelConfianca } from '../lib/ranking';
 
 export default function Home({ profile, onNavigate }) {
   const { esporte, cfg } = useEsporte();
@@ -271,6 +272,28 @@ export default function Home({ profile, onNavigate }) {
         </div>
         </div>
 
+        <div className="home-actions-section" style={{ marginBottom: 16 }}>
+          <div className="home-section-label">Ações rápidas</div>
+          <div className="acoes-rapidas-grid">
+            <button type="button" className="home-quick-action home-quick-action-primary" onClick={() => onNavigate('racoes')}>
+              <div className="home-quick-action-icon">⚡</div>
+              <div className="home-quick-action-label">Rachões</div>
+            </button>
+            <button type="button" className="home-quick-action" onClick={() => onNavigate('atletas')}>
+              <div className="home-quick-action-icon">🏆</div>
+              <div className="home-quick-action-label">Ranking</div>
+            </button>
+            <button type="button" className="home-quick-action" onClick={() => onNavigate('jogos')}>
+              <div className="home-quick-action-icon">🏀</div>
+              <div className="home-quick-action-label">Jogos</div>
+            </button>
+            <button type="button" className="home-quick-action" onClick={() => onNavigate('jogos', { aba: 'torneios' })}>
+              <div className="home-quick-action-icon">🎖️</div>
+              <div className="home-quick-action-label">Torneios</div>
+            </button>
+          </div>
+        </div>
+
         <div className="home-highlights-section">
           <div className="home-highlights-header">
             <div className="home-section-label">Destaques da Semana</div>
@@ -342,6 +365,9 @@ export default function Home({ profile, onNavigate }) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 14, fontWeight: 700, color: 'var(--accent)', fontFamily: "'Barlow Condensed',sans-serif" }}>
                     <span>★</span>
                     <span>{Number(player.media_estrelas || 0).toFixed(1)}</span>
+                  </div>
+                  <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>
+                    {player.total_votos || 0} votos · {labelConfianca(player.nivel_confianca || nivelConfianca(player.total_votos))}
                   </div>
                   <div style={{ width: 80, height: 4, background: '#1A2433', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
                     <div style={{ width: `${(Number(player.media_estrelas || 0) / 5) * 100}%`, height: '100%', background: 'var(--accent)', borderRadius: 2, boxShadow: '0 0 8px rgba(182, 255, 28, 0.6)' }} />

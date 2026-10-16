@@ -672,3 +672,92 @@ export const masterAPI = {
     return { error };
   },
 };
+
+// ============================================================
+// RACHÕES (pickup games)
+// ============================================================
+
+export const racoesAPI = {
+  listar: async ({ cidade, uf, status } = {}) => {
+    let q = supabase
+      .from('racoes')
+      .select('*, racao_participantes(id, usuario_id, jogador_id, status)')
+      .order('data_hora', { ascending: true });
+    if (cidade) q = q.eq('cidade', cidade);
+    if (uf) q = q.eq('uf', uf);
+    if (status) q = q.eq('status', status);
+    else q = q.in('status', ['aberto', 'lotado', 'em_andamento', 'finalizado']);
+    const { data, error } = await q.limit(40);
+    return { data: data || [], error };
+  },
+
+  obter: async (id) => {
+    const { data, error } = await supabase
+      .from('racoes')
+      .select('*, racao_participantes(id, usuario_id, jogador_id, status)')
+      .eq('id', id)
+      .maybeSingle();
+    return { data, error };
+  },
+
+  criar: async (payload) => {
+    const { data, error } = await supabase
+      .from('racoes')
+      .insert([payload])
+      .select()
+      .maybeSingle();
+    if (error) return { data: null, error };
+    // auto-join creator
+    if (data?.id && payload.criado_por) {
+      await supabase.from('racao_participantes').insert([{
+        racao_id: data.id,
+        usuario_id: payload.criado_por,
+        jogador_id: payload.jogador_id || null,
+        status: 'confirmado',
+      }]);
+    }
+    return { data, error: null };
+  },
+
+  entrar: async ({ racaoId, usuarioId, jogadorId }) => {
+    const { data, error } = await supabase
+      .from('racao_participantes')
+      .upsert({
+        racao_id: racaoId,
+        usuario_id: usuarioId,
+        jogador_id: jogadorId || null,
+        status: 'confirmado',
+      }, { onConflict: 'racao_id,usuario_id' })
+      .select()
+      .maybeSingle();
+    return { data, error };
+  },
+
+  sair: async ({ racaoId, usuarioId }) => {
+    const { error } = await supabase
+      .from('racao_participantes')
+      .delete()
+      .eq('racao_id', racaoId)
+      .eq('usuario_id', usuarioId);
+    return { error };
+  },
+
+  finalizar: async (racaoId) => {
+    const { data, error } = await supabase
+      .from('racoes')
+      .update({ status: 'finalizado', updated_at: new Date().toISOString() })
+      .eq('id', racaoId)
+      .select()
+      .maybeSingle();
+    return { data, error };
+  },
+
+  participantesConfirmados: async (racaoId) => {
+    const { data, error } = await supabase
+      .from('racao_participantes')
+      .select('*, profiles:usuario_id(id, nome_completo, apelido, foto_perfil, player_id)')
+      .eq('racao_id', racaoId)
+      .eq('status', 'confirmado');
+    return { data: data || [], error };
+  },
+};

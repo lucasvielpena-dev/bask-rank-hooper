@@ -1,5 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { supabase, jogadoresAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
+import { sortByConfianca, labelConfianca, nivelConfianca } from '../lib/ranking';
 import { useEsporte } from '../contexts/EsporteContext';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -177,10 +178,10 @@ export default function Atletas({ profile }) {
 
     if (filtroAtivo === 'elite') {
       result = result.filter(j => j.media_estrelas >= 4.0 && j.total_votos >= 1);
-      result.sort((a, b) => b.media_estrelas - a.media_estrelas || b.total_votos - a.total_votos);
+      result = sortByConfianca(result);
     } else if (filtroAtivo === 'ranking') {
       result = result.filter(j => j.total_votos >= 1);
-      result.sort((a, b) => b.media_estrelas - a.media_estrelas || b.total_votos - a.total_votos);
+      result = sortByConfianca(result);
     } else if (filtroAtivo === 'recentes') {
       result.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
     } else {
