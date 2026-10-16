@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { masterAPI } from '../lib/supabase';
-import { IconLocalizacao, IconVoltar } from '../components/Icons';
+import { IconVoltar, IconLocalizacao, IconBuscar } from '../components/Icons';
 
 export default function AdminCities({ profile, onNavigate }) {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('players'); // players | users | name
 
   useEffect(() => {
     loadCities();
@@ -17,191 +19,158 @@ export default function AdminCities({ profile, onNavigate }) {
     try {
       const { data, error: err } = await masterAPI.getCityStats();
       if (err) throw err;
-      const sorted = (data || []).sort((a, b) => (b.user_count || 0) - (a.user_count || 0));
-      setCities(sorted);
+      setCities(data || []);
     } catch (e) {
-      setError(e.message || 'Erro ao carregar estatísticas das cidades.');
+      setError(e.message || 'Erro ao carregar cidades.');
     } finally {
       setLoading(false);
     }
   }
 
+  const filtered = useMemo(() => {
+    let list = [...cities];
+    if (search.trim()) {
+      const t = search.toLowerCase();
+      list = list.filter(
+        (c) =>
+          (c.cidade || '').toLowerCase().includes(t) ||
+          (c.uf || '').toLowerCase().includes(t)
+      );
+    }
+    list.sort((a, b) => {
+      if (sortBy === 'users') return (b.user_count || 0) - (a.user_count || 0);
+      if (sortBy === 'name') return (a.cidade || '').localeCompare(b.cidade || '');
+      return (b.player_count || 0) - (a.player_count || 0);
+    });
+    return list;
+  }, [cities, search, sortBy]);
+
+  const totals = useMemo(() => {
+    return cities.reduce(
+      (acc, c) => {
+        acc.users += c.user_count || 0;
+        acc.players += c.player_count || 0;
+        acc.matches += c.match_count || 0;
+        acc.tournaments += c.tournament_count || 0;
+        return acc;
+      },
+      { users: 0, players: 0, matches: 0, tournaments: 0 }
+    );
+  }, [cities]);
+
   if (loading) {
     return (
-      <div className="page-content" style={{ padding: '20px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-          <div className="skeleton skeleton-avatar" style={{ width: 40, height: 40 }} />
-          <div style={{ flex: 1 }}>
-            <div className="skeleton skeleton-bar" style={{ width: '60%', height: 16 }} />
-            <div className="skeleton skeleton-bar" style={{ width: '40%', height: 12, marginTop: 6 }} />
-          </div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {[1, 2, 3, 4, 5].map(idx => (
-            <div key={idx} className="skeleton" style={{ height: 110, borderRadius: '16px' }} />
-          ))}
-        </div>
+      <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+        <div className="spinner" />
       </div>
     );
   }
 
   return (
-    <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
-      <div style={{ padding: '20px 20px 0' }}>
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-          <button
-            onClick={() => onNavigate?.('admin-dashboard')}
-            style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              border: 'none',
-              color: 'var(--text-primary)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              fontSize: '12px',
-              fontWeight: 700,
-              padding: '6px 12px',
-              borderRadius: '50px',
-              fontFamily: 'inherit'
-            }}
-          >
-            <IconVoltar size={16} color="var(--accent)" />
-            Voltar
+    <div className="page-content admin-page">
+      <div className="admin-wrap">
+        <div className="admin-header">
+          <button type="button" className="admin-back" onClick={() => onNavigate?.('master')} aria-label="Voltar">
+            <IconVoltar size={18} color="var(--accent)" />
+          </button>
+          <div style={{ flex: 1 }}>
+            <h1 className="admin-title">Cidades</h1>
+            <p className="admin-sub">Onde estão os jogadores e a atividade</p>
+          </div>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={loadCities}>
+            Atualizar
           </button>
         </div>
 
-        <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 8 }}>
-            <div style={{ width: 40, height: 40, background: 'rgba(16, 185, 129, 0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <IconLocalizacao size={20} color="#10b981" />
-            </div>
-            <h2 style={{ fontWeight: 800, fontSize: 20, color: 'var(--text-primary)' }}>
-              Cidades
-            </h2>
+        <div className="admin-summary">
+          <div className="admin-summary-item">
+            <span className="admin-summary-val">{cities.length}</span>
+            <span className="admin-summary-lbl">Cidades</span>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>
-            Estatísticas por região ({cities.length} cidades)
-          </p>
+          <div className="admin-summary-item">
+            <span className="admin-summary-val">{totals.players}</span>
+            <span className="admin-summary-lbl">Jogadores</span>
+          </div>
+          <div className="admin-summary-item">
+            <span className="admin-summary-val">{totals.users}</span>
+            <span className="admin-summary-lbl">Usuários</span>
+          </div>
+          <div className="admin-summary-item">
+            <span className="admin-summary-val">{totals.matches}</span>
+            <span className="admin-summary-lbl">Partidas</span>
+          </div>
+        </div>
+
+        <div className="admin-search">
+          <IconBuscar size={16} color="var(--text-muted)" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar cidade ou UF..."
+          />
+        </div>
+
+        <div className="admin-sort-row">
+          <span className="admin-section-label" style={{ margin: 0 }}>
+            {filtered.length} cidade{filtered.length !== 1 ? 's' : ''}
+          </span>
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="admin-select">
+            <option value="players">Mais jogadores</option>
+            <option value="users">Mais usuários</option>
+            <option value="name">Nome A–Z</option>
+          </select>
         </div>
 
         {error && (
-          <div style={{
-            color: '#f87171',
-            background: 'rgba(239,68,68,0.1)',
-            border: '1px solid rgba(239,68,68,0.3)',
-            padding: 10,
-            borderRadius: 8,
-            fontSize: 13,
-            marginBottom: 14,
-            textAlign: 'center'
-          }}>
-            {error}
-          </div>
+          <div className="admin-error">{error}</div>
         )}
 
-        {cities.length === 0 ? (
+        {filtered.length === 0 ? (
           <div className="empty-state">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
+            <IconLocalizacao size={36} color="var(--text-muted)" />
             <h3>Nenhuma cidade encontrada</h3>
-            <p>Os dados aparecerão aqui quando houver usuários cadastrados.</p>
+            <p>Os dados aparecem quando houver cadastros.</p>
           </div>
         ) : (
-          <div className="responsive-card-grid" style={{ paddingBottom: 24 }}>
-            {cities.map((city, index) => (
-              <div
-                key={city.cidade || index}
-                className="card card-enter"
-                style={{
-                  animationDelay: `${index * 30}ms`,
-                  padding: '16px',
-                  background: 'var(--bg-card)',
-                  border: index < 3 ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid var(--border)',
-                  borderRadius: '16px',
-                  boxShadow: 'var(--shadow)'
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: '50%',
-                      background: index < 3
-                        ? 'linear-gradient(135deg, #10b981 0%, #047857 100%)'
-                        : 'var(--bg-secondary)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '13px',
-                      fontWeight: 900,
-                      color: '#fff',
-                      flexShrink: 0
-                    }}>
-                      {index + 1}
-                    </div>
-                    <div>
-                      <h3 style={{ fontWeight: 800, fontSize: 16, color: 'var(--text-primary)', margin: 0 }}>
-                        {city.cidade || 'Desconhecida'}
-                      </h3>
-                      {city.uf && (
-                        <span style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 600 }}>
-                          {city.uf}
-                        </span>
-                      )}
-                    </div>
+          <div className="admin-city-list">
+            {filtered.map((city, index) => (
+              <article key={`${city.cidade}-${city.uf}-${index}`} className="admin-city-card">
+                <div className="admin-city-head">
+                  <div className={`admin-city-rank ${index < 3 ? 'top' : ''}`}>
+                    {index + 1}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <h3 className="admin-city-name">{city.cidade || 'Desconhecida'}</h3>
+                    <p className="admin-city-uf">{city.uf || '—'}</p>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => onNavigate?.('master-players')}
+                    title="Ver jogadores"
+                  >
+                    Ver atletas
+                  </button>
+                </div>
+                <div className="admin-city-grid">
+                  <div className="admin-city-stat">
+                    <span>Jogadores</span>
+                    <strong>{city.player_count || 0}</strong>
+                  </div>
+                  <div className="admin-city-stat">
+                    <span>Usuários</span>
+                    <strong>{city.user_count || 0}</strong>
+                  </div>
+                  <div className="admin-city-stat">
+                    <span>Partidas</span>
+                    <strong>{city.match_count || 0}</strong>
+                  </div>
+                  <div className="admin-city-stat">
+                    <span>Torneios</span>
+                    <strong>{city.tournament_count || 0}</strong>
                   </div>
                 </div>
-
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: 8
-                }}>
-                  {[
-                    { label: 'Usuários', value: city.user_count || 0, color: 'var(--accent)' },
-                    { label: 'Jogadores', value: city.player_count || 0, color: 'var(--accent)' },
-                    { label: 'Torneios', value: city.tournament_count || 0, color: '#8b5cf6' },
-                    { label: 'Partidas', value: city.match_count || 0, color: '#10b981' },
-                  ].map((stat) => (
-                    <div
-                      key={stat.label}
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        padding: '10px 6px',
-                        borderRadius: '12px',
-                        background: 'var(--bg-secondary)',
-                        border: '1px solid var(--border)'
-                      }}
-                    >
-                      <span style={{
-                        fontSize: '10px',
-                        color: 'var(--text-secondary)',
-                        fontWeight: 700,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.02em',
-                        marginBottom: 4
-                      }}>
-                        {stat.label}
-                      </span>
-                      <span style={{
-                        fontSize: '20px',
-                        fontWeight: 900,
-                        color: stat.color,
-                        fontFamily: "'Bebas Neue', sans-serif"
-                      }}>
-                        {stat.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              </article>
             ))}
           </div>
         )}

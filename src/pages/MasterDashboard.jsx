@@ -261,10 +261,12 @@ export default function MasterDashboard({ onNavigate }) {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'clamp(8px, 2vw, 12px)', paddingBottom: 24 }}>
               {[
-                { label: 'Gerenciar Usuários', tab: 'master-users', color: 'blue' },
-                { label: 'Gerenciar Jogadores', tab: 'master-players', color: 'gold' },
-                { label: 'Ver Torneios', tab: 'master-tournaments', color: 'blue' },
-                { label: 'Enviar Notificação', tab: 'master-notifications', color: 'gold' }
+                { label: 'Jogadores e status', tab: 'master-players', color: 'gold', hint: 'Cidade, ativo, votos' },
+                { label: 'Cidades', tab: 'master-cities', color: 'blue', hint: 'Onde está a base' },
+                { label: 'Usuários', tab: 'master-users', color: 'blue', hint: 'Contas e papéis' },
+                { label: 'Torneios', tab: 'master-tournaments', color: 'gold', hint: 'Competições' },
+                { label: 'Notificações', tab: 'master-notifications', color: 'blue', hint: 'Avisos globais' },
+                { label: 'Relatórios', tab: 'master-reports', color: 'gold', hint: 'Denúncias' },
               ].map(action => (
                 <button
                   key={action.tab}
@@ -298,6 +300,9 @@ export default function MasterDashboard({ onNavigate }) {
                   <div style={{ fontSize: 'clamp(11px, 2.5vw, 13px)', fontWeight: 700, color: 'var(--text-primary)' }}>
                     {action.label}
                   </div>
+                  {action.hint && (
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{action.hint}</div>
+                  )}
                 </button>
               ))}
             </div>
