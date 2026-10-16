@@ -1,8 +1,7 @@
 import { memo, useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useEsporte } from '../contexts/EsporteContext';
-import { ESPORTES } from '../config/esportes';
-import { IconMenu, IconSino, IconBasquete, IconHandebol, IconSportDynamic } from './Icons';
+import { IconMenu, IconSino, IconSportDynamic } from './Icons';
 
 export default memo(function Header() {
   const { profile, notificacoes, setShowUserMenu, setShowNotificacoes } = useAuth();
@@ -38,7 +37,7 @@ export default memo(function Header() {
             RANK <span style={{ color:'var(--accent)' }}>HOOPER</span>
           </div>
         </div>
-        <SportSwitcher />
+        
       </div>
 
       <div style={{ display:'flex', alignItems:'center', gap:14 }}>
@@ -65,45 +64,3 @@ export default memo(function Header() {
   );
 });
 
-const SportSwitcher = memo(function SportSwitcher() {
-  const { esporte, setEsporte } = useEsporte();
-
-  return (
-    <div style={{
-      display: 'flex',
-      background: 'rgba(255,255,255,0.06)',
-      borderRadius: 20,
-      padding: 3,
-      gap: 2,
-    }}>
-      {Object.entries(ESPORTES).map(([key, sportCfg]) => {
-        const isActive = esporte === key;
-        const Icon = key === 'handebol' ? IconHandebol : IconBasquete;
-        return (
-          <button
-            key={key}
-            onClick={() => setEsporte(key)}
-            style={{
-              padding: '4px 12px',
-              borderRadius: 17,
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: 11,
-              fontWeight: 700,
-              fontFamily: "'DM Sans', sans-serif",
-              background: isActive ? '#C8F135' : 'transparent',
-              color: isActive ? '#0a0a0a' : 'var(--text-secondary)',
-              transition: 'all 0.2s ease',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-            }}
-          >
-            <Icon size={14} color={isActive ? '#0a0a0a' : 'var(--accent)'} />
-            {key === 'basquete' ? 'HOOPS' : 'HANDBALL'}
-          </button>
-        );
-      })}
-    </div>
-  );
-});

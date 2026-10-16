@@ -1,6 +1,4 @@
 import { memo } from 'react';
-import { useEsporte } from '../contexts/EsporteContext';
-
 export const PAGES = {
   inicio: { label: 'Início', icon: 'court' },
   atletas: { label: 'Atletas', icon: 'users' },
@@ -51,11 +49,9 @@ const NavIcon = memo(function NavIcon({ type, active }) {
 });
 
 export default memo(function BottomNavigation({ page, onNavigate, isMaster }) {
-  const { esporte } = useEsporte();
-
   const dynamicPages = {
     ...PAGES,
-    jogos: { label: 'Jogos', icon: esporte === 'handebol' ? 'handball' : 'basketball' },
+    jogos: { label: 'Jogos', icon: 'basketball' },
   };
 
   const allPages = isMaster

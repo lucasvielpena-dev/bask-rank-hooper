@@ -20,28 +20,6 @@ export const ESPORTES = {
     ],
     funcaoVoto: 'registrar_avaliacao',
   },
-  handebol: {
-    label: 'Handebol',
-    divisionName: 'Handball League',
-    divisionSlogan: 'A quadra oficial do handebol nacional',
-    goalLabel: 'Artilheiro',
-    scoreUnit: 'Gols',
-    posicoes: ['Goleiro', 'Ponta-Esquerda', 'Ponta-Direita', 'Meia', 'Pivô', 'Armador'],
-    habilidades: [
-      { key: 'finalizacao',     label: 'Finalização' },
-      { key: 'defesa',          label: 'Defesa' },
-      { key: 'passes',          label: 'Passes' },
-      { key: 'explosao_fisica', label: 'Explosão Física' },
-      { key: 'visao_de_jogo',   label: 'Visão de Jogo' },
-    ],
-    statsPartida: [
-      { key: 'gols',             label: 'Gols' },
-      { key: 'defesas_goleiro',  label: 'Defesas (Goleiro)' },
-      { key: 'assistencias',     label: 'Assistências' },
-      { key: 'faltas_cometidas', label: 'Faltas Cometidas' },
-    ],
-    funcaoVoto: 'registrar_avaliacao_handebol',
-  },
 };
 
 export const ESPORTE_PADRAO = 'basquete';
