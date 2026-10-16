@@ -521,17 +521,30 @@ export const torneioJogosAPI = {
   }
 };
 
+async function resolveAuthUserId() {
+  try {
+    const { data } = await supabase.auth.getUser();
+    if (data?.user?.id) return data.user.id;
+  } catch (_) {}
+  try {
+    const { data } = await supabase.auth.getSession();
+    if (data?.session?.user?.id) return data.session.user.id;
+  } catch (_) {}
+  return null;
+}
+
 export const notificacoesAPI = {
   listar: async () => {
-    const user = (await supabase.auth.getUser()).data.user;
-    if (!user) return { data: [], error: new Error('Usuário não autenticado') };
-    
+    const userId = await resolveAuthUserId();
+    if (!userId) return { data: [], error: new Error('Usuário não autenticado') };
+
     const { data, error } = await supabase
       .from('notificacoes')
       .select('*')
-      .eq('usuario_id', user.id)
-      .order('created_at', { ascending: false });
-    return { data, error };
+      .eq('usuario_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(50);
+    return { data: data || [], error };
   },
 
   marcarComoLida: async (id) => {
@@ -539,22 +552,31 @@ export const notificacoesAPI = {
       .from('notificacoes')
       .update({ lida: true })
       .eq('id', id)
-      .select();
+      .select()
+      .maybeSingle();
     return { data, error };
   },
 
   marcarTodasComoLidas: async () => {
-    const user = (await supabase.auth.getUser()).data.user;
-    if (!user) return { data: null, error: new Error('Usuário não autenticado') };
-    
+    const userId = await resolveAuthUserId();
+    if (!userId) return { data: null, error: new Error('Usuário não autenticado') };
+
     const { data, error } = await supabase
       .from('notificacoes')
       .update({ lida: true })
-      .eq('usuario_id', user.id)
+      .eq('usuario_id', userId)
       .eq('lida', false)
       .select();
     return { data, error };
-  }
+  },
+
+  excluir: async (id) => {
+    const { error } = await supabase
+      .from('notificacoes')
+      .delete()
+      .eq('id', id);
+    return { error };
+  },
 };
 
 // ============================================================

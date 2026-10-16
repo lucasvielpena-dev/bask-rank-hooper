@@ -5,6 +5,7 @@ import { useEsporte } from '../contexts/EsporteContext';
 import Header from './Header';
 import BottomNavigation from './BottomNavigation';
 import { IconSino, IconLocalizacao } from './Icons';
+import NotificationsPanel from './NotificationsPanel';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Layout({ page, onNavigate, children }) {
@@ -25,6 +26,8 @@ export default function Layout({ page, onNavigate, children }) {
     notificacoes,
     handleMarcarLida,
     handleMarcarTodasLidas,
+    handleExcluirNotificacao,
+    carregarNotificacoes,
     editApelido,
     setEditApelido,
     editPosicao,
@@ -470,114 +473,15 @@ export default function Layout({ page, onNavigate, children }) {
         </div>
       )}
 
-      {showNotificacoes && (
-        <div className="modal-overlay" onClick={() => setShowNotificacoes(false)} style={{ zIndex: 1000 }}>
-          <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440, maxHeight: '80vh', overflowY: 'auto' }}>
-            <div className="modal-handle" />
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3 style={{ fontWeight: 900, fontSize: 20, display: 'flex', alignItems: 'center', gap: 8 }}><IconSino size={20} color="var(--text-primary)" /> Notificações</h3>
-              {notificacoes.filter(n => !n.lida).length > 0 && (
-                <button
-                  onClick={handleMarcarTodasLidas}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'var(--accent)',
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    padding: 0
-                  }}
-                >
-                  Marcar todas como lidas
-                </button>
-              )}
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 16 }}>
-              {notificacoes.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
-                  <div style={{ marginBottom: 12, opacity: 0.5, display: 'flex', justifyContent: 'center' }}>
-                    <IconSino size={40} color="currentColor" />
-                  </div>
-                  <p style={{ fontSize: '13px', fontWeight: 600 }}>Nenhuma notificação por aqui</p>
-                  <p style={{ fontSize: '11px', marginTop: 4 }}>Você será avisado sempre que receber avaliações de outros jogadores.</p>
-                </div>
-              ) : (
-                notificacoes.map(n => (
-                  <div
-                    key={n.id}
-                    style={{
-                      background: n.lida ? 'transparent' : 'rgba(200, 241, 53, 0.04)',
-                      border: n.lida ? '1px solid var(--border)' : '1px solid rgba(200, 241, 53, 0.15)',
-                      borderRadius: '12px',
-                      padding: '14px',
-                      display: 'flex',
-                      gap: 12,
-                      position: 'relative',
-                      alignItems: 'flex-start',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    {!n.lida && (
-                      <span style={{
-                        width: '8px',
-                        height: '8px',
-                        background: 'var(--accent)',
-                        borderRadius: '50%',
-                        position: 'absolute',
-                        top: '16px',
-                        right: '16px'
-                      }} />
-                    )}
-
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 2 }}>
-                        {n.titulo}
-                      </div>
-                      <p style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: '1.4', marginBottom: 8 }}>
-                        {n.mensagem}
-                      </p>
-                      <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600 }}>
-                        {new Date(n.created_at).toLocaleDateString('pt-BR')} às {new Date(n.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                    </div>
-
-                    {!n.lida && (
-                      <button
-                        onClick={() => handleMarcarLida(n.id)}
-                        style={{
-                          background: 'rgba(200, 241, 53, 0.12)',
-                          color: 'var(--accent)',
-                          border: 'none',
-                          borderRadius: '6px',
-                          padding: '4px 8px',
-                          fontSize: '9px',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          alignSelf: 'center'
-                        }}
-                      >
-                        Lida
-                      </button>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-
-            <button
-              className="btn btn-secondary"
-              onClick={() => setShowNotificacoes(false)}
-              style={{ width: '100%', marginTop: 10 }}
-            >
-              Fechar
-            </button>
-          </div>
-        </div>
-      )}
+      <NotificationsPanel
+        open={showNotificacoes}
+        onClose={() => setShowNotificacoes(false)}
+        notificacoes={notificacoes}
+        onMarkRead={handleMarcarLida}
+        onMarkAllRead={handleMarcarTodasLidas}
+        onDelete={handleExcluirNotificacao}
+        onRefresh={carregarNotificacoes}
+      />
     </div>
   );
 }

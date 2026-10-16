@@ -533,6 +533,13 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function handleExcluirNotificacao(id) {
+    const { error } = await notificacoesAPI.excluir(id);
+    if (!error) {
+      setNotificacoes(prev => prev.filter(n => n.id !== id));
+    }
+  }
+
   useEffect(() => {
     if (user) {
       carregarNotificacoes();
@@ -626,6 +633,8 @@ export function AuthProvider({ children }) {
     solicitarLocalizacaoBanner,
     handleMarcarLida,
     handleMarcarTodasLidas,
+    handleExcluirNotificacao,
+    carregarNotificacoes,
     logout: async () => {
       await authAPI.logout();
       setShowUserMenu(false);

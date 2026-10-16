@@ -44,8 +44,8 @@ export default memo(function Header() {
         <div style={{ position:'relative', cursor:'pointer', display:'flex', alignItems:'center' }} onClick={() => setShowNotificacoes(true)}>
           <IconSino size={22} color="var(--text-primary)" />
           {notificacoes.filter(n => !n.lida).length > 0 && (
-            <span style={{ position:'absolute', top:-2, right:-2, background:'var(--accent)', color:'#0C0C14', fontSize:'8px', fontWeight:800, width:14, height:14, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid var(--bg-primary)' }}>
-              {notificacoes.filter(n => !n.lida).length}
+            <span className="header-notif-badge">
+              {notificacoes.filter(n => !n.lida).length > 9 ? '9+' : notificacoes.filter(n => !n.lida).length}
             </span>
           )}
         </div>
