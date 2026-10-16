@@ -173,14 +173,20 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
             })
             .eq('id', player_id);
         } else {
-          // Criar novo jogador
+          // Criar novo jogador — criado_por deve ser o UUID de auth.users
+          const { data: authData } = await supabase.auth.getUser();
+          const authUserId = authData?.user?.id || profile.id;
+          if (!authUserId) {
+            throw new Error('Sessão expirada. Faça login novamente.');
+          }
+
           const { data: newJogador, error: jogError } = await supabase
             .from('jogadores')
             .insert([{
               nome: profile.nome_completo || 'Jogador',
               apelido: apelido.trim(),
               foto_url: avatarUrl || null,
-              criado_por: profile.id,
+              criado_por: authUserId,
               cidade: cidade,
               uf: uf,
               pais: pais,

@@ -179,13 +179,20 @@ export function AuthProvider({ children }) {
 
       // 2. Se não existir jogador para esta modalidade/esporte, criamos um novo
       console.log(`Criando jogador de ${esporte} para o perfil...`, prof.nome_completo, prof.id);
+      const { data: authData } = await supabase.auth.getUser();
+      const authUserId = authData?.user?.id || prof.id;
+      if (!authUserId) {
+        console.error('Sem usuário autenticado para criar jogador');
+        return;
+      }
+
       const { data: newJogador, error: jogError } = await supabase
         .from('jogadores')
         .insert([{
           nome: prof.nome_completo || 'Jogador',
           apelido: prof.apelido || 'Jogador',
           foto_url: prof.foto_perfil || null,
-          criado_por: prof.id,
+          criado_por: authUserId,
           cidade: prof.cidade_atual || prof.cidade || 'Altamira',
           uf: prof.uf || 'PA',
           posicao: prof.posicao || cfg.posicoes[0],
@@ -317,13 +324,17 @@ export function AuthProvider({ children }) {
         const detectedUf = ESTADO_TO_UF[stateName] || 'PA';
         const detectedCountry = address.country || 'Brasil';
 
+        const { data: authData } = await supabase.auth.getUser();
+        const authUserId = authData?.user?.id || profile.id;
+        if (!authUserId) throw new Error('Sessão expirada. Faça login novamente.');
+
         const { data: newJogador, error: jogError } = await supabase
           .from('jogadores')
           .insert([{
             nome: profile.nome_completo || 'Jogador',
             apelido: profile.apelido || 'Jogador',
             foto_url: profile.foto_perfil || null,
-            criado_por: profile.id,
+            criado_por: authUserId,
             cidade: detectedCity,
             uf: detectedUf,
             pais: detectedCountry,
