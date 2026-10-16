@@ -8,13 +8,17 @@
 --   4) Adicionar checagem de papel (role) nas RPCs de estatística.
 --
 -- COMO RODAR:
---   Cole no SQL Editor do Supabase e execute UMA vez, DEPOIS de:
+--   Cole no SQL Editor do Supabase e execute. DEPOIS de:
 --     schema.sql, schema_tournaments.sql, migration_master.sql,
---     migration_features_v2.sql
+--     migration_racoes.sql   (cria as tabelas de rachões)
 --
--- ⚠️ NÃO rode `migration_cleanup.sql`: ele remove a tabela `auditoria_votos`
---    que `registrar_avaliacao` ainda usa e quebra a votação. Esta migration
---    já cobre a parte de RLS que o cleanup tentava corrigir.
+--   ⚠️ NÃO rode `migration_features_v2.sql` (redefine `get_ranking` com 5
+--      argumentos → overload ambíguo com a versão de 4 args do schema).
+--   ⚠️ NÃO rode `migration_cleanup.sql`: ele remove a tabela `auditoria_votos`
+--      que `registrar_avaliacao` ainda usa e quebra a votação. Esta migration
+--      já cobre a parte de RLS que o cleanup tentava corrigir.
+--
+-- Este script é IDEMPOTENTE: pode ser executado mais de uma vez.
 --
 -- Depois de aplicar, rode o frontend com as consultas atualizadas
 -- (src/lib/supabase.js usa PROFILE_SAFE_COLUMNS em vez de select('*')).
@@ -33,67 +37,92 @@
 -- ============================================================
 -- Todas as policies abaixo eram `FOR SELECT USING (TRUE)` sem cláusula TO,
 -- o que valia para o papel `public` — incluindo `anon` (sem login).
--- Recriamos com `TO authenticated`.
+-- Recriamos com `TO authenticated`. (DROP antes do CREATE → reexecutável.)
 
 DROP POLICY IF EXISTS profiles_select_all ON public.profiles;
+DROP POLICY IF EXISTS profiles_select_auth ON public.profiles;
 CREATE POLICY profiles_select_auth ON public.profiles
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS jogadores_select_all ON public.jogadores;
+DROP POLICY IF EXISTS jogadores_select_auth ON public.jogadores;
 CREATE POLICY jogadores_select_auth ON public.jogadores
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS avaliacoes_select_all ON public.avaliacoes;
+DROP POLICY IF EXISTS avaliacoes_select_auth ON public.avaliacoes;
 CREATE POLICY avaliacoes_select_auth ON public.avaliacoes
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS campeoes_select_all ON public.campeoes_semana;
+DROP POLICY IF EXISTS campeoes_select_auth ON public.campeoes_semana;
 CREATE POLICY campeoes_select_auth ON public.campeoes_semana
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS jogos_select_all ON public.jogos;
+DROP POLICY IF EXISTS jogos_select_auth ON public.jogos;
 CREATE POLICY jogos_select_auth ON public.jogos
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS stats_select_all ON public.estatisticas_partida;
+DROP POLICY IF EXISTS stats_select_auth ON public.estatisticas_partida;
 CREATE POLICY stats_select_auth ON public.estatisticas_partida
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS partidas_select_all ON public.partidas;
+DROP POLICY IF EXISTS partidas_select_auth ON public.partidas;
 CREATE POLICY partidas_select_auth ON public.partidas
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS partida_jogadores_select_all ON public.partida_jogadores;
+DROP POLICY IF EXISTS partida_jogadores_select_auth ON public.partida_jogadores;
 CREATE POLICY partida_jogadores_select_auth ON public.partida_jogadores
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS torneios_select_all ON public.torneios;
+DROP POLICY IF EXISTS torneios_select_auth ON public.torneios;
 CREATE POLICY torneios_select_auth ON public.torneios
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS equipes_select_all ON public.equipes;
+DROP POLICY IF EXISTS equipes_select_auth ON public.equipes;
 CREATE POLICY equipes_select_auth ON public.equipes
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS equipe_jogadores_select_all ON public.equipe_jogadores;
+DROP POLICY IF EXISTS equipe_jogadores_select_auth ON public.equipe_jogadores;
 CREATE POLICY equipe_jogadores_select_auth ON public.equipe_jogadores
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS torneio_jogos_select_all ON public.torneio_jogos;
+DROP POLICY IF EXISTS torneio_jogos_select_auth ON public.torneio_jogos;
 CREATE POLICY torneio_jogos_select_auth ON public.torneio_jogos
   FOR SELECT TO authenticated USING (TRUE);
 
 DROP POLICY IF EXISTS torneio_estatisticas_jogadores_select_all ON public.torneio_estatisticas_jogadores;
+DROP POLICY IF EXISTS torneio_estatisticas_jogadores_select_auth ON public.torneio_estatisticas_jogadores;
 CREATE POLICY torneio_estatisticas_jogadores_select_auth ON public.torneio_estatisticas_jogadores
   FOR SELECT TO authenticated USING (TRUE);
 
-DROP POLICY IF EXISTS racoes_select_all ON public.racoes;
-CREATE POLICY racoes_select_auth ON public.racoes
-  FOR SELECT TO authenticated USING (TRUE);
+-- Rações: tabelas criadas por `migration_racoes.sql`.
+-- Só aplica se elas existirem (assim o hardening não falha se rações
+-- ainda não tiverem sido criadas).
+DO $$
+BEGIN
+  IF to_regclass('public.racoes') IS NOT NULL THEN
+    DROP POLICY IF EXISTS racoes_select_all ON public.racoes;
+    DROP POLICY IF EXISTS racoes_select_auth ON public.racoes;
+    CREATE POLICY racoes_select_auth ON public.racoes
+      FOR SELECT TO authenticated USING (TRUE);
+  END IF;
 
-DROP POLICY IF EXISTS racao_part_select ON public.racao_participantes;
-CREATE POLICY racao_part_select_auth ON public.racao_participantes
-  FOR SELECT TO authenticated USING (TRUE);
+  IF to_regclass('public.racao_participantes') IS NOT NULL THEN
+    DROP POLICY IF EXISTS racao_part_select ON public.racao_participantes;
+    DROP POLICY IF EXISTS racao_part_select_auth ON public.racao_participantes;
+    CREATE POLICY racao_part_select_auth ON public.racao_participantes
+      FOR SELECT TO authenticated USING (TRUE);
+  END IF;
+END $$;
 
 -- auditoria_votos (IP/device/localização): ninguém lê pelo cliente.
 -- Só `registrar_avaliacao` (SECURITY DEFINER) escreve. Sem policy = negado.
@@ -135,6 +164,7 @@ END $$;
 
 -- 3.1 JOGADORES -------------------------------------------------
 DROP POLICY IF EXISTS jogadores_insert_auth ON public.jogadores;
+DROP POLICY IF EXISTS jogadores_insert_own ON public.jogadores;
 CREATE POLICY jogadores_insert_own ON public.jogadores
   FOR INSERT TO authenticated
   WITH CHECK (criado_por = auth.uid() OR criado_por IS NULL);
@@ -148,11 +178,13 @@ CREATE POLICY jogadores_update_own ON public.jogadores
 
 -- 3.2 JOGOS -----------------------------------------------------
 DROP POLICY IF EXISTS jogos_insert_auth ON public.jogos;
+DROP POLICY IF EXISTS jogos_insert_own ON public.jogos;
 CREATE POLICY jogos_insert_own ON public.jogos
   FOR INSERT TO authenticated
   WITH CHECK (criado_por = auth.uid());
 
 DROP POLICY IF EXISTS jogos_update_auth ON public.jogos;
+DROP POLICY IF EXISTS jogos_update_own ON public.jogos;
 CREATE POLICY jogos_update_own ON public.jogos
   FOR UPDATE TO authenticated
   USING (criado_por = auth.uid())
@@ -164,11 +196,13 @@ ALTER TABLE public.partidas
   ADD COLUMN IF NOT EXISTS criado_por UUID REFERENCES auth.users(id) DEFAULT auth.uid();
 
 DROP POLICY IF EXISTS partidas_insert_auth ON public.partidas;
+DROP POLICY IF EXISTS partidas_insert_own ON public.partidas;
 CREATE POLICY partidas_insert_own ON public.partidas
   FOR INSERT TO authenticated
   WITH CHECK (criado_por = auth.uid() OR criado_por IS NULL);
 
 DROP POLICY IF EXISTS partidas_update_auth ON public.partidas;
+DROP POLICY IF EXISTS partidas_update_own ON public.partidas;
 CREATE POLICY partidas_update_own ON public.partidas
   FOR UPDATE TO authenticated
   -- partidas antigas (criado_por NULL) continuam editáveis na transição;
@@ -179,11 +213,17 @@ CREATE POLICY partidas_update_own ON public.partidas
 -- 3.4 RAÇÕES ----------------------------------------------------
 -- Antes: USING (criado_por = auth.uid() OR auth.role() = 'authenticated')
 -- O `OR authenticated` liberava edição para QUALQUER logado. Removido.
-DROP POLICY IF EXISTS racoes_update_auth ON public.racoes;
-CREATE POLICY racoes_update_own ON public.racoes
-  FOR UPDATE TO authenticated
-  USING (criado_por = auth.uid())
-  WITH CHECK (criado_por = auth.uid());
+DO $$
+BEGIN
+  IF to_regclass('public.racoes') IS NOT NULL THEN
+    DROP POLICY IF EXISTS racoes_update_auth ON public.racoes;
+    DROP POLICY IF EXISTS racoes_update_own ON public.racoes;
+    CREATE POLICY racoes_update_own ON public.racoes
+      FOR UPDATE TO authenticated
+      USING (criado_por = auth.uid())
+      WITH CHECK (criado_por = auth.uid());
+  END IF;
+END $$;
 
 
 -- ============================================================

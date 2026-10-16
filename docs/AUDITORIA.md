@@ -26,6 +26,11 @@ INSERT INTO public.auditoria_votos (avaliacao_id, ip, device_id, localizacao, st
 
 `schema.sql:516-519` só dá DROP em assinaturas antigas; **não remove a versão de 5 args**. O frontend chama com 4 parâmetros nomeados (`src/lib/supabase.js:46-63`). Risco de ambiguidade no PostgREST (PGRST203) e ordenação divergente (v2 usa `score_confianca`).
 
+> **✅ Mitigado (2026-10-16):** o `migration_features_v2.sql` foi **neutralizado** (virou aviso; não executa mais SQL). As rações agora vêm de `migration_racoes.sql`, que **não** toca em `get_ranking`. Se a versão de 5 args já tiver sido criada no banco, rode o bloco abaixo no SQL Editor para removê-la:
+> ```sql
+> DROP FUNCTION IF EXISTS public.get_ranking(text, text, integer, text, text);
+> ```
+
 ### A3. RPCs administrativas sem checagem de role
 `supabase/migration_master.sql`:
 - `get_master_stats()` (linha 82) — `SECURITY DEFINER`, **sem verificação de role**.
@@ -108,7 +113,8 @@ Ordem sugerida, com conflitos:
 | `schema.sql` | base: tabelas, RLS, `registrar_avaliacao`, `get_ranking` (4 args), trigger média | insere em `auditoria_votos` |
 | `schema_tournaments.sql` | torneios/equipes/jogos | policies `FOR ALL` coexistem com as do schema |
 | `migration_master.sql` | RPCs admin | `get_master_stats`/`get_city_stats` sem role; `admin_get_players` órfã |
-| `migration_features_v2.sql` | redefine `get_ranking` (5 args) + `racoes` | **overload** com o schema |
+| `migration_features_v2.sql` | ⚠️ **OBSOLETO** — não executa SQL (aviso no topo) | substituído por `migration_racoes.sql` |
+| `migration_racoes.sql` | cria `racoes` + `racao_participantes` com RLS endurecida | **sem** o overload de `get_ranking` |
 | `supabase_migration_handebol.sql` | votação handebol | trigger de média corrompe; código desativado |
 | `migration_cleanup.sql` | DROP `votos`/`auditoria_votos` | **quebra `registrar_avaliacao`** |
 | `fix_*.sql` | FK `criado_por` | par fix/desfix — estado final indefinido |
@@ -135,7 +141,7 @@ Arquivos alterados/criados nesta rodada:
 - **`src/lib/supabase.js`** — `PROFILE_SAFE_COLUMNS` + consultas de `profiles` sem `select('*')`; **A5** corrigido (`createBucket` removido do cliente, validação de tipo/tamanho no upload).
 - **`src/contexts/AuthContext.jsx`**, **`src/components/Layout.jsx`**, **`src/components/CompleteProfileScreen.jsx`** — email lido da sessão de auth, não mais de `profiles`.
 
-Ainda **pendentes** (não alterados): **A1** (conflito `migration_cleanup` × `registrar_avaliacao`), **A2** (overload `get_ranking`), **A4** (trigger de média × handebol), **M1/M2** (chaves EN/PT e `uf` ausente), **M5/M7/M8**.
+Ainda **pendentes** (não alterados): **A1** (conflito `migration_cleanup` × `registrar_avaliacao`), **A4** (trigger de média × handebol), **M1/M2** (chaves EN/PT e `uf` ausente), **M5/M7/M8**. (**A2** mitigado — ver acima.)
 
 ### Correção de UI — modais atrás da barra de navegação
 
@@ -147,3 +153,14 @@ Correções:
 
 - **`src/components/Layout.jsx`** — o contêiner das páginas recebeu `zIndex: 120` (acima da barra, que é `100`), garantindo que qualquer modal da página fique acima da navegação.
 - **`src/styles/global.css`** — `.modal-sheet` ganhou `padding-bottom: calc(14px + env(safe-area-inset-bottom))` para o botão não colar na borda/área segura do aparelho.
+
+### Correção de runtime — tabela `racoes` inexistente
+
+Erro em produção: `Could not find the table 'public.racoes' in the schema cache`. A tabela nunca foi criada (o `migration_features_v2.sql` que a criava não foi rodado — e não deve ser).
+
+Correções:
+
+- **`supabase/migration_racoes.sql`** (novo) — cria `racoes` + `racao_participantes` (e a coluna `avaliacoes.racao_id`) **sem** tocar em `get_ranking`, já com RLS endurecida (`TO authenticated`, posse do dono). Inclui a coluna `racoes.jogador_id`, que o frontend (`racoesAPI.criar`) envia no INSERT. Idempotente.
+- **`supabase/migration_features_v2.sql`** — **neutralizado** (virou aviso; não executa SQL), para não recriar o overload nem reabrir leitura anônima.
+- **`supabase/migration_rls_hardening.sql`** — tornado **reexecutável** (`DROP POLICY IF EXISTS` antes de cada `CREATE POLICY`) e as partes de rações agora só rodam se as tabelas existirem.
+- **`src/pages/Racoes.jsx`** — a mensagem de erro passou a indicar `migration_racoes.sql`.

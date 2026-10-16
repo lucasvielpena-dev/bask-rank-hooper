@@ -52,7 +52,8 @@ bask-rank-hooper-main/
 │   ├── schema.sql                    # ← RODAR PRIMEIRO (tabelas base, RLS, funções, cron)
 │   ├── schema_tournaments.sql        # ← RODAR SEGUNDO (torneios, equipes, jogos, RLS, realtime)
 │   ├── migration_master.sql          # sistema master/admin (roles, logs, notificações globais)
-│   ├── migration_features_v2.sql     # rachões + ranking com confiança + votos pós-jogo
+│   ├── migration_racoes.sql          # rachões (pickup games) + RLS endurecida
+│   ├── migration_features_v2.sql     # ⚠️ OBSOLETO — não execute (ver cabeçalho)
 │   ├── migration_cleanup.sql         # limpeza de tabelas legadas, FKs, índices, RLS (⚠️ ver aviso)
 │   ├── migration_rls_hardening.sql   # 🔒 SEGURANÇA: bloqueia anônimos, esconde email/GPS, exige posse
 │   ├── supabase_migration_handebol.sql  # suporte a handebol (incompleto no frontend)
@@ -78,9 +79,10 @@ bask-rank-hooper-main/
    1. `supabase/schema.sql`
    2. `supabase/schema_tournaments.sql`
    3. `supabase/migration_master.sql`
-   4. `supabase/migration_features_v2.sql`
+   4. `supabase/migration_racoes.sql` — cria as tabelas de rachões (RLS já endurecida)
    5. `supabase/migration_rls_hardening.sql` — 🔒 **obrigatória** (ver seção Segurança)
    - `supabase_migration_handebol.sql` só é necessário se for habilitar handebol.
+   - ⚠️ **Não rode `migration_features_v2.sql`**: ele redefine `get_ranking` com 5 argumentos (overload ambíguo com a versão de 4 args → quebra o ranking) e reabre leitura pública/anônima nas rações. Foi substituído por `migration_racoes.sql`.
    - ⚠️ **Não rode `migration_cleanup.sql`**: ele remove a tabela `auditoria_votos` usada por `registrar_avaliacao` e quebra a votação. O `migration_rls_hardening.sql` já cobre a parte de RLS.
    - `fix_*.sql` são correções pontuais — rode apenas se encontrar o erro descrito no cabeçalho do arquivo.
 3. Ative **pg_cron** em Settings → Extensions (usado no reset semanal).

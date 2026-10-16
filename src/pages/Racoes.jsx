@@ -212,7 +212,7 @@ export default function Racoes({ profile, onNavigate }) {
         <div className="card" style={{ borderColor: 'var(--border-danger)', marginBottom: 12, fontSize: 13, color: 'var(--text-danger)' }}>
           {erro}
           <div style={{ marginTop: 8, color: 'var(--text-muted)', fontSize: 12 }}>
-            No Supabase SQL Editor, rode o arquivo <code>migration_features_v2.sql</code>.
+            No Supabase SQL Editor, rode o arquivo <code>migration_racoes.sql</code>.
           </div>
         </div>
       )}
