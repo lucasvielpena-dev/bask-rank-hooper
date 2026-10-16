@@ -212,7 +212,7 @@ export function AuthProvider({ children }) {
           media_estrelas: 0.00
         }])
         .select()
-        .single();
+        .maybeSingle();
 
       if (jogError) {
         console.error('Erro ao criar jogador:', jogError);

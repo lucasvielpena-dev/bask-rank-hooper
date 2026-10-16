@@ -226,12 +226,24 @@ export const profilesAPI = {
   },
 
   atualizar: async (id, updates) => {
-    const { data, error } = await supabase
+    const payload = { ...updates, updated_at: new Date().toISOString() };
+    let { data, error } = await supabase
       .from('profiles')
-      .update({ ...updates, updated_at: new Date().toISOString() })
+      .update(payload)
       .eq('id', id)
       .select()
-      .single();
+      .maybeSingle();
+
+    // Se update não retornou linha (RLS/sessão), tenta upsert
+    if (!error && !data) {
+      const retry = await supabase
+        .from('profiles')
+        .upsert({ id, ...payload }, { onConflict: 'id' })
+        .select()
+        .maybeSingle();
+      data = retry.data;
+      error = retry.error;
+    }
     return { data, error };
   },
 

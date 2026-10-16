@@ -226,15 +226,28 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
             .from('jogadores')
             .insert([payload])
             .select()
-            .single();
+            .maybeSingle();
 
-          // Fallback: se FK ainda bloquear, tenta sem criado_por
+          // Fallback: se FK bloquear, tenta sem criado_por
           if (jogError && String(jogError.message || '').includes('criado_por')) {
             console.warn('FK criado_por falhou, tentando sem criado_por...', jogError.message);
             const { criado_por, ...semCriadoPor } = payload;
-            const retry = await supabase.from('jogadores').insert([semCriadoPor]).select().single();
+            const retry = await supabase.from('jogadores').insert([semCriadoPor]).select().maybeSingle();
             newJogador = retry.data;
             jogError = retry.error;
+          }
+
+          // Se insert "ok" mas sem linha retornada, busca pelo criado_por + esporte
+          if (!jogError && !newJogador) {
+            const { data: found } = await supabase
+              .from('jogadores')
+              .select('*')
+              .eq('criado_por', authUserId)
+              .eq('esporte', esporte)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            newJogador = found;
           }
 
           if (jogError) {
@@ -244,6 +257,8 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           if (newJogador) {
             player_id = newJogador.id;
             is_player = true;
+          } else {
+            throw new Error('Jogador criado, mas não foi possível carregar o registro. Tente novamente.');
           }
         }
       }
