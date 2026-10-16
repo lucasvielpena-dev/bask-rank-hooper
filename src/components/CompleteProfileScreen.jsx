@@ -173,31 +173,49 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
             })
             .eq('id', player_id);
         } else {
-          // Criar novo jogador — criado_por deve ser o UUID de auth.users
-          const { data: authData } = await supabase.auth.getUser();
-          const authUserId = authData?.user?.id || profile.id;
-          if (!authUserId) {
+          // Criar novo jogador — usa o UUID real da sessão (auth.users)
+          const { data: authData, error: authErr } = await supabase.auth.getUser();
+          const authUserId = authData?.user?.id;
+          if (authErr || !authUserId) {
             throw new Error('Sessão expirada. Faça login novamente.');
           }
 
-          const { data: newJogador, error: jogError } = await supabase
+          // Garante que o profile existe (necessário se FK aponta para profiles)
+          await supabase.from('profiles').upsert({
+            id: authUserId,
+            email: authData.user.email || profile.email || null,
+            nome_completo: profile.nome_completo || 'Jogador',
+          }, { onConflict: 'id' });
+
+          const payload = {
+            nome: profile.nome_completo || 'Jogador',
+            apelido: apelido.trim(),
+            foto_url: avatarUrl || null,
+            criado_por: authUserId,
+            cidade: cidade,
+            uf: uf,
+            pais: pais,
+            posicao: posicao,
+            esporte: esporte,
+            ativo: true,
+            total_votos: 0,
+            media_estrelas: 0.00
+          };
+
+          let { data: newJogador, error: jogError } = await supabase
             .from('jogadores')
-            .insert([{
-              nome: profile.nome_completo || 'Jogador',
-              apelido: apelido.trim(),
-              foto_url: avatarUrl || null,
-              criado_por: authUserId,
-              cidade: cidade,
-              uf: uf,
-              pais: pais,
-              posicao: posicao,
-              esporte: esporte,
-              ativo: true,
-              total_votos: 0,
-              media_estrelas: 0.00
-            }])
+            .insert([payload])
             .select()
             .single();
+
+          // Fallback: se FK ainda bloquear, tenta sem criado_por
+          if (jogError && String(jogError.message || '').includes('criado_por')) {
+            console.warn('FK criado_por falhou, tentando sem criado_por...', jogError.message);
+            const { criado_por, ...semCriadoPor } = payload;
+            const retry = await supabase.from('jogadores').insert([semCriadoPor]).select().single();
+            newJogador = retry.data;
+            jogError = retry.error;
+          }
 
           if (jogError) {
             console.error('Erro ao cadastrar jogador:', jogError);
