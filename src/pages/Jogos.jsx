@@ -79,21 +79,98 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   // Se a partida foi encerrada em OUTRO celular, este placar não pode fingir
   // que continua valendo. `finalizandoRef` marca quem encerrou foi este aparelho.
   const finalizandoRef = useRef(false);
-  async function checarStatusRemoto(partidaId) {
-    if (!partidaId || finalizandoRef.current) return;
+  const ultimoToqueLocalRef = useRef(0);   // quando EU marquei ponto por último
+  const ultimoUpdatedAtRef = useRef(null); // versão da partida que já vi no banco
+  const primeiroSyncRef = useRef(true);    // evita devolver ao banco o que acabou de chegar
+
+  async function sairPorPartidaEncerrada() {
+    if (finalizandoRef.current) return;
+    finalizandoRef.current = true; // não repetir o aviso
+    setTimerAtivo(false);
+    setPartidaAtiva(null);
+    setAba('historico');
+    setTela('lista');
+    showToast('Esta partida foi encerrada em outro celular. Confira o histórico.', 'warning');
+    await recarregarPartidas();
+  }
+
+  // Busca a verdade no banco: o placar que o OUTRO celular marcou e/ou o
+  // encerramento da partida. É o que faz os dois placares acompanharem.
+  async function puxarPlacarDoBanco(partidaId) {
+    const id = partidaId || partidaAtiva?.id;
+    if (!id || finalizandoRef.current) return;
     try {
-      const { data } = await partidasAPI.buscar(partidaId);
-      if (data?.status === 'finalizado') {
-        setTimerAtivo(false);
-        setPartidaAtiva(null);
-        setAba('historico');
-        setTela('lista');
-        await recarregarPartidas();
-        showToast('Esta partida foi encerrada. Confira o histórico.', 'warning');
-      }
+      const { data } = await partidasAPI.buscar(id);
+      if (!data) return;
+      if (data.status === 'finalizado') { await sairPorPartidaEncerrada(); return; }
+      // Enquanto EU estou pontuando, o banco não "desfaz" o toque (o envio sai logo depois).
+      if (Date.now() - ultimoToqueLocalRef.current < 4000) return;
+      if (data.updated_at && data.updated_at === ultimoUpdatedAtRef.current) return;
+      ultimoUpdatedAtRef.current = data.updated_at || null;
+      const a = data.placar_time_a ?? 0;
+      const b = data.placar_time_b ?? 0;
+      setPlacarA(prev => (prev !== a ? a : prev));
+      setPlacarB(prev => (prev !== b ? b : prev));
+      if (data.periodos) setPeriodo(prev => (prev !== data.periodos ? data.periodos : prev));
     } catch (e) {
       /* silencioso: é só uma conferência */
     }
+  }
+
+  // Abre uma partida da lista no placar (nomes, escalação e cronômetro certos).
+  // É o caminho do segundo celular operar a partida: "Retomar Partida".
+  async function abrirPartida(p) {
+    if (!p) return;
+    setPartidaAtiva(p);
+    setPlacarA(p.placar_time_a || 0);
+    setPlacarB(p.placar_time_b || 0);
+    setPeriodo(p.periodos || 1);
+    setTimeANome(p.time_a);
+    setTimeBNome(p.time_b);
+    ultimoUpdatedAtRef.current = p.updated_at || null;
+    primeiroSyncRef.current = true;
+    ultimoToqueLocalRef.current = 0;
+    let parsedDur = 10;
+    const savedDur = localStorage.getItem(`duracao_${p.id}`);
+    if (savedDur) parsedDur = parseInt(savedDur);
+    else if (p.tempo_total) {
+      const partes = p.tempo_total.split(':');
+      if (partes.length === 2 && parseInt(partes[0]) * 60 + parseInt(partes[1]) > 600) parsedDur = 12;
+    }
+    setDuracaoQuarto(parsedDur);
+    try {
+      const { data: roster } = await partidasAPI.obterJogadoresDaPartida(p.id);
+      if (roster) {
+        setTimeAJogadores(roster.filter(r => r.time === 'A').map(r => r.jogador_id));
+        setTimeBJogadores(roster.filter(r => r.time === 'B').map(r => r.jogador_id));
+      }
+    } catch (e) {
+      /* silencioso */
+    }
+    const localStateStr = localStorage.getItem(`timer_${p.id}`);
+    if (localStateStr) {
+      try {
+        const localState = JSON.parse(localStateStr);
+        let t = localState.tempo;
+        const ativo = localState.timerAtivo;
+        if (ativo && localState.lastUpdated) {
+          t = Math.max(0, t - Math.floor((Date.now() - localState.lastUpdated) / 1000));
+        }
+        setTempo(t);
+        setTimerAtivo(ativo);
+      } catch (e) {
+        setTempo(parsedDur * 60);
+        setTimerAtivo(false);
+      }
+    } else if (p.tempo_total) {
+      const partes = p.tempo_total.split(':');
+      if (partes.length === 2) setTempo(parseInt(partes[0]) * 60 + parseInt(partes[1]));
+      setTimerAtivo(false);
+    } else {
+      setTempo(parsedDur * 60);
+      setTimerAtivo(false);
+    }
+    setTela('partida');
   }
 
   // Reabrir partida encerrada por engano (só quem criou).
@@ -122,18 +199,25 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     const id = partidaAtiva.id;
     carregarOperadores(id);
     // Aviso do banco quando alguém pede / o criador responde / a partida é encerrada.
-    const channel = assinarAviso(`partida_${id}`, () => { carregarOperadores(id); checarStatusRemoto(id); });
+    const channel = assinarAviso(`partida_${id}`, () => {
+      carregarOperadores(id);
+      puxarPlacarDoBanco(id);
+    });
     return () => { supabase.removeChannel(channel); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tela, partidaAtiva?.id]);
 
-  // Sem aviso do banco, confere de 20 em 20s se a partida foi encerrada em
-  // outro celular — o placar aberto aqui não fica mentindo.
+  // Sem depender do aviso do banco: a cada 5s confere (a) se o pedido de
+  // operador já foi aceito, (b) se o placar do outro celular mudou e (c) se a
+  // partida foi encerrada lá. Era isto que "demorava muito" para aparecer.
   useEffect(() => {
     if (tela !== 'partida' || !partidaAtiva?.id) return;
     finalizandoRef.current = false; // partida nova em tela: libera o marcador
     const id = partidaAtiva.id;
-    const intervalo = setInterval(() => checarStatusRemoto(id), 20000);
+    const intervalo = setInterval(() => {
+      carregarOperadores(id);
+      puxarPlacarDoBanco(id);
+    }, 5000);
     return () => clearInterval(intervalo);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tela, partidaAtiva?.id]);
@@ -148,7 +232,9 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     const meus = partidas.filter(p => p.criado_por === profile?.id);
     const canais = meus.map(p => assinarAviso(`partida_${p.id}`, recarregarTudo));
     // E, para não depender de aviso nenhum: a lista se atualiza sozinha.
-    const intervalo = setInterval(recarregarTudo, 20000);
+    // 5s quando EU tenho partida em andamento (é quando o pedido de operador
+    // precisa chegar logo); 30s quando não tenho, para não gastar à toa.
+    const intervalo = setInterval(recarregarTudo, meus.length > 0 ? 5000 : 30000);
     const aoVoltarVisivel = () => { if (document.visibilityState === 'visible') recarregarTudo(); };
     document.addEventListener('visibilitychange', aoVoltarVisivel);
     return () => {
@@ -249,6 +335,17 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tempo, timerAtivo]);
 
+  // Envia o placar para o banco logo depois de cada mudança (agrupando toques
+  // seguidos). Antes só salvava ao sair da tela ou no fim do quarto — por isso
+  // o placar marcado num celular não aparecia no outro.
+  useEffect(() => {
+    if (tela !== 'partida' || !partidaAtiva?.id) return;
+    if (primeiroSyncRef.current) { primeiroSyncRef.current = false; return; }
+    const t = setTimeout(() => { sincronizarPlacarBanco(); }, 600);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [placarA, placarB, tela, partidaAtiva?.id]);
+
   // Salvar estado do cronômetro no localStorage para suportar reloads, troca de tela e abas fechadas
   useEffect(() => {
     if (partidaAtiva?.id) {
@@ -283,9 +380,12 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       setPartidas(ativas);
       setHistorico(finalizadas);
 
-      // Se existir uma partida ativa no banco, carrega ela automaticamente
-      if (ativas.length > 0) {
-        const active = ativas[0];
+      // Se EU tenho partida ativa, entra nela. Antes o app entrava na partida
+      // ativa de QUALQUER pessoa — inclusive ao encerrar a sua: encerrava uma
+      // e caía no placar de outra ("finalizou e não sai da página").
+      const minhaAtiva = ativas.find(p => p.criado_por === profile?.id);
+      if (minhaAtiva) {
+        const active = minhaAtiva;
         setPartidaAtiva(active);
         setPlacarA(active.placar_time_a || 0);
         setPlacarB(active.placar_time_b || 0);
@@ -459,6 +559,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       );
       return;
     }
+    ultimoToqueLocalRef.current = Date.now(); // segura o "puxar do banco" por alguns segundos
     if (time === 'A') {
       setPlacarA(prev => {
         const novoVal = prev + valor;
@@ -486,12 +587,19 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     const currentPeriod = finalScore.periodos ?? periodo;
     const timeFormatted = finalScore.tempo_total ?? formatTempo(tempo);
 
-    await partidasAPI.atualizar(partidaAtiva.id, {
+    const { data, error } = await partidasAPI.atualizar(partidaAtiva.id, {
       placar_time_a: pA,
       placar_time_b: pB,
       periodos: currentPeriod,
       tempo_total: timeFormatted
     });
+    if (error) {
+      console.warn('Placar não salvou:', error.message);
+      showToast('O placar não está sendo salvo. Confira sua autorização nesta partida.', 'error');
+      return;
+    }
+    // Guarda a versão que EU acabei de gravar, para não reprocessar o meu próprio envio.
+    if (data?.updated_at) ultimoUpdatedAtRef.current = data.updated_at;
   }
 
   // Controle do Período (Transição oficial)
@@ -563,7 +671,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       setMvpId('');
       setTela('lista');
       setAba('historico');
-      loadDados(); // recarrega histórico
+      recarregarPartidas(); // recarrega as listas SEM abrir outra partida
     } catch (e) {
       console.error(e);
       showToast('Erro ao finalizar jogo', 'error');
@@ -786,13 +894,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                           <div style={{ fontSize: 26, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_b}</div>
                         </div>
                       </div>
-                      <button className="btn btn-primary" onClick={() => {
-                        setPartidaAtiva(p);
-                        setPlacarA(p.placar_time_a);
-                        setPlacarB(p.placar_time_b);
-                        setPeriodo(p.periodos);
-                        setTela('partida');
-                      }}>
+                      <button className="btn btn-primary" onClick={() => abrirPartida(p)}>
                         Retomar Partida
                       </button>
                     </div>
