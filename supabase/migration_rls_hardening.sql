@@ -140,10 +140,31 @@ REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon;
 -- seguras. Assim, mesmo um usuário logado não consegue ler o email nem
 -- a localização exata de outro atleta. (O dono lê o próprio email pela
 -- sessão de autenticação, não pela tabela.)
+--
+-- Proteção contra quebra: se ALGUMA policy de `profiles` citar
+-- email/latitude/longitude, o revoke é PULADO — senão as consultas
+-- passariam a dar "permission denied for column". Nesse caso o PII
+-- continua visível para usuários logados, mas o acesso anônimo já está
+-- bloqueado (que é o essencial).
 DO $$
 DECLARE
   cols text;
+  v_risky INTEGER;
 BEGIN
+  SELECT COUNT(*) INTO v_risky
+  FROM pg_policies
+  WHERE schemaname = 'public'
+    AND tablename = 'profiles'
+    AND (
+      COALESCE(qual, '')       ~* '(email|latitude|longitude)'
+      OR COALESCE(with_check, '') ~* '(email|latitude|longitude)'
+    );
+
+  IF v_risky > 0 THEN
+    RAISE NOTICE 'PASSO 2 pulado: % policy(ies) de profiles usam email/latitude/longitude. PII nao ocultado por coluna (bloqueio anonimo segue ativo).', v_risky;
+    RETURN;
+  END IF;
+
   SELECT string_agg(quote_ident(column_name), ', ')
     INTO cols
   FROM information_schema.columns
