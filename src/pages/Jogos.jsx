@@ -43,6 +43,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
   // Placar compartilhado: pedido + aceite de quem criou a partida
   const [operadores, setOperadores] = useState([]);
+  const [pedidosCriador, setPedidosCriador] = useState([]);
   const [pedindoOperar, setPedindoOperar] = useState(false);
   const souCriadorPartida = !!partidaAtiva && !!profile?.id && partidaAtiva.criado_por === profile.id;
   const meuPedido = operadores.find(o => o.usuario_id === profile?.id);
@@ -54,6 +55,12 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     if (!partidaId) return;
     const { data } = await partidasAPI.listarOperadores(partidaId);
     setOperadores(data || []);
+  }
+
+  // Pedidos que EU (criador) preciso responder — vale em qualquer tela.
+  async function carregarPedidosCriador() {
+    const { data } = await partidasAPI.listarPedidosPendentes();
+    setPedidosCriador((data || []).filter(p => p.usuario_id !== profile?.id));
   }
 
   useEffect(() => {
@@ -69,6 +76,18 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tela, partidaAtiva?.id]);
 
+  // Na lista de Rachões: os pedidos que EU (criador) preciso responder.
+  // Sem isso o aviso só aparecia dentro da tela da partida — e quem não
+  // estava nela via a notificação sem ter onde aceitar.
+  useEffect(() => {
+    if (tela !== 'lista' || aba !== 'jogos') return;
+    carregarPedidosCriador();
+    const meus = partidas.filter(p => p.criado_por === profile?.id);
+    const canais = meus.map(p => assinarAviso(`partida_${p.id}`, carregarPedidosCriador));
+    return () => { canais.forEach(c => supabase.removeChannel(c)); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tela, aba, partidas.length]);
+
   async function handlePedirOperar() {
     if (!partidaAtiva) return;
     setPedindoOperar(true);
@@ -78,19 +97,23 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       showToast(data?.erro || error?.message || 'Não foi possível enviar o pedido.', 'error');
       return;
     }
-    showToast('Pedido enviado! Aguardando o criador da partida aceitar.', 'success');
+    if (data.dono) showToast('Você criou esta partida — já pode pontuar.', 'success');
+    else if (data.ja_autorizado) showToast('Você já está autorizado a operar o placar.', 'success');
+    else if (data.pendente) showToast('Seu pedido já está aguardando o criador aceitar.', 'success');
+    else showToast('Pedido enviado! Aguardando o criador da partida aceitar.', 'success');
     carregarOperadores(partidaAtiva.id);
   }
 
-  async function handleResponderPedido(usuarioId, aceitar) {
-    if (!partidaAtiva) return;
-    const { data, error } = await partidasAPI.responderPedidoOperador(partidaAtiva.id, usuarioId, aceitar);
+  async function handleResponderPedido(partidaId, usuarioId, aceitar) {
+    if (!partidaId) return;
+    const { data, error } = await partidasAPI.responderPedidoOperador(partidaId, usuarioId, aceitar);
     if (error || !data?.sucesso) {
       showToast(data?.erro || error?.message || 'Não foi possível responder ao pedido.', 'error');
       return;
     }
     showToast(aceitar ? '✓ Placar liberado para ele.' : 'Autorização removida.', 'success');
-    carregarOperadores(partidaAtiva.id);
+    carregarPedidosCriador();
+    if (partidaAtiva?.id === partidaId) carregarOperadores(partidaId);
   }
 
   // Avaliação anônima da partida (Competições)
@@ -641,6 +664,30 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             )
           ) : aba === 'jogos' ? (
             <>
+              {/* Pedidos de placar compartilhado que EU (criador) preciso responder */}
+              {pedidosCriador.length > 0 && (
+                <div className="card" style={{ padding: '10px 12px', marginBottom: 10, border: '1px solid rgba(200,241,53,0.35)', background: 'rgba(200,241,53,0.06)' }}>
+                  <div style={{ fontSize: 10.5, fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Pedidos para operar o placar
+                  </div>
+                  {pedidosCriador.map(p => {
+                    const pv = partidas.find(x => x.id === p.partida_id);
+                    return (
+                      <div key={`${p.partida_id}-${p.usuario_id}`} style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+                        <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {p.nome || 'Um atleta'}{pv ? ` · ${pv.time_a} x ${pv.time_b}` : ''}
+                        </span>
+                        <button onClick={() => handleResponderPedido(p.partida_id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: '#0C0C14', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
+                          Aceitar
+                        </button>
+                        <button onClick={() => handleResponderPedido(p.partida_id, p.usuario_id, false)} style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                          Recusar
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
               {partidas.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)' }}>
                   <h3 style={{ color: 'var(--text-primary)', marginTop: 8, fontFamily: "'Inter',sans-serif", fontSize: 18, fontWeight: 700 }}>Nenhuma partida ativa</h3>
@@ -898,10 +945,10 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                       <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {p.nome || 'Um atleta'} quer operar o placar
                       </span>
-                      <button onClick={() => handleResponderPedido(p.usuario_id, true)} style={{ background: 'var(--accent)', color: '#0C0C14', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
+                      <button onClick={() => handleResponderPedido(partidaAtiva.id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: '#0C0C14', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
                         Aceitar
                       </button>
-                      <button onClick={() => handleResponderPedido(p.usuario_id, false)} style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                      <button onClick={() => handleResponderPedido(partidaAtiva.id, p.usuario_id, false)} style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
                         Recusar
                       </button>
                     </div>
@@ -916,7 +963,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   {operadoresAprovados.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
                       {operadoresAprovados.map(o => (
-                        <button key={o.usuario_id} onClick={() => handleResponderPedido(o.usuario_id, false)} title="Remover autorização" style={{ background: 'rgba(200,241,53,0.12)', color: 'var(--accent)', border: '1px solid rgba(200,241,53,0.35)', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                        <button key={o.usuario_id} onClick={() => handleResponderPedido(partidaAtiva.id, o.usuario_id, false)} title="Remover autorização" style={{ background: 'rgba(200,241,53,0.12)', color: 'var(--accent)', border: '1px solid rgba(200,241,53,0.35)', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
                           {o.nome || 'Um atleta'} ✕
                         </button>
                       ))}

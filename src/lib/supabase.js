@@ -450,6 +450,17 @@ export const partidasAPI = {
     return { data, error };
   },
 
+  // Pedidos que EU preciso responder: a RLS devolve só os das partidas que eu
+  // criei (mais os meus próprios, que o app filtra fora).
+  listarPedidosPendentes: async () => {
+    const { data, error } = await supabase
+      .from('partida_operadores')
+      .select('partida_id, usuario_id, nome, pedido_em')
+      .eq('aprovado', false)
+      .order('pedido_em', { ascending: true });
+    return { data, error };
+  },
+
   responderPedidoOperador: async (partidaId, usuarioId, aceitar) => {
     const { data, error } = await supabase.rpc('responder_pedido_operador', {
       p_partida_id: partidaId,
