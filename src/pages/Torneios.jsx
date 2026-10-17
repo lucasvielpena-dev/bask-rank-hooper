@@ -5,6 +5,7 @@ import { TorneiosBackground } from '../components/AnimatedBackgrounds';
 import { useEsporte } from '../contexts/EsporteContext';
 import { GRADES, GradePicker, gradePorValor, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
 import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
+import { criarAtualizador } from '../lib/realtime';
 
 // Formatos de Torneio Traduzidos
 const FORMATOS = {
@@ -33,14 +34,14 @@ export default function Torneios({ profile, isNested = false }) {
   useEffect(() => {
     carregarTorneios();
 
+    const atualizar = criarAtualizador(() => carregarTorneios());
     const channel = supabase
       .channel('torneios-realtime-global')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'torneios' }, () => {
-        carregarTorneios();
-      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'torneios' }, atualizar)
       .subscribe();
 
     return () => {
+      atualizar.parar();
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -314,18 +315,16 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
   useEffect(() => {
     carregarDados();
 
-    // Inscrição Realtime dos dados deste torneio
+    // Inscrição Realtime dos dados deste torneio (agrupada)
+    const atualizar = criarAtualizador(() => carregarDados());
     const channel = supabase
       .channel(`torneio-hub-${torneio.id}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'equipes', filter: `torneio_id=eq.${torneio.id}` }, () => {
-        carregarDados();
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'torneio_jogos', filter: `torneio_id=eq.${torneio.id}` }, () => {
-        carregarDados();
-      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'equipes', filter: `torneio_id=eq.${torneio.id}` }, atualizar)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'torneio_jogos', filter: `torneio_id=eq.${torneio.id}` }, atualizar)
       .subscribe();
 
     return () => {
+      atualizar.parar();
       supabase.removeChannel(channel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

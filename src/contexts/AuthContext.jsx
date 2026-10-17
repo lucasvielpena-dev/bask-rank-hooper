@@ -42,6 +42,22 @@ export function AuthProvider({ children }) {
   const [salvandoPerfil, setSalvandoPerfil] = useState(false);
   const [erroPerfil, setErroPerfil] = useState(null);
 
+  // Heartbeat de "último acesso": no máximo 1 escrita a cada 10 minutos por
+  // dispositivo. Antes, cada abertura/refresh escrevia no banco e isso
+  // disparava um evento Realtime em `jogadores` para TODOS os clientes.
+  const CHAVE_PING = 'rh_ultimo_ping';
+  function pingLastSeen(minutos = 10) {
+    try {
+      const agora = Date.now();
+      const anterior = Number(localStorage.getItem(CHAVE_PING) || 0);
+      if (anterior && agora - anterior < minutos * 60 * 1000) return;
+      localStorage.setItem(CHAVE_PING, String(agora));
+    } catch (_) {
+      /* sem localStorage: segue e registra mesmo assim */
+    }
+    masterAPI.touchLastSeen().catch(() => {});
+  }
+
   async function loadProfile(uid, retries = 0) {
     try {
       const { data } = await profilesAPI.obterPerfil(uid);
@@ -52,7 +68,7 @@ export function AuthProvider({ children }) {
         setEditIdade(data.idade || '');
         setEditPosicao(data.posicao || cfg.posicoes[0]);
         setLoadingProfile(false);
-        masterAPI.touchLastSeen().catch(() => {});
+        pingLastSeen();
         return data;
       } else if (retries < 3) {
         const loaded = await new Promise((resolve) => {
