@@ -5,7 +5,7 @@ import { TorneiosBackground } from '../components/AnimatedBackgrounds';
 import { useEsporte } from '../contexts/EsporteContext';
 import { GRADES, GradePicker, gradePorValor, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
 import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
-import { criarAtualizador } from '../lib/realtime';
+import { criarAtualizador, assinarAviso, TOPICO_TORNEIOS } from '../lib/realtime';
 
 // Formatos de Torneio Traduzidos
 const FORMATOS = {
@@ -34,11 +34,8 @@ export default function Torneios({ profile, isNested = false }) {
   useEffect(() => {
     carregarTorneios();
 
-    const atualizar = criarAtualizador(() => carregarTorneios());
-    const channel = supabase
-      .channel('torneios-realtime-global')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'torneios' }, atualizar)
-      .subscribe();
+    const atualizar = criarAtualizador(() => carregarTorneios(), { debounce: 2000, minimo: 10000 });
+    const channel = assinarAviso(TOPICO_TORNEIOS, atualizar);
 
     return () => {
       atualizar.parar();

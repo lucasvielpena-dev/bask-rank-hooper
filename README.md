@@ -59,6 +59,7 @@ bask-rank-hooper-main/
 │   ├── migration_avaliacoes_jogo.sql # 🎯 notas de jogo (rachão/competição) anônimas + semáforo
 │   ├── migration_evolucao_jogador.sql # 📈 linha de evolução do atleta (média mensal das avaliações)
 │   ├── migration_perf_realtime.sql   # ⚡ performance: acaba com o "efeito manada" do Realtime/heartbeat
+│   ├── migration_realtime_broadcast.sql # 📡 Realtime escalável: Broadcast no lugar de postgres_changes
 │   ├── fix_nomes_jogador.sql         # correção pontual dos nomes genéricos ("Jogador"/e-mail)
 │   ├── supabase_migration_handebol.sql  # suporte a handebol (incompleto no frontend)
 │   ├── fix_criado_por_fk.sql         # diagnóstico/ajuste da FK jogadores.criado_por
@@ -88,6 +89,7 @@ bask-rank-hooper-main/
    6. `supabase/migration_avaliacoes_jogo.sql` — 🎯 notas de jogo **anônimas** (rachão e competição) + semáforo de rendimento
    7. `supabase/migration_evolucao_jogador.sql` — 📈 linha de evolução do atleta (média mensal das avaliações recebidas)
    8. `supabase/migration_perf_realtime.sql` — ⚡ **recomendada**: corta o efeito manada de Realtime (1 refresh não pode atualizar o app de todo mundo)
+   9. `supabase/migration_realtime_broadcast.sql` — 📡 **recomendada**: ranking/torneios atualizando por Broadcast (indispensável se tiver muita gente online ao mesmo tempo)
    - `supabase/fix_nomes_jogador.sql` — correção pontual: troca nomes genéricos (“Jogador”/e-mail) pelo apelido real. Rode se o ranking mostrar “Jogador”.
    - `supabase_migration_handebol.sql` só é necessário se for habilitar handebol.
    - ⚠️ **Não rode `migration_features_v2.sql`**: ele redefine `get_ranking` com 5 argumentos (overload ambíguo com a versão de 4 args → quebra o ranking) e reabre leitura pública/anônima nas rações. Foi substituído por `migration_racoes.sql`.

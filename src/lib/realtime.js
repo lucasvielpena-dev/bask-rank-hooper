@@ -1,19 +1,25 @@
+import { supabase } from './supabase';
+
 // ============================================================
-// Agrupador de atualizações disparadas por Realtime
+// Realtime do app: agrupamento + Broadcast
 // ============================================================
-// Por que existe:
-//   As páginas assinam `postgres_changes` em tabelas muito movimentadas
-//   (jogadores / avaliacoes). Sem controle, CADA evento gerado por qualquer
-//   atleta logado refazia as consultas pesadas de ranking em TODOS os clientes
-//   conectados. Com 100 atletas isso vira uma tempestade e ninguém consegue usar.
+// 1) criarAtualizador: agrupa eventos e limita a frequência das consultas.
+// 2) assinarAviso: canal de Broadcast (aviso curto do banco -> cliente).
 //
-// Regras aplicadas:
-//   - debounce: uma rajada de eventos vira UMA atualização (espera a poeira baixar)
-//   - minimo:   nunca atualiza mais de 1x a cada X ms por cliente
-//   - aba oculta: não consulta nada; ao voltar pra aba, atualiza 1x
+// Por que Broadcast e não `postgres_changes`:
+//   - `postgres_changes` entrega a linha alterada e avalia RLS por cliente,
+//     então 1 alteração custa N verificações + N mensagens (N = logados).
+//   - Broadcast entrega um aviso curto para todos no mesmo WebSocket, sem
+//     RLS por linha. O banco já manda no máximo 1 aviso a cada poucos
+//     segundos por assunto, então rajadas não viram tempestade.
+//   - O efeito para o usuário é o mesmo: a tela continua se atualizando
+//     sozinha com a mesma latência.
 // ============================================================
 
-const PADRAO = { debounce: 2500, minimo: 20000 };
+export const TOPICO_RANKING = 'ranking';
+export const TOPICO_TORNEIOS = 'torneios';
+
+const PADRAO = { debounce: 2500, minimo: 15000 };
 
 export function criarAtualizador(fn, opcoes = {}) {
   const { debounce, minimo } = { ...PADRAO, ...opcoes };
@@ -37,7 +43,7 @@ export function criarAtualizador(fn, opcoes = {}) {
   }
 
   function agendar() {
-    // Aba em segundo plano não faz sentido gastar consulta: deixa pendente.
+    // Aba em segundo plano não gasta consulta: fica pendente e roda ao voltar.
     if (!estaVisivel()) {
       atrasado = true;
       return;
@@ -64,6 +70,25 @@ export function criarAtualizador(fn, opcoes = {}) {
   };
 
   return agendar;
+}
+
+/**
+ * Assina um "assunto" via Broadcast. O banco publica no máximo 1 aviso a cada
+ * poucos segundos por assunto (ver supabase/migration_realtime_broadcast.sql).
+ * Retorna o canal, para o chamador remover no cleanup.
+ */
+export function assinarAviso(topico, handler) {
+  return supabase
+    .channel(topico, { config: { private: true } })
+    .on('broadcast', { event: 'atualizacao' }, handler)
+    .subscribe((status) => {
+      if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        console.warn(
+          `[realtime] canal "${topico}" falhou (${status}). ` +
+          'Confira se supabase/migration_realtime_broadcast.sql foi aplicada.'
+        );
+      }
+    });
 }
 
 export default criarAtualizador;

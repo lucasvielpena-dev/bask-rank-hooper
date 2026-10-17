@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
 import { nomeAtleta } from '../lib/nomes';
-import { criarAtualizador } from '../lib/realtime';
+import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from '../components/Icons';
 import { HomeBackground } from '../components/AnimatedBackgrounds';
@@ -25,13 +25,10 @@ export default function Home({ profile, onNavigate }) {
 
   useEffect(() => {
     if (!profile) return;
-    // Atualização agrupada: vários eventos viram UMA consulta, e nada roda
-    // com a aba em segundo plano.
-    const atualizar = criarAtualizador(() => loadData(city, uf));
-    const channel = supabase
-      .channel('home-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores' }, atualizar)
-      .subscribe();
+    // Aviso curto do banco ("ranking mudou") + consulta agrupada.
+    // Nada roda com a aba em segundo plano.
+    const atualizar = criarAtualizador(() => loadData(city, uf), { debounce: 2000, minimo: 10000 });
+    const channel = assinarAviso(TOPICO_RANKING, atualizar);
     return () => { atualizar.parar(); supabase.removeChannel(channel); };
   }, [profile, city, uf, esporte]);
 

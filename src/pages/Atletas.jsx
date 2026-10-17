@@ -2,7 +2,7 @@ import { useState, useEffect, memo } from 'react';
 import { supabase, jogadoresAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
 import { sortByConfianca } from '../lib/ranking';
 import { nomeAtleta } from '../lib/nomes';
-import { criarAtualizador } from '../lib/realtime';
+import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime';
 import { useEsporte } from '../contexts/EsporteContext';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -130,13 +130,10 @@ export default function Atletas({ profile }) {
 
   useEffect(() => {
     if (!profile) return;
-    const atualizar = criarAtualizador(() => loadJogadores());
-    const channel = supabase
-      .channel('atletas-global-realtime')
-      // Só `jogadores`: o voto já atualiza a média do atleta (trigger no banco),
-      // então assinar `avaliacoes` era evento duplicado.
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores' }, atualizar)
-      .subscribe();
+    const atualizar = criarAtualizador(() => loadJogadores(), { debounce: 2000, minimo: 10000 });
+    // Um único assunto cobre o que interessa: o voto já atualiza a média do
+    // atleta no banco, então não precisa assinar `avaliacoes` também.
+    const channel = assinarAviso(TOPICO_RANKING, atualizar);
     return () => { atualizar.parar(); supabase.removeChannel(channel); };
   }, [profile, esporte]);
 
