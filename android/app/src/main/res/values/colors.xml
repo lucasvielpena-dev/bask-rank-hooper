@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Cores da marca (Ranks Hoops) -->
+    <color name="rh_dark">#0C0C14</color>
+    <color name="rh_lime">#C8F135</color>
+</resources>

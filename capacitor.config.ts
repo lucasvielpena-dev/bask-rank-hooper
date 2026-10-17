@@ -11,6 +11,7 @@ const config: CapacitorConfig = {
   appId: 'com.rankhooper.app',
   appName: 'Rank Hooper',
   webDir: 'build',
+  backgroundColor: '#0C0C14',
   server: {
     url: LIVE_URL,
     cleartext: false,
@@ -24,11 +25,12 @@ const config: CapacitorConfig = {
   },
   android: {
     allowMixedContent: true,
+    backgroundColor: '#0C0C14',
   },
   plugins: {
     SplashScreen: {
       launchShowDuration: 1200,
-      backgroundColor: '#0B0F14',
+      backgroundColor: '#0C0C14',
       showSpinner: false,
     },
   },

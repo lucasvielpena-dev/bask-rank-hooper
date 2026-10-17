@@ -136,6 +136,31 @@ npm run cap:open    # abre no Android Studio
 
 `capacitor.config.ts` define `server.url = LIVE_URL` (site na Vercel), ou seja, o APK é um "shell" que sempre carrega a versão mais recente do site. Só é preciso gerar APK novo se mudar ícone, nome, `appId` ou permissões nativas.
 
+### 6. Ícone e tela de entrada (Android + PWA)
+
+O ícone e a splash do app são gerados por **um script só**, já nas cores da marca
+(verde-limão `#C8F135` com fundo `#0C0C14`):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\gerar-branding.ps1
+```
+
+O script reescreve:
+
+| Arquivo | Onde aparece |
+| --- | --- |
+| `public/icon-192.png`, `public/icon-512.png`, `public/apple-touch-icon.png` | ícone do site instalado (PWA) e do navegador |
+| `android/app/src/main/res/mipmap-*/ic_launcher*.png` | ícone do APK na tela inicial do celular |
+| `android/app/src/main/res/drawable*/splash.png` | tela de abertura (splash) do APK |
+
+Depois de rodar o script é preciso **gerar o APK de novo** para o ícone/splash novos
+aparecerem (`npm run cap:sync` + build no Android Studio). O site (PWA) atualiza sozinho
+no deploy da Vercel.
+
+A cor de fundo do app (`#0C0C14`) está em `android/app/src/main/res/values/colors.xml`,
+em `values/styles.xml` (tema de entrada) e em `capacitor.config.ts` — é o que evita a
+"tela branca" ao abrir.
+
 ---
 
 ## 🔒 Segurança (RLS)

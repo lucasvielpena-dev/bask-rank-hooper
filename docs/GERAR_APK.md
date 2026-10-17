@@ -94,6 +94,29 @@ No Chrome do celular:
 
 ---
 
+## Ícone e tela de abertura (splash)
+
+Os dois são **imagens geradas nas cores do app** (verde-limão `#C8F135` + fundo escuro
+`#0C0C14`). Para refazer o desenho:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\gerar-branding.ps1
+```
+
+O script reescreve:
+
+- `android/app/src/main/res/mipmap-*/ic_launcher*.png` — ícone do app
+- `android/app/src/main/res/drawable*/splash.png` — tela de abertura
+- `public/icon-192.png`, `public/icon-512.png`, `public/apple-touch-icon.png` — ícones do site (PWA)
+
+Depois rode `npm run cap:sync` e **gere o APK de novo** — o ícone/splash só mudam com APK novo.
+
+A cor de fundo do app fica em `android/app/src/main/res/values/colors.xml`
+(`rh_dark`) e é usada no tema de entrada (`values/styles.xml`) e no
+`capacitor.config.ts` — é isso que evita a "tela branca" na abertura.
+
+---
+
 ## Problemas comuns
 
 | Problema | Solução |
@@ -102,4 +125,5 @@ No Chrome do celular:
 | Login Google | Teste no site; pode precisar de ajuste depois |
 | App não instala | Ative fontes desconhecidas |
 | Mudança não aparece | Force fechar o app e abra de novo |
+| Ícone azul "X" / splash branca | É o APK antigo: rode `tools\gerar-branding.ps1`, `npm run cap:sync` e gere o APK de novo |
 
