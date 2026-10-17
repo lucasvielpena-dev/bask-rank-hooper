@@ -59,6 +59,7 @@ bask-rank-hooper-main/
 │   ├── migration_avaliacoes_jogo.sql # 🎯 notas de jogo (rachão/competição) anônimas + semáforo
 │   ├── migration_evolucao_jogador.sql # 📈 linha de evolução do atleta (média mensal das avaliações)
 │   ├── migration_evolucao_fuso.sql   # 🕒 correção: mês da evolução no horário do Pará (roda depois da anterior)
+│   ├── migration_seguranca_v3.sql    # 🛡️ fecha o que o hardening deixou passar (anon em RPCs, escalada para master, votos anônimos)
 │   ├── migration_perf_realtime.sql   # ⚡ performance: acaba com o "efeito manada" do Realtime/heartbeat
 │   ├── migration_realtime_broadcast.sql # 📡 Realtime escalável: Broadcast no lugar de postgres_changes
 │   ├── fix_nomes_jogador.sql         # correção pontual dos nomes genéricos ("Jogador"/e-mail)
@@ -94,6 +95,7 @@ bask-rank-hooper-main/
    10. `supabase/migration_nota_jogo_na_media.sql` — ⭐ a nota do jogo passa a contar na média/ranking do atleta (ver "Nota do jogo na média", abaixo)
    11. `supabase/migration_exclusao_conta.sql` — 🗑️ RPC de exclusão de conta (exigência da Play Store)
    12. `supabase/migration_evolucao_fuso.sql` — 🕒 **recomendada**: corrige o mês da linha de evolução para o horário local (uma nota de 31/jan às 21h30 não conta mais em fevereiro)
+   13. `supabase/migration_seguranca_v3.sql` — 🛡️ **obrigatória**: fecha três brechas que o `migration_rls_hardening.sql` não conseguiu fechar sozinho (o `REVOKE ... FROM PUBLIC` não tira o EXECUTE que o Supabase concede direto ao papel `anon`). Sem ela: anônimo executa RPCs (inclusive a rotina semanal, que zera o ranking), e qualquer logado pode se promover a `master` e ler o email de todos. Ver `docs/AUDITORIA.md`.
    - `supabase/fix_nomes_jogador.sql` — correção pontual: troca nomes genéricos (“Jogador”/e-mail) pelo apelido real. Rode se o ranking mostrar “Jogador”.
    - ⚠️ **Não rode `supabase_migration_handebol.sql`**: o app é **exclusivo de basquete** (`EsporteContext` fixa `basquete`) e não há mais código de handebol no frontend. O arquivo fica só como histórico, caso o esporte volte um dia.
    - ⚠️ **Não rode `migration_features_v2.sql`**: ele redefine `get_ranking` com 5 argumentos (overload ambíguo com a versão de 4 args → quebra o ranking) e reabre leitura pública/anônima nas rações. Foi substituído por `migration_racoes.sql`.

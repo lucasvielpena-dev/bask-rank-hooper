@@ -6,6 +6,48 @@ Observação: itens de severidade Alta foram verificados diretamente no código-
 
 ---
 
+## 🛡️ Auditoria de segurança no banco de produção (2026-10-17)
+
+Diferente das demais seções (leitura de código), esta foi feita **batendo no banco real** com a chave pública que vai no bundle do site — exatamente o que um curioso tem em mãos. Correção: `supabase/migration_seguranca_v3.sql`.
+
+**Confirmado OK (com prova):**
+- Anônimo não lê nenhuma tabela: `42501 permission denied` em todas as 19 testadas.
+- `email` e GPS de `profiles` escondidos de quem está logado (Passo 2 do hardening rodou — comprovado indiretamente: `partidas.criado_por`, criada no Passo 3, existe; o Passo 2 vem antes).
+- `avaliacoes_jogo` fechada e seus RPCs revogados do anônimo (`permission denied for function`).
+- Sem `CREATE VIEW` (vetor clássico de RLS bypass), sem bucket público, RLS ligada em todas as tabelas.
+- `registrar_avaliacao` exige `auth.uid()` (e usa `auth.uid()`, não parâmetro) → anônimo não vota.
+- **A3 resolvido:** `get_master_stats`/`get_city_stats` agora validam role (testado: retornam "Acesso negado", não dados).
+
+**Brechas encontradas e corrigidas:** ver `supabase/migration_seguranca_v3.sql` (Passos 1–4).
+
+### S1. Anônimo executa RPCs (o `REVOKE ... FROM PUBLIC` do hardening não bastou)
+`migration_rls_hardening.sql:339` faz `REVOKE EXECUTE ON ALL FUNCTIONS IN SCHEMA public FROM PUBLIC`. Mas o Supabase concede EXECUTE **explicitamente ao papel `anon`** ao criar a função, e isso não é tirado por um revoke em `PUBLIC`.
+Prova: `POST /rest/v1/rpc/get_master_stats` (SECURITY DEFINER) como anônimo → `P0001 "Acesso negado"` (a função **executou**); `admin_get_users`, `get_master_reports`, `admin_get_players`, `admin_get_logs`, `touch_last_seen` e `sortear_jogadores_para_voto` idem. `get_ranking`/`get_status_voto_hoje` também executam e só param na tabela (`permission denied for table jogadores`).
+Correção: Passo 1 do `migration_seguranca_v3.sql` (`REVOKE ... FROM anon` + `ALTER DEFAULT PRIVILEGES ... FROM anon`).
+
+### S2. `rotina_semanal_domingo()` sem guarda — anônimo zerava o ranking 🔴
+`schema.sql:645`: `SECURITY DEFINER`, sem nenhuma checagem, e o corpo faz `media_estrelas = ROUND(media_estrelas * 0.9, 2)` em **todos** os atletas, zera `votos_semana` e grava campeão. Combinada com S1, qualquer pessoa **sem login** podia chamá-la em loop (0,9^n) e destruir o ranking.
+Correção: Passo 2 do `migration_seguranca_v3.sql` (revoga de todos + guarda `auth.uid() IS NOT NULL`).
+
+### S3. Qualquer logado virava `master` e lia o email de todos 🔴
+`profiles_update_own` (`schema.sql:222`, mantida pelo hardening) só exige `auth.uid() = id`, e `role` é coluna comum da mesma linha — não há restrição por coluna (o Passo 2 do hardening só mexe em SELECT). Com `UPDATE profiles SET role='master'`, o painel admin inteiro abre: `admin_get_users()` devolve **email de todos** (nome, cidade, uf, role, last_seen), `admin_delete_user()` apaga contas, `admin_send_global_notification()` manda notificação para todos.
+Correção: Passo 3 do `migration_seguranca_v3.sql` (gatilho `trg_proteger_campos_admin`).
+
+### S4. Votos de estrela não eram anônimos 🟠
+`avaliacoes_select_auth USING (TRUE)` (`migration_rls_hardening.sql:54`) deixava qualquer logado ler a tabela inteira — `avaliador_id` + `comentario` → dá para montar "quem votou em quem, com que nota". O app só lê as próprias avaliações (`Atletas.jsx:150`, `PlayerProfileModal.jsx:155`).
+Correção: Passo 4 do `migration_seguranca_v3.sql` (policy passa a `avaliador_id = auth.uid()`).
+
+### S5. Pendência de decisão 🟠
+`jogadores`/`partidas` aceitam UPDATE de qualquer logado quando `criado_por IS NULL` (cláusula de transição do hardening, `migration_rls_hardening.sql:197,231`). Atletas antigos sem dono são editáveis por qualquer um — inclusive `media_estrelas`. O Passo 5 do `migration_seguranca_v3.sql` (comentado) traz o backfill + a policy estrita, para aplicar quando quiser.
+
+### S6. Baixa
+Signup aberto (`disable_signup: false`) e sem CAPTCHA → contas falsas para brigada de votos. Mitigado por `UNIQUE(avaliador_id, jogador_id)` + limite de 20/dia. Login anônimo **desligado** ✔; sem buckets públicos ✔.
+
+### Bug funcional achado de passagem
+`sortear_jogadores_para_voto()` (`schema.sql:586`) quebra sempre com `42702 column reference "id" is ambiguous`: o `RETURNS TABLE` declara `id`/`uf` como parâmetros de saída e o corpo usa `WHERE id = auth.uid()`. O frontend não chama essa RPC (dead code) — mas se religar, precisa qualificar (`profiles.id`).
+
+---
+
 ## 🔴 Alta
 
 ### A1. `migration_cleanup.sql` quebra a votação
