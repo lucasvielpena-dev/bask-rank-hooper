@@ -4,7 +4,6 @@ import { nomeAtleta } from '../lib/nomes';
 import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from '../components/Icons';
-import { HomeBackground } from '../components/AnimatedBackgrounds';
 import { labelConfianca, nivelConfianca, resumoAvaliacoes } from '../lib/ranking';
 
 export default function Home({ profile, onNavigate }) {
@@ -103,7 +102,6 @@ export default function Home({ profile, onNavigate }) {
 
   return (
     <div className="page-content home-page" style={{ position: 'relative' }}>
-      <HomeBackground />
       <div className="home-container" style={{ paddingBottom: 80, position: 'relative', zIndex: 1 }}>
 
         <div className="home-greeting" style={{ marginBottom: 12 }}>

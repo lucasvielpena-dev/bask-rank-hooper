@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase, torneiosAPI, equipesAPI, torneioJogosAPI, profilesAPI, notasJogoAPI } from '../lib/supabase';
 import { IconCalendario, IconSportDynamic } from '../components/Icons';
-import { TorneiosBackground } from '../components/AnimatedBackgrounds';
 import { useEsporte } from '../contexts/EsporteContext';
 import { GRADES, GradePicker, gradePorValor, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
 import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
@@ -59,7 +58,6 @@ export default function Torneios({ profile, isNested = false }) {
 
   return (
     <div className={isNested ? "" : "page-content"} style={isNested ? { padding: 0 } : { position: 'relative' }}>
-      {!isNested && <TorneiosBackground />}
       {selectedTorneio ? (
         <TorneioDetalhes 
           torneio={selectedTorneio} 

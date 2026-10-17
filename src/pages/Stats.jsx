@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
-import { StatsBackground } from '../components/AnimatedBackgrounds';
 import { useEsporte } from '../contexts/EsporteContext';
 import LinhaEvolucao from '../components/LinhaEvolucao';
 
@@ -350,7 +349,6 @@ export default function Stats({ profile, onNavigate }) {
 
   return (
     <div className="page-content home-page" style={{ position: 'relative' }}>
-      <StatsBackground />
       <div style={{ padding: '12px 12px 0', position: 'relative', zIndex: 1 }}>
         
         {/* Cabeçalho Voltar */}

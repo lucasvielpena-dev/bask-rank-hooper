@@ -5,7 +5,6 @@ import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
 import { motion, AnimatePresence } from 'framer-motion';
 import Torneios from './Torneios';
 import { IconJogo, IconMais, IconCalendario } from '../components/Icons';
-import { JogosBackground, TorneiosBackground } from '../components/AnimatedBackgrounds';
 import { useEsporte } from '../contexts/EsporteContext';
 
 export default function Jogos({ profile, initialAba = 'jogos' }) {
@@ -525,7 +524,6 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
   return (
     <div className="page-content home-page" style={{ position: 'relative' }}>
-      {aba === 'torneios' ? <TorneiosBackground /> : <JogosBackground />}
       {/* TELA 1: LISTAGEM DE PARTIDAS / HISTÓRICO */}
       {tela === 'lista' && (
         <div className="home-container" style={{ padding: '12px 12px 0', position: 'relative', zIndex: 1 }}>
