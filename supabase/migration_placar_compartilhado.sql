@@ -318,6 +318,41 @@ SELECT EXISTS (SELECT 1 FROM pg_proc WHERE proname = 'notificar_realtime') AS te
 -- 7.4) Estado atual (comeca vazio: a limpeza de 17/10 zerou o esporte)
 SELECT count(*) AS pedidos_ou_operadores FROM public.partida_operadores;
 
+-- 7.5) O gatilho do encerramento (secao 8) entrou?
+SELECT EXISTS (SELECT 1 FROM pg_trigger
+               WHERE tgname = 'trg_realtime_partida_status') AS tem_gatilho_status;
+
+
+-- ------------------------------------------------------------
+-- 8) AVISO QUANDO A PARTIDA E ENCERRADA OU REABERTA (opcional, recomendado)
+--    Dispara APENAS quando o status muda (encerrar / reabrir), entao nao
+--    gera trafego durante o jogo. O app escuta "partida_<id>" e, com isso,
+--    quem esta no placar em outro celular sai na hora (em vez de esperar a
+--    conferencia de 20s) e a lista de Rachoes se atualiza sozinha.
+--    Sem este gatilho o app funciona igual — so nao e instantaneo.
+-- ------------------------------------------------------------
+CREATE OR REPLACE FUNCTION public.trg_aviso_partida_status()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  BEGIN
+    PERFORM public.notificar_realtime('partida_' || NEW.id::text);
+  EXCEPTION WHEN OTHERS THEN
+    NULL;
+  END;
+  RETURN NULL;
+END $$;
+
+DROP TRIGGER IF EXISTS trg_realtime_partida_status ON public.partidas;
+CREATE TRIGGER trg_realtime_partida_status
+  AFTER UPDATE OF status ON public.partidas
+  FOR EACH ROW
+  WHEN (OLD.status IS DISTINCT FROM NEW.status)
+  EXECUTE FUNCTION public.trg_aviso_partida_status();
+
 
 -- ============================================================
 -- COMO REVERTER (voltar ao comportamento antigo, se precisar)

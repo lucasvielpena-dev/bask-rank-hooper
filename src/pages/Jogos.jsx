@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase, partidasAPI, jogadoresAPI, notasJogoAPI } from '../lib/supabase';
 import { GRADES, GradePicker, gradePorValor, gradeInfo, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
 import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
@@ -63,6 +63,57 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     setPedidosCriador((data || []).filter(p => p.usuario_id !== profile?.id));
   }
 
+  // Recarrega a lista SEM abrir o placar (diferente do loadDados) — a lista
+  // nunca deve mentir sobre o que está em andamento.
+  async function recarregarPartidas() {
+    try {
+      const { data } = await partidasAPI.listar(esporte);
+      const todas = data || [];
+      setPartidas(todas.filter(p => p.status === 'ativo'));
+      setHistorico(todas.filter(p => p.status === 'finalizado'));
+    } catch (e) {
+      console.warn('Falha ao recarregar partidas:', e);
+    }
+  }
+
+  // Se a partida foi encerrada em OUTRO celular, este placar não pode fingir
+  // que continua valendo. `finalizandoRef` marca quem encerrou foi este aparelho.
+  const finalizandoRef = useRef(false);
+  async function checarStatusRemoto(partidaId) {
+    if (!partidaId || finalizandoRef.current) return;
+    try {
+      const { data } = await partidasAPI.buscar(partidaId);
+      if (data?.status === 'finalizado') {
+        setTimerAtivo(false);
+        setPartidaAtiva(null);
+        setAba('historico');
+        setTela('lista');
+        await recarregarPartidas();
+        showToast('Esta partida foi encerrada. Confira o histórico.', 'warning');
+      }
+    } catch (e) {
+      /* silencioso: é só uma conferência */
+    }
+  }
+
+  // Reabrir partida encerrada por engano (só quem criou).
+  async function handleReabrirPartida(p) {
+    if (!p) return;
+    if (!window.confirm('Reabrir esta partida? Ela volta para "Em andamento" com o mesmo placar e você continua de onde parou.')) return;
+    setSalvando(true);
+    const { error } = await partidasAPI.atualizar(p.id, { status: 'ativo' });
+    setSalvando(false);
+    if (error) {
+      showToast(error.message || 'Não foi possível reabrir a partida.', 'error');
+      return;
+    }
+    setDetalhe(null);
+    showToast('Partida reaberta! Ela está de volta em "Em andamento".', 'success');
+    await recarregarPartidas();
+    setAba('jogos');
+    setTela('lista');
+  }
+
   useEffect(() => {
     if (tela !== 'partida' || !partidaAtiva?.id) {
       setOperadores([]);
@@ -70,9 +121,20 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     }
     const id = partidaAtiva.id;
     carregarOperadores(id);
-    // Aviso do banco quando alguém pede / o criador responde.
-    const channel = assinarAviso(`partida_${id}`, () => carregarOperadores(id));
+    // Aviso do banco quando alguém pede / o criador responde / a partida é encerrada.
+    const channel = assinarAviso(`partida_${id}`, () => { carregarOperadores(id); checarStatusRemoto(id); });
     return () => { supabase.removeChannel(channel); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tela, partidaAtiva?.id]);
+
+  // Sem aviso do banco, confere de 20 em 20s se a partida foi encerrada em
+  // outro celular — o placar aberto aqui não fica mentindo.
+  useEffect(() => {
+    if (tela !== 'partida' || !partidaAtiva?.id) return;
+    finalizandoRef.current = false; // partida nova em tela: libera o marcador
+    const id = partidaAtiva.id;
+    const intervalo = setInterval(() => checarStatusRemoto(id), 20000);
+    return () => clearInterval(intervalo);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tela, partidaAtiva?.id]);
 
@@ -82,9 +144,18 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   useEffect(() => {
     if (tela !== 'lista' || aba !== 'jogos') return;
     carregarPedidosCriador();
+    const recarregarTudo = () => { recarregarPartidas(); carregarPedidosCriador(); };
     const meus = partidas.filter(p => p.criado_por === profile?.id);
-    const canais = meus.map(p => assinarAviso(`partida_${p.id}`, carregarPedidosCriador));
-    return () => { canais.forEach(c => supabase.removeChannel(c)); };
+    const canais = meus.map(p => assinarAviso(`partida_${p.id}`, recarregarTudo));
+    // E, para não depender de aviso nenhum: a lista se atualiza sozinha.
+    const intervalo = setInterval(recarregarTudo, 20000);
+    const aoVoltarVisivel = () => { if (document.visibilityState === 'visible') recarregarTudo(); };
+    document.addEventListener('visibilitychange', aoVoltarVisivel);
+    return () => {
+      canais.forEach(c => supabase.removeChannel(c));
+      clearInterval(intervalo);
+      document.removeEventListener('visibilitychange', aoVoltarVisivel);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tela, aba, partidas.length]);
 
@@ -462,6 +533,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     if (!partidaAtiva) return;
     setSalvando(true);
     setTimerAtivo(false); // garante que o timer pare
+    finalizandoRef.current = true; // quem encerrou foi este aparelho
 
     try {
       const finalScore = {
@@ -1351,7 +1423,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <button 
               onClick={() => {
                 setTimerAtivo(false);
-                if (tempo > 0 && (periodo < 4 || (periodo === 4 && placarA === placarB) || (periodo >= 5 && placarA === placarB))) {
+                // Enquanto o jogo PODE continuar (1º ao 4º quarto, ou empate),
+                // ⏭ só pula o tempo do quarto. Antes, quando o cronômetro já
+                // estava em 00:00 (fim de quarto), este botão abria o modal de
+                // ENCERRAR a partida — e era fácil encerrar sem querer.
+                if (periodo < 4 || placarA === placarB) {
                   setTempo(0);
                   sincronizarPlacarBanco({ tempo_total: '00:00' });
                 } else {
@@ -1368,7 +1444,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 display: 'flex',
                 alignItems: 'center'
               }}
-              title="Próximo Quarto"
+              title="Pular o tempo do quarto"
             >
               ⏭
             </button>
@@ -1402,7 +1478,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           <div className="modal-sheet" onClick={e => e.stopPropagation()}>
             <div className="modal-handle" />
             <h3 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Finalizar Jogo</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>Deseja mesmo encerrar a partida? O placar acumulado e estatísticas serão registrados de forma definitiva.</p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>Deseja mesmo encerrar a partida? O placar acumulado e estatísticas serão registrados de forma definitiva. Se encerrar por engano, dá para reabrir depois (histórico → Reabrir partida).</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
@@ -1436,6 +1512,18 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
               {new Date(detalhe.created_at).toLocaleDateString('pt-BR')} · {detalhe.cidade}
             </p>
+
+            {/* Encerrou por engano? Só quem criou a partida pode reabrir. */}
+            {detalhe.criado_por === profile?.id && (
+              <button
+                className="btn btn-secondary"
+                onClick={() => handleReabrirPartida(detalhe)}
+                disabled={salvando}
+                style={{ width: '100%', marginBottom: 12, fontSize: 12.5 }}
+              >
+                ↺ Reabrir partida (encerrada por engano)
+              </button>
+            )}
 
             <div className="section-title">Quem jogou — avaliar</div>
             <LegendaRendimento />

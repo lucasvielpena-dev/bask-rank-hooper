@@ -398,6 +398,15 @@ export const partidasAPI = {
     return { data, error };
   },
 
+  buscar: async (id) => {
+    const { data, error } = await supabase
+      .from('partidas')
+      .select('*')
+      .eq('id', id)
+      .single();
+    return { data, error };
+  },
+
   obterJogadoresDaPartida: async (partidaId) => {
     const { data, error } = await supabase
       .from('partida_jogadores')
