@@ -725,7 +725,7 @@ export const racoesAPI = {
   listar: async ({ cidade, uf, status } = {}) => {
     let q = supabase
       .from('racoes')
-      .select('*, racao_participantes(id, usuario_id, jogador_id, status)')
+      .select('*, racao_participantes(id, usuario_id, jogador_id, status, perfil:profiles(nome_completo, apelido, foto_perfil))')
       .order('data_hora', { ascending: true });
     if (cidade) q = q.eq('cidade', cidade);
     if (uf) q = q.eq('uf', uf);
@@ -738,7 +738,7 @@ export const racoesAPI = {
   obter: async (id) => {
     const { data, error } = await supabase
       .from('racoes')
-      .select('*, racao_participantes(id, usuario_id, jogador_id, status)')
+      .select('*, racao_participantes(id, usuario_id, jogador_id, status, perfil:profiles(nome_completo, apelido, foto_perfil))')
       .eq('id', id)
       .maybeSingle();
     return { data, error };

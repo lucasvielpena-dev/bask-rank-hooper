@@ -296,16 +296,25 @@ export default function Racoes({ profile, onNavigate }) {
               ) : (
                 (selected.racao_participantes || [])
                   .filter((p) => p.status === 'confirmado')
-                  .map((p) => (
-                    <div key={p.id} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
-                      <div className="avatar" style={{ width: 32, height: 32, fontSize: 12 }}>
-                        {(p.usuario_id || '?').toString().slice(0, 2)}
+                  .map((p) => {
+                    const nome = p.usuario_id === profile?.id
+                      ? 'Você'
+                      : (p.perfil?.apelido || p.perfil?.nome_completo || `Jogador ${String(p.usuario_id).slice(0, 6)}`);
+                    return (
+                      <div key={p.id} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
+                        {p.perfil?.foto_perfil ? (
+                          <img src={p.perfil.foto_perfil} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+                        ) : (
+                          <div className="avatar" style={{ width: 32, height: 32, fontSize: 12 }}>
+                            {nome.toString().slice(0, 2).toUpperCase()}
+                          </div>
+                        )}
+                        <div style={{ fontSize: 13, fontWeight: 600 }}>
+                          {nome}
+                        </div>
                       </div>
-                      <div style={{ fontSize: 13, fontWeight: 600 }}>
-                        {p.usuario_id === profile?.id ? 'Você' : `Jogador ${String(p.usuario_id).slice(0, 6)}`}
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
               )}
             </div>
             {selected.status === 'finalizado' && (
