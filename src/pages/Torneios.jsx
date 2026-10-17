@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase, torneiosAPI, equipesAPI, torneioJogosAPI, profilesAPI, notasJogoAPI } from '../lib/supabase';
 import { IconCalendario, IconSportDynamic } from '../components/Icons';
 import { useEsporte } from '../contexts/EsporteContext';
@@ -841,6 +842,46 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 </div>
               ))}
             </div>
+
+            {/* Botão de inscrição — visível também na aba Informações */}
+            {torneio.status === 'inscricoes_abertas' ? (
+              <button
+                onClick={() => setShowInscricao(true)}
+                style={{
+                  background: 'var(--accent)',
+                  color: 'var(--text-primary)',
+                  border: 'none',
+                  height: '48px',
+                  borderRadius: '14px',
+                  fontWeight: 800,
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  width: '100%',
+                  boxShadow: '0 4px 14px var(--accent-dim)',
+                  fontFamily: 'inherit'
+                }}
+              >
+                ➕ Inscrever Equipe
+              </button>
+            ) : (
+              <div className="card" style={{
+                padding: '10px',
+                borderRadius: '12px',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                textAlign: 'center',
+                fontSize: '12px',
+                color: 'var(--text-muted)'
+              }}>
+                {torneio.status === 'finalizado'
+                  ? '🏆 Torneio finalizado'
+                  : '🔒 Inscrições encerradas para este torneio'}
+              </div>
+            )}
 
             {torneio.descricao && (
               <div className="card" style={{
@@ -2508,6 +2549,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
   const [availablePlayers, setAvailablePlayers] = useState([]);
   const [loadingPlayers, setLoadingPlayers] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const adicionandoRef = useRef(false);
 
   useEffect(() => {
     carregarRoster();
@@ -2553,7 +2595,14 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
   }
 
   async function handleAdicionarJogador(jogadorId) {
-    await equipesAPI.adicionarJogador(team.id, jogadorId, true);
+    if (adicionandoRef.current) return;
+    adicionandoRef.current = true;
+    const { error } = await equipesAPI.adicionarJogador(team.id, jogadorId, true);
+    adicionandoRef.current = false;
+    if (error) {
+      window.alert('Não foi possível adicionar o atleta: ' + (error.message || 'erro desconhecido'));
+      return;
+    }
     setShowAddModal(false);
     carregarRoster();
     if (onUpdate) onUpdate();
@@ -2637,8 +2686,8 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
         )}
       </div>
 
-      {/* Modal Interno para Selecionar Jogador */}
-      {showAddModal && (
+      {/* Modal Interno para Selecionar Jogador (via portal: não é afetado pelo card) */}
+      {showAddModal && createPortal(
         <div className="modal-overlay" onClick={() => setShowAddModal(false)} style={{ zIndex: 1000 }}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 360, maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}>
             <div className="modal-handle" />
@@ -2684,7 +2733,8 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
               Fechar
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
