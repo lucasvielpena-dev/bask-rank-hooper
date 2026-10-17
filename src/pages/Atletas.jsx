@@ -8,6 +8,16 @@ import PlayerProfileModal from '../components/PlayerProfileModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedCounter from '../components/AnimatedCounter';
 
+function normalizarCidade(v) {
+  return String(v || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove acentos
+    .replace(/\s*-\s*[a-z]{2}$/i, '') // remove sufixo "- PA"
+    .replace(/\s+/g, ' ');
+}
+
 const FILTROS = [
   { key: 'ranking', label: 'Ranking' },
   { key: 'todos', label: 'Todos' },
@@ -108,7 +118,7 @@ export default function Atletas({ profile }) {
   const [jogadores, setJogadores] = useState([]);
   const [filtrados, setFiltrados] = useState([]);
   const [busca, setBusca] = useState('');
-  const [filtroAtivo, setFiltroAtivo] = useState('ranking');
+  const [filtroAtivo, setFiltroAtivo] = useState('todos');
   const [loading, setLoading] = useState(true);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   
@@ -152,12 +162,17 @@ export default function Atletas({ profile }) {
 
       const avaliadosSet = new Set((minhasAvaliacoes || []).map(a => a.jogador_id));
 
-      // Mostra apenas atletas da mesma cidade do perfil, com filtro robusto
-      // (ignora maiúsculas/minúsculas, espaços extras e sufixo "- UF").
-      const cityNorm = (selectedCity || '').trim().toLowerCase().replace(/\s*-\s*[a-z]{2}$/, '');
+      // Mesma cidade do perfil (acentos, espaços e sufixo "- UF" ignorados).
+      // Se a cidade do atleta estiver vazia, ainda entra se o UF bater.
+      const cityNorm = normalizarCidade(selectedCity);
+      const myUf = (profile?.uf || 'PA').trim().toUpperCase();
       const players = (jogs || []).filter(j => {
-        const jogadorCity = (j.cidade || '').trim().toLowerCase().replace(/\s*-\s*[a-z]{2}$/, '');
-        return jogadorCity === cityNorm;
+        const jogadorCity = normalizarCidade(j.cidade);
+        const jogadorUf = (j.uf || '').trim().toUpperCase();
+        if (jogadorCity && cityNorm) return jogadorCity === cityNorm;
+        // fallback: sem cidade cadastrada, mas mesmo estado
+        if (!jogadorCity && jogadorUf && jogadorUf === myUf) return true;
+        return false;
       }).map(j => ({
         ...j,
         ja_votou_hoje: avaliadosSet.has(j.id)
@@ -183,10 +198,10 @@ export default function Atletas({ profile }) {
     }
 
     if (filtroAtivo === 'elite') {
-      result = result.filter(j => j.media_estrelas >= 4.0 && j.total_votos >= 1);
+      result = result.filter(j => Number(j.media_estrelas) >= 4.0 && (j.total_votos || 0) >= 1);
       result = sortByConfianca(result);
     } else if (filtroAtivo === 'ranking') {
-      result = result.filter(j => j.total_votos >= 1);
+      // Mostra todos da cidade; quem tem 0 votos fica no fim (média "--")
       result = sortByConfianca(result);
     } else if (filtroAtivo === 'recentes') {
       result.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
