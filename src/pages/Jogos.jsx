@@ -82,6 +82,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   const ultimoToqueLocalRef = useRef(0);   // quando EU marquei ponto por último
   const ultimoUpdatedAtRef = useRef(null); // versão da partida que já vi no banco
   const primeiroSyncRef = useRef(true);    // evita devolver ao banco o que acabou de chegar
+  const timerEndAtRef = useRef(null);      // timestamp de quando o cronômetro chega a 0
 
   async function sairPorPartidaEncerrada() {
     if (finalizandoRef.current) return;
@@ -340,17 +341,21 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [esporte]);
 
-  // Efeito do cronômetro
+  // Efeito do cronômetro — baseado em timestamp (não em decremento), para não
+  // atrasar quando o intervalo dispara tarde ou a aba fica em segundo plano.
   useEffect(() => {
     let interval = null;
     if (timerAtivo) {
+      timerEndAtRef.current = Date.now() + tempo * 1000;
       interval = setInterval(() => {
-        setTempo(t => Math.max(0, t - 1));
-      }, 1000);
+        const remaining = Math.max(0, Math.ceil((timerEndAtRef.current - Date.now()) / 1000));
+        setTempo(remaining);
+      }, 250);
     } else {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timerAtivo]);
 
   // Efeito para tratar o fim do período automaticamente

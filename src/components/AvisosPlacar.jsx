@@ -86,7 +86,7 @@ export default function AvisosPlacar() {
           ? `Pronto! ${pedido.nome || 'Essa pessoa'} já pode marcar ponto.`
           : 'Pedido recusado.'
     );
-    setTimeout(() => setRecado(null), 4000);
+    setTimeout(() => setRecado(null), 2000);
   }
 
   if (pedidos.length === 0 && !recado) return null;
