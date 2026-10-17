@@ -17,8 +17,15 @@
 --    - admin_logs (historico de auditoria)
 --    - Tabelas, funcoes, RLS e agendamentos: o esquema fica intacto
 --
+--  ROBUSTO A TABELA AUSENTE
+--    O script confere information_schema antes de cada DELETE e
+--    usa to_regclass() nas contagens. Se alguma tabela nao existir
+--    neste banco (ex.: realtime_pings), ela e simplesmente pulada
+--    em vez de derrubar a transacao.
+--
 --  COMO RODAR (SQL Editor do Supabase)
---    1. BLOCO 0 -> previa, so leitura. Confira os numeros.
+--    1. BLOCO 0 -> previa, so leitura. Confira os numeros e o
+--       papel (role) da sua conta.
 --    2. BLOCO 1 -> a limpeza. E UMA TRANSACAO: se qualquer coisa
 --       falhar (inclusive a trava dos e-mails), NADA e apagado.
 --    3. BLOCO 2 -> conferencia. Tudo em 0, menos contas/perfis.
@@ -31,33 +38,54 @@
 -- ============================================================
 --  BLOCO 0 — PREVIA  (rode primeiro; nao apaga nada)
 -- ============================================================
-SELECT 'jogadores'                        AS tabela, count(*) AS registros FROM public.jogadores
-UNION ALL SELECT 'avaliacoes (nota A+/A/B/C/D-F)',   count(*) FROM public.avaliacoes
-UNION ALL SELECT 'avaliacoes_jogo (nota do jogo)',   count(*) FROM public.avaliacoes_jogo
-UNION ALL SELECT 'votos (estrelas)',                 count(*) FROM public.votos
-UNION ALL SELECT 'votos_diarios (antifraude)',       count(*) FROM public.votos_diarios
-UNION ALL SELECT 'auditoria_votos',                  count(*) FROM public.auditoria_votos
-UNION ALL SELECT 'campeoes_semana',                  count(*) FROM public.campeoes_semana
-UNION ALL SELECT 'partidas',                         count(*) FROM public.partidas
-UNION ALL SELECT 'partida_jogadores',                count(*) FROM public.partida_jogadores
-UNION ALL SELECT 'jogos (legado)',                   count(*) FROM public.jogos
-UNION ALL SELECT 'estatisticas_partida (legado)',    count(*) FROM public.estatisticas_partida
-UNION ALL SELECT 'racoes (rachoes)',                 count(*) FROM public.racoes
-UNION ALL SELECT 'racao_participantes',              count(*) FROM public.racao_participantes
-UNION ALL SELECT 'torneios',                         count(*) FROM public.torneios
-UNION ALL SELECT 'equipes',                          count(*) FROM public.equipes
-UNION ALL SELECT 'equipe_jogadores',                 count(*) FROM public.equipe_jogadores
-UNION ALL SELECT 'torneio_jogos',                    count(*) FROM public.torneio_jogos
-UNION ALL SELECT 'torneio_estatisticas_jogadores',   count(*) FROM public.torneio_estatisticas_jogadores
-UNION ALL SELECT 'denuncias',                        count(*) FROM public.denuncias
-UNION ALL SELECT 'notificacoes',                     count(*) FROM public.notificacoes
-UNION ALL SELECT 'estatisticas_pessoais',            count(*) FROM public.estatisticas_pessoais
-UNION ALL SELECT 'CONTAS (auth.users)',              count(*) FROM auth.users
-UNION ALL SELECT 'PERFIS (profiles)',                count(*) FROM public.profiles
-ORDER BY tabela;
+-- Contador que devolve NULL quando a tabela nao existe neste banco.
+CREATE OR REPLACE FUNCTION pg_temp.conta(p_tabela TEXT)
+RETURNS BIGINT
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  v_total BIGINT;
+BEGIN
+  IF to_regclass('public.' || p_tabela) IS NULL THEN
+    RETURN NULL;   -- tabela nao existe aqui: nao e erro
+  END IF;
+  EXECUTE format('SELECT count(*) FROM public.%I', p_tabela) INTO v_total;
+  RETURN v_total;
+END $$;
 
--- Quem existe hoje (copie daqui o seu e-mail para o BLOCO 1):
--- Essa consulta mostra o papel (role) de cada conta. A sua deve ser 'master'.
+SELECT t.tabela, pg_temp.conta(t.tabela) AS registros
+FROM (VALUES
+  ('jogadores'),
+  ('avaliacoes'),                       -- nota A+/A/B/C/D-F
+  ('avaliacoes_jogo'),                  -- nota do jogo
+  ('votos'),                            -- estrelas
+  ('votos_diarios'),                    -- antifraude
+  ('auditoria_votos'),
+  ('campeoes_semana'),
+  ('partidas'),
+  ('partida_jogadores'),
+  ('jogos'),                            -- legado
+  ('estatisticas_partida'),             -- legado
+  ('racoes'),                           -- rachoes
+  ('racao_participantes'),
+  ('torneios'),
+  ('equipes'),
+  ('equipe_jogadores'),
+  ('torneio_jogos'),
+  ('torneio_estatisticas_jogadores'),
+  ('denuncias'),
+  ('notificacoes'),
+  ('estatisticas_pessoais'),
+  ('realtime_pings')
+) AS t(tabela)
+ORDER BY t.tabela;
+
+-- Contas e perfis (numeros separados porque essas tabelas sempre existem):
+SELECT 'CONTAS (auth.users)' AS tabela, count(*) FROM auth.users
+UNION ALL
+SELECT 'PERFIS (profiles)', count(*) FROM public.profiles;
+
+-- Quem existe hoje. A SUA conta precisa aparecer aqui com role = 'master':
 SELECT p.nome_completo, p.apelido, p.email, p.role, p.is_active, p.created_at
 FROM public.profiles p
 ORDER BY p.created_at;
@@ -69,10 +97,9 @@ ORDER BY p.created_at;
 BEGIN;
 
 -- ------------------------------------------------------------
---  1.1  QUEM SOBREVIVE  <-- troque/adicione os e-mails AQUI
---       Pode ter quantos quiser (um por linha, separados por
---       virgula). Use exatamente o e-mail que apareceu no
---       BLOCO 0. Nao diferencia maiuscula de minuscula.
+--  1.1  QUEM SOBREVIVE
+--       Pode ter quantos e-mails quiser (um por linha). Use
+--       exatamente o e-mail que apareceu no BLOCO 0.
 -- ------------------------------------------------------------
 CREATE TEMP TABLE _manter (email TEXT) ON COMMIT DROP;
 
@@ -89,9 +116,8 @@ JOIN _manter m ON lower(m.email) = lower(p.email);
 -- ------------------------------------------------------------
 --  1.2  TRAVA DE SEGURANCA
 --       Se algum e-mail da lista nao existir, ABORTA sem apagar
---       nada. E isso que impede o desastre de apagar a conta
---       master por um e-mail escrito errado: a lista nao acha
---       ninguem e NADA e apagado.
+--       nada. E o que impede o desastre de apagar a conta master
+--       por um e-mail escrito errado.
 -- ------------------------------------------------------------
 DO $$
 DECLARE
@@ -119,7 +145,7 @@ BEGIN
   END IF;
 
   IF NOT EXISTS (SELECT 1 FROM _manter_id WHERE role IN ('master', 'admin')) THEN
-    RAISE NOTICE 'AVISO: nenhuma conta preservada e master/admin. Se perder o acesso, veja o ANEXO no fim do arquivo.';
+    RAISE NOTICE 'AVISO: nenhuma conta preservada e master/admin. Veja o ANEXO no fim do arquivo.';
   END IF;
 
   RAISE NOTICE 'Trava OK -> preserva % conta(s); apaga % conta(s) de teste.', v_achados, v_contas - v_achados;
@@ -127,39 +153,66 @@ END $$;
 
 -- ------------------------------------------------------------
 --  1.3  DADOS ESPORTIVOS
---       A ordem importa: filhas antes das maes. Duas tabelas
+--       Ordem importa: filhas antes das maes. Duas tabelas
 --       (campeoes_semana e estatisticas_partida) tem chave
---       estrangeira SEM ON DELETE e por isso BLOQUEIAM a
+--       estrangeira SEM ON DELETE e por isso bloqueiam a
 --       exclusao de jogador se ficarem para depois.
+--       Tabela que nao existir neste banco e apenas pulada.
 -- ------------------------------------------------------------
-DELETE FROM public.auditoria_votos;
-DELETE FROM public.avaliacoes;
-DELETE FROM public.avaliacoes_jogo;
-DELETE FROM public.votos;
-DELETE FROM public.votos_diarios;
-DELETE FROM public.denuncias;
-DELETE FROM public.notificacoes;
-DELETE FROM public.campeoes_semana;
-DELETE FROM public.estatisticas_partida;
-DELETE FROM public.partida_jogadores;
-DELETE FROM public.partidas;
-DELETE FROM public.jogos;
-DELETE FROM public.torneio_estatisticas_jogadores;
-DELETE FROM public.torneio_jogos;
-DELETE FROM public.equipe_jogadores;
-DELETE FROM public.equipes;
-DELETE FROM public.torneios;
-DELETE FROM public.racao_participantes;
-DELETE FROM public.racoes;
-DELETE FROM public.estatisticas_pessoais;
-DELETE FROM public.realtime_pings;
-DELETE FROM public.jogadores;
+DO $$
+DECLARE
+  v_alvos TEXT[] := ARRAY[
+    'auditoria_votos',
+    'avaliacoes',
+    'avaliacoes_jogo',
+    'votos',
+    'votos_diarios',
+    'denuncias',
+    'notificacoes',
+    'campeoes_semana',
+    'estatisticas_partida',
+    'partida_jogadores',
+    'partidas',
+    'jogos',
+    'torneio_estatisticas_jogadores',
+    'torneio_jogos',
+    'equipe_jogadores',
+    'equipes',
+    'torneios',
+    'racao_participantes',
+    'racoes',
+    'estatisticas_pessoais',
+    'realtime_pings',
+    'jogadores'
+  ];
+  v_tabela TEXT;
+  v_puladas TEXT[] := ARRAY[]::TEXT[];
+  v_linhas INT;
+  v_total  INT := 0;
+BEGIN
+  FOREACH v_tabela IN ARRAY v_alvos LOOP
+    IF to_regclass('public.' || v_tabela) IS NULL THEN
+      v_puladas := array_append(v_puladas, v_tabela);
+      CONTINUE;
+    END IF;
+
+    EXECUTE format('DELETE FROM public.%I', v_tabela);
+    GET DIAGNOSTICS v_linhas = ROW_COUNT;
+    v_total := v_total + v_linhas;
+  END LOOP;
+
+  IF array_length(v_puladas, 1) > 0 THEN
+    RAISE NOTICE 'Tabelas que nao existem neste banco (puladas): %', array_to_string(v_puladas, ', ');
+  END IF;
+
+  RAISE NOTICE 'Dados esportivos apagados: % linha(s).', v_total;
+END $$;
 
 -- ------------------------------------------------------------
 --  1.4  PERFIS DAS CONTAS QUE FICAM
---       Desvincula do jogador apagado e zera a reputacao
---       (que era fruto das avaliacoes de teste). Nome, apelido,
---       foto, altura e cidade continuam como estao.
+--       Desvincula do jogador apagado e zera a reputacao (que era
+--       fruto das avaliacoes de teste). Nome, apelido, foto,
+--       altura e cidade continuam como estao.
 -- ------------------------------------------------------------
 UPDATE public.profiles
 SET is_player   = FALSE,
@@ -171,7 +224,6 @@ SET is_player   = FALSE,
 --  1.5  CONTAS DE TESTE (login + perfil + o que for delas)
 --       O ON DELETE CASCADE de profiles -> auth.users leva junto
 --       votos, avaliacoes, notificacoes, denuncias e participacoes.
---       As sessoes/tokens dessas contas morrem junto no GoTrue.
 -- ------------------------------------------------------------
 DELETE FROM auth.users
 WHERE id NOT IN (SELECT id FROM _manter_id);
@@ -182,30 +234,46 @@ COMMIT;
 -- ============================================================
 --  BLOCO 2 — CONFERENCIA  (rode depois; tudo 0, menos contas/perfis)
 -- ============================================================
-SELECT 'jogadores'                        AS tabela, count(*) AS registros FROM public.jogadores
-UNION ALL SELECT 'avaliacoes (nota A+/A/B/C/D-F)',   count(*) FROM public.avaliacoes
-UNION ALL SELECT 'avaliacoes_jogo (nota do jogo)',   count(*) FROM public.avaliacoes_jogo
-UNION ALL SELECT 'votos (estrelas)',                 count(*) FROM public.votos
-UNION ALL SELECT 'votos_diarios (antifraude)',       count(*) FROM public.votos_diarios
-UNION ALL SELECT 'auditoria_votos',                  count(*) FROM public.auditoria_votos
-UNION ALL SELECT 'campeoes_semana',                  count(*) FROM public.campeoes_semana
-UNION ALL SELECT 'partidas',                         count(*) FROM public.partidas
-UNION ALL SELECT 'partida_jogadores',                count(*) FROM public.partida_jogadores
-UNION ALL SELECT 'jogos (legado)',                   count(*) FROM public.jogos
-UNION ALL SELECT 'estatisticas_partida (legado)',    count(*) FROM public.estatisticas_partida
-UNION ALL SELECT 'racoes (rachoes)',                 count(*) FROM public.racoes
-UNION ALL SELECT 'racao_participantes',              count(*) FROM public.racao_participantes
-UNION ALL SELECT 'torneios',                         count(*) FROM public.torneios
-UNION ALL SELECT 'equipes',                          count(*) FROM public.equipes
-UNION ALL SELECT 'equipe_jogadores',                 count(*) FROM public.equipe_jogadores
-UNION ALL SELECT 'torneio_jogos',                    count(*) FROM public.torneio_jogos
-UNION ALL SELECT 'torneio_estatisticas_jogadores',   count(*) FROM public.torneio_estatisticas_jogadores
-UNION ALL SELECT 'denuncias',                        count(*) FROM public.denuncias
-UNION ALL SELECT 'notificacoes',                     count(*) FROM public.notificacoes
-UNION ALL SELECT 'estatisticas_pessoais',            count(*) FROM public.estatisticas_pessoais
-UNION ALL SELECT 'CONTAS (auth.users)',              count(*) FROM auth.users
-UNION ALL SELECT 'PERFIS (profiles)',                count(*) FROM public.profiles
-ORDER BY tabela;
+CREATE OR REPLACE FUNCTION pg_temp.conta(p_tabela TEXT)
+RETURNS BIGINT
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  v_total BIGINT;
+BEGIN
+  IF to_regclass('public.' || p_tabela) IS NULL THEN
+    RETURN NULL;
+  END IF;
+  EXECUTE format('SELECT count(*) FROM public.%I', p_tabela) INTO v_total;
+  RETURN v_total;
+END $$;
+
+SELECT t.tabela, pg_temp.conta(t.tabela) AS registros
+FROM (VALUES
+  ('jogadores'),
+  ('avaliacoes'),
+  ('avaliacoes_jogo'),
+  ('votos'),
+  ('votos_diarios'),
+  ('auditoria_votos'),
+  ('campeoes_semana'),
+  ('partidas'),
+  ('partida_jogadores'),
+  ('jogos'),
+  ('estatisticas_partida'),
+  ('racoes'),
+  ('racao_participantes'),
+  ('torneios'),
+  ('equipes'),
+  ('equipe_jogadores'),
+  ('torneio_jogos'),
+  ('torneio_estatisticas_jogadores'),
+  ('denuncias'),
+  ('notificacoes'),
+  ('estatisticas_pessoais'),
+  ('realtime_pings')
+) AS t(tabela)
+ORDER BY t.tabela;
 
 -- Quem sobrou (a sua conta deve estar aqui, role = 'master'):
 SELECT p.id, p.nome_completo, p.apelido, p.email, p.role, p.is_active
@@ -221,4 +289,4 @@ ORDER BY p.created_at;
 --
 --   UPDATE public.profiles
 --   SET role = 'master', is_active = TRUE
---   WHERE lower(email) = lower('seu@email.com');
+--   WHERE lower(email) = lower('lucasvielpena@gmail.com');
