@@ -140,6 +140,12 @@ function NotificationsPanel({
                     <span className="notif-item-time">{timeAgo(n.created_at)}</span>
                   </div>
                   <p className="notif-item-msg">{n.mensagem}</p>
+                  {/* Onde responder: sem esta dica o aviso era um beco sem saída. */}
+                  {/placar compartilhado/i.test(n.titulo) && (
+                    <p className="notif-item-msg" style={{ color: 'var(--accent)', fontWeight: 700, marginTop: 4 }}>
+                      → Abra Rachões → Jogos da Noite para aceitar ou recusar.
+                    </p>
+                  )}
                   <div className="notif-item-actions">
                     {!n.lida && (
                       <button
