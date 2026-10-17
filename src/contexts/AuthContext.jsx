@@ -632,12 +632,11 @@ export function AuthProvider({ children }) {
   }, [user]);
 
   // ---- transição de entrada ----
-  // O app (ou a tela de completar perfil) só é montado quando já sabemos quem
-  // é o usuário e o perfil chegou — mas ele é montado POR BAIXO da capa, então
-  // quando a capa sai o app já está pronto e pintado.
+  // O app (ou a tela de completar perfil) é montado POR BAIXO da capa assim que
+  // o perfil chega — então, quando a capa sai, o app já está pronto e pintado.
   // "Pronto" = sabemos quem é o usuário E já resolvemos o perfil dele (mesmo
   // que o perfil não exista ainda — aí cai na tela de completar cadastro).
-  // Usar um sinal explícito evita piscar a tela ao sair e entrar de novo.
+  // Esse sinal explícito evita piscar telas ao sair e entrar de novo.
   const conteudoPronto = !!user && perfilDe === user.id;
 
   // Só revelamos depois que a animação de arremesso termina.
@@ -682,6 +681,13 @@ export function AuthProvider({ children }) {
     const t = setTimeout(() => setEsperaLonga(true), 1200);
     return () => clearTimeout(t);
   }, [entradaPorLogin, arremessoAtivo, conteudoPronto]);
+
+  // 5) rede de segurança: se o perfil do usuário atual não foi resolvido,
+  //    tenta de novo — sem isso a capa poderia ficar presa na tela.
+  useEffect(() => {
+    if (user && perfilDe !== user.id) loadProfile(user.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, perfilDe]);
 
   const value = {
     user,
