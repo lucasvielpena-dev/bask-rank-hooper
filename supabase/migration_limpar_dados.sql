@@ -77,7 +77,7 @@ BEGIN;
 CREATE TEMP TABLE _manter (email TEXT) ON COMMIT DROP;
 
 INSERT INTO _manter (email) VALUES
-  ('COLOQUE-SEU-EMAIL-AQUI@exemplo.com')     -- <<< TROQUE PELO SEU E-MAIL
+  ('lucasvielpena@gmail.com')                -- <<< conta master preservada
   -- ,('colega@exemplo.com')                 -- <<< descomente se quiser manter mais alguem
 ;
 
@@ -89,9 +89,9 @@ JOIN _manter m ON lower(m.email) = lower(p.email);
 -- ------------------------------------------------------------
 --  1.2  TRAVA DE SEGURANCA
 --       Se algum e-mail da lista nao existir, ABORTA sem apagar
---       nada. E isso que impede o desastre de rodar o script com
---       o "COLOQUE-SEU-EMAIL-AQUI" ainda no lugar (nesse caso a
---       lista nao acha ninguem -> nada e apagado).
+--       nada. E isso que impede o desastre de apagar a conta
+--       master por um e-mail escrito errado: a lista nao acha
+--       ninguem e NADA e apagado.
 -- ------------------------------------------------------------
 DO $$
 DECLARE
