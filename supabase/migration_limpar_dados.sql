@@ -270,6 +270,18 @@ SELECT p.id, p.nome_completo, p.apelido, p.email, p.role, p.is_active
 FROM public.profiles p
 ORDER BY p.created_at;
 
+-- ------------------------------------------------------------------
+--  OBS: se aparecerem 1 ou mais linhas em "jogadores", quase certo que
+--  sao os atletas das contas que ficaram: quando o app abre com um
+--  perfil cadastro_completo = true, o AuthContext chama
+--  verificarEAutoCriarJogador() e CRIA o atleta daquele usuario
+--  automaticamente (e vincula player_id/is_player no perfil). E
+--  comportamento do app, nao sobra desta limpeza.
+--  Para ver o ranking 100% vazio: saia do app em todos os aparelhos,
+--  rode o BLOCO 1 de novo e nao abra o app antes de cadastrar os
+--  colegas -- o primeiro que completar o perfil vira o primeiro atleta.
+-- ------------------------------------------------------------------
+
 
 -- ============================================================
 --  ANEXO — SE VOCE PERDER O ACESSO DE MASTER
