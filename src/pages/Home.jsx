@@ -86,6 +86,10 @@ export default function Home({ profile, onNavigate }) {
 
   const greetingName = profile?.apelido || profile?.nome_completo?.split(' ')[0] || 'Atleta';
 
+  // Esqueleto só na PRIMEIRA carga. Depois disso o conteúdo antigo permanece na
+  // tela enquanto o novo chega — assim nada "pisca" nem pula de lugar.
+  const carregandoDestaques = loading && topPlayers.length === 0;
+
   const getGreeting = () => {
     const h = new Date().getHours();
     if (h < 12) return 'Bom dia';
@@ -96,14 +100,6 @@ export default function Home({ profile, onNavigate }) {
   const getPositionColor = (pos) => {
     return '#6A6A82';
   };
-
-  if (loading) {
-    return (
-      <div className="page-content" style={{ display:'flex', alignItems:'center', justifyContent:'center', minHeight:'50vh' }}>
-        <div className="spinner" />
-      </div>
-    );
-  }
 
   return (
     <div className="page-content home-page" style={{ position: 'relative' }}>
@@ -282,7 +278,18 @@ export default function Home({ profile, onNavigate }) {
             </button>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {topPlayers.map((player, i) => (
+            {carregandoDestaques
+              ? [0, 1, 2, 3, 4].map((i) => (
+                <div key={`destaque-skeleton-${i}`} className="premium-card" style={{ borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 14, minHeight: 64 }}>
+                  <div className="skeleton" style={{ width: 48, height: 48, borderRadius: 12, flexShrink: 0 }} />
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div className="skeleton" style={{ height: 13, width: '62%', borderRadius: 6 }} />
+                    <div className="skeleton" style={{ height: 11, width: '38%', borderRadius: 6 }} />
+                  </div>
+                  <div className="skeleton" style={{ width: 54, height: 34, borderRadius: 8, flexShrink: 0 }} />
+                </div>
+              ))
+              : topPlayers.map((player, i) => (
               <div
                 key={player.id}
                 className={i === 0 ? `premium-card premium-card-border-green stagger-enter stagger-${i + 2}` : `premium-card stagger-enter stagger-${i + 2}`}

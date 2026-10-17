@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { authAPI } from '../lib/supabase';
 
-export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
+export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguardando = false }) {
   const [tab, setTab] = useState('login');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -136,9 +136,8 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
   return (
     <div className={`app-shell auth-screen ${isShooting ? 'is-shooting' : ''}`} style={{ minHeight: '100dvh', background: 'var(--bg-primary, #0C0C14)', position: 'relative', overflow: 'hidden' }}>
       <style>{`
-        .auth-screen.is-shooting {
-          animation: fadeOutApp 0.5s cubic-bezier(0.36, 0, 0.66, -0.56) 1.7s forwards;
-        }
+        /* O fade de saída desta tela é controlado pelo AuthContext (só depois
+           que o perfil chegou e o app já está montado por baixo). */
 
         /* IDLE ANIMATIONS (Cubic-bezier gerais) */
         .idle-breathe {
@@ -233,11 +232,6 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
           77.2% { opacity: 1; transform: translateY(0) scaleX(0.8) scaleY(1.15); } /* Squash from ball */
           82% { opacity: 1; transform: translateY(0) scaleX(1) scaleY(1); animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); } /* Spring back */
           100% { opacity: 1; }
-        }
-
-        @keyframes fadeOutApp {
-          0% { opacity: 1; transform: scale(1); }
-          100% { opacity: 0; transform: scale(1.05); } /* Exit with Anticipation easing */
         }
 
         /* PARTICLE EXPLOSION */
@@ -578,6 +572,24 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation }) {
         </div>
 
       </div>
+
+      {/* Só aparece se o perfil demorar mais que o normal depois do arremesso:
+          antes, nesse caso, o app ficava mudo esperando. */}
+      {aguardando && (
+        <div style={{
+          position: 'absolute', left: '50%', bottom: '10%', transform: 'translateX(-50%)',
+          display: 'flex', alignItems: 'center', gap: 8, zIndex: 2,
+          background: 'rgba(12,12,20,0.75)', border: '1px solid rgba(200,241,53,0.25)',
+          borderRadius: 999, padding: '9px 16px',
+          backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+          animation: 'fadeIn 0.3s ease both',
+        }}>
+          <div className="spinner" style={{ width: 13, height: 13 }} />
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 600, fontFamily: "'Inter',sans-serif" }}>
+            Preparando sua quadra…
+          </span>
+        </div>
+      )}
     </div>
   );
 }

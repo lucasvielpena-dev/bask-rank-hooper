@@ -8,6 +8,7 @@ import { IconSino, IconLocalizacao } from './Icons';
 import NotificationsPanel from './NotificationsPanel';
 import { motion, AnimatePresence } from 'framer-motion';
 import { authAPI } from '../lib/supabase';
+import { preloadBackgrounds, backgroundsProntos, aoTerminarBackgrounds } from '../lib/backgrounds';
 
 export default function Layout({ page, onNavigate, children }) {
   const { cfg } = useEsporte();
@@ -73,7 +74,9 @@ export default function Layout({ page, onNavigate, children }) {
   }
 
   // Parallax Logic
-  const [bgLoaded, setBgLoaded] = useState(false);
+  // Fundo: quando as imagens vieram pré-carregadas do login, elas aparecem já
+  // na primeira pintura (sem o fade de 1,2s chegando depois da tela).
+  const [bgLoaded, setBgLoaded] = useState(backgroundsProntos);
   const parallaxRef = useRef(null);
   
   useEffect(() => {
@@ -100,29 +103,21 @@ export default function Layout({ page, onNavigate, children }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Preload background images
+  // Preload background images (compartilhado com a tela de login)
   useEffect(() => {
     let mounted = true;
-    const img1 = new Image();
-    const img2 = new Image();
-    
-    let loadedCount = 0;
-    const checkLoad = () => {
-      loadedCount++;
-      if (loadedCount >= 2 && mounted) {
-        setBgLoaded(true);
-      }
-    };
 
-    img1.onload = checkLoad;
-    img1.onerror = checkLoad; // in case of error, still show
-    img1.src = '/images/bg-1.png';
+    if (backgroundsProntos()) {
+      setBgLoaded(true);
+      return () => { mounted = false; };
+    }
 
-    img2.onload = checkLoad;
-    img2.onerror = checkLoad;
-    img2.src = '/images/bg-2.png';
+    preloadBackgrounds();
+    const cancelar = aoTerminarBackgrounds(() => {
+      if (mounted) setBgLoaded(true);
+    });
 
-    return () => { mounted = false; };
+    return () => { mounted = false; cancelar(); };
   }, []);
 
   const isHome = page === 'inicio';

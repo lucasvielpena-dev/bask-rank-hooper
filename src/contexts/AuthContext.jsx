@@ -1,8 +1,25 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { supabase, authAPI, profilesAPI, notificacoesAPI, masterAPI, PROFILE_SAFE_COLUMNS } from '../lib/supabase';
 import { useEsporte } from './EsporteContext';
+import { preloadBackgrounds } from '../lib/backgrounds';
 import AuthScreen from '../components/AuthScreen';
 import CompleteProfileScreen from '../components/CompleteProfileScreen';
+import SplashCarregando from '../components/SplashCarregando';
+
+// O Supabase guarda a sessão no aparelho numa chave "sb-<ref>-auth-token".
+// Checar isso de forma síncrona evita piscar a tela de login para quem já
+// está logado (a leitura da sessão em si é assíncrona).
+function temSessaoSalva() {
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const chave = localStorage.key(i);
+      if (chave && chave.startsWith('sb-') && chave.endsWith('-auth-token')) return true;
+    }
+  } catch (_) {
+    /* sem localStorage: cai na tela de login normalmente */
+  }
+  return false;
+}
 
 const ESTADO_TO_UF = {
   'acre': 'AC', 'alagoas': 'AL', 'amapá': 'AP', 'amazonas': 'AM', 'bahia': 'BA',
@@ -22,6 +39,7 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const playerCreationLock = useRef(false);
+  const perfilEmVoo = useRef(null);
 
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -31,7 +49,19 @@ export function AuthProvider({ children }) {
   const [notificacoes, setNotificacoes] = useState([]);
   const [showNotificacoes, setShowNotificacoes] = useState(false);
 
-  const [isLoginAnimating, setIsLoginAnimating] = useState(false);
+  // ============================================================
+  // Transição de entrada (login -> app)
+  // A tela de login fica POR CIMA do app já montado e só sai quando o perfil
+  // chegou. Assim o app aparece pronto (sem tela em branco, sem spinner solto
+  // e sem montar tudo de uma vez, que era o que dava as travadas).
+  // ============================================================
+  const [bootOk, setBootOk] = useState(false);                 // já sabemos se há sessão?
+  const [sessaoSalva] = useState(temSessaoSalva);              // havia sessão no aparelho?
+  const [perfilDe, setPerfilDe] = useState(null);              // uid cujo perfil já foi resolvido
+  const [entradaPorLogin, setEntradaPorLogin] = useState(false); // veio de um login (arremesso)
+  const [arremessoAtivo, setArremessoAtivo] = useState(false);   // animação ainda rodando
+  const [capaVisivel, setCapaVisivel] = useState(true);          // capa de entrada na tela?
+  const [capaSaindo, setCapaSaindo] = useState(false);           // capa em fade-out
 
   const [editApelido, setEditApelido] = useState('');
   const [editPosicao, setEditPosicao] = useState('');
@@ -59,6 +89,12 @@ export function AuthProvider({ children }) {
   }
 
   async function loadProfile(uid, retries = 0) {
+    if (retries === 0) {
+      // Na abertura do app, getSession() e onAuthStateChange disparam quase
+      // juntos. Sem esta trava, o mesmo perfil era buscado duas vezes.
+      if (perfilEmVoo.current === uid) return null;
+      perfilEmVoo.current = uid;
+    }
     try {
       const { data } = await profilesAPI.obterPerfil(uid);
       if (data) {
@@ -108,41 +144,50 @@ export function AuthProvider({ children }) {
       console.error(e);
       setLoadingProfile(false);
       return null;
+    } finally {
+      if (retries === 0) {
+        perfilEmVoo.current = null;
+        // Marca que já sabemos o que mostrar para este usuário (mesmo se o
+        // perfil não existir — aí cai na tela de completar cadastro).
+        setPerfilDe(uid);
+      }
     }
   }
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user }, error }) => {
-      if (error) {
-        console.warn('Auth getUser error:', error.message);
-        supabase.auth.getSession().then(({ data: { session } }) => {
-          setUser(session?.user ?? null);
-          if (session?.user) {
-            loadProfile(session.user.id);
-          } else {
-            setProfile(null);
-            setLoadingProfile(false);
-          }
-        }).catch(() => {
-          setUser(null);
+    let ativo = true;
+
+    // 1) Sessão salva no aparelho primeiro: é local (instantâneo) e evita
+    //    piscar a tela de login para quem já está logado.
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (!ativo) return;
+        const u = session?.user ?? null;
+        setUser(u);
+        setBootOk(true);
+        if (u) {
+          preloadBackgrounds();
+          loadProfile(u.id);
+        } else {
           setProfile(null);
+          setPerfilDe(null);
           setLoadingProfile(false);
-        });
-        return;
-      }
-      setUser(user);
-      if (user) {
-        loadProfile(user.id);
-      } else {
+        }
+      })
+      .catch(() => {
+        if (!ativo) return;
+        setUser(null);
         setProfile(null);
+        setPerfilDe(null);
         setLoadingProfile(false);
-      }
-    }).catch((err) => {
-      console.warn('Auth init error:', err);
-      setUser(null);
-      setProfile(null);
-      setLoadingProfile(false);
-    });
+        setBootOk(true);
+      });
+
+    // 2) Em segundo plano, confirma com o servidor — mas não esperamos essa
+    //    resposta para desenhar a tela (era daí que vinha o piscar do login).
+    //    Se o token estiver expirado/revogado, o Supabase emite SIGNED_OUT e a
+    //    tela de login volta sozinha.
+    supabase.auth.getUser().catch(() => {});
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       const u = session?.user ?? null;
@@ -151,10 +196,15 @@ export function AuthProvider({ children }) {
         loadProfile(u.id);
       } else {
         setProfile(null);
+        setPerfilDe(null);
         setLoadingProfile(false);
       }
     });
-    return () => subscription.unsubscribe();
+
+    return () => {
+      ativo = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -581,34 +631,57 @@ export function AuthProvider({ children }) {
     }
   }, [user]);
 
-  if (!user || isLoginAnimating) {
-    return <AuthScreen 
-      onStartAnimation={() => setIsLoginAnimating(true)} 
-      onFinishAnimation={() => setIsLoginAnimating(false)} 
-    />;
-  }
+  // ---- transição de entrada ----
+  // O app (ou a tela de completar perfil) só é montado quando já sabemos quem
+  // é o usuário e o perfil chegou — mas ele é montado POR BAIXO da capa, então
+  // quando a capa sai o app já está pronto e pintado.
+  // "Pronto" = sabemos quem é o usuário E já resolvemos o perfil dele (mesmo
+  // que o perfil não exista ainda — aí cai na tela de completar cadastro).
+  // Usar um sinal explícito evita piscar a tela ao sair e entrar de novo.
+  const conteudoPronto = !!user && perfilDe === user.id;
 
-  if (user && loadingProfile) {
-    return (
-      <div className="app-shell" style={{ justifyContent: 'center', minHeight: '100dvh' }}>
-        <div className="loading" style={{ position: 'relative', zIndex: 1 }}><div className="spinner" />Carregando perfil...</div>
-      </div>
-    );
-  }
+  // Só revelamos depois que a animação de arremesso termina.
+  const podeSair = conteudoPronto && !arremessoAtivo;
 
-  if (!profile || !profile.cadastro_completo) {
-    return (
-      <CompleteProfileScreen
-        profile={profile}
-        onComplete={(updatedProfile) => {
-          setProfile(updatedProfile);
-          setEditApelido(updatedProfile.apelido || '');
-          setEditAltura(updatedProfile.altura ? updatedProfile.altura.toString().replace('.', ',') : '');
-          setEditIdade(updatedProfile.idade || '');
-        }}
-      />
-    );
-  }
+  // Qual capa fica por cima enquanto o app ainda não pode aparecer.
+  const capaModo = entradaPorLogin
+    ? 'auth'
+    : user
+      ? 'carregando'
+      : (!bootOk && sessaoSalva) ? 'carregando' : 'auth';
+
+  // 1) app pronto -> começa a revelar
+  useEffect(() => {
+    if (capaVisivel && podeSair) setCapaSaindo(true);
+  }, [capaVisivel, podeSair]);
+
+  // 2) terminado o fade, a capa sai de cena
+  useEffect(() => {
+    if (!capaSaindo) return;
+    const t = setTimeout(() => {
+      setCapaVisivel(false);
+      setCapaSaindo(false);
+      setEntradaPorLogin(false);
+      setArremessoAtivo(false);
+    }, 450);
+    return () => clearTimeout(t);
+  }, [capaSaindo]);
+
+  // 3) saiu da conta -> a tela de login volta
+  useEffect(() => {
+    if (bootOk && !user && !capaVisivel) setCapaVisivel(true);
+  }, [bootOk, user, capaVisivel]);
+
+  // 4) se o perfil demorar depois do arremesso, avisamos que ainda estamos indo
+  const [esperaLonga, setEsperaLonga] = useState(false);
+  useEffect(() => {
+    if (!entradaPorLogin || arremessoAtivo || conteudoPronto) {
+      setEsperaLonga(false);
+      return;
+    }
+    const t = setTimeout(() => setEsperaLonga(true), 1200);
+    return () => clearTimeout(t);
+  }, [entradaPorLogin, arremessoAtivo, conteudoPronto]);
 
   const value = {
     user,
@@ -657,10 +730,62 @@ export function AuthProvider({ children }) {
     },
   };
 
+  // O app por baixo (monta assim que o perfil chega, ainda coberto pela capa)
+  const conteudo = !conteudoPronto ? null : (
+    (!profile || !profile.cadastro_completo) ? (
+      <CompleteProfileScreen
+        profile={profile}
+        onComplete={(updatedProfile) => {
+          setProfile(updatedProfile);
+          setEditApelido(updatedProfile.apelido || '');
+          setEditAltura(updatedProfile.altura ? updatedProfile.altura.toString().replace('.', ',') : '');
+          setEditIdade(updatedProfile.idade || '');
+        }}
+      />
+    ) : (
+      <AuthContext.Provider value={value}>
+        {children}
+      </AuthContext.Provider>
+    )
+  );
+
   return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
+    <>
+      {conteudo}
+
+      {capaVisivel && (
+        <div
+          style={{
+            // Com o app montado por baixo, a capa flutua por cima. Sem app
+            // (login puro), ela segue no fluxo normal — importante para o
+            // teclado não cobrir o formulário no celular.
+            ...(conteudo
+              ? { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 5000 }
+              : { position: 'relative', width: '100%' }),
+            pointerEvents: capaSaindo ? 'none' : 'auto',
+            // Fade só com opacity: é o que roda na GPU, sem repintar a tela.
+            opacity: capaSaindo ? 0 : 1,
+            transition: capaSaindo ? 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+          }}
+        >
+          {capaModo === 'auth' ? (
+            <AuthScreen
+              aguardando={esperaLonga}
+              onStartAnimation={() => {
+                // Já sabemos que o usuário vem para o app: aproveita a
+                // animação para baixar o fundo e montar o app por baixo.
+                preloadBackgrounds();
+                setEntradaPorLogin(true);
+                setArremessoAtivo(true);
+              }}
+              onFinishAnimation={() => setArremessoAtivo(false)}
+            />
+          ) : (
+            <SplashCarregando />
+          )}
+        </div>
+      )}
+    </>
   );
 }
 
