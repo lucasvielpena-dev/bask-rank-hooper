@@ -140,6 +140,39 @@ export const votacaoHandebolAPI = {
   },
 };
 
+// ============================================================
+// NOTAS DE JOGO (rachão / competição) — avaliação anônima da partida
+// Tudo passa por RPC: a tabela é fechada e ninguém vê quem avaliou.
+// ============================================================
+export const notasJogoAPI = {
+  salvar: async ({ jogadorId, nota, partidaId = null, racaoId = null, comentario = null }) => {
+    const { data, error } = await supabase.rpc('salvar_nota_jogo', {
+      p_jogador_id: jogadorId,
+      p_nota: nota,
+      p_partida_id: partidaId,
+      p_racao_id: racaoId,
+      p_comentario: comentario,
+    });
+    return { data, error };
+  },
+
+  minhas: async ({ partidaId = null, racaoId = null } = {}) => {
+    const { data, error } = await supabase.rpc('minhas_notas_jogo', {
+      p_partida_id: partidaId,
+      p_racao_id: racaoId,
+    });
+    return { data: data || [], error };
+  },
+
+  resumo: async ({ partidaId = null, racaoId = null } = {}) => {
+    const { data, error } = await supabase.rpc('resumo_notas_jogo', {
+      p_partida_id: partidaId,
+      p_racao_id: racaoId,
+    });
+    return { data: data || [], error };
+  },
+};
+
 export const jogosAPI = {
   listar: async (esporte = 'basquete') => {
     const { data, error } = await supabase

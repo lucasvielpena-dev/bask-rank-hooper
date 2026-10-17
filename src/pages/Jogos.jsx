@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { partidasAPI, jogadoresAPI } from '../lib/supabase';
+import { supabase, partidasAPI, jogadoresAPI, notasJogoAPI } from '../lib/supabase';
+import { GRADES, GradePicker, gradePorValor, gradeInfo, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
 import { motion, AnimatePresence } from 'framer-motion';
 import Torneios from './Torneios';
 import { IconJogo, IconMais, IconCalendario } from '../components/Icons';
@@ -38,6 +39,16 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   // MVP e encerramento
   const [showFinalizarModal, setShowFinalizarModal] = useState(false);
   const [mvpId, setMvpId] = useState('');
+
+  // Avaliação anônima da partida (Competições)
+  const [detalhe, setDetalhe] = useState(null);
+  const [detalheJogadores, setDetalheJogadores] = useState([]);
+  const [detalheResumo, setDetalheResumo] = useState({});
+  const [minhasNotas, setMinhasNotas] = useState({});
+  const [votingPlayer, setVotingPlayer] = useState(null);
+  const [notaGrade, setNotaGrade] = useState(null);
+  const [comentarioVoto, setComentarioVoto] = useState('');
+  const [enviandoVoto, setEnviandoVoto] = useState(false);
 
   // Feedbacks flutuantes da partida ao vivo
   const [feedbacksA, setFeedbacksA] = useState([]);
@@ -404,6 +415,76 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     }
   }
 
+  // ============================================================
+  // Avaliação anônima da partida (Competições)
+  // ============================================================
+  async function abrirDetalhe(p) {
+    setDetalhe(p);
+    setDetalheJogadores([]);
+    setDetalheResumo({});
+    setMinhasNotas({});
+    try {
+      const { data: roster } = await supabase
+        .from('partida_jogadores')
+        .select('id, jogador_id, time, jogador:jogadores(nome, apelido, foto_url, posicao)')
+        .eq('partida_id', p.id);
+      setDetalheJogadores(roster || []);
+
+      const [{ data: resumo }, { data: minhas }] = await Promise.all([
+        notasJogoAPI.resumo({ partidaId: p.id }),
+        notasJogoAPI.minhas({ partidaId: p.id }),
+      ]);
+      setDetalheResumo(Object.fromEntries((resumo || []).map((r) => [r.jogador_id, r])));
+      setMinhasNotas(Object.fromEntries((minhas || []).map((m) => [m.jogador_id, m])));
+    } catch (e) {
+      console.error('Erro ao abrir partida:', e);
+    }
+  }
+
+  function abrirAvaliacao(j) {
+    const anterior = minhasNotas[j.jogador_id];
+    setVotingPlayer({
+      id: j.jogador_id,
+      nome: j.jogador?.nome || 'Atleta',
+      apelido: j.jogador?.apelido || null,
+    });
+    setNotaGrade(anterior ? gradePorValor(anterior.nota) : null);
+    setComentarioVoto(anterior?.comentario || '');
+  }
+
+  async function handleSubmitNota(e) {
+    e.preventDefault();
+    const grade = GRADES.find((g) => g.key === notaGrade);
+    if (!grade) {
+      showToast('Escolha a nota da partida (A+ a D/F)', 'error');
+      return;
+    }
+    setEnviandoVoto(true);
+    try {
+      const { data, error } = await notasJogoAPI.salvar({
+        jogadorId: votingPlayer.id,
+        nota: grade.valor,
+        partidaId: detalhe.id,
+        comentario: comentarioVoto.trim() || null,
+      });
+      if (error || !data?.sucesso) {
+        throw new Error(data?.erro || error?.message || 'Erro ao registrar nota.');
+      }
+      setMinhasNotas((prev) => ({
+        ...prev,
+        [votingPlayer.id]: { jogador_id: votingPlayer.id, nota: grade.valor, comentario: comentarioVoto.trim() || null },
+      }));
+      const { data: resumo } = await notasJogoAPI.resumo({ partidaId: detalhe.id });
+      setDetalheResumo(Object.fromEntries((resumo || []).map((r) => [r.jogador_id, r])));
+      showToast(`✓ Nota ${grade.key} registrada (anônima)`);
+      setVotingPlayer(null);
+    } catch (err) {
+      showToast(err.message || 'Erro ao avaliar', 'error');
+    } finally {
+      setEnviandoVoto(false);
+    }
+  }
+
   // Helpers de formatação e visualização
   const formatTempo = (secs) => {
     const m = String(Math.floor(secs / 60)).padStart(2, '0');
@@ -438,6 +519,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
   // Se o carregamento estiver ativo
   // (Removido o early return para permitir renderizar o shell da lista com esqueletos shimmer)
+
+  const gradeAtual = gradeInfo(notaGrade);
 
   return (
     <div className="page-content home-page" style={{ position: 'relative' }}>
@@ -551,7 +634,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     const venceA = p.placar_time_a > p.placar_time_b;
                     const venceB = p.placar_time_b > p.placar_time_a;
                     return (
-                      <div key={p.id} className="card card-enter" style={{ borderLeft: `4px solid ${venceA ? '#4ade80' : venceB ? '#f87171' : '#64748b'}`, animationDelay: `${i * 30}ms` }}>
+                      <div key={p.id} className="card card-enter" onClick={() => abrirDetalhe(p)} style={{ borderLeft: `4px solid ${venceA ? '#4ade80' : venceB ? '#f87171' : '#64748b'}`, animationDelay: `${i * 30}ms`, cursor: 'pointer' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>
                           <span>{p.cidade} • {p.uf}</span>
                           <span>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span>
@@ -569,9 +652,9 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             <span style={{ fontWeight: venceB ? 800 : 500, color: venceB ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_b}</span>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', marginTop: 4, paddingTop: 6 }}>
-                          <span>Duração: {p.tempo_total}</span>
-                          <span>Períodos: {p.periodos}</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', marginTop: 4, paddingTop: 6 }}>
+                          <span>Duração: {p.tempo_total} · {p.periodos} períodos</span>
+                          <span style={{ color: 'var(--accent)', fontWeight: 700 }}>Avaliar quem jogou →</span>
                         </div>
                       </div>
                     );
@@ -1160,6 +1243,123 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 {salvando ? <><div className="spinner" /> Salvando...</> : 'Confirmar Encerramento'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {detalhe && (
+        <div className="modal-overlay" onClick={() => setDetalhe(null)}>
+          <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+            <div className="modal-handle" />
+            <h3 style={{ fontWeight: 900, textAlign: 'center', marginBottom: 2 }}>
+              {detalhe.time_a} {detalhe.placar_time_a} <span style={{ color: 'var(--text-muted)' }}>x</span> {detalhe.placar_time_b} {detalhe.time_b}
+            </h3>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
+              {new Date(detalhe.created_at).toLocaleDateString('pt-BR')} · {detalhe.cidade}
+            </p>
+
+            <div className="section-title">Quem jogou — avaliar</div>
+            <LegendaRendimento />
+            <div className="card" style={{ marginBottom: 12 }}>
+              {detalheJogadores.length === 0 ? (
+                <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Nenhum jogador escalado nesta partida.</div>
+              ) : (
+                detalheJogadores.map((j) => {
+                  const nome = j.jogador?.apelido || j.jogador?.nome || 'Atleta';
+                  const resumo = detalheResumo[j.jogador_id];
+                  const minha = minhasNotas[j.jogador_id];
+                  const souEu = profile?.player_id === j.jogador_id;
+                  return (
+                    <div key={j.id} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
+                      <span className="badge" style={{ minWidth: 20, textAlign: 'center' }}>{j.time}</span>
+                      {j.jogador?.foto_url ? (
+                        <img src={j.jogador.foto_url} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+                      ) : (
+                        <div className="avatar" style={{ width: 32, height: 32, fontSize: 12 }}>{nome.slice(0, 2).toUpperCase()}</div>
+                      )}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nome}</div>
+                        <div style={{ marginTop: 2 }}>
+                          <RendimentoPill media={resumo?.media} total={resumo?.total} showLabel />
+                        </div>
+                      </div>
+                      {!souEu && (
+                        <button
+                          className={`btn ${minha ? 'btn-secondary' : 'btn-primary'} btn-sm`}
+                          disabled={enviandoVoto}
+                          onClick={() => abrirAvaliacao(j)}
+                        >
+                          {minha ? `✓ ${gradePorValor(minha.nota)}` : 'Avaliar'}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+            <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>
+              🔒 As notas são <strong>anônimas</strong>: ninguém vê quem avaliou quem. O <strong>semáforo</strong> mostra só o resultado do grupo.
+            </p>
+            <button className="btn btn-secondary" style={{ width: '100%' }} onClick={() => setDetalhe(null)}>Fechar</button>
+          </div>
+        </div>
+      )}
+
+      {votingPlayer && (
+        <div className="modal-overlay" onClick={() => { if (!enviandoVoto) setVotingPlayer(null); }}>
+          <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-handle" />
+            <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 2 }}>
+              Nota da partida de {votingPlayer.apelido || votingPlayer.nome}
+            </h3>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
+              Como ele jogou? Sua resposta é anônima.
+            </p>
+            <form onSubmit={handleSubmitNota} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <GradePicker value={notaGrade} onChange={setNotaGrade} disabled={enviandoVoto} />
+
+              {gradeAtual ? (
+                <div style={{
+                  marginTop: 12, padding: '12px 14px', borderRadius: 12,
+                  background: 'var(--bg-card)', border: `1px solid ${gradeAtual.cor}66`,
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <span style={{
+                      fontSize: 36, fontWeight: 900, lineHeight: 1,
+                      fontFamily: "'Barlow Condensed', sans-serif", color: gradeAtual.cor,
+                    }}>
+                      {gradeAtual.key}
+                    </span>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 800 }}>{gradeAtual.titulo}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{gradeAtual.desc}</div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14, marginBottom: 0 }}>
+                  Toque em uma letra para ver o que ela significa.
+                </p>
+              )}
+
+              <input
+                type="text"
+                maxLength="200"
+                value={comentarioVoto}
+                onChange={(e) => setComentarioVoto(e.target.value)}
+                placeholder="Comentário (opcional)"
+                disabled={enviandoVoto}
+                style={{ marginTop: 4 }}
+              />
+              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                <button type="button" className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setVotingPlayer(null)} disabled={enviandoVoto}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 2 }} disabled={enviandoVoto || !notaGrade}>
+                  {enviandoVoto ? 'Enviando...' : 'Confirmar nota'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

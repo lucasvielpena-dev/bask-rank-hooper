@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase, racoesAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
 import { resolveAuthUserId } from '../lib/authUser';
 import { useEsporte } from '../contexts/EsporteContext';
+import { GRADES, GradePicker, gradePorValor } from '../components/GameGrade';
 
 function formatWhen(iso) {
   if (!iso) return '';
@@ -14,54 +15,6 @@ function formatWhen(iso) {
 
 function countParts(r) {
   return (r.racao_participantes || []).filter((p) => p.status === 'confirmado').length;
-}
-
-// Modelo 1: Game Grade — nota da partida por letra (A+ a F, com D/F unificados)
-const GRADES = [
-  { key: 'A+', titulo: 'MVP do Racha', desc: 'Dominou o jogo, decidiu nos momentos decisivos e carregou o time.', valor: 5, cor: '#C8F135' },
-  { key: 'A', titulo: 'Ótima Atuação', desc: 'Jogou muito acima da média, eficiente no ataque e na defesa.', valor: 4, cor: '#A3E635' },
-  { key: 'B', titulo: 'Sólido / Cumpriu o Papel', desc: 'Fez o feijão com arroz bem feito, ajudou o time a ser competitivo.', valor: 3, cor: '#38BDF8' },
-  { key: 'C', titulo: 'Apagado / Discreto', desc: 'Jogou abaixo do seu potencial ou cometeu erros bobos, mas não comprometeu totalmente.', valor: 2, cor: '#FBBF24' },
-  { key: 'D/F', titulo: 'Dia para Esquecer', desc: 'Forçou arremessos, não defendeu, prendeu a bola ou entregou o jogo.', valor: 1, cor: '#EF4444' },
-];
-
-function gradePorValor(valor) {
-  const v = Number(valor) || 0;
-  if (v >= 5) return 'A+';
-  if (v === 4) return 'A';
-  if (v === 3) return 'B';
-  if (v === 2) return 'C';
-  return 'D/F';
-}
-
-function GradePicker({ value, onChange, disabled }) {
-  return (
-    <div style={{ display: 'flex', gap: 8 }}>
-      {GRADES.map((g) => {
-        const sel = value === g.key;
-        return (
-          <button
-            key={g.key}
-            type="button"
-            disabled={disabled}
-            onClick={() => !disabled && onChange(g.key)}
-            style={{
-              flex: 1, padding: '12px 0', borderRadius: 12,
-              border: sel ? `2px solid ${g.cor}` : '1px solid var(--border)',
-              background: sel ? `${g.cor}22` : 'var(--bg-card)',
-              color: sel ? g.cor : 'var(--text-primary)',
-              fontWeight: 900, fontSize: g.key.length > 1 ? 15 : 17,
-              fontFamily: "'Barlow Condensed', sans-serif",
-              cursor: disabled ? 'default' : 'pointer',
-              transition: 'all 0.12s',
-            }}
-          >
-            {g.key}
-          </button>
-        );
-      })}
-    </div>
-  );
 }
 
 export default function Racoes({ profile, onNavigate }) {
