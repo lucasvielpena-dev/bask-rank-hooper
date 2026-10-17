@@ -26,3 +26,32 @@ export function sortByConfianca(list = []) {
     return (b.total_votos || 0) - (a.total_votos || 0);
   });
 }
+
+/**
+ * Descreve de onde vem a nota do atleta.
+ * A nota junta duas fontes: votos de estrela (aba Atletas, 5 fundamentos) e
+ * notas de jogo (rachão, competição e torneio). Chamar tudo de "votos" fica
+ * impreciso — e o atleta não entende por que a nota mudou depois de um rachão.
+ *
+ * `compacto` devolve só "12 avaliações" (para listas apertadas).
+ * Se as colunas de detalhe ainda não existirem no banco, cai no formato antigo.
+ */
+export function resumoAvaliacoes(jogador = {}, { compacto = false } = {}) {
+  const total = Number(jogador.total_votos) || 0;
+  const estrelas = Number(jogador.total_votos_estrelas) || 0;
+  const jogos = Number(jogador.total_notas_jogo) || 0;
+  const temDetalhe =
+    jogador.total_votos_estrelas !== undefined && jogador.total_votos_estrelas !== null &&
+    jogador.total_notas_jogo !== undefined && jogador.total_notas_jogo !== null;
+
+  if (compacto || !temDetalhe || total === 0) {
+    return `${total} ${total === 1 ? 'avaliação' : 'avaliações'}`;
+  }
+
+  const partes = [];
+  if (estrelas > 0) partes.push(`${estrelas} ${estrelas === 1 ? 'voto' : 'votos'} de estrela`);
+  if (jogos > 0) partes.push(`${jogos} ${jogos === 1 ? 'nota' : 'notas'} de jogo`);
+
+  if (!partes.length) return `${total} ${total === 1 ? 'avaliação' : 'avaliações'}`;
+  return `${total} ${total === 1 ? 'avaliação' : 'avaliações'} · ${partes.join(' + ')}`;
+}

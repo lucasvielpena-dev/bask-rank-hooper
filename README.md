@@ -203,9 +203,17 @@ A chave `REACT_APP_SUPABASE_ANON_KEY` é **pública** (qualquer um lê no site),
 ## 🔧 Regras de negócio
 
 ### Ranking & classificação
-- Ordenado por **maior média** de estrelas; empate desfeito por **maior número de votos**.
-- Mínimo de **5 votos** para entrar no pódio.
+- A nota do atleta junta **duas fontes**, com o mesmo peso por avaliação:
+  1. **votos de estrela** — aba Atletas, média dos 5 fundamentos (`public.avaliacoes`);
+  2. **notas de jogo** — rachão, competição e torneio, de 1 a 5 (`public.avaliacoes_jogo`, sempre anônimas).
+- Fórmula: `media_estrelas = (média_estrelas × votos_estrela + média_notas_jogo × notas_jogo) ÷ total`.
+  Sem nota de jogo o resultado é exatamente o de antes. Quem aplica: `supabase/migration_nota_jogo_na_media.sql`
+  (`recalcular_media_jogador`, chamada pelos triggers de `avaliacoes` e `avaliacoes_jogo`).
+- Ordenado por **maior média**; empate desfeito por **maior número de avaliações** (`total_votos` = votos + notas de jogo).
+- Mínimo de **5 avaliações** para entrar no pódio.
+- O perfil mostra a origem: "12 avaliações · 8 votos de estrela + 4 notas de jogo" (`resumoAvaliacoes`, em `src/lib/ranking.js`).
 - `src/lib/ranking.js` aplica um **score de confiança** (média bayesiana com prior) e níveis: `provisorio` (<5), `em_evolucao` (<15), `consolidado` (≥15).
+- A **Linha de Evolução** (`evolucao_jogador`) usa a mesma regra, mês a mês — por isso o gráfico e a nota nunca se contradizem.
 
 ### Votação & antifraude
 - Nota de **1 a 5 estrelas** por critério (arremesso, controle de bola, defesa, visão de jogo, explosão física).

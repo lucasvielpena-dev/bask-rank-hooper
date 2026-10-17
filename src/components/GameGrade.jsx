@@ -98,10 +98,16 @@ export const RendimentoPill = memo(function RendimentoPill({ media, total, showL
 
 export const LegendaRendimento = memo(function LegendaRendimento() {
   return (
-    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', fontSize: 11, color: 'var(--text-muted)', marginBottom: 8 }}>
-      <span><span style={{ color: CORES_RENDIMENTO.bem }}>●</span> Verde = foi bem</span>
-      <span><span style={{ color: CORES_RENDIMENTO.media }}>●</span> Amarelo = na média</span>
-      <span><span style={{ color: CORES_RENDIMENTO.mal }}>●</span> Vermelho = não foi bem</span>
+    <div style={{ marginBottom: 8 }}>
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', fontSize: 11, color: 'var(--text-muted)' }}>
+        <span><span style={{ color: CORES_RENDIMENTO.bem }}>●</span> Verde = foi bem</span>
+        <span><span style={{ color: CORES_RENDIMENTO.media }}>●</span> Amarelo = na média</span>
+        <span><span style={{ color: CORES_RENDIMENTO.mal }}>●</span> Vermelho = não foi bem</span>
+      </div>
+      <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }}>
+        Anônimo: o atleta vê o resultado, mas nunca quem avaliou. Cada nota entra na{' '}
+        <strong style={{ color: 'var(--text-secondary)' }}>média do atleta</strong>, junto com os votos de estrela.
+      </div>
     </div>
   );
 });

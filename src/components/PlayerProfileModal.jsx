@@ -5,6 +5,7 @@ import AnimatedCounter from './AnimatedCounter';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from './Icons';
 import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
+import { resumoAvaliacoes } from '../lib/ranking';
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
 
@@ -281,7 +282,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                     <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif", fontWeight: 400 }}> Nota média</span>
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif", marginTop: 2 }}>
-                    baseado em {localJogador.total_votos || 0} {(localJogador.total_votos || 0) === 1 ? 'voto' : 'votos'}
+                    baseado em {resumoAvaliacoes(localJogador)}
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>

@@ -5,7 +5,7 @@ import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime'
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from '../components/Icons';
 import { HomeBackground } from '../components/AnimatedBackgrounds';
-import { labelConfianca, nivelConfianca } from '../lib/ranking';
+import { labelConfianca, nivelConfianca, resumoAvaliacoes } from '../lib/ranking';
 
 export default function Home({ profile, onNavigate }) {
   const { esporte, cfg } = useEsporte();
@@ -197,7 +197,7 @@ export default function Home({ profile, onNavigate }) {
                     fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)',
                     fontFamily: "'Inter',sans-serif",
                   }}>
-                    {myPlayerInfo?.total_votos || 0} jogos
+                    {resumoAvaliacoes(myPlayerInfo, { compacto: true })}
                   </span>
                 </div>
               </div>
@@ -347,7 +347,7 @@ export default function Home({ profile, onNavigate }) {
                     <span>{Number(player.media_estrelas || 0).toFixed(1)}</span>
                   </div>
                   <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>
-                    {player.total_votos || 0} votos · {labelConfianca(player.nivel_confianca || nivelConfianca(player.total_votos))}
+                    {resumoAvaliacoes(player, { compacto: true })} · {labelConfianca(player.nivel_confianca || nivelConfianca(player.total_votos))}
                   </div>
                   <div style={{ width: 80, height: 4, background: '#1A2433', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
                     <div style={{ width: `${(Number(player.media_estrelas || 0) / 5) * 100}%`, height: '100%', background: 'var(--accent)', borderRadius: 2, boxShadow: '0 0 8px rgba(182, 255, 28, 0.6)' }} />
