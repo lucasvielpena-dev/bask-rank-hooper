@@ -1,6 +1,6 @@
-import { memo, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { IconSino } from './Icons';
-import { notificacoesAPI } from '../lib/supabase';
+import { notificacoesAPI, partidasAPI } from '../lib/supabase';
 
 function timeAgo(iso) {
   if (!iso) return '';
@@ -35,6 +35,38 @@ function NotificationsPanel({
   const [filter, setFilter] = useState('all'); // all | unread
   const [busyId, setBusyId] = useState(null);
   const [deleting, setDeleting] = useState(null);
+  // Pedidos de operador esperando a MINHA resposta (chegam aqui pela RLS).
+  const [pedidos, setPedidos] = useState([]);
+  const [respondendo, setRespondendo] = useState(null);
+
+  // O aviso "Placar compartilhado" dizia que alguém pediu para operar, mas o
+  // botão de aceitar só existia dentro da tela da partida — um beco sem saída.
+  // Agora o pedido é lido e respondido aqui mesmo, na notificação.
+  useEffect(() => {
+    if (!open) return;
+    let vivo = true;
+    const carregar = async () => {
+      const { data } = await partidasAPI.listarPedidosPendentes();
+      if (vivo) setPedidos(data || []);
+    };
+    carregar();
+    const t = setInterval(carregar, 5000);
+    return () => { vivo = false; clearInterval(t); };
+  }, [open]);
+
+  async function handleResponder(pedido, aceitar) {
+    const chave = `${pedido.partida_id}:${pedido.usuario_id}`;
+    setRespondendo(chave);
+    const { error } = await partidasAPI.responderPedidoOperador(
+      pedido.partida_id,
+      pedido.usuario_id,
+      aceitar
+    );
+    setRespondendo(null);
+    if (!error) {
+      setPedidos((prev) => prev.filter((p) => `${p.partida_id}:${p.usuario_id}` !== chave));
+    }
+  }
 
   const unreadCount = useMemo(
     () => notificacoes.filter((n) => !n.lida).length,
@@ -144,20 +176,52 @@ function NotificationsPanel({
                   {/* Onde responder: sem esta dica o aviso era um beco sem saída. */}
                   {/placar compartilhado/i.test(n.titulo) && (
                     <div style={{ marginTop: 6 }}>
-                      <p className="notif-item-msg" style={{ color: 'var(--accent)', fontWeight: 700 }}>
-                        Para aceitar ou recusar, abra Competições:
-                      </p>
-                      <button
-                        type="button"
-                        className="notif-action primary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!n.lida) handleRead(n.id);
-                          if (onAbrirJogos) onAbrirJogos();
-                        }}
-                      >
-                        Abrir Competições
-                      </button>
+                      {pedidos.length > 0 ? (
+                        pedidos.map((p) => {
+                          const chave = `${p.partida_id}:${p.usuario_id}`;
+                          const ocupado = respondendo === chave;
+                          return (
+                            <div key={chave} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                              <span className="notif-item-msg" style={{ fontWeight: 700, flex: 1, minWidth: 120 }}>
+                                {p.nome || 'Alguém'} pediu para operar:
+                              </span>
+                              <button
+                                type="button"
+                                className="notif-action primary"
+                                disabled={ocupado}
+                                onClick={(e) => { e.stopPropagation(); handleResponder(p, true); }}
+                              >
+                                {ocupado ? '...' : 'Aceitar'}
+                              </button>
+                              <button
+                                type="button"
+                                className="notif-action danger"
+                                disabled={ocupado}
+                                onClick={(e) => { e.stopPropagation(); handleResponder(p, false); }}
+                              >
+                                Recusar
+                              </button>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <>
+                          <p className="notif-item-msg" style={{ color: 'var(--accent)', fontWeight: 700 }}>
+                            Nada pendente agora. Para ver o placar, abra Competições:
+                          </p>
+                          <button
+                            type="button"
+                            className="notif-action primary"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (!n.lida) handleRead(n.id);
+                              if (onAbrirJogos) onAbrirJogos();
+                            }}
+                          >
+                            Abrir Competições
+                          </button>
+                        </>
+                      )}
                     </div>
                   )}
                   <div className="notif-item-actions">

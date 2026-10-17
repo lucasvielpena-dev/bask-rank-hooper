@@ -103,8 +103,9 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       const { data } = await partidasAPI.buscar(id);
       if (!data) return;
       if (data.status === 'finalizado') { await sairPorPartidaEncerrada(); return; }
-      // Enquanto EU estou pontuando, o banco não "desfaz" o toque (o envio sai logo depois).
-      if (Date.now() - ultimoToqueLocalRef.current < 4000) return;
+      // Enquanto EU estou pontuando, o banco não "desfaz" o toque (o envio sai logo
+      // depois — o envio é rápido, então a janela aqui pode ser curta).
+      if (Date.now() - ultimoToqueLocalRef.current < 1500) return;
       if (data.updated_at && data.updated_at === ultimoUpdatedAtRef.current) return;
       ultimoUpdatedAtRef.current = data.updated_at || null;
       const a = data.placar_time_a ?? 0;
@@ -207,27 +208,35 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tela, partidaAtiva?.id]);
 
-  // Sem depender do aviso do banco: a cada 5s confere (a) se o pedido de
-  // operador já foi aceito, (b) se o placar do outro celular mudou e (c) se a
-  // partida foi encerrada lá. Era isto que "demorava muito" para aparecer.
+  // Sem depender do aviso do banco: confere no banco o que o OUTRO celular fez.
+  // O placar é conferido de 2 em 2 segundos (é o que o usuário vê mudando);
+  // o aceite de operador, de 6 em 6 (não precisa ser tão rápido).
   useEffect(() => {
     if (tela !== 'partida' || !partidaAtiva?.id) return;
     finalizandoRef.current = false; // partida nova em tela: libera o marcador
     const id = partidaAtiva.id;
-    const intervalo = setInterval(() => {
-      carregarOperadores(id);
-      puxarPlacarDoBanco(id);
-    }, 5000);
+    const intervaloPlacar = setInterval(() => puxarPlacarDoBanco(id), 2000);
+    const intervaloOperadores = setInterval(() => carregarOperadores(id), 6000);
+    // Voltou para o app: confere na hora, sem esperar o próximo ciclo.
+    const aoVoltar = () => {
+      if (document.visibilityState === 'visible') {
+        puxarPlacarDoBanco(id);
+        carregarOperadores(id);
+      }
+    };
+    document.addEventListener('visibilitychange', aoVoltar);
     // Caminho instantâneo: se as tabelas estiverem ligadas no Realtime
     // (`alter publication supabase_realtime add table ...`), o placar e o
-    // aceite chegam na hora. Sem isso, a conferência de 5s cobre.
+    // aceite chegam na hora. Sem isso, a conferência acima cobre.
     const canalLinha = supabase
       .channel(`partida_linha_${id}`)
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'partidas', filter: `id=eq.${id}` }, () => puxarPlacarDoBanco(id))
       .on('postgres_changes', { event: '*', schema: 'public', table: 'partida_operadores', filter: `partida_id=eq.${id}` }, () => carregarOperadores(id))
       .subscribe();
     return () => {
-      clearInterval(intervalo);
+      clearInterval(intervaloPlacar);
+      clearInterval(intervaloOperadores);
+      document.removeEventListener('visibilitychange', aoVoltar);
       supabase.removeChannel(canalLinha);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -360,7 +369,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   useEffect(() => {
     if (tela !== 'partida' || !partidaAtiva?.id) return;
     if (primeiroSyncRef.current) { primeiroSyncRef.current = false; return; }
-    const t = setTimeout(() => { sincronizarPlacarBanco(); }, 600);
+    const t = setTimeout(() => { sincronizarPlacarBanco(); }, 250);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [placarA, placarB, tela, partidaAtiva?.id]);

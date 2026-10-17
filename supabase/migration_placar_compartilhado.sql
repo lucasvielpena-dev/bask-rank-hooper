@@ -354,6 +354,32 @@ CREATE TRIGGER trg_realtime_partida_status
   EXECUTE FUNCTION public.trg_aviso_partida_status();
 
 
+-- ------------------------------------------------------------
+-- 9) (RECOMENDADO) LIGAR AS TABELAS NO REALTIME
+--    Sem isto o app ainda funciona, mas por conferencia: o placar do outro
+--    celular aparece em ate ~2s. Com isto, chega em menos de 1s (o app ja
+--    esta escutando `postgres_changes` em partidas e partida_operadores).
+--    Seguro rodar mais de uma vez (o bloco ignora "ja existe").
+-- ------------------------------------------------------------
+DO $$
+BEGIN
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.partidas;
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END;
+  BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.partida_operadores;
+  EXCEPTION WHEN duplicate_object THEN NULL;
+  END;
+END $$;
+
+-- 9.1) Conferir: devem aparecer as duas tabelas.
+SELECT tablename
+  FROM pg_publication_tables
+ WHERE pubname = 'supabase_realtime'
+   AND tablename IN ('partidas', 'partida_operadores');
+
+
 -- ============================================================
 -- COMO REVERTER (voltar ao comportamento antigo, se precisar)
 -- ============================================================

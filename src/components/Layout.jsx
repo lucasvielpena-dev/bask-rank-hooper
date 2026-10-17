@@ -7,9 +7,22 @@ import BottomNavigation from './BottomNavigation';
 import { IconSino, IconLocalizacao } from './Icons';
 import NotificationsPanel from './NotificationsPanel';
 import AvisoVersao from './AvisoVersao';
+import AvisosPlacar from './AvisosPlacar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { authAPI } from '../lib/supabase';
 import { preloadBackgrounds, backgroundsProntos, aoTerminarBackgrounds } from '../lib/backgrounds';
+
+// Qual pacote este celular está rodando AGORA (o nome do arquivo muda a cada
+// publicação). Serve para conferir, sem chute, se o aparelho já pegou a versão
+// nova — cache de app instalado é teimoso.
+function versaoApp() {
+  try {
+    const src = [...document.scripts].map((s) => s.src).find((s) => s.includes('/static/js/main.'));
+    return src ? src.split('/').pop().replace(/^main\./, '').replace(/\.js$/, '') : 'desconhecida';
+  } catch (e) {
+    return 'desconhecida';
+  }
+}
 
 export default function Layout({ page, onNavigate, children }) {
   const { cfg } = useEsporte();
@@ -198,6 +211,9 @@ export default function Layout({ page, onNavigate, children }) {
           </button>
         </div>
       )}
+
+      {/* Pedido para operar o placar: aparece em qualquer tela, com Aceitar/Recusar. */}
+      <AvisosPlacar />
 
       <div style={{ flex: 1, position: 'relative', overflowX: 'hidden', zIndex: 120 }}>
         <AnimatePresence mode="popLayout">
@@ -461,6 +477,10 @@ export default function Layout({ page, onNavigate, children }) {
                 >
                   Excluir minha conta
                 </button>
+
+                <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-secondary)', opacity: 0.7, marginBottom: 10 }}>
+                  Versão do app: {versaoApp()}
+                </div>
 
                 <button className="btn btn-primary" onClick={() => setShowUserMenu(false)}>
                   Fechar
