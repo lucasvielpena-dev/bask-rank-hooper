@@ -332,6 +332,8 @@ usa esse contato e a ANPD pode, também.
 - [x] Java 21 + Android SDK instalados na máquina (sem Android Studio)
 - [x] **Keystore criado** e **AAB v1.0 assinado e verificado** (14,8 MB)
 - [x] Gerador do AAB: `tools/build-aab.ps1`
+- [x] **Dados de teste apagados** (`supabase/migration_limpar_dados.sql`, 17/10/2026): banco zerado,
+      só a conta master sobreviveu — pronto para os atletas de verdade
 
 **Você precisa fazer:**
 - [ ] Trocar `contato@rankhooper.app` pelo e-mail real (em `public/privacidade.html`)
