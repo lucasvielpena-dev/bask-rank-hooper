@@ -1339,7 +1339,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 width: 'clamp(32px, 8vw, 40px)',
                 height: 'clamp(32px, 8vw, 40px)',
                 borderRadius: '50%',
-                background: 'rgba(255,255,255,0.03)',
+                background: 'rgba(200,241,53,0.06)',
                 border: '2px solid var(--accent)',
                 display: 'flex',
                 alignItems: 'center',
@@ -1352,7 +1352,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <path d="M2 12h20" />
                 </svg>
               </div>
-              <span style={{ fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
+              <span style={{ fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: 800, color: 'var(--counter-btn-a-color)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
                 {timeANome}
               </span>
               <span key={placarA} className="number-animate" style={{
@@ -1378,20 +1378,20 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 width: 'clamp(32px, 8vw, 40px)',
                 height: 'clamp(32px, 8vw, 40px)',
                 borderRadius: '50%',
-                background: 'rgba(255,255,255,0.03)',
-                border: '2px solid var(--accent)',
+                background: 'rgba(76,201,240,0.07)',
+                border: '2px solid var(--counter-btn-b-color)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: 6
               }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--counter-btn-b-color)" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 2a14.5 14.5 0 0 1 0 20" />
                   <path d="M2 12h20" />
                 </svg>
               </div>
-              <span style={{ fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
+              <span style={{ fontSize: 'clamp(10px, 2.5vw, 12px)', fontWeight: 800, color: 'var(--counter-btn-b-color)', textTransform: 'uppercase', letterSpacing: '0.05em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'center' }}>
                 {timeBNome}
               </span>
               <span key={placarB} className="number-animate" style={{
@@ -1578,8 +1578,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 <button onClick={() => ajustarPlacar('B', 3)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-b-bg-3)', border: '1px solid var(--time-b-border-3)', color: 'var(--time-b-color-3)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
               </div>
               <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center' }}>
-                <button onClick={() => ajustarPlacar('B', -1)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-a-color-neg)', background: 'var(--time-a-bg-neg)', border: 'var(--time-a-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-1</button>
-                <button onClick={() => ajustarPlacar('B', -2)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-a-color-neg)', background: 'var(--time-a-bg-neg)', border: 'var(--time-a-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-2</button>
+                <button onClick={() => ajustarPlacar('B', -1)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-b-color-neg)', background: 'var(--time-b-bg-neg)', border: 'var(--time-b-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-1</button>
+                <button onClick={() => ajustarPlacar('B', -2)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-b-color-neg)', background: 'var(--time-b-bg-neg)', border: 'var(--time-b-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-2</button>
               </div>
             </div>
           </div>
