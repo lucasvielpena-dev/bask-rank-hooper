@@ -149,28 +149,41 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     } catch (e) {
       /* silencioso */
     }
-    const localStateStr = localStorage.getItem(`timer_${p.id}`);
-    if (localStateStr) {
-      try {
-        const localState = JSON.parse(localStateStr);
-        let t = localState.tempo;
-        const ativo = localState.timerAtivo;
-        if (ativo && localState.lastUpdated) {
-          t = Math.max(0, t - Math.floor((Date.now() - localState.lastUpdated) / 1000));
+    // Cronômetro compartilhado: se o outro celular deixou o timer rodando,
+    // este aparelho continua de onde parou (sem precisar lembrar de apertar ▶).
+    if (p.timer_end_at) {
+      const restante = Math.max(0, Math.ceil((new Date(p.timer_end_at).getTime() - Date.now()) / 1000));
+      if (restante > 0) {
+        setTempo(restante);
+        setTimerAtivo(true);
+      } else {
+        setTempo(0);
+        setTimerAtivo(false);
+      }
+    } else {
+      const localStateStr = localStorage.getItem(`timer_${p.id}`);
+      if (localStateStr) {
+        try {
+          const localState = JSON.parse(localStateStr);
+          let t = localState.tempo;
+          const ativo = localState.timerAtivo;
+          if (ativo && localState.lastUpdated) {
+            t = Math.max(0, t - Math.floor((Date.now() - localState.lastUpdated) / 1000));
+          }
+          setTempo(t);
+          setTimerAtivo(ativo);
+        } catch (e) {
+          setTempo(parsedDur * 60);
+          setTimerAtivo(false);
         }
-        setTempo(t);
-        setTimerAtivo(ativo);
-      } catch (e) {
+      } else if (p.tempo_total) {
+        const partes = p.tempo_total.split(':');
+        if (partes.length === 2) setTempo(parseInt(partes[0]) * 60 + parseInt(partes[1]));
+        setTimerAtivo(false);
+      } else {
         setTempo(parsedDur * 60);
         setTimerAtivo(false);
       }
-    } else if (p.tempo_total) {
-      const partes = p.tempo_total.split(':');
-      if (partes.length === 2) setTempo(parseInt(partes[0]) * 60 + parseInt(partes[1]));
-      setTimerAtivo(false);
-    } else {
-      setTempo(parsedDur * 60);
-      setTimerAtivo(false);
     }
     setTela('partida');
   }
@@ -343,16 +356,27 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
   // Efeito do cronômetro — baseado em timestamp (não em decremento), para não
   // atrasar quando o intervalo dispara tarde ou a aba fica em segundo plano.
+  // Também salva o estado no banco para o outro celular sincronizar.
   useEffect(() => {
     let interval = null;
     if (timerAtivo) {
       timerEndAtRef.current = Date.now() + tempo * 1000;
+      // Salva no banco na hora de começar
+      partidasAPI.atualizar(partidaAtiva?.id, { timer_end_at: new Date(timerEndAtRef.current).toISOString() }).catch(() => {});
       interval = setInterval(() => {
         const remaining = Math.max(0, Math.ceil((timerEndAtRef.current - Date.now()) / 1000));
         setTempo(remaining);
+        // Salva no banco a cada 5 segundos para o outro celular ver
+        if (remaining % 5 === 0) {
+          partidasAPI.atualizar(partidaAtiva?.id, { timer_end_at: new Date(timerEndAtRef.current).toISOString() }).catch(() => {});
+        }
       }, 250);
     } else {
       clearInterval(interval);
+      // Pausou: salva NULL no banco para o outro celular parar também
+      if (partidaAtiva?.id) {
+        partidasAPI.atualizar(partidaAtiva.id, { timer_end_at: null }).catch(() => {});
+      }
     }
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -152,7 +152,9 @@ export default function Atletas({ profile }) {
 
       const avaliadosSet = new Set((minhasAvaliacoes || []).map(a => a.jogador_id));
 
-      const players = (jogs || []).filter(j => j.cidade === selectedCity).map(j => ({
+      // Mostra todos os jogadores do estado, não apenas da cidade — assim o
+      // atleta sempre aparece, mesmo se a cidade do perfil mudar.
+      const players = (jogs || []).map(j => ({
         ...j,
         ja_votou_hoje: avaliadosSet.has(j.id)
       }));
