@@ -83,6 +83,9 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   const ultimoUpdatedAtRef = useRef(null); // versão da partida que já vi no banco
   const primeiroSyncRef = useRef(true);    // evita devolver ao banco o que acabou de chegar
   const timerEndAtRef = useRef(null);      // timestamp de quando o cronômetro chega a 0
+  const timerAtivoPrevRef = useRef(false); // detecta play/pause local (não confunde com sync remoto)
+  const ignorarProximoWriteTimerRef = useRef(false); // não sobrescrever o banco ao aplicar timer remoto
+  const timerEndAtIsoRef = useRef(null);   // último timer_end_at visto (evita setState em loop)
 
   async function sairPorPartidaEncerrada() {
     if (finalizandoRef.current) return;
@@ -114,8 +117,36 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       setPlacarA(prev => (prev !== a ? a : prev));
       setPlacarB(prev => (prev !== b ? b : prev));
       if (data.periodos) setPeriodo(prev => (prev !== data.periodos ? data.periodos : prev));
+
+      // Cronômetro compartilhado: aplica timer_end_at do banco neste celular.
+      // Sem isso o placar atualiza e o tempo fica zerado no segundo aparelho.
+      aplicarTimerDoBanco(data.timer_end_at);
     } catch (e) {
       /* silencioso: é só uma conferência */
+    }
+  }
+
+  // Lê timer_end_at e alinha tempo + play/pause locais (sem reescrever o banco).
+  function aplicarTimerDoBanco(timerEndAt) {
+    const iso = timerEndAt || null;
+    if (iso === timerEndAtIsoRef.current) return;
+    timerEndAtIsoRef.current = iso;
+
+    if (iso) {
+      const restante = Math.max(0, Math.ceil((new Date(iso).getTime() - Date.now()) / 1000));
+      timerEndAtRef.current = new Date(iso).getTime();
+      ignorarProximoWriteTimerRef.current = true;
+      setTempo(restante);
+      setTimerAtivo(restante > 0);
+      if (restante <= 0) {
+        timerEndAtIsoRef.current = null;
+      }
+    } else {
+      // Outro celular pausou (ou ainda não iniciou). Só para se este aparelho
+      // estava rodando por causa do remoto — não zera o tempo exibido.
+      timerEndAtRef.current = null;
+      ignorarProximoWriteTimerRef.current = true;
+      setTimerAtivo(false);
     }
   }
 
@@ -152,7 +183,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     // Cronômetro compartilhado: se o outro celular deixou o timer rodando,
     // este aparelho continua de onde parou (sem precisar lembrar de apertar ▶).
     if (p.timer_end_at) {
-      const restante = Math.max(0, Math.ceil((new Date(p.timer_end_at).getTime() - Date.now()) / 1000));
+      const endMs = new Date(p.timer_end_at).getTime();
+      const restante = Math.max(0, Math.ceil((endMs - Date.now()) / 1000));
+      timerEndAtRef.current = endMs;
+      timerEndAtIsoRef.current = p.timer_end_at;
+      ignorarProximoWriteTimerRef.current = true;
       if (restante > 0) {
         setTempo(restante);
         setTimerAtivo(true);
@@ -359,22 +394,49 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   // Também salva o estado no banco para o outro celular sincronizar.
   useEffect(() => {
     let interval = null;
+    const eraAtivo = timerAtivoPrevRef.current;
+    timerAtivoPrevRef.current = timerAtivo;
+
+    // Sync remoto mudou timerAtivo: não reescreve o banco (senão o 2º celular
+    // apagava timer_end_at ao abrir a partida com timer parado).
+    if (ignorarProximoWriteTimerRef.current) {
+      ignorarProximoWriteTimerRef.current = false;
+      if (timerAtivo && timerEndAtRef.current) {
+        interval = setInterval(() => {
+          const remaining = Math.max(0, Math.ceil((timerEndAtRef.current - Date.now()) / 1000));
+          setTempo(remaining);
+          if (remaining <= 0) setTimerAtivo(false);
+        }, 250);
+      }
+      return () => clearInterval(interval);
+    }
+
     if (timerAtivo) {
-      timerEndAtRef.current = Date.now() + tempo * 1000;
-      // Salva no banco na hora de começar
-      partidasAPI.atualizar(partidaAtiva?.id, { timer_end_at: new Date(timerEndAtRef.current).toISOString() }).catch(() => {});
+      // Se já temos um fim absoluto do banco, usa ele; senão calcula a partir do tempo local.
+      if (!timerEndAtRef.current || Math.abs(timerEndAtRef.current - (Date.now() + tempo * 1000)) > 2000) {
+        timerEndAtRef.current = Date.now() + tempo * 1000;
+      }
+      const iso = new Date(timerEndAtRef.current).toISOString();
+      timerEndAtIsoRef.current = iso;
+      if (partidaAtiva?.id) {
+        partidasAPI.atualizar(partidaAtiva.id, { timer_end_at: iso }).catch(() => {});
+      }
       interval = setInterval(() => {
         const remaining = Math.max(0, Math.ceil((timerEndAtRef.current - Date.now()) / 1000));
         setTempo(remaining);
-        // Salva no banco a cada 5 segundos para o outro celular ver
-        if (remaining % 5 === 0) {
-          partidasAPI.atualizar(partidaAtiva?.id, { timer_end_at: new Date(timerEndAtRef.current).toISOString() }).catch(() => {});
+        // Reafirma o fim absoluto a cada 5s (rede instável / outro aparelho)
+        if (remaining > 0 && remaining % 5 === 0 && partidaAtiva?.id) {
+          partidasAPI.atualizar(partidaAtiva.id, {
+            timer_end_at: new Date(timerEndAtRef.current).toISOString(),
+          }).catch(() => {});
         }
       }, 250);
     } else {
-      clearInterval(interval);
-      // Pausou: salva NULL no banco para o outro celular parar também
-      if (partidaAtiva?.id) {
+      // Só grava NULL se ESTE celular pausou de verdade (play → pause).
+      // Evita o 2º celular zerar o cronômetro do 1º ao montar a tela.
+      if (eraAtivo && partidaAtiva?.id) {
+        timerEndAtRef.current = null;
+        timerEndAtIsoRef.current = null;
         partidasAPI.atualizar(partidaAtiva.id, { timer_end_at: null }).catch(() => {});
       }
     }
