@@ -3,7 +3,7 @@ export const PAGES = {
   inicio: { label: 'Início', icon: 'court' },
   atletas: { label: 'Atletas', icon: 'users' },
   racoes: { label: 'Rachões', icon: 'court' },
-  jogos: { label: 'Jogos', icon: 'basketball' },
+  jogos: { label: 'Competições', icon: 'basketball' },
   perfil: { label: 'Perfil', icon: 'perfil' },
 };
 
@@ -52,7 +52,7 @@ const NavIcon = memo(function NavIcon({ type, active }) {
 export default memo(function BottomNavigation({ page, onNavigate, isMaster }) {
   const dynamicPages = {
     ...PAGES,
-    jogos: { label: 'Jogos', icon: 'basketball' },
+    jogos: { label: 'Competições', icon: 'basketball' },
   };
 
   const allPages = isMaster
