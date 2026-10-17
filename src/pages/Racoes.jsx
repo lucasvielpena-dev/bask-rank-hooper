@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, memo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { supabase, racoesAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
 import { resolveAuthUserId } from '../lib/authUser';
 import { useEsporte } from '../contexts/EsporteContext';
@@ -16,35 +16,54 @@ function countParts(r) {
   return (r.racao_participantes || []).filter((p) => p.status === 'confirmado').length;
 }
 
-const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
+// Modelo 1: Game Grade — nota da partida por letra (A+ a F)
+const GRADES = [
+  { key: 'A+', titulo: 'MVP do Racha', desc: 'Dominou o jogo, decidiu nos momentos decisivos e carregou o time.', valor: 5, cor: '#C8F135' },
+  { key: 'A', titulo: 'Ótima Atuação', desc: 'Jogou muito acima da média, eficiente no ataque e na defesa.', valor: 5, cor: '#A3E635' },
+  { key: 'B', titulo: 'Sólido / Cumpriu o Papel', desc: 'Fez o feijão com arroz bem feito, ajudou o time a ser competitivo.', valor: 4, cor: '#38BDF8' },
+  { key: 'C', titulo: 'Apagado / Discreto', desc: 'Jogou abaixo do seu potencial ou cometeu erros bobos, mas não comprometeu totalmente.', valor: 3, cor: '#FBBF24' },
+  { key: 'D', titulo: 'Dia para Esquecer', desc: 'Forçou arremessos, não defendeu, prendeu a bola ou entregou o jogo.', valor: 2, cor: '#FB923C' },
+  { key: 'F', titulo: 'Dia para Esquecer', desc: 'Forçou arremessos, não defendeu, prendeu a bola ou entregou o jogo.', valor: 1, cor: '#EF4444' },
+];
 
-const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
-  const [hover, setHover] = useState(0);
+function gradePorValor(valor) {
+  const v = Number(valor) || 0;
+  if (v >= 5) return 'A+';
+  if (v === 4) return 'B';
+  if (v === 3) return 'C';
+  if (v === 2) return 'D';
+  return 'F';
+}
+
+function GradePicker({ value, onChange, disabled }) {
   return (
-    <div style={{ display: 'flex', gap: 6, justifyContent: 'center', margin: '4px 0' }}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <button
-          key={i}
-          type="button"
-          onClick={() => !disabled && onChange(i)}
-          onMouseEnter={() => !disabled && setHover(i)}
-          onMouseLeave={() => !disabled && setHover(0)}
-          disabled={disabled}
-          style={{
-            background: 'none', border: 'none',
-            cursor: disabled ? 'default' : 'pointer', padding: '2px',
-            transition: 'transform 0.1s',
-            transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
-          }}
-        >
-          <svg width="26" height="26" viewBox="0 0 24 24" fill={(hover || value) >= i ? '#C8F135' : 'none'} stroke={(hover || value) >= i ? '#C8F135' : '#64748B'} strokeWidth="2">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-          </svg>
-        </button>
-      ))}
+    <div style={{ display: 'flex', gap: 8 }}>
+      {GRADES.map((g) => {
+        const sel = value === g.key;
+        return (
+          <button
+            key={g.key}
+            type="button"
+            disabled={disabled}
+            onClick={() => !disabled && onChange(g.key)}
+            style={{
+              flex: 1, padding: '12px 0', borderRadius: 12,
+              border: sel ? `2px solid ${g.cor}` : '1px solid var(--border)',
+              background: sel ? `${g.cor}22` : 'var(--bg-card)',
+              color: sel ? g.cor : 'var(--text-primary)',
+              fontWeight: 900, fontSize: 17,
+              fontFamily: "'Barlow Condensed', sans-serif",
+              cursor: disabled ? 'default' : 'pointer',
+              transition: 'all 0.12s',
+            }}
+          >
+            {g.key}
+          </button>
+        );
+      })}
     </div>
   );
-});
+}
 
 export default function Racoes({ profile, onNavigate }) {
   const [lista, setLista] = useState([]);
@@ -66,11 +85,10 @@ export default function Racoes({ profile, onNavigate }) {
   const uf = profile?.uf || 'PA';
 
   const { esporte, cfg } = useEsporte();
-  const fundamentos = cfg.habilidades;
   const apiVoto = esporte === 'handebol' ? votacaoHandebolAPI : votacaoAPI;
 
   const [votingPlayer, setVotingPlayer] = useState(null);
-  const [estrelasVoto, setEstrelasVoto] = useState({});
+  const [notaGrade, setNotaGrade] = useState(null);
   const [comentarioVoto, setComentarioVoto] = useState('');
   const [enviandoVoto, setEnviandoVoto] = useState(false);
   const [avaliados, setAvaliados] = useState({});
@@ -220,14 +238,17 @@ export default function Racoes({ profile, onNavigate }) {
   function abrirAvaliacao(p) {
     const jid = jogadorIdDe(p);
     if (!jid) return;
+    const anterior = avaliados[jid];
     setVotingPlayer({
       id: jid,
       nome: p.jogador?.nome || p.perfil?.nome_completo || 'Atleta',
       apelido: p.jogador?.apelido || p.perfil?.apelido || null,
       foto_url: fotoParticipante(p),
     });
-    setEstrelasVoto(Object.fromEntries(fundamentos.map((h) => [h.key, 0])));
-    setComentarioVoto('');
+    setNotaGrade(anterior && typeof anterior === 'object'
+      ? gradePorValor(anterior[cfg.habilidades[0].key])
+      : null);
+    setComentarioVoto((anterior && anterior.comentario) || '');
   }
 
   async function carregarMeusVotos(ids) {
@@ -237,10 +258,10 @@ export default function Racoes({ profile, onNavigate }) {
       if (!uid) return;
       const { data } = await supabase
         .from('avaliacoes')
-        .select('jogador_id')
+        .select('*')
         .eq('avaliador_id', uid)
         .in('jogador_id', ids);
-      setAvaliados(Object.fromEntries((data || []).map((a) => [a.jogador_id, true])));
+      setAvaliados(Object.fromEntries((data || []).map((a) => [a.jogador_id, a])));
     } catch (e) {
       setAvaliados({});
     }
@@ -258,21 +279,25 @@ export default function Racoes({ profile, onNavigate }) {
 
   async function handleSubmitVoto(e) {
     e.preventDefault();
-    if (fundamentos.some((f) => !estrelasVoto[f.key])) {
-      showMsg('Dê uma nota para todos os fundamentos', 'error');
+    const grade = GRADES.find((g) => g.key === notaGrade);
+    if (!grade) {
+      showMsg('Escolha a nota da partida (A+ a F)', 'error');
       return;
     }
     setEnviandoVoto(true);
     try {
+      // Cada letra vale uma nota equivalente em todos os fundamentos,
+      // mantendo o mesmo cálculo de média do ranking.
+      const payload = Object.fromEntries(cfg.habilidades.map((h) => [h.key, grade.valor]));
       const { data, error } = await apiVoto.votar(votingPlayer.id, {
-        ...estrelasVoto,
+        ...payload,
         comentario: comentarioVoto.trim() || null,
       });
       if (error || !data?.sucesso) {
         throw new Error(data?.erro || error?.message || 'Erro ao registrar avaliação.');
       }
-      setAvaliados((prev) => ({ ...prev, [votingPlayer.id]: true }));
-      showMsg(`✓ Avaliação registrada! Média: ★ ${Number(data.media_estrelas || 0).toFixed(1)}`);
+      setAvaliados((prev) => ({ ...prev, [votingPlayer.id]: { [cfg.habilidades[0].key]: grade.valor, comentario: comentarioVoto.trim() || null } }));
+      showMsg(`✓ Nota ${grade.key} registrada! Nova média: ★ ${Number(data.media_estrelas || 0).toFixed(1)}`);
       setVotingPlayer(null);
     } catch (err) {
       showMsg(err.message || 'Erro ao avaliar', 'error');
@@ -317,6 +342,8 @@ export default function Racoes({ profile, onNavigate }) {
       </div>
     );
   }
+
+  const gradeAtual = GRADES.find((g) => g.key === notaGrade) || null;
 
   return (
     <div className="page-content" style={{ padding: '16px 14px 80px' }}>
@@ -473,34 +500,38 @@ export default function Racoes({ profile, onNavigate }) {
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="modal-handle" />
             <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 2 }}>
-              Avaliar {votingPlayer.apelido || votingPlayer.nome}
+              Nota da partida de {votingPlayer.apelido || votingPlayer.nome}
             </h3>
             <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
-              Dê uma nota de 1 a 5 estrelas para cada fundamento:
+              Como ele jogou neste racha?
             </p>
             <form onSubmit={handleSubmitVoto} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {fundamentos.map((f) => {
-                const val = estrelasVoto[f.key] || 0;
-                return (
-                  <div key={f.key} style={{
-                    padding: '8px 12px', borderRadius: 12,
-                    background: val > 0 ? 'rgba(200,241,53,0.1)' : 'var(--bg-card)',
-                    border: val > 0 ? '1px solid rgba(200,241,53,0.3)' : '1px solid var(--border)',
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: 13, fontWeight: 700 }}>{f.label}</span>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: val > 0 ? 'var(--accent)' : 'var(--text-muted)' }}>
-                        {val > 0 ? `★ ${val}.0` : labelsNota[val] || 'Nota'}
-                      </span>
+              <GradePicker value={notaGrade} onChange={setNotaGrade} disabled={enviandoVoto} />
+
+              {gradeAtual ? (
+                <div style={{
+                  marginTop: 12, padding: '12px 14px', borderRadius: 12,
+                  background: 'var(--bg-card)', border: `1px solid ${gradeAtual.cor}66`,
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <span style={{
+                      fontSize: 36, fontWeight: 900, lineHeight: 1,
+                      fontFamily: "'Barlow Condensed', sans-serif", color: gradeAtual.cor,
+                    }}>
+                      {gradeAtual.key}
+                    </span>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 800 }}>{gradeAtual.titulo}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{gradeAtual.desc}</div>
                     </div>
-                    <StarPicker
-                      value={val}
-                      onChange={(v) => setEstrelasVoto((prev) => ({ ...prev, [f.key]: v }))}
-                      disabled={enviandoVoto}
-                    />
                   </div>
-                );
-              })}
+                </div>
+              ) : (
+                <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14, marginBottom: 0 }}>
+                  Toque em uma letra para ver o que ela significa.
+                </p>
+              )}
+
               <input
                 type="text"
                 maxLength="200"
@@ -508,6 +539,7 @@ export default function Racoes({ profile, onNavigate }) {
                 onChange={(e) => setComentarioVoto(e.target.value)}
                 placeholder="Comentário (opcional)"
                 disabled={enviandoVoto}
+                style={{ marginTop: 4 }}
               />
               <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
                 <button
@@ -523,9 +555,9 @@ export default function Racoes({ profile, onNavigate }) {
                   type="submit"
                   className="btn btn-primary"
                   style={{ flex: 2 }}
-                  disabled={enviandoVoto || fundamentos.some((f) => !estrelasVoto[f.key])}
+                  disabled={enviandoVoto || !notaGrade}
                 >
-                  {enviandoVoto ? 'Enviando...' : 'Confirmar avaliação'}
+                  {enviandoVoto ? 'Enviando...' : 'Confirmar nota'}
                 </button>
               </div>
             </form>
