@@ -65,7 +65,8 @@ bask-rank-hooper-main/
 │   ├── fix_nomes_jogador.sql         # correção pontual dos nomes genéricos ("Jogador"/e-mail)
 │   ├── supabase_migration_handebol.sql  # suporte a handebol — DESATIVADO (app é só basquete)
 │   ├── fix_criado_por_fk.sql         # diagnóstico/ajuste da FK jogadores.criado_por
-│   └── fix_drop_criado_por_fk.sql    # remoção da FK (fix urgente)
+│   ├── fix_drop_criado_por_fk.sql    # remoção da FK (fix urgente)
+│   └── migration_limpar_dados.sql    # 🧹 manutenção: zera jogadores/avaliações/partidas (pré-lançamento)
 ├── public/                           # index.html, sw.js, manifest.json, ícones e mídias
 ├── android/                          # projeto Android gerado pelo Capacitor
 ├── docs/GERAR_APK.md                 # passo a passo para gerar o APK
@@ -101,6 +102,7 @@ bask-rank-hooper-main/
    - ⚠️ **Não rode `migration_features_v2.sql`**: ele redefine `get_ranking` com 5 argumentos (overload ambíguo com a versão de 4 args → quebra o ranking) e reabre leitura pública/anônima nas rações. Foi substituído por `migration_racoes.sql`.
    - ⚠️ **Não rode `migration_cleanup.sql`**: ele remove a tabela `auditoria_votos` usada por `registrar_avaliacao` e quebra a votação. O `migration_rls_hardening.sql` já cobre a parte de RLS.
    - `fix_*.sql` são correções pontuais — rode apenas se encontrar o erro descrito no cabeçalho do arquivo.
+    - 🧹 `supabase/migration_limpar_dados.sql` — **manutenção (opcional)**: zera todos os dados esportivos (jogadores, avaliações, notas de jogo, partidas, rachões, torneios) e apaga as contas de teste, preservando apenas os e-mails que você listar. Não faz parte do setup: só rode se quiser começar do zero. ⚠️ **não tem volta** — leia o cabeçalho do arquivo.
 3. Ative **pg_cron** em Settings → Extensions (usado no reset semanal).
 4. Copie `URL` e `anon public key` em Settings → API.
 5. (Opcional) Ative **Google Auth** em Authentication → Providers → Google.
