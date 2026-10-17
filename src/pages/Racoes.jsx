@@ -16,23 +16,22 @@ function countParts(r) {
   return (r.racao_participantes || []).filter((p) => p.status === 'confirmado').length;
 }
 
-// Modelo 1: Game Grade — nota da partida por letra (A+ a F)
+// Modelo 1: Game Grade — nota da partida por letra (A+ a F, com D/F unificados)
 const GRADES = [
   { key: 'A+', titulo: 'MVP do Racha', desc: 'Dominou o jogo, decidiu nos momentos decisivos e carregou o time.', valor: 5, cor: '#C8F135' },
-  { key: 'A', titulo: 'Ótima Atuação', desc: 'Jogou muito acima da média, eficiente no ataque e na defesa.', valor: 5, cor: '#A3E635' },
-  { key: 'B', titulo: 'Sólido / Cumpriu o Papel', desc: 'Fez o feijão com arroz bem feito, ajudou o time a ser competitivo.', valor: 4, cor: '#38BDF8' },
-  { key: 'C', titulo: 'Apagado / Discreto', desc: 'Jogou abaixo do seu potencial ou cometeu erros bobos, mas não comprometeu totalmente.', valor: 3, cor: '#FBBF24' },
-  { key: 'D', titulo: 'Dia para Esquecer', desc: 'Forçou arremessos, não defendeu, prendeu a bola ou entregou o jogo.', valor: 2, cor: '#FB923C' },
-  { key: 'F', titulo: 'Dia para Esquecer', desc: 'Forçou arremessos, não defendeu, prendeu a bola ou entregou o jogo.', valor: 1, cor: '#EF4444' },
+  { key: 'A', titulo: 'Ótima Atuação', desc: 'Jogou muito acima da média, eficiente no ataque e na defesa.', valor: 4, cor: '#A3E635' },
+  { key: 'B', titulo: 'Sólido / Cumpriu o Papel', desc: 'Fez o feijão com arroz bem feito, ajudou o time a ser competitivo.', valor: 3, cor: '#38BDF8' },
+  { key: 'C', titulo: 'Apagado / Discreto', desc: 'Jogou abaixo do seu potencial ou cometeu erros bobos, mas não comprometeu totalmente.', valor: 2, cor: '#FBBF24' },
+  { key: 'D/F', titulo: 'Dia para Esquecer', desc: 'Forçou arremessos, não defendeu, prendeu a bola ou entregou o jogo.', valor: 1, cor: '#EF4444' },
 ];
 
 function gradePorValor(valor) {
   const v = Number(valor) || 0;
   if (v >= 5) return 'A+';
-  if (v === 4) return 'B';
-  if (v === 3) return 'C';
-  if (v === 2) return 'D';
-  return 'F';
+  if (v === 4) return 'A';
+  if (v === 3) return 'B';
+  if (v === 2) return 'C';
+  return 'D/F';
 }
 
 function GradePicker({ value, onChange, disabled }) {
@@ -51,7 +50,7 @@ function GradePicker({ value, onChange, disabled }) {
               border: sel ? `2px solid ${g.cor}` : '1px solid var(--border)',
               background: sel ? `${g.cor}22` : 'var(--bg-card)',
               color: sel ? g.cor : 'var(--text-primary)',
-              fontWeight: 900, fontSize: 17,
+              fontWeight: 900, fontSize: g.key.length > 1 ? 15 : 17,
               fontFamily: "'Barlow Condensed', sans-serif",
               cursor: disabled ? 'default' : 'pointer',
               transition: 'all 0.12s',
