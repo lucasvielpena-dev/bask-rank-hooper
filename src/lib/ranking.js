@@ -19,7 +19,9 @@ export function labelConfianca(nivel) {
 }
 
 export function sortByConfianca(list = []) {
-  return [...list].sort((a, b) => {
+  // filter(Boolean): uma lista com item nulo (ex.: linha incompleta vinda do
+  // banco) derrubava a tela inteira no comparador.
+  return [...(list || [])].filter(Boolean).sort((a, b) => {
     const sa = a.score_confianca ?? scoreConfianca(a.media_estrelas, a.total_votos);
     const sb = b.score_confianca ?? scoreConfianca(b.media_estrelas, b.total_votos);
     if (sb !== sa) return sb - sa;
@@ -36,13 +38,16 @@ export function sortByConfianca(list = []) {
  * `compacto` devolve só "12 avaliações" (para listas apertadas).
  * Se as colunas de detalhe ainda não existirem no banco, cai no formato antigo.
  */
-export function resumoAvaliacoes(jogador = {}, { compacto = false } = {}) {
-  const total = Number(jogador.total_votos) || 0;
-  const estrelas = Number(jogador.total_votos_estrelas) || 0;
-  const jogos = Number(jogador.total_notas_jogo) || 0;
+export function resumoAvaliacoes(jogador, { compacto = false } = {}) {
+  // Atenção: o valor padrão `= {}` só cobre `undefined`. Passar `null` (o que
+  // acontece enquanto o ranking ainda está carregando) estourava a tela.
+  const j = jogador || {};
+  const total = Number(j.total_votos) || 0;
+  const estrelas = Number(j.total_votos_estrelas) || 0;
+  const jogos = Number(j.total_notas_jogo) || 0;
   const temDetalhe =
-    jogador.total_votos_estrelas !== undefined && jogador.total_votos_estrelas !== null &&
-    jogador.total_notas_jogo !== undefined && jogador.total_notas_jogo !== null;
+    j.total_votos_estrelas !== undefined && j.total_votos_estrelas !== null &&
+    j.total_notas_jogo !== undefined && j.total_notas_jogo !== null;
 
   if (compacto || !temDetalhe || total === 0) {
     return `${total} ${total === 1 ? 'avaliação' : 'avaliações'}`;

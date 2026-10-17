@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { EsporteProvider } from './contexts/EsporteContext';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import Home from './pages/Home';
 import Atletas from './pages/Atletas';
@@ -76,7 +77,10 @@ function AppRoutes() {
 
   return (
     <Layout page={page} onNavigate={(p) => navigate(p)}>
-      {renderPage()}
+      {/* Se UMA tela quebrar, o header e o menu continuam de pé. */}
+      <ErrorBoundary compacto key={page}>
+        {renderPage()}
+      </ErrorBoundary>
     </Layout>
   );
 }
@@ -85,9 +89,13 @@ export default function App() {
   return (
     <ThemeProvider>
       <EsporteProvider>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
+        {/* Última linha de defesa: nada de tela escura muda. Fica fora do
+            AuthProvider para também cobrir a lógica de entrada no app. */}
+        <ErrorBoundary>
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
+        </ErrorBoundary>
       </EsporteProvider>
     </ThemeProvider>
   );

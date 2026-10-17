@@ -193,7 +193,7 @@ export default function Home({ profile, onNavigate }) {
                     fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)',
                     fontFamily: "'Inter',sans-serif",
                   }}>
-                    {resumoAvaliacoes(myPlayerInfo, { compacto: true })}
+                    {myPlayerInfo ? resumoAvaliacoes(myPlayerInfo, { compacto: true }) : '—'}
                   </span>
                 </div>
               </div>
