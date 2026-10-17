@@ -202,16 +202,19 @@ CREATE POLICY avaliacoes_select_own ON public.avaliacoes
 
 
 -- ============================================================
--- PASSO 5 — PENDÊNCIA DE DECISÃO (deixado comentado de propósito)
+-- PASSO 5 — ✅ APLICADO em 2026-10-17 (backfill + policy estrita)
 -- ============================================================
--- `jogadores` e `partidas` aceitam UPDATE de qualquer logado quando
+-- `jogadores` e `partidas` aceitavam UPDATE de qualquer logado quando
 -- `criado_por IS NULL` (cláusula de transição do hardening). Atletas
--- antigos sem dono ficam, portanto, editáveis por qualquer um — inclusive
+-- antigos sem dono ficavam, portanto, editáveis por qualquer um — inclusive
 -- `media_estrelas`. O backfill abaixo liga cada atleta antigo ao usuário do
--- perfil que aponta para ele; depois disso dá para exigir dono de verdade.
+-- perfil que aponta para ele; depois disso o dono passa a ser exigido.
 --
--- Descomente SÓ se quiser fechar isso agora (atleta sem perfil vinculado
--- passa a poder ser editado apenas pelo master / pelo SQL Editor):
+-- ⚠️ O código abaixo JÁ FOI EXECUTADO no banco de produção (conferido no
+-- `pg_policy`: `jogadores_update_own` com USING e WITH CHECK ambos
+-- `(criado_por = auth.uid())`). Fica comentado só como registro do que foi
+-- feito. Atleta sem perfil vinculado passa a poder ser editado apenas pelo
+-- master / pelo SQL Editor.
 
 -- UPDATE public.jogadores j
 -- SET criado_por = p.id

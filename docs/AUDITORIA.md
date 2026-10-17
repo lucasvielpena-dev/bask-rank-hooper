@@ -10,7 +10,7 @@ Observação: itens de severidade Alta foram verificados diretamente no código-
 
 Diferente das demais seções (leitura de código), esta foi feita **batendo no banco real** com a chave pública que vai no bundle do site — exatamente o que um curioso tem em mãos. Correção: `supabase/migration_seguranca_v3.sql`.
 
-**Status (2026-10-17): ✅ APLICADO no banco de produção.** Confirmado por sonda anônima depois do deploy: `rotina_semanal_domingo()`, `admin_get_users()`, `admin_get_players()`, `admin_get_logs()`, `get_master_stats()`, `get_master_reports()` e `get_city_stats()` respondem `permission denied for function` (antes **executavam**); `profiles` e `avaliacoes_jogo` seguem `42501`; verificação `has_*_privilege` retornou `false` em tudo, exceto `authenticated → touch_last_seen` (que o app precisa). Na mesma data foram aplicadas as pendentes `migration_nota_jogo_na_media.sql` (colunas `total_notas_jogo`/`media_notas_jogo`/`total_votos_estrelas` confirmadas) e `migration_exclusao_conta.sql` (RPC `excluir_minha_conta()` existe e está negada ao anônimo).
+**Status (2026-10-17): ✅ APLICADO no banco de produção.** Confirmado por sonda anônima depois do deploy: `rotina_semanal_domingo()`, `admin_get_users()`, `admin_get_players()`, `admin_get_logs()`, `get_master_stats()`, `get_master_reports()` e `get_city_stats()` respondem `permission denied for function` (antes **executavam**); `profiles` e `avaliacoes_jogo` seguem `42501`; verificação `has_*_privilege` retornou `false` em tudo, exceto `authenticated → touch_last_seen` (que o app precisa). Na mesma data foram aplicadas as pendentes `migration_nota_jogo_na_media.sql` (colunas `total_notas_jogo`/`media_notas_jogo`/`total_votos_estrelas` confirmadas) e `migration_exclusao_conta.sql` (RPC `excluir_minha_conta()` existe e está negada ao anônimo). Na mesma data foi aplicado o **Passo 5** desta migration (atletas sem dono — ver S5) e criada a `migration_placar_compartilhado.sql` (ver S7).
 
 **Confirmado OK (com prova):**
 - Anônimo não lê nenhuma tabela: `42501 permission denied` em todas as 19 testadas.
@@ -39,8 +39,9 @@ Correção: Passo 3 do `migration_seguranca_v3.sql` (gatilho `trg_proteger_campo
 `avaliacoes_select_auth USING (TRUE)` (`migration_rls_hardening.sql:54`) deixava qualquer logado ler a tabela inteira — `avaliador_id` + `comentario` → dá para montar "quem votou em quem, com que nota". O app só lê as próprias avaliações (`Atletas.jsx:150`, `PlayerProfileModal.jsx:155`).
 Correção: Passo 4 do `migration_seguranca_v3.sql` (policy passa a `avaliador_id = auth.uid()`).
 
-### S5. Pendência de decisão 🟠
-`jogadores`/`partidas` aceitam UPDATE de qualquer logado quando `criado_por IS NULL` (cláusula de transição do hardening, `migration_rls_hardening.sql:197,231`). Atletas antigos sem dono são editáveis por qualquer um — inclusive `media_estrelas`. O Passo 5 do `migration_seguranca_v3.sql` (comentado) traz o backfill + a policy estrita, para aplicar quando quiser.
+### S5. Atletas sem dono editáveis por qualquer logado 🟠 ✅ resolvido (2026-10-17)
+`jogadores`/`partidas` aceitavam UPDATE de qualquer logado quando `criado_por IS NULL` (cláusula de transição do hardening, `migration_rls_hardening.sql:197,231`). Atletas sem dono ficavam editáveis por qualquer um — inclusive `media_estrelas`. Não havia nenhum no banco no momento do fecho (a limpeza de 17/10 zerou o esporte), mas a brecha **acordava no dia em que alguém usasse o botão "excluir conta"**: `excluir_minha_conta()` desvincula (`criado_por = NULL`) tudo que a pessoa criou.
+Correção: Passo 5 do `migration_seguranca_v3.sql` **aplicado em 2026-10-17** (backfill + `jogadores_update_own` com USING e WITH CHECK `(criado_por = auth.uid())`, conferido no `pg_policy`). Para `partidas`, o desenho novo do item S7 substitui a cláusula de transição.
 
 ### S6. Baixa
 Signup aberto (`disable_signup: false`) e sem CAPTCHA → contas falsas para brigada de votos. Mitigado por `UNIQUE(avaliador_id, jogador_id)` + limite de 20/dia. Login anônimo **desligado** ✔; sem buckets públicos ✔.
