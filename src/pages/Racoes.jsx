@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { racoesAPI, notasJogoAPI } from '../lib/supabase';
 import { resolveAuthUserId } from '../lib/authUser';
 import { GRADES, GradePicker, gradePorValor, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
+import { nomeAtleta } from '../lib/nomes';
 
 function formatWhen(iso) {
   if (!iso) return '';
@@ -176,8 +177,11 @@ export default function Racoes({ profile, onNavigate }) {
 
   function nomeParticipante(p) {
     if (p.usuario_id === profile?.id) return 'Você';
-    return p.perfil?.apelido || p.perfil?.nome_completo || p.jogador?.apelido || p.jogador?.nome
-      || `Jogador ${String(p.usuario_id).slice(0, 6)}`;
+    const viaPerfil = nomeAtleta(p.perfil);
+    if (viaPerfil !== 'Atleta') return viaPerfil;
+    const viaJogador = nomeAtleta(p.jogador);
+    if (viaJogador !== 'Atleta') return viaJogador;
+    return `Atleta ${String(p.usuario_id).slice(0, 6)}`;
   }
 
   function fotoParticipante(p) {
@@ -188,10 +192,13 @@ export default function Racoes({ profile, onNavigate }) {
     const jid = jogadorIdDe(p);
     if (!jid) return;
     const anterior = minhasNotas[jid];
+    const viaPerfil = nomeAtleta(p.perfil);
+    const viaJogador = nomeAtleta(p.jogador);
+    const rotulo = viaPerfil !== 'Atleta' ? viaPerfil : viaJogador;
     setVotingPlayer({
       id: jid,
-      nome: p.jogador?.nome || p.perfil?.nome_completo || 'Atleta',
-      apelido: p.jogador?.apelido || p.perfil?.apelido || null,
+      nome: rotulo !== 'Atleta' ? rotulo : 'Atleta',
+      apelido: null,
       foto_url: fotoParticipante(p),
     });
     setNotaGrade(anterior ? gradePorValor(anterior.nota) : null);

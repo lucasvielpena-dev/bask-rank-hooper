@@ -65,7 +65,7 @@ export function AuthProvider({ children }) {
       } else {
         const fallbackProfile = {
           id: uid,
-          nome_completo: user?.user_metadata?.nome || user?.user_metadata?.full_name || user?.email || 'Jogador',
+          nome_completo: ((user?.user_metadata?.nome || user?.user_metadata?.full_name || '') + '').trim(),
           email: user?.email,
           foto_perfil: user?.user_metadata?.avatar_url || null,
           cadastro_completo: false
@@ -199,8 +199,8 @@ export function AuthProvider({ children }) {
       const { data: newJogador, error: jogError } = await supabase
         .from('jogadores')
         .insert([{
-          nome: prof.nome_completo || 'Jogador',
-          apelido: prof.apelido || 'Jogador',
+          nome: (prof.nome_completo || '').trim() || (prof.apelido || '').trim() || 'Atleta',
+          apelido: (prof.apelido || '').trim() || null,
           foto_url: prof.foto_perfil || null,
           criado_por: authUserId,
           cidade: prof.cidade_atual || prof.cidade || 'Altamira',
@@ -351,8 +351,8 @@ export function AuthProvider({ children }) {
         const { data: newJogador, error: jogError } = await supabase
           .from('jogadores')
           .insert([{
-            nome: profile.nome_completo || 'Jogador',
-            apelido: profile.apelido || 'Jogador',
+            nome: (profile.nome_completo || '').trim() || (profile.apelido || '').trim() || 'Atleta',
+            apelido: (profile.apelido || '').trim() || null,
             foto_url: profile.foto_perfil || null,
             criado_por: authUserId,
             cidade: detectedCity,

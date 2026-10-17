@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
+import { nomeAtleta } from '../lib/nomes';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconRanking, IconCalendario, IconSportDynamic } from '../components/Icons';
 
@@ -208,7 +209,7 @@ export default function Destaques({ profile, onNavigate }) {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {jogador.nome}
+                      {nomeAtleta(jogador)}
                     </div>
                     <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                       {jogador.posicao || cfg.posicoes[0]} · {jogador.cidade}

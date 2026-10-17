@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
+import { nomeAtleta } from '../lib/nomes';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from '../components/Icons';
 import { HomeBackground } from '../components/AnimatedBackgrounds';
@@ -298,7 +299,7 @@ export default function Home({ profile, onNavigate }) {
                 {player.foto_url ? (
                   <img
                     src={player.foto_url}
-                    alt={player.nome}
+                    alt={nomeAtleta(player)}
                     className="premium-photo"
                     style={{
                       width: 48, height: 48, borderRadius: 12, objectFit: 'cover',
@@ -317,7 +318,7 @@ export default function Home({ profile, onNavigate }) {
                       fontSize: 20, fontWeight: 800, color: '#6A6A82',
                       fontFamily: "'Barlow Condensed',sans-serif",
                     }}>
-                      {player.nome ? player.nome.charAt(0).toUpperCase() : '?'}
+                      {nomeAtleta(player) ? nomeAtleta(player).charAt(0).toUpperCase() : '?'}
                     </span>
                   </div>
                 )}
@@ -329,7 +330,7 @@ export default function Home({ profile, onNavigate }) {
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                     display: 'inline-block'
                   }}>
-                    {player.nome}
+                    {nomeAtleta(player)}
                   </span>
                   <span style={{
                     fontSize: 12, color: '#6A6A82', fontWeight: 400,

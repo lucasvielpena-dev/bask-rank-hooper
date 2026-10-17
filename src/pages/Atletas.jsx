@@ -1,6 +1,7 @@
 import { useState, useEffect, memo } from 'react';
 import { supabase, jogadoresAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
 import { sortByConfianca } from '../lib/ranking';
+import { nomeAtleta } from '../lib/nomes';
 import { useEsporte } from '../contexts/EsporteContext';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -393,11 +394,11 @@ export default function Atletas({ profile }) {
                   )}
                   
                   <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
-                    <PlayerAvatar fotoUrl={j.foto_url} nome={j.nome} size={48} className={isFirst ? 'avatar-pulse' : ''} />
+                    <PlayerAvatar fotoUrl={j.foto_url} nome={nomeAtleta(j)} size={48} className={isFirst ? 'avatar-pulse' : ''} />
                     
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ color: 'var(--text-primary)', fontSize: 16, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {j.nome}
+                        {nomeAtleta(j)}
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
                         <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.posicao || cfg.posicoes[0]}</span>
@@ -458,7 +459,7 @@ export default function Atletas({ profile }) {
           <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 400, maxHeight: '90vh', overflowY: 'auto', background: 'var(--bg-elevated)' }}>
             <div className="modal-handle" style={{ background: 'var(--border)' }} />
             <h3 style={{ color: 'var(--text-primary)', fontWeight: 900, fontSize: 18, marginBottom: 2, textAlign: 'center' }}>
-              Avaliar {votingPlayer.apelido || votingPlayer.nome}
+              Avaliar {nomeAtleta(votingPlayer)}
             </h3>
             <p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 12, textAlign: 'center' }}>
               Dê uma nota de 1 a 5 estrelas para cada habilidade:

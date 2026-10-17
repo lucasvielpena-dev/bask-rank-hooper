@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import AnimatedCounter from './AnimatedCounter';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from './Icons';
+import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
 
@@ -208,7 +209,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             <div style={{ textAlign: 'center', marginBottom: 4 }}>
               <h4 style={{ fontWeight: 800, fontSize: 18, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif" }}>Avaliar Atleta</h4>
               <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
-                Notas de <strong style={{ color: 'var(--text-primary)' }}>{localJogador.apelido || localJogador.nome}</strong>
+                Notas de <strong style={{ color: 'var(--text-primary)' }}>{nomeAtleta(localJogador)}</strong>
               </p>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -252,18 +253,18 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 ) : (
                   <div style={{ width: '100%', height: '100%', background: `linear-gradient(135deg, ${posColor}22 0%, var(--bg-card) 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                      <div style={{ width: 96, height: 96, borderRadius: '50%', background: `linear-gradient(135deg, ${posColor} 0%, ${posColor}88 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40, fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif", border: '3px solid rgba(200,241,53,0.3)', boxShadow: '0 0 0 4px rgba(200,241,53,0.1)' }}>
-                      {localJogador.nome?.charAt(0) || '?'}
+                      {nomeAtleta(localJogador).charAt(0).toUpperCase() || '?'}
                     </div>
                   </div>
                 )}
                 <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '70%', background: 'linear-gradient(to bottom, transparent 0%, #0D0D1A 100%)' }} />
                 <div style={{ position: 'absolute', bottom: 16, left: 16, zIndex: 2 }}>
                   <div style={{ fontSize: 28, fontWeight: 800, color: 'var(--text-primary)', fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 1, textShadow: '0 2px 8px rgba(0,0,0,0.5)' }}>
-                    {localJogador.nome}
+                    {nomeAtleta(localJogador)}
                   </div>
-                  {localJogador.apelido && (
+                  {nomeCompletoAtleta(localJogador) && nomeCompletoAtleta(localJogador) !== nomeAtleta(localJogador) && (
                     <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontFamily: "'Inter',sans-serif", marginTop: 2 }}>
-                      "{localJogador.apelido}"
+                      {nomeCompletoAtleta(localJogador)}
                     </div>
                   )}
                 </div>

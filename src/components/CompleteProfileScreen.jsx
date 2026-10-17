@@ -180,7 +180,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           await supabase
             .from('jogadores')
             .update({
-              nome: profile.nome_completo || 'Jogador',
+              nome: (profile.nome_completo || '').trim() || apelido.trim() || 'Atleta',
               apelido: apelido.trim(),
               foto_url: avatarUrl || null,
               cidade: cidade,
@@ -220,11 +220,11 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           await supabase.from('profiles').upsert({
             id: authUserId,
             email: authEmail,
-            nome_completo: profile.nome_completo || 'Jogador',
+            nome_completo: (profile.nome_completo || '').trim() || apelido.trim() || '',
           }, { onConflict: 'id' });
 
           const payload = {
-            nome: profile.nome_completo || 'Jogador',
+            nome: (profile.nome_completo || '').trim() || apelido.trim() || 'Atleta',
             apelido: apelido.trim(),
             foto_url: avatarUrl || null,
             criado_por: authUserId,

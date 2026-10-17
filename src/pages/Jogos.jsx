@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, partidasAPI, jogadoresAPI, notasJogoAPI } from '../lib/supabase';
 import { GRADES, GradePicker, gradePorValor, gradeInfo, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
+import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
 import { motion, AnimatePresence } from 'framer-motion';
 import Torneios from './Torneios';
 import { IconJogo, IconMais, IconCalendario } from '../components/Icons';
@@ -735,8 +736,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     return (
                       <div key={j.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
                         <div>
-                          <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 14 }}>{j.nome}</div>
-                          {j.apelido && <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>"{j.apelido}" • {j.posicao}</div>}
+                          <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 14 }}>{nomeAtleta(j)}</div>
+                          <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
+                            {[
+                              nomeCompletoAtleta(j) && nomeCompletoAtleta(j) !== nomeAtleta(j) ? nomeCompletoAtleta(j) : null,
+                              j.posicao,
+                            ].filter(Boolean).join(' • ')}
+                          </div>
                         </div>
                         <div style={{ display: 'flex', gap: 6 }}>
                           <button
@@ -1231,7 +1237,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 <select value={mvpId} onChange={e => setMvpId(e.target.value)} style={{ color: mvpId ? 'var(--text-primary)' : 'var(--text-muted)' }}>
                   <option value="">Selecione o MVP...</option>
                   {getEscalados().map(j => (
-                    <option key={j.id} value={j.id}>{j.nome} ({timeAJogadores.includes(j.id) ? timeANome : timeBNome})</option>
+                    <option key={j.id} value={j.id}>{nomeAtleta(j)} ({timeAJogadores.includes(j.id) ? timeANome : timeBNome})</option>
                   ))}
                 </select>
               </div>
@@ -1265,7 +1271,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Nenhum jogador escalado nesta partida.</div>
               ) : (
                 detalheJogadores.map((j) => {
-                  const nome = j.jogador?.apelido || j.jogador?.nome || 'Atleta';
+                  const nome = nomeAtleta(j.jogador);
                   const resumo = detalheResumo[j.jogador_id];
                   const minha = minhasNotas[j.jogador_id];
                   const souEu = profile?.player_id === j.jogador_id;

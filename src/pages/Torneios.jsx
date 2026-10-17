@@ -4,6 +4,7 @@ import { IconCalendario, IconSportDynamic } from '../components/Icons';
 import { TorneiosBackground } from '../components/AnimatedBackgrounds';
 import { useEsporte } from '../contexts/EsporteContext';
 import { GRADES, GradePicker, gradePorValor, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
+import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
 
 // Formatos de Torneio Traduzidos
 const FORMATOS = {
@@ -383,7 +384,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
           .map((v) => ({
             id: v.id,
             jogadorId: v.jogador.player_id,
-            nome: v.jogador.apelido || v.jogador.nome_completo || 'Atleta',
+            nome: nomeAtleta(v.jogador),
             foto: v.jogador.foto_perfil,
             equipe: v.equipe_id === jogo.equipe_a_id ? 'A' : 'B',
           }));
@@ -2416,7 +2417,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             return (
               <div key={p.id} className="card" style={{ padding: '12px 14px', background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{p.jogador?.nome_completo}</div>
+                  <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{nomeAtleta(p.jogador)}</div>
                   <span style={{ fontSize: 9, color: '#FFF', background: teamBadgeColor, padding: '2px 6px', borderRadius: 4, fontWeight: 700, textTransform: 'uppercase' }}>
                     {isTeamA ? (jogo.equipe_a?.nome || 'Time A') : (jogo.equipe_b?.nome || 'Time B')}
                   </span>
@@ -2489,7 +2490,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
                     const teamName = isTeamA ? jogo.equipe_a?.nome : jogo.equipe_b?.nome;
                     return (
                       <option key={p.jogador_id} value={p.jogador_id}>
-                        {p.jogador?.nome_completo} ({teamName})
+                        {nomeAtleta(p.jogador)} ({teamName})
                       </option>
                     );
                   })}
@@ -2575,9 +2576,9 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
   const myRosterRow = roster.find(r => r.jogador_id === profile.id);
   const canRequest = !isNoTime && torneioStatus === 'inscricoes_abertas';
 
-  const filteredPlayers = availablePlayers.filter(p => 
-    p.nome_completo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (p.apelido || '').toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredPlayers = availablePlayers.filter(p =>
+    nomeAtleta(p).toLowerCase().includes(searchQuery.toLowerCase()) ||
+    nomeCompletoAtleta(p).toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -2601,7 +2602,10 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
                   </div>
                 )}
                 <span style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 600 }}>
-                  {r.jogador?.nome_completo} {r.jogador?.apelido && `"${r.jogador.apelido}"`}
+                  {nomeAtleta(r.jogador)}
+                  {nomeCompletoAtleta(r.jogador) && nomeCompletoAtleta(r.jogador) !== nomeAtleta(r.jogador) && (
+                    <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}> · {nomeCompletoAtleta(r.jogador)}</span>
+                  )}
                 </span>
                 {!r.aprovado && (
                   <span style={{ fontSize: 9, background: 'rgba(245,158,11,0.15)', color: '#f59e0b', padding: '1px 6px', borderRadius: 4, fontWeight: 700 }}>PENDENTE</span>
@@ -2677,10 +2681,10 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
                       </div>
                     )}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.nome_completo}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nomeAtleta(p)}</div>
                       <div style={{ fontSize: 11, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                        {p.apelido && <span>"{p.apelido}"</span>}
-                        {p.apelido && <span>•</span>}
+                        {nomeCompletoAtleta(p) && nomeCompletoAtleta(p) !== nomeAtleta(p) && <span>{nomeCompletoAtleta(p)}</span>}
+                        {nomeCompletoAtleta(p) && nomeCompletoAtleta(p) !== nomeAtleta(p) && <span>•</span>}
                         <span>{p.cidade_atual || p.cidade || 'Altamira'} - {p.uf || 'PA'}</span>
                       </div>
                     </div>
