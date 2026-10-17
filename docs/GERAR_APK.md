@@ -1,86 +1,104 @@
-# Gerar APK Rank Hooper (com atualizações automáticas)
+# Gerar APK / AAB do Rank Hooper
 
 ## Como funciona
 
 O app Android abre o site da **Vercel** dentro de um WebView nativo.
 
 - Cada `git push` → Vercel atualiza o site
-- Abrir o APK → já vê a versão nova
-- **Não precisa** gerar APK de novo a cada mudança de layout/código web
+- Abrir o app → já vê a versão nova
+- **Não precisa** gerar AAB de novo a cada mudança de layout/código web
 
-Só precisa de APK novo se mudar: nome do app, ícone, permissões nativas, `appId`.
+Só precisa de AAB novo se mudar: nome do app, ícone, splash, permissões nativas ou `appId`.
 
 ---
 
 ## Pré-requisitos no PC
 
-1. [Node.js 18+](https://nodejs.org/)
-2. [Android Studio](https://developer.android.com/studio) (com SDK 34+)
-3. Java 17 (o Android Studio costuma instalar)
+Nesta máquina **já está tudo instalado** — e **não precisa de Android Studio**:
+
+| Ferramenta | Onde | Observação |
+|---|---|---|
+| Node.js | `C:\Program Files\nodejs` | 24.x |
+| **Java 21** | `%LOCALAPPDATA%\android-build\jdk-21` | o Capacitor 8 **exige 21**; com o 17 o build morre em `error: invalid source release: 21` |
+| Android SDK | `%LOCALAPPDATA%\Android\Sdk` | `platforms;android-36`, `build-tools;36.0.0`, `platform-tools` |
+| Keystore da Play | `android\upload-keystore.jks` + `android\keystore.properties` | não versionados — ver `docs/PUBLICAR_PLAY_STORE.md` §3 |
 
 ---
 
-## Passo a passo
+## Jeito fácil: um comando
 
-### 1. Clonar e instalar
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\build-aab.ps1
+```
 
-```bash
-git clone https://github.com/lucasvielpena-dev/bask-rank-hooper.git
-cd bask-rank-hooper
+O script confere Java/SDK/keystore, roda `npm install` (se faltar), builda o site,
+sincroniza o Capacitor, roda o Gradle e copia o resultado para:
+
+```
+..\play-store\ranks-hoops-v1.0-1.aab
+```
+
+---
+
+## Passo a passo manual (se quiser entender/ajustar)
+
+### 1. Instalar dependências
+
+```powershell
 npm install
 ```
 
 ### 2. Conferir a URL da Vercel
 
-Em `capacitor.config.ts`, a linha `LIVE_URL` deve ser o endereço real do site, por exemplo:
+Em `capacitor.config.ts`, `LIVE_URL` deve apontar para o site real:
 
 ```ts
-const LIVE_URL = 'https://SEU-PROJETO.vercel.app';
+const LIVE_URL = 'https://bask-rank-hooper.vercel.app';
 ```
-
-Abra o site no celular (Chrome) e confirme que carrega.
 
 ### 3. Build web + sync Capacitor
 
-```bash
-npm run build
-npx cap sync android
+⚠️ No Windows **não use `npm run build`**: o script do `package.json` está em
+sintaxe de Linux (`CI=false DISABLE_ESLINT_PLUGIN=true react-scripts build`) e o
+`cmd.exe` responde `'CI' não é reconhecido como um comando interno`. Use:
+
+```powershell
+$env:CI = 'false'
+$env:DISABLE_ESLINT_PLUGIN = 'true'
+.\node_modules\.bin\react-scripts.cmd build
+.\node_modules\.bin\cap.cmd sync android
 ```
 
-Ou:
+### 4. Gerar o bundle assinado
 
-```bash
-npm run cap:sync
+```powershell
+$env:JAVA_HOME = "$env:LOCALAPPDATA\android-build\jdk-21"
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+$env:ANDROID_SDK_ROOT = $env:ANDROID_HOME
+$env:PATH = "$env:JAVA_HOME\bin;" + $env:PATH
+
+cd android
+.\gradlew.bat bundleRelease
 ```
 
-### 4. Gerar o APK no Android Studio
+Saída: **`android/app/build/outputs/bundle/release/app-release.aab`**
 
-```bash
-npx cap open android
-```
+- `bundleRelease` → AAB (é o que a Google Play aceita)
+- `assembleRelease` → APK de release (útil para instalar direto no celular e testar)
 
-No Android Studio:
+A primeira execução demora (baixa o Gradle e as dependências). Sem
+`android/keystore.properties` o build passa, mas o AAB sai **sem assinatura** — e a
+Play recusa.
 
-1. Aguarde o Gradle sincronizar
-2. Menu **Build → Build Bundle(s) / APK(s) → Build APK(s)**
-3. Quando terminar, clique em **locate**
-4. Arquivo típico:
+> 💡 Se o Gradle reclamar de arquivo em uso / travado, é o OneDrive sincronizando a
+> pasta `android/build`. Nesse caso clone/copie o projeto para uma pasta fora do
+> OneDrive (ex.: `C:\dev\bask`) e rode lá.
 
-`android/app/build/outputs/apk/debug/app-debug.apk`
+### 5. Instalar o APK no celular (teste)
 
-### 5. Instalar no celular
-
-1. Passe o `.apk` pro celular (WhatsApp, Drive, cabo)
+1. Passe o `.apk` para o celular (WhatsApp, Drive, cabo)
 2. No Android: **Permitir instalar apps desta fonte**
-3. Abra o APK e instale
-
----
-
-## APK de release (opcional)
-
-1. Android Studio → **Build → Generate Signed Bundle / APK**
-2. Crie um keystore (guarde a senha!)
-3. Gere **APK release**
+3. Abra e instale
 
 ---
 
@@ -108,8 +126,9 @@ O script reescreve:
 - `android/app/src/main/res/mipmap-*/ic_launcher*.png` — ícone do app
 - `android/app/src/main/res/drawable*/splash.png` — tela de abertura
 - `public/icon-192.png`, `public/icon-512.png`, `public/apple-touch-icon.png` — ícones do site (PWA)
+- `docs/play-store/icon-512.png` e `feature-graphic.png` — arte da ficha da Play
 
-Depois rode `npm run cap:sync` e **gere o APK de novo** — o ícone/splash só mudam com APK novo.
+Depois rode `tools\build-aab.ps1` — o ícone/splash só mudam com AAB novo.
 
 A cor de fundo do app fica em `android/app/src/main/res/values/colors.xml`
 (`rh_dark`) e é usada no tema de entrada (`values/styles.xml`) e no
@@ -122,8 +141,11 @@ A cor de fundo do app fica em `android/app/src/main/res/values/colors.xml`
 | Problema | Solução |
 |----------|---------|
 | Tela branca | URL errada no `capacitor.config.ts` ou site fora do ar |
+| `invalid source release: 21` | Está usando Java 17: aponte `JAVA_HOME` para o `jdk-21` |
+| `'CI' não é reconhecido...` | Não use `npm run build` no Windows: use `react-scripts.cmd build` |
+| "App Bundle não assinado" | Falta `android/keystore.properties` (§3 do guia da Play) |
 | Login Google | Teste no site; pode precisar de ajuste depois |
 | App não instala | Ative fontes desconhecidas |
 | Mudança não aparece | Force fechar o app e abra de novo |
-| Ícone azul "X" / splash branca | É o APK antigo: rode `tools\gerar-branding.ps1`, `npm run cap:sync` e gere o APK de novo |
-
+| Ícone azul "X" / splash branca | É o APK antigo: rode `tools\gerar-branding.ps1` e gere o AAB de novo |
+| Gradle "file is locked" | OneDrive travando `android/build`: buildar fora do OneDrive |

@@ -14,7 +14,7 @@ Guia completo, do zero até o app no ar. O que **você** precisa fazer está mar
 | Se for conta **pessoal**: 12 testadores por 14 dias antes de liberar produção | 👉 **você faz** |
 | `targetSdk` Android 16 (API 36) — exigido desde 31/08/2026 | ✅ já é 36 (`android/variables.gradle`) |
 | Suporte a páginas de 16 KB (obrigatório desde 11/2025) | ✅ Capacitor 8 + AGP 8.13 já suportam |
-| App Bundle (.aab) assinado, não APK | ✅ config criada — 👉 falta gerar o keystore |
+| App Bundle (.aab) assinado, não APK | ✅ **feito** — keystore criado e AAB v1.0 gerado (14,8 MB) |
 | Política de privacidade com URL pública | ✅ `/privacidade.html` |
 | Exclusão de conta (no app **e** na web) | ✅ criada (menu do perfil + política) |
 | Formulário de Segurança dos dados | 👉 preencher (respostas prontas na §5) |
@@ -73,46 +73,64 @@ Sem ele o botão "Excluir minha conta" mostra erro.
 
 ---
 
-## 3. Fase 2 — Gerar o AAB assinado
+## 3. Fase 2 — Gerar o AAB assinado ✅ FEITO (17/10/2026)
 
-Faça isso na máquina que tem o Android Studio.
+Nesta máquina **não foi preciso Android Studio**: instalamos Java 21 e o Android SDK
+em modo portátil (sem pedir senha de administrador):
 
-### 3.1 Criar o keystore (uma vez na vida)
+| Ferramenta | Onde | Por quê |
+|---|---|---|
+| Java 21 (Temurin) | `%LOCALAPPDATA%\android-build\jdk-21` | o Capacitor 8 **exige Java 21** (com o 17: `invalid source release: 21`) |
+| Android SDK | `%LOCALAPPDATA%\Android\Sdk` | `platforms;android-36`, `build-tools;36.0.0`, `platform-tools` |
+
+### 3.1 Keystore (feito — guarde o backup!)
+
+O keystore existe em **dois lugares** (ambos ignorados pelo Git):
+
+- `bask-rank-hooper-main\android\upload-keystore.jks` (cópia de trabalho, no OneDrive)
+- na pasta do clone usado no build
+
+`android\keystore.properties` está preenchido com a senha. **Alias:** `upload`.
+
+> 🔒 **Backup obrigatório:** copie o `.jks` **e anote a senha** fora do PC
+> (Google Drive, pendrive, gerenciador de senhas). Os dois arquivos não vão para o
+> Git de propósito. Se perder, só recupera pedindo reset da *upload key* à Google
+> (é possível porque o **Play App Signing** guarda a chave de distribuição de
+> verdade — ative-o no primeiro envio).
+
+Só se precisar refazer (não é o caso):
 
 ```powershell
+$env:PATH = "$env:LOCALAPPDATA\android-build\jdk-21\bin;" + $env:PATH
 cd android
-& "C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe" -genkeypair -v `
-  -keystore upload-keystore.jks -alias upload `
+keytool -genkeypair -v -keystore upload-keystore.jks -alias upload `
   -keyalg RSA -keysize 2048 -validity 10000
 ```
 
-Guarde a senha. Depois copie `keystore.properties.example` para
-`android/keystore.properties` e preencha:
-
-```properties
-storeFile=upload-keystore.jks
-storePassword=SUA_SENHA
-keyAlias=upload
-keyPassword=SUA_SENHA
-```
-
-> 🔒 Guarde **backup** do `.jks` e da senha fora do PC (Google Drive, pendrive).
-> Esses arquivos não vão para o Git de propósito. Se perder, só recupera pedindo
-> reset à Google.
-
-### 3.2 Build
+### 3.2 Build (feito — agora é um comando)
 
 ```powershell
-npm run build
-npx cap sync android
-cd android
-.\gradlew bundleRelease
+powershell -ExecutionPolicy Bypass -File tools\build-aab.ps1
 ```
 
-Saída: **`android/app/build/outputs/bundle/release/app-release.aab`**
+O script confere Java 21 + SDK + keystore, builda o site, roda `cap sync`, roda o
+Gradle e copia o resultado para **`..\play-store\ranks-hoops-v1.0-1.aab`**
+(= `C:\Users\lucas\OneDrive\Documentos\Projeto Padrão\play-store\`).
 
-> Para testar no seu celular antes de subir, gere um APK de release:
-> `.\gradlew assembleRelease` → `android/app/build/outputs/apk/release/app-release.apk`
+> ⚠️ No Windows **não** use `npm run build`: o script do `package.json` está em
+> sintaxe de Linux (`CI=false ... react-scripts build`) e o `cmd.exe` quebra.
+> O `build-aab.ps1` já contorna isso.
+>
+> 🐛 Corrigido de passagem: o `android/app/build.gradle` procurava o keystore em
+> `android/app/` (`file()`), mas o guia manda gerar em `android/`. Agora usa
+> `rootProject.file()`.
+
+APK de release (para instalar direto e testar no celular, fora da Play):
+
+```powershell
+cd android && .\gradlew.bat assembleRelease
+# android/app/build/outputs/apk/release/app-release.apk
+```
 
 ### 3.3 Sobre atualizações futuras
 
@@ -121,7 +139,7 @@ O app abre o site da Vercel dentro do WebView. Então:
 - Mudou layout, texto, regra do ranking → **`git push`** e pronto, **sem novo AAB**.
 - Mudou ícone, splash, permissão, nome ou `appId` → **precisa de AAB novo**.
 - Versão nova na Play → suba `versionCode` (2, 3, 4…) e `versionName` no
-  `android/app/build.gradle`.
+  `android/app/build.gradle` e rode o `tools\build-aab.ps1`.
 
 ---
 
@@ -303,23 +321,28 @@ usa esse contato e a ANPD pode, também.
 
 **No projeto (feito):**
 - [x] Permissão de localização
-- [x] Config de assinatura de release
-- [x] Exclusão de conta (app + SQL + web)
+- [x] Config de assinatura de release (+ caminho do keystore corrigido)
+- [x] Exclusão de conta (app + SQL + web) — **SQL aplicado e confirmado no banco**
 - [x] Política de privacidade publicada
 - [x] Ícone 512 e gráfico de destaque 1024×500
 - [x] `targetSdk` 36 / `minSdk` 24
 - [x] Build do site passando
+- [x] Segurança do banco revisada (`migration_seguranca_v3.sql` aplicada)
+- [x] Nota do jogo contando na média (`migration_nota_jogo_na_media.sql` aplicada)
+- [x] Java 21 + Android SDK instalados na máquina (sem Android Studio)
+- [x] **Keystore criado** e **AAB v1.0 assinado e verificado** (14,8 MB)
+- [x] Gerador do AAB: `tools/build-aab.ps1`
 
 **Você precisa fazer:**
-- [ ] Rodar `supabase/migration_exclusao_conta.sql` no Supabase
 - [ ] Trocar `contato@rankhooper.app` pelo e-mail real (em `public/privacidade.html`)
+      — você decidiu deixar como está por enquanto; a Google usa esse contato
 - [ ] `git push` (publica a política de privacidade na Vercel)
 - [ ] Criar a conta de desenvolvedor e pagar os US$ 25
-- [ ] Criar o keystore + `keystore.properties`
-- [ ] Gerar o AAB (`gradlew bundleRelease`)
-- [ ] Criar a conta demo do revisor
+- [ ] Criar a conta demo do revisor (perfil completo + pelo menos uma partida)
 - [ ] Tirar as capturas de tela
 - [ ] Preencher a ficha, Segurança dos dados, classificação e acesso ao app
+- [ ] Ativar o **Play App Signing** no primeiro envio (fica com a chave real; o
+      nosso keystore passa a ser só a *upload key*)
 - [ ] Teste interno → teste fechado (12 testadores/14 dias) → produção
 
 ---

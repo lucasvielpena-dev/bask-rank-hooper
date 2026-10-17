@@ -131,16 +131,21 @@ npm start        # http://localhost:3000
 2. Em **Settings → Environment Variables**, adicione `REACT_APP_SUPABASE_URL` e `REACT_APP_SUPABASE_ANON_KEY`.
 3. Deploy. O `vercel.json` já configura build para Create React App.
 
-### 5. App Android (APK)
+### 5. App Android (AAB/APK)
 
-Veja `docs/GERAR_APK.md`. Resumo:
+Guia: **`docs/GERAR_APK.md`**. Nesta máquina já está instalado o necessário
+(Node 24, **Java 21** e Android SDK em `%LOCALAPPDATA%`) — não precisa de Android Studio.
+O Capacitor 8 exige Java 21.
 
-```bash
-npm run cap:sync    # build web + npx cap sync android
-npm run cap:open    # abre no Android Studio
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\build-aab.ps1
 ```
 
-`capacitor.config.ts` define `server.url = LIVE_URL` (site na Vercel), ou seja, o APK é um "shell" que sempre carrega a versão mais recente do site. Só é preciso gerar APK novo se mudar ícone, nome, `appId` ou permissões nativas.
+O script builda o site, sincroniza o Capacitor, roda o Gradle e deixa o AAB em
+`..\play-store\`. ⚠️ No Windows **não** use `npm run build`: o script do `package.json`
+está em sintaxe de Linux e o `cmd.exe` quebra nele.
+
+`capacitor.config.ts` define `server.url = LIVE_URL` (site na Vercel), ou seja, o app é um "shell" que sempre carrega a versão mais recente do site. Só é preciso gerar AAB novo se mudar ícone, splash, nome, `appId` ou permissões nativas.
 
 ### 6. Ícone e tela de entrada (Android + PWA)
 
@@ -179,14 +184,14 @@ Três coisas que a Play exige e que já estão prontas no projeto:
 | --- | --- |
 | Política de privacidade (URL pública) | `public/privacidade.html` → `/privacidade.html` |
 | Exclusão de conta (no app + na web) | `supabase/migration_exclusao_conta.sql` + menu do perfil |
-| AAB assinado | `android/keystore.properties.example` + config no `android/app/build.gradle` |
+| AAB assinado | `android/upload-keystore.jks` + `android/keystore.properties` (locais, fora do Git) |
+| Gerador do AAB | `tools/build-aab.ps1` (um comando) |
 
-Para gerar o bundle de loja (na máquina com Android Studio):
+Para gerar o bundle de loja:
 
-```bash
-npm run cap:sync
-cd android && ./gradlew bundleRelease
-# saída: android/app/build/outputs/bundle/release/app-release.aab
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\build-aab.ps1
+# saída: ..\play-store\ranks-hoops-v1.0-1.aab
 ```
 
 ---
