@@ -111,8 +111,17 @@ function Grafico({ serie }) {
 
   const linhasGrade = [2, 3, 4, 5];
 
+  // `height: auto` como ATRIBUTO é inválido em SVG: o React avisava no console
+  // e o navegador caía na altura padrão (150px), encolhendo o gráfico. Como
+  // estilo, o navegador calcula a altura pela proporção do viewBox.
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="auto" style={{ display: 'block', overflow: 'visible' }} role="img" aria-label="Evolução mensal">
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      width="100%"
+      style={{ display: 'block', width: '100%', height: 'auto', overflow: 'visible' }}
+      role="img"
+      aria-label="Evolução mensal"
+    >
       {/* grade */}
       {linhasGrade.map((v) => (
         <g key={v}>
