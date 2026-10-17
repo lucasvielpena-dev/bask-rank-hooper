@@ -152,9 +152,13 @@ export default function Atletas({ profile }) {
 
       const avaliadosSet = new Set((minhasAvaliacoes || []).map(a => a.jogador_id));
 
-      // Mostra todos os jogadores do estado, não apenas da cidade — assim o
-      // atleta sempre aparece, mesmo se a cidade do perfil mudar.
-      const players = (jogs || []).map(j => ({
+      // Mostra apenas atletas da mesma cidade do perfil, com filtro robusto
+      // (ignora maiúsculas/minúsculas, espaços extras e sufixo "- UF").
+      const cityNorm = (selectedCity || '').trim().toLowerCase().replace(/\s*-\s*[a-z]{2}$/, '');
+      const players = (jogs || []).filter(j => {
+        const jogadorCity = (j.cidade || '').trim().toLowerCase().replace(/\s*-\s*[a-z]{2}$/, '');
+        return jogadorCity === cityNorm;
+      }).map(j => ({
         ...j,
         ja_votou_hoje: avaliadosSet.has(j.id)
       }));
