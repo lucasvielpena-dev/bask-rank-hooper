@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { supabase, torneiosAPI, equipesAPI, torneioJogosAPI, profilesAPI } from '../lib/supabase';
+import { supabase, torneiosAPI, equipesAPI, torneioJogosAPI, profilesAPI, notasJogoAPI } from '../lib/supabase';
 import { IconCalendario, IconSportDynamic } from '../components/Icons';
 import { TorneiosBackground } from '../components/AnimatedBackgrounds';
 import { useEsporte } from '../contexts/EsporteContext';
+import { GRADES, GradePicker, gradePorValor, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
 
 // Formatos de Torneio Traduzidos
 const FORMATOS = {
@@ -296,6 +297,17 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
   const [expandedTeamId, setExpandedTeamId] = useState(null);
   const [totalJogadores, setTotalJogadores] = useState(0);
 
+  // Avaliação anônima do confronto (nota da partida por letra)
+  const [notaJogo, setNotaJogo] = useState(null);
+  const [notaJogadores, setNotaJogadores] = useState([]);
+  const [notaResumo, setNotaResumo] = useState({});
+  const [notaMinhas, setNotaMinhas] = useState({});
+  const [notaAlvo, setNotaAlvo] = useState(null);
+  const [notaGrade, setNotaGrade] = useState(null);
+  const [notaComentario, setNotaComentario] = useState('');
+  const [enviandoNota, setEnviandoNota] = useState(false);
+  const [erroNota, setErroNota] = useState(null);
+
   const isOrganizador = profile.id === torneio.organizador_id;
 
   useEffect(() => {
@@ -346,6 +358,83 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
       }
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  // ============================================================
+  // Avaliação anônima do confronto (nota da partida por letra)
+  // ============================================================
+  async function abrirNotas(jogo) {
+    setNotaJogo(jogo);
+    setNotaJogadores([]);
+    setNotaResumo({});
+    setNotaMinhas({});
+    setErroNota(null);
+    try {
+      const idsEquipes = [jogo.equipe_a_id, jogo.equipe_b_id].filter(Boolean);
+      let lista = [];
+      if (idsEquipes.length) {
+        const { data: vinc } = await supabase
+          .from('equipe_jogadores')
+          .select('id, equipe_id, aprovado, jogador:profiles(id, nome_completo, apelido, foto_perfil, player_id)')
+          .in('equipe_id', idsEquipes);
+        lista = (vinc || [])
+          .filter((v) => v.aprovado && v.jogador?.player_id)
+          .map((v) => ({
+            id: v.id,
+            jogadorId: v.jogador.player_id,
+            nome: v.jogador.apelido || v.jogador.nome_completo || 'Atleta',
+            foto: v.jogador.foto_perfil,
+            equipe: v.equipe_id === jogo.equipe_a_id ? 'A' : 'B',
+          }));
+      }
+      setNotaJogadores(lista);
+
+      const [{ data: resumo }, { data: minhas }] = await Promise.all([
+        notasJogoAPI.resumo({ torneioJogoId: jogo.id }),
+        notasJogoAPI.minhas({ torneioJogoId: jogo.id }),
+      ]);
+      setNotaResumo(Object.fromEntries((resumo || []).map((r) => [r.jogador_id, r])));
+      setNotaMinhas(Object.fromEntries((minhas || []).map((m) => [m.jogador_id, m])));
+    } catch (e) {
+      console.error('Erro ao abrir avaliações do confronto:', e);
+      setErroNota('Não foi possível carregar as avaliações. Confirme se a migration SQL foi aplicada.');
+    }
+  }
+
+  async function handleSubmitNota(e) {
+    e.preventDefault();
+    const grade = GRADES.find((g) => g.key === notaGrade);
+    if (!grade || !notaAlvo) {
+      setErroNota('Escolha a nota da partida (A+ a D/F).');
+      return;
+    }
+    setEnviandoNota(true);
+    try {
+      const { data, error } = await notasJogoAPI.salvar({
+        jogadorId: notaAlvo.jogadorId,
+        nota: grade.valor,
+        torneioJogoId: notaJogo.id,
+        comentario: notaComentario.trim() || null,
+      });
+      if (error || !data?.sucesso) {
+        throw new Error(data?.erro || error?.message || 'Erro ao registrar nota.');
+      }
+      setNotaMinhas((prev) => ({
+        ...prev,
+        [notaAlvo.jogadorId]: {
+          jogador_id: notaAlvo.jogadorId,
+          nota: grade.valor,
+          comentario: notaComentario.trim() || null,
+        },
+      }));
+      const { data: resumo } = await notasJogoAPI.resumo({ torneioJogoId: notaJogo.id });
+      setNotaResumo(Object.fromEntries((resumo || []).map((r) => [r.jogador_id, r])));
+      setNotaAlvo(null);
+    } catch (err) {
+      setErroNota(err.message || 'Erro ao avaliar');
+    } finally {
+      setEnviandoNota(false);
     }
   }
 
@@ -526,6 +615,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
 
   const lideres = calcularLideres();
   const classificacao = calcularClassificacao();
+  const gradeAtualNota = GRADES.find((g) => g.key === notaGrade) || null;
 
   if (activeConsoleJogo) {
     return (
@@ -1208,6 +1298,27 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                         ⚙️ Console do Placar ao Vivo
                       </button>
                     )}
+
+                    {j.status === 'finalizado' && j.equipe_a_id && j.equipe_b_id && (
+                      <button
+                        onClick={() => abrirNotas(j)}
+                        style={{
+                          width: '100%',
+                          marginTop: '12px',
+                          background: 'rgba(200,241,53,0.10)',
+                          border: '1px solid var(--accent)',
+                          color: 'var(--accent)',
+                          padding: '10px 14px',
+                          borderRadius: '12px',
+                          fontWeight: 800,
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                          fontFamily: 'inherit'
+                        }}
+                      >
+                        ⭐ Avaliar quem jogou
+                      </button>
+                    )}
                   </div>
                 );
               })
@@ -1333,6 +1444,132 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
           onClose={() => setShowInscricao(false)} 
           onSuccess={() => { setShowInscricao(false); carregarDados(); }} 
         />
+      )}
+
+      {/* Modal Avaliação Anônima do Confronto */}
+      {notaJogo && (
+        <div className="modal-overlay" onClick={() => setNotaJogo(null)}>
+          <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+            <div className="modal-handle" />
+            <h3 style={{ fontWeight: 900, textAlign: 'center', marginBottom: 2 }}>
+              {notaJogo.equipe_a?.nome} {notaJogo.placar_a} <span style={{ color: 'var(--text-muted)' }}>x</span> {notaJogo.placar_b} {notaJogo.equipe_b?.nome}
+            </h3>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
+              {notaJogo.fase}{notaJogo.grupo ? ` · ${notaJogo.grupo}` : ''}
+            </p>
+
+            <div className="section-title">Quem jogou — avaliar</div>
+            <LegendaRendimento />
+            <div className="card" style={{ marginBottom: 12 }}>
+              {notaJogadores.length === 0 ? (
+                <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                  Nenhum atleta com perfil de jogador vinculado neste confronto.
+                </div>
+              ) : (
+                notaJogadores.map((j) => {
+                  const r = notaResumo[j.jogadorId];
+                  const minha = notaMinhas[j.jogadorId];
+                  const souEu = profile?.player_id === j.jogadorId;
+                  return (
+                    <div key={j.id} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
+                      <span className="badge" style={{ minWidth: 20, textAlign: 'center' }}>{j.equipe}</span>
+                      {j.foto ? (
+                        <img src={j.foto} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+                      ) : (
+                        <div className="avatar" style={{ width: 32, height: 32, fontSize: 12 }}>{j.nome.slice(0, 2).toUpperCase()}</div>
+                      )}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{j.nome}</div>
+                        <div style={{ marginTop: 2 }}>
+                          <RendimentoPill media={r?.media} total={r?.total} showLabel />
+                        </div>
+                      </div>
+                      {!souEu && (
+                        <button
+                          className={`btn ${minha ? 'btn-secondary' : 'btn-primary'} btn-sm`}
+                          disabled={enviandoNota}
+                          onClick={() => {
+                            setErroNota(null);
+                            setNotaAlvo(j);
+                            setNotaGrade(minha ? gradePorValor(minha.nota) : null);
+                            setNotaComentario(minha?.comentario || '');
+                          }}
+                        >
+                          {minha ? `✓ ${gradePorValor(minha.nota)}` : 'Avaliar'}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+            {erroNota && <p style={{ fontSize: 12, color: 'var(--text-danger)', marginBottom: 8 }}>{erroNota}</p>}
+            <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>
+              🔒 As notas são <strong>anônimas</strong>: ninguém vê quem avaliou quem. O <strong>semáforo</strong> mostra só o resultado do grupo.
+            </p>
+            <button className="btn btn-secondary" style={{ width: '100%' }} onClick={() => setNotaJogo(null)}>Fechar</button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Nota do Atleta (por letra) */}
+      {notaAlvo && (
+        <div className="modal-overlay" onClick={() => { if (!enviandoNota) setNotaAlvo(null); }}>
+          <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-handle" />
+            <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 2 }}>
+              Nota da partida de {notaAlvo.nome}
+            </h3>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
+              Como ele jogou neste confronto? Sua resposta é anônima.
+            </p>
+            <form onSubmit={handleSubmitNota} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <GradePicker value={notaGrade} onChange={setNotaGrade} disabled={enviandoNota} />
+
+              {gradeAtualNota ? (
+                <div style={{
+                  marginTop: 12, padding: '12px 14px', borderRadius: 12,
+                  background: 'var(--bg-card)', border: `1px solid ${gradeAtualNota.cor}66`,
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <span style={{
+                      fontSize: 36, fontWeight: 900, lineHeight: 1,
+                      fontFamily: "'Barlow Condensed', sans-serif", color: gradeAtualNota.cor,
+                    }}>
+                      {gradeAtualNota.key}
+                    </span>
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 800 }}>{gradeAtualNota.titulo}</div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{gradeAtualNota.desc}</div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14, marginBottom: 0 }}>
+                  Toque em uma letra para ver o que ela significa.
+                </p>
+              )}
+
+              <input
+                type="text"
+                maxLength="200"
+                value={notaComentario}
+                onChange={(e) => setNotaComentario(e.target.value)}
+                placeholder="Comentário (opcional)"
+                disabled={enviandoNota}
+                style={{ marginTop: 4 }}
+              />
+              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                <button type="button" className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setNotaAlvo(null)} disabled={enviandoNota}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 2 }} disabled={enviandoNota || !notaGrade}>
+                  {enviandoNota ? 'Enviando...' : 'Confirmar nota'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

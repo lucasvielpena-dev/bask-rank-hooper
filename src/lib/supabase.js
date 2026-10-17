@@ -145,29 +145,32 @@ export const votacaoHandebolAPI = {
 // Tudo passa por RPC: a tabela é fechada e ninguém vê quem avaliou.
 // ============================================================
 export const notasJogoAPI = {
-  salvar: async ({ jogadorId, nota, partidaId = null, racaoId = null, comentario = null }) => {
+  salvar: async ({ jogadorId, nota, partidaId = null, racaoId = null, torneioJogoId = null, comentario = null }) => {
     const { data, error } = await supabase.rpc('salvar_nota_jogo', {
       p_jogador_id: jogadorId,
       p_nota: nota,
       p_partida_id: partidaId,
       p_racao_id: racaoId,
+      p_torneio_jogo_id: torneioJogoId,
       p_comentario: comentario,
     });
     return { data, error };
   },
 
-  minhas: async ({ partidaId = null, racaoId = null } = {}) => {
+  minhas: async ({ partidaId = null, racaoId = null, torneioJogoId = null } = {}) => {
     const { data, error } = await supabase.rpc('minhas_notas_jogo', {
       p_partida_id: partidaId,
       p_racao_id: racaoId,
+      p_torneio_jogo_id: torneioJogoId,
     });
     return { data: data || [], error };
   },
 
-  resumo: async ({ partidaId = null, racaoId = null } = {}) => {
+  resumo: async ({ partidaId = null, racaoId = null, torneioJogoId = null } = {}) => {
     const { data, error } = await supabase.rpc('resumo_notas_jogo', {
       p_partida_id: partidaId,
       p_racao_id: racaoId,
+      p_torneio_jogo_id: torneioJogoId,
     });
     return { data: data || [], error };
   },

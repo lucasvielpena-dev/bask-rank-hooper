@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { supabase, racoesAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
+import { racoesAPI, notasJogoAPI } from '../lib/supabase';
 import { resolveAuthUserId } from '../lib/authUser';
-import { useEsporte } from '../contexts/EsporteContext';
-import { GRADES, GradePicker, gradePorValor } from '../components/GameGrade';
+import { GRADES, GradePicker, gradePorValor, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
 
 function formatWhen(iso) {
   if (!iso) return '';
@@ -36,14 +35,12 @@ export default function Racoes({ profile, onNavigate }) {
   const cidade = profile?.cidade_atual || profile?.cidade || 'Altamira';
   const uf = profile?.uf || 'PA';
 
-  const { esporte, cfg } = useEsporte();
-  const apiVoto = esporte === 'handebol' ? votacaoHandebolAPI : votacaoAPI;
-
   const [votingPlayer, setVotingPlayer] = useState(null);
   const [notaGrade, setNotaGrade] = useState(null);
   const [comentarioVoto, setComentarioVoto] = useState('');
   const [enviandoVoto, setEnviandoVoto] = useState(false);
-  const [avaliados, setAvaliados] = useState({});
+  const [minhasNotas, setMinhasNotas] = useState({});
+  const [resumos, setResumos] = useState({});
 
   async function load() {
     setLoading(true);
@@ -190,42 +187,39 @@ export default function Racoes({ profile, onNavigate }) {
   function abrirAvaliacao(p) {
     const jid = jogadorIdDe(p);
     if (!jid) return;
-    const anterior = avaliados[jid];
+    const anterior = minhasNotas[jid];
     setVotingPlayer({
       id: jid,
       nome: p.jogador?.nome || p.perfil?.nome_completo || 'Atleta',
       apelido: p.jogador?.apelido || p.perfil?.apelido || null,
       foto_url: fotoParticipante(p),
     });
-    setNotaGrade(anterior && typeof anterior === 'object'
-      ? gradePorValor(anterior[cfg.habilidades[0].key])
-      : null);
+    setNotaGrade(anterior ? gradePorValor(anterior.nota) : null);
     setComentarioVoto((anterior && anterior.comentario) || '');
   }
 
-  async function carregarMeusVotos(ids) {
-    if (!ids.length) { setAvaliados({}); return; }
+  // Notas são anônimas: a RPC devolve só o que EU avaliei + o resumo agregado.
+  async function carregarNotas(racaoId) {
     try {
-      const uid = await resolveAuthUserId();
-      if (!uid) return;
-      const { data } = await supabase
-        .from('avaliacoes')
-        .select('*')
-        .eq('avaliador_id', uid)
-        .in('jogador_id', ids);
-      setAvaliados(Object.fromEntries((data || []).map((a) => [a.jogador_id, a])));
+      const [minhas, resumo] = await Promise.all([
+        notasJogoAPI.minhas({ racaoId }),
+        notasJogoAPI.resumo({ racaoId }),
+      ]);
+      setMinhasNotas(Object.fromEntries((minhas.data || []).map((m) => [m.jogador_id, m])));
+      setResumos(Object.fromEntries((resumo.data || []).map((r) => [r.jogador_id, r])));
     } catch (e) {
-      setAvaliados({});
+      setMinhasNotas({});
+      setResumos({});
     }
   }
 
   useEffect(() => {
-    if (!selected || selected.status !== 'finalizado') { setAvaliados({}); return; }
-    const ids = (selected.racao_participantes || [])
-      .filter((p) => p.status === 'confirmado' && p.usuario_id !== profile?.id)
-      .map(jogadorIdDe)
-      .filter(Boolean);
-    carregarMeusVotos(ids);
+    if (!selected || selected.status !== 'finalizado') {
+      setMinhasNotas({});
+      setResumos({});
+      return;
+    }
+    carregarNotas(selected.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
@@ -233,23 +227,30 @@ export default function Racoes({ profile, onNavigate }) {
     e.preventDefault();
     const grade = GRADES.find((g) => g.key === notaGrade);
     if (!grade) {
-      showMsg('Escolha a nota da partida (A+ a F)', 'error');
+      showMsg('Escolha a nota da partida (A+ a D/F)', 'error');
       return;
     }
     setEnviandoVoto(true);
     try {
-      // Cada letra vale uma nota equivalente em todos os fundamentos,
-      // mantendo o mesmo cálculo de média do ranking.
-      const payload = Object.fromEntries(cfg.habilidades.map((h) => [h.key, grade.valor]));
-      const { data, error } = await apiVoto.votar(votingPlayer.id, {
-        ...payload,
+      const { data, error } = await notasJogoAPI.salvar({
+        jogadorId: votingPlayer.id,
+        nota: grade.valor,
+        racaoId: selected.id,
         comentario: comentarioVoto.trim() || null,
       });
       if (error || !data?.sucesso) {
         throw new Error(data?.erro || error?.message || 'Erro ao registrar avaliação.');
       }
-      setAvaliados((prev) => ({ ...prev, [votingPlayer.id]: { [cfg.habilidades[0].key]: grade.valor, comentario: comentarioVoto.trim() || null } }));
-      showMsg(`✓ Nota ${grade.key} registrada! Nova média: ★ ${Number(data.media_estrelas || 0).toFixed(1)}`);
+      setMinhasNotas((prev) => ({
+        ...prev,
+        [votingPlayer.id]: {
+          jogador_id: votingPlayer.id,
+          nota: grade.valor,
+          comentario: comentarioVoto.trim() || null,
+        },
+      }));
+      await carregarNotas(selected.id);
+      showMsg(`✓ Nota ${grade.key} registrada (anônima)`);
       setVotingPlayer(null);
     } catch (err) {
       showMsg(err.message || 'Erro ao avaliar', 'error');
@@ -289,6 +290,9 @@ export default function Racoes({ profile, onNavigate }) {
           )}
           {isCreator && r.status !== 'finalizado' && r.status !== 'cancelado' && (
             <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => handleFinish(r)}>Finalizar</button>
+          )}
+          {r.status === 'finalizado' && (
+            <span style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 700 }}>Avaliar quem jogou →</span>
           )}
         </div>
       </div>
@@ -395,6 +399,7 @@ export default function Racoes({ profile, onNavigate }) {
                 ? `Quem jogou — avalie agora`
                 : `Participantes (${countParts(selected)})`}
             </div>
+            {selected.status === 'finalizado' && <LegendaRendimento />}
             <div className="card" style={{ marginBottom: 12 }}>
               {(selected.racao_participantes || []).filter((p) => p.status === 'confirmado').length === 0 ? (
                 <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Ninguém ainda</div>
@@ -416,17 +421,22 @@ export default function Racoes({ profile, onNavigate }) {
                             {nome.toString().slice(0, 2).toUpperCase()}
                           </div>
                         )}
-                        <div style={{ flex: 1, fontSize: 13, fontWeight: 600 }}>
-                          {nome}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600 }}>{nome}</div>
+                          {selected.status === 'finalizado' && jid && (
+                            <div style={{ marginTop: 2 }}>
+                              <RendimentoPill media={resumos[jid]?.media} total={resumos[jid]?.total} showLabel />
+                            </div>
+                          )}
                         </div>
                         {podeAvaliar && (
                           jid ? (
                             <button
-                              className={`btn ${avaliados[jid] ? 'btn-secondary' : 'btn-primary'} btn-sm`}
+                              className={`btn ${minhasNotas[jid] ? 'btn-secondary' : 'btn-primary'} btn-sm`}
                               disabled={busy || enviandoVoto}
                               onClick={() => abrirAvaliacao(p)}
                             >
-                              {avaliados[jid] ? '✓ Avaliado' : 'Avaliar'}
+                              {minhasNotas[jid] ? `✓ ${gradePorValor(minhasNotas[jid].nota)}` : 'Avaliar'}
                             </button>
                           ) : (
                             <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>sem perfil de atleta</span>
@@ -439,7 +449,7 @@ export default function Racoes({ profile, onNavigate }) {
             </div>
             {selected.status === 'finalizado' && (
               <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>
-                Dê sua nota para quem jogou neste rachão — isso alimenta o ranking.
+                🔒 Notas <strong>anônimas</strong>: ninguém vê quem avaliou quem. O semáforo mostra só o resultado do grupo.
               </p>
             )}
             <button className="btn btn-secondary" style={{ width: '100%' }} onClick={() => setSelected(null)}>Fechar</button>
