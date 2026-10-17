@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { racoesAPI } from '../lib/supabase';
+import { useEffect, useMemo, useState, memo } from 'react';
+import { supabase, racoesAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
 import { resolveAuthUserId } from '../lib/authUser';
 import { useEsporte } from '../contexts/EsporteContext';
 
@@ -15,6 +15,36 @@ function formatWhen(iso) {
 function countParts(r) {
   return (r.racao_participantes || []).filter((p) => p.status === 'confirmado').length;
 }
+
+const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
+
+const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
+  const [hover, setHover] = useState(0);
+  return (
+    <div style={{ display: 'flex', gap: 6, justifyContent: 'center', margin: '4px 0' }}>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => !disabled && onChange(i)}
+          onMouseEnter={() => !disabled && setHover(i)}
+          onMouseLeave={() => !disabled && setHover(0)}
+          disabled={disabled}
+          style={{
+            background: 'none', border: 'none',
+            cursor: disabled ? 'default' : 'pointer', padding: '2px',
+            transition: 'transform 0.1s',
+            transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
+          }}
+        >
+          <svg width="26" height="26" viewBox="0 0 24 24" fill={(hover || value) >= i ? '#C8F135' : 'none'} stroke={(hover || value) >= i ? '#C8F135' : '#64748B'} strokeWidth="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+        </button>
+      ))}
+    </div>
+  );
+});
 
 export default function Racoes({ profile, onNavigate }) {
   const [lista, setLista] = useState([]);
@@ -34,6 +64,16 @@ export default function Racoes({ profile, onNavigate }) {
 
   const cidade = profile?.cidade_atual || profile?.cidade || 'Altamira';
   const uf = profile?.uf || 'PA';
+
+  const { esporte, cfg } = useEsporte();
+  const fundamentos = cfg.habilidades;
+  const apiVoto = esporte === 'handebol' ? votacaoHandebolAPI : votacaoAPI;
+
+  const [votingPlayer, setVotingPlayer] = useState(null);
+  const [estrelasVoto, setEstrelasVoto] = useState({});
+  const [comentarioVoto, setComentarioVoto] = useState('');
+  const [enviandoVoto, setEnviandoVoto] = useState(false);
+  const [avaliados, setAvaliados] = useState({});
 
   async function load() {
     setLoading(true);
@@ -92,7 +132,10 @@ export default function Racoes({ profile, onNavigate }) {
       setShowCreate(false);
       setForm({ titulo: '', local: '', data_hora: '', max_jogadores: 10, nivel: 'Todos' });
       await load();
-      if (data) setSelected(data);
+      if (data?.id) {
+        const { data: full } = await racoesAPI.obter(data.id);
+        setSelected(full || data);
+      }
     } catch (err) {
       showMsg(err.message || 'Erro ao criar', 'error');
     } finally {
@@ -149,13 +192,92 @@ export default function Racoes({ profile, onNavigate }) {
     try {
       const { error } = await racoesAPI.finalizar(r.id);
       if (error) throw error;
-      showMsg('Rachão finalizado! Avaliem-se em Atletas.');
+      showMsg('Rachão finalizado! Avalie quem jogou.');
       await load();
-      setSelected(null);
+      const { data } = await racoesAPI.obter(r.id);
+      setSelected(data || { ...r, status: 'finalizado' });
     } catch (err) {
       showMsg(err.message || 'Erro ao finalizar', 'error');
     } finally {
       setBusy(false);
+    }
+  }
+
+  function jogadorIdDe(p) {
+    return p.jogador_id || p.perfil?.player_id || null;
+  }
+
+  function nomeParticipante(p) {
+    if (p.usuario_id === profile?.id) return 'Você';
+    return p.perfil?.apelido || p.perfil?.nome_completo || p.jogador?.apelido || p.jogador?.nome
+      || `Jogador ${String(p.usuario_id).slice(0, 6)}`;
+  }
+
+  function fotoParticipante(p) {
+    return p.perfil?.foto_perfil || p.jogador?.foto_url || null;
+  }
+
+  function abrirAvaliacao(p) {
+    const jid = jogadorIdDe(p);
+    if (!jid) return;
+    setVotingPlayer({
+      id: jid,
+      nome: p.jogador?.nome || p.perfil?.nome_completo || 'Atleta',
+      apelido: p.jogador?.apelido || p.perfil?.apelido || null,
+      foto_url: fotoParticipante(p),
+    });
+    setEstrelasVoto(Object.fromEntries(fundamentos.map((h) => [h.key, 0])));
+    setComentarioVoto('');
+  }
+
+  async function carregarMeusVotos(ids) {
+    if (!ids.length) { setAvaliados({}); return; }
+    try {
+      const uid = await resolveAuthUserId();
+      if (!uid) return;
+      const { data } = await supabase
+        .from('avaliacoes')
+        .select('jogador_id')
+        .eq('avaliador_id', uid)
+        .in('jogador_id', ids);
+      setAvaliados(Object.fromEntries((data || []).map((a) => [a.jogador_id, true])));
+    } catch (e) {
+      setAvaliados({});
+    }
+  }
+
+  useEffect(() => {
+    if (!selected || selected.status !== 'finalizado') { setAvaliados({}); return; }
+    const ids = (selected.racao_participantes || [])
+      .filter((p) => p.status === 'confirmado' && p.usuario_id !== profile?.id)
+      .map(jogadorIdDe)
+      .filter(Boolean);
+    carregarMeusVotos(ids);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
+
+  async function handleSubmitVoto(e) {
+    e.preventDefault();
+    if (fundamentos.some((f) => !estrelasVoto[f.key])) {
+      showMsg('Dê uma nota para todos os fundamentos', 'error');
+      return;
+    }
+    setEnviandoVoto(true);
+    try {
+      const { data, error } = await apiVoto.votar(votingPlayer.id, {
+        ...estrelasVoto,
+        comentario: comentarioVoto.trim() || null,
+      });
+      if (error || !data?.sucesso) {
+        throw new Error(data?.erro || error?.message || 'Erro ao registrar avaliação.');
+      }
+      setAvaliados((prev) => ({ ...prev, [votingPlayer.id]: true }));
+      showMsg(`✓ Avaliação registrada! Média: ★ ${Number(data.media_estrelas || 0).toFixed(1)}`);
+      setVotingPlayer(null);
+    } catch (err) {
+      showMsg(err.message || 'Erro ao avaliar', 'error');
+    } finally {
+      setEnviandoVoto(false);
     }
   }
 
@@ -289,7 +411,11 @@ export default function Racoes({ profile, onNavigate }) {
             <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12 }}>
               {selected.local || 'Local a definir'} · {formatWhen(selected.data_hora)}
             </p>
-            <div className="section-title">Participantes ({countParts(selected)})</div>
+            <div className="section-title">
+              {selected.status === 'finalizado'
+                ? `Quem jogou — avalie agora`
+                : `Participantes (${countParts(selected)})`}
+            </div>
             <div className="card" style={{ marginBottom: 12 }}>
               {(selected.racao_participantes || []).filter((p) => p.status === 'confirmado').length === 0 ? (
                 <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Ninguém ainda</div>
@@ -297,21 +423,36 @@ export default function Racoes({ profile, onNavigate }) {
                 (selected.racao_participantes || [])
                   .filter((p) => p.status === 'confirmado')
                   .map((p) => {
-                    const nome = p.usuario_id === profile?.id
-                      ? 'Você'
-                      : (p.perfil?.apelido || p.perfil?.nome_completo || p.jogador?.apelido || p.jogador?.nome || `Jogador ${String(p.usuario_id).slice(0, 6)}`);
+                    const nome = nomeParticipante(p);
+                    const foto = fotoParticipante(p);
+                    const jid = jogadorIdDe(p);
+                    const souEu = p.usuario_id === profile?.id;
+                    const podeAvaliar = selected.status === 'finalizado' && !souEu;
                     return (
                       <div key={p.id} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
-                        {p.perfil?.foto_perfil ? (
-                          <img src={p.perfil.foto_perfil} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+                        {foto ? (
+                          <img src={foto} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
                         ) : (
                           <div className="avatar" style={{ width: 32, height: 32, fontSize: 12 }}>
                             {nome.toString().slice(0, 2).toUpperCase()}
                           </div>
                         )}
-                        <div style={{ fontSize: 13, fontWeight: 600 }}>
+                        <div style={{ flex: 1, fontSize: 13, fontWeight: 600 }}>
                           {nome}
                         </div>
+                        {podeAvaliar && (
+                          jid ? (
+                            <button
+                              className={`btn ${avaliados[jid] ? 'btn-secondary' : 'btn-primary'} btn-sm`}
+                              disabled={busy || enviandoVoto}
+                              onClick={() => abrirAvaliacao(p)}
+                            >
+                              {avaliados[jid] ? '✓ Avaliado' : 'Avaliar'}
+                            </button>
+                          ) : (
+                            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>sem perfil de atleta</span>
+                          )
+                        )}
                       </div>
                     );
                   })
@@ -319,10 +460,75 @@ export default function Racoes({ profile, onNavigate }) {
             </div>
             {selected.status === 'finalizado' && (
               <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>
-                Rachão finalizado. Vá em <strong>Atletas</strong> para avaliar quem jogou com você.
+                Dê sua nota para quem jogou neste rachão — isso alimenta o ranking.
               </p>
             )}
             <button className="btn btn-secondary" style={{ width: '100%' }} onClick={() => setSelected(null)}>Fechar</button>
+          </div>
+        </div>
+      )}
+
+      {votingPlayer && (
+        <div className="modal-overlay" onClick={() => { if (!enviandoVoto) setVotingPlayer(null); }}>
+          <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-handle" />
+            <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 2 }}>
+              Avaliar {votingPlayer.apelido || votingPlayer.nome}
+            </h3>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
+              Dê uma nota de 1 a 5 estrelas para cada fundamento:
+            </p>
+            <form onSubmit={handleSubmitVoto} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {fundamentos.map((f) => {
+                const val = estrelasVoto[f.key] || 0;
+                return (
+                  <div key={f.key} style={{
+                    padding: '8px 12px', borderRadius: 12,
+                    background: val > 0 ? 'rgba(200,241,53,0.1)' : 'var(--bg-card)',
+                    border: val > 0 ? '1px solid rgba(200,241,53,0.3)' : '1px solid var(--border)',
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: 13, fontWeight: 700 }}>{f.label}</span>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: val > 0 ? 'var(--accent)' : 'var(--text-muted)' }}>
+                        {val > 0 ? `★ ${val}.0` : labelsNota[val] || 'Nota'}
+                      </span>
+                    </div>
+                    <StarPicker
+                      value={val}
+                      onChange={(v) => setEstrelasVoto((prev) => ({ ...prev, [f.key]: v }))}
+                      disabled={enviandoVoto}
+                    />
+                  </div>
+                );
+              })}
+              <input
+                type="text"
+                maxLength="200"
+                value={comentarioVoto}
+                onChange={(e) => setComentarioVoto(e.target.value)}
+                placeholder="Comentário (opcional)"
+                disabled={enviandoVoto}
+              />
+              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  style={{ flex: 1 }}
+                  onClick={() => setVotingPlayer(null)}
+                  disabled={enviandoVoto}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{ flex: 2 }}
+                  disabled={enviandoVoto || fundamentos.some((f) => !estrelasVoto[f.key])}
+                >
+                  {enviandoVoto ? 'Enviando...' : 'Confirmar avaliação'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
