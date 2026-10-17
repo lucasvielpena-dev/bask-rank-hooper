@@ -299,7 +299,7 @@ export default function Racoes({ profile, onNavigate }) {
                   .map((p) => {
                     const nome = p.usuario_id === profile?.id
                       ? 'Você'
-                      : (p.perfil?.apelido || p.perfil?.nome_completo || `Jogador ${String(p.usuario_id).slice(0, 6)}`);
+                      : (p.perfil?.apelido || p.perfil?.nome_completo || p.jogador?.apelido || p.jogador?.nome || `Jogador ${String(p.usuario_id).slice(0, 6)}`);
                     return (
                       <div key={p.id} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
                         {p.perfil?.foto_perfil ? (
