@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
 import { StatsBackground } from '../components/AnimatedBackgrounds';
 import { useEsporte } from '../contexts/EsporteContext';
+import LinhaEvolucao from '../components/LinhaEvolucao';
 
 
 
@@ -25,6 +26,8 @@ export default function Stats({ profile, onNavigate }) {
   // States do jogador público
   const [myPlayerInfo, setMyPlayerInfo] = useState(null);
   const [myRank, setMyRank] = useState('--');
+  const [evolucao, setEvolucao] = useState([]);
+  const [loadingEvolucao, setLoadingEvolucao] = useState(true);
   const [careerStats, setCareerStats] = useState({ games: 0, points: 0, rebounds: 0, assists: 0, steals: 0, blocks: 0 });
 
   const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
@@ -130,6 +133,26 @@ export default function Stats({ profile, onNavigate }) {
           }
         }
 
+        // Linha de evolução: média mensal das avaliações recebidas
+        setLoadingEvolucao(true);
+        const { data: evo, error: evoError } = await supabase.rpc('evolucao_jogador', {
+          p_jogador_id: profile.player_id,
+          p_meses: 6,
+        });
+        if (evoError) {
+          console.warn('Linha de evolução indisponível:', evoError.message);
+          setEvolucao([]);
+        } else {
+          setEvolucao((evo || []).map(r => ({
+            mes: r.mes,
+            media: r.media === null || r.media === undefined ? null : Number(r.media),
+            total: Number(r.total) || 0,
+            jogos: Number(r.jogos) || 0,
+            votos: Number(r.votos) || 0,
+            pct_bom: Number(r.pct_bom) || 0,
+          })));
+        }
+
         // Obter histórico de partidas oficiais/de quadra
         const { data: myMatches } = await supabase
           .from('partida_jogadores')
@@ -200,6 +223,7 @@ export default function Stats({ profile, onNavigate }) {
       showToast('Erro ao carregar dados.', 'error');
     } finally {
       setLoading(false);
+      setLoadingEvolucao(false);
     }
   }
 
@@ -315,15 +339,6 @@ export default function Stats({ profile, onNavigate }) {
 
   const starsVal = myPlayerInfo?.media_estrelas || 0;
   const badgeText = starsVal >= 4.5 ? 'ELITE' : starsVal >= 4.0 ? 'DESTAQUE' : starsVal >= 3.5 ? 'PROMESSA' : '';
-
-  let evolutionIndex = 0;
-  if (starsVal >= 4.5) {
-    evolutionIndex = 3;
-  } else if (starsVal >= 4.0) {
-    evolutionIndex = 2;
-  } else if (starsVal >= 3.0) {
-    evolutionIndex = 1;
-  }
 
   if (loading) {
     return (
@@ -442,29 +457,8 @@ export default function Stats({ profile, onNavigate }) {
           ))}
         </div>
 
-        {/* Linha de Evolução */}
-        <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '14px', padding: '10px 12px', marginBottom: 10 }}>
-          <div style={{ fontSize: '9px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.04em', textTransform: 'uppercase', fontFamily: "'Oswald',sans-serif" }}>
-            LINHA DE EVOLUÇÃO
-          </div>
-          <div className="evolution-timeline" style={{ margin: '10px 0 4px' }}>
-            <div className="evolution-progress-line" style={{ width: `${evolutionIndex * 33.3}%` }} />
-            {[
-              { label: 'Rookie', year: '2023', val: 0 },
-              { label: 'Promessa', year: '2024', val: 1 },
-              { label: 'Elite', year: '2025', val: 2 },
-              { label: 'MVP', year: '2026', val: 3 },
-            ].map(step => (
-              <div key={step.label} className={`evolution-step ${evolutionIndex >= step.val ? 'completed' : ''} ${evolutionIndex === step.val ? 'active' : ''}`}>
-                <div className="evolution-dot" style={{ width: '18px', height: '18px', fontSize: '9px' }}>
-                  {step.val === 3 ? '★' : step.val + 1}
-                </div>
-                <div className="evolution-label" style={{ fontSize: '8px', marginTop: 4 }}>{step.label}</div>
-                <div className="evolution-year" style={{ fontSize: '7px' }}>{step.year}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Linha de Evolução (média mensal real das avaliações recebidas) */}
+        <LinhaEvolucao serie={evolucao} loading={loadingEvolucao} />
 
         {/* Tab Bar interna */}
         <div style={{

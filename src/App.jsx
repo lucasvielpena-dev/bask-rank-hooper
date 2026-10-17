@@ -27,7 +27,7 @@ function AppRoutes() {
   const [pageProps, setPageProps] = useState({});
 
   useEffect(() => {
-    const swVersion = 'v21';
+    const swVersion = 'v22';
     const currentVersion = localStorage.getItem('sw_version');
     if (currentVersion !== swVersion) {
       if ('serviceWorker' in navigator) {
