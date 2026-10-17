@@ -152,6 +152,7 @@ O script reescreve:
 | `public/icon-192.png`, `public/icon-512.png`, `public/apple-touch-icon.png` | ícone do site instalado (PWA) e do navegador |
 | `android/app/src/main/res/mipmap-*/ic_launcher*.png` | ícone do APK na tela inicial do celular |
 | `android/app/src/main/res/drawable*/splash.png` | tela de abertura (splash) do APK |
+| `docs/play-store/icon-512.png`, `docs/play-store/feature-graphic.png` | ficha da Google Play (ícone 512 e gráfico de destaque 1024×500) |
 
 Depois de rodar o script é preciso **gerar o APK de novo** para o ícone/splash novos
 aparecerem (`npm run cap:sync` + build no Android Studio). O site (PWA) atualiza sozinho
@@ -160,6 +161,27 @@ no deploy da Vercel.
 A cor de fundo do app (`#0C0C14`) está em `android/app/src/main/res/values/colors.xml`,
 em `values/styles.xml` (tema de entrada) e em `capacitor.config.ts` — é o que evita a
 "tela branca" ao abrir.
+
+### 7. Publicar na Google Play
+
+Guia completo: **`docs/PUBLICAR_PLAY_STORE.md`** (conta de desenvolvedor, keystore, AAB,
+fichas da loja, Segurança dos dados, capturas de tela e checklist final).
+
+Três coisas que a Play exige e que já estão prontas no projeto:
+
+| Item | Onde está |
+| --- | --- |
+| Política de privacidade (URL pública) | `public/privacidade.html` → `/privacidade.html` |
+| Exclusão de conta (no app + na web) | `supabase/migration_exclusao_conta.sql` + menu do perfil |
+| AAB assinado | `android/keystore.properties.example` + config no `android/app/build.gradle` |
+
+Para gerar o bundle de loja (na máquina com Android Studio):
+
+```bash
+npm run cap:sync
+cd android && ./gradlew bundleRelease
+# saída: android/app/build/outputs/bundle/release/app-release.aab
+```
 
 ---
 

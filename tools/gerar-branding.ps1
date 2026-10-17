@@ -8,6 +8,8 @@
 #    - android mipmap-*/ic_launcher.png | ic_launcher_round.png
 #                                      | ic_launcher_foreground.png
 #    - android drawable*/splash.png (a "tela de entrada" do APK)
+#    - docs/play-store/feature-graphic.png   (Play Store: 1024x500)
+#    - docs/play-store/icon-512.png          (Play Store: icone 512x512)
 #
 #  Paleta: verde-limao #C8F135 ... #D4FF4A / #A8D020  |  fundo #0C0C14
 #  Uso:    powershell -ExecutionPolicy Bypass -File tools\gerar-branding.ps1
@@ -19,6 +21,7 @@ $ErrorActionPreference = 'Stop'
 $root   = Split-Path -Parent $PSScriptRoot
 $resDir = Join-Path $root 'android\app\src\main\res'
 $pubDir = Join-Path $root 'public'
+$storeDir = Join-Path $root 'docs\play-store'
 
 # --------------------------- paleta ---------------------------
 $LIME1 = [System.Drawing.ColorTranslator]::FromHtml('#D4FF4A')  # claro
@@ -174,8 +177,86 @@ function New-Splash([int]$w, [int]$h) {
   return $bmp
 }
 
-# ============================ execucao ============================
-Write-Host ''
+# ------------------- arte da Google Play -------------------
+# Grafico de destaque da loja (1024 x 500). Regras da Play:
+#   - PNG sem transparencia, 1024x500
+#   - sem texto/logo nas bordas (fica "cortado" em alguns lugares)
+function New-FeatureGraphic([int]$w, [int]$h) {
+  $bmp = New-Object System.Drawing.Bitmap($w, $h, [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+  $g = [System.Drawing.Graphics]::FromImage($bmp)
+  Set-HQ $g
+  $g.Clear($BG)
+
+  $cx = $w * 0.235
+  $cy = $h / 2.0
+  $ms = [double]($h * 0.42)
+
+  # brilho radial verde atras do selo
+  $gr = $ms * 1.75
+  $gp = New-Object System.Drawing.Drawing2D.GraphicsPath
+  $gp.AddEllipse([float]($cx - $gr), [float]($cy - $gr), [float](2 * $gr), [float](2 * $gr))
+  $pgb = New-Object System.Drawing.Drawing2D.PathGradientBrush($gp)
+  $pgb.CenterColor = [System.Drawing.Color]::FromArgb(56, 200, 241, 53)
+  $pgb.SurroundColors = [System.Drawing.Color[]]@([System.Drawing.Color]::FromArgb(0, 200, 241, 53))
+  $g.FillPath($pgb, $gp)
+  $pgb.Dispose(); $gp.Dispose()
+
+  # selo verde com a bola
+  $sx = $cx - $ms / 2.0
+  $sy = $cy - $ms / 2.0
+  $rect = New-Object System.Drawing.RectangleF([float]$sx, [float]$sy, [float]$ms, [float]$ms)
+  $lg = New-Object System.Drawing.Drawing2D.LinearGradientBrush($rect, $LIME1, $LIME2, 45.0)
+  Draw-RoundRect $g $sx $sy $ms $ms ([double]($ms * 0.24)) $lg
+  $lg.Dispose()
+  Draw-Ball $g $cx $cy ($ms * 0.30) $INK $LIME
+
+  # marca "RANK HOOPER" (o tamanho se ajusta para nunca vazar a borda)
+  $fs   = [double]($h * 0.185)
+  $font = New-Object System.Drawing.Font('Bahnschrift Condensed', [float]$fs, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)
+  $sp   = $fs * 0.085
+  $gap  = $fs * 0.20
+  $wA   = Measure-Spaced $g 'RANK' $font $sp
+  $wB   = Measure-Spaced $g 'HOOPER' $font $sp
+
+  $tx   = $w * 0.455
+  $maxW = ($w - $tx) - ($w * 0.06)
+  if (($wA + $gap + $wB) -gt $maxW) {
+    $fs = $fs * ($maxW / ($wA + $gap + $wB))
+    $font.Dispose()
+    $font = New-Object System.Drawing.Font('Bahnschrift Condensed', [float]$fs, [System.Drawing.FontStyle]::Bold, [System.Drawing.GraphicsUnit]::Pixel)
+    $sp  = $fs * 0.085
+    $gap = $fs * 0.20
+    $wA  = Measure-Spaced $g 'RANK' $font $sp
+    $wB  = Measure-Spaced $g 'HOOPER' $font $sp
+  }
+
+  $bW   = New-Object System.Drawing.SolidBrush($WHITE)
+  $bL   = New-Object System.Drawing.SolidBrush($LIME)
+
+  $ty = $cy - $fs * 0.80
+  Draw-Spaced $g 'RANK' $tx $ty $font $bW $sp
+  Draw-Spaced $g 'HOOPER' ($tx + $wA + $gap) $ty $font $bL $sp
+
+  # filete verde
+  $thick = [Math]::Max(2, $h * 0.009)
+  $pen = New-Object System.Drawing.Pen($LIME, [float]$thick)
+  $ruleY = $ty + $g.MeasureString('H', $font).Height + $fs * 0.10
+  $ruleW = $wA + $gap + $wB
+  $g.DrawLine($pen, [float]$tx, [float]$ruleY, [float]($tx + $ruleW), [float]$ruleY)
+
+  # frase de apoio (sem acentos: PS 5.1 grava o .ps1 sem BOM)
+  $fsT = [double]($h * 0.058)
+  $fontT = New-Object System.Drawing.Font('Bahnschrift Condensed', [float]$fsT, [System.Drawing.FontStyle]::Regular, [System.Drawing.GraphicsUnit]::Pixel)
+  $bT = New-Object System.Drawing.SolidBrush([System.Drawing.ColorTranslator]::FromHtml('#9A9AAE'))
+  $tyT = $ruleY + $h * 0.050
+  Draw-Spaced $g 'RANKING DE BASQUETE' $tx $tyT $fontT $bT ($fsT * 0.14)
+
+  $pen.Dispose(); $bW.Dispose(); $bL.Dispose(); $bT.Dispose(); $font.Dispose(); $fontT.Dispose()
+  $g.Dispose()
+  return $bmp
+}
+
+# ============================ execucao ============================Write-Host ''
 Write-Host 'Ranks Hoops - gerando icones e splash...'
 Write-Host ''
 
@@ -210,6 +291,10 @@ $splashes = @(
 foreach ($sp in $splashes) {
   Save-Png (New-Splash $sp.w $sp.h) (Join-Path $resDir $sp.f)
 }
+
+Write-Host 'Arte da Google Play (docs\play-store):'
+Save-Png (New-Icon 512 'full')          (Join-Path $storeDir 'icon-512.png')
+Save-Png (New-FeatureGraphic 1024 500)  (Join-Path $storeDir 'feature-graphic.png')
 
 Write-Host ''
 Write-Host 'Pronto!'

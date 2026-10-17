@@ -7,6 +7,7 @@ import BottomNavigation from './BottomNavigation';
 import { IconSino, IconLocalizacao } from './Icons';
 import NotificationsPanel from './NotificationsPanel';
 import { motion, AnimatePresence } from 'framer-motion';
+import { authAPI } from '../lib/supabase';
 
 export default function Layout({ page, onNavigate, children }) {
   const { cfg } = useEsporte();
@@ -50,7 +51,27 @@ export default function Layout({ page, onNavigate, children }) {
   } = useAuth();
 
   const { themePref, setThemePref } = useTheme();
-  
+
+  // Exclusao de conta (exigencia da Play Store)
+  const [showExcluirConta, setShowExcluirConta] = useState(false);
+  const [confirmExcluir, setConfirmExcluir] = useState('');
+  const [excluindo, setExcluindo] = useState(false);
+  const [erroExcluir, setErroExcluir] = useState('');
+
+  async function handleExcluirConta() {
+    if (confirmExcluir.trim().toUpperCase() !== 'EXCLUIR') return;
+    setExcluindo(true);
+    setErroExcluir('');
+    const { error } = await authAPI.excluirConta();
+    if (error) {
+      setExcluindo(false);
+      setErroExcluir(error.message || 'Nao foi possivel excluir a conta agora. Tente de novo.');
+      return;
+    }
+    try { await logout(); } catch { /* a sessao ja nao existe */ }
+    window.location.reload();
+  }
+
   // Parallax Logic
   const [bgLoaded, setBgLoaded] = useState(false);
   const parallaxRef = useRef(null);
@@ -419,6 +440,29 @@ export default function Layout({ page, onNavigate, children }) {
                   </button>
                 </div>
 
+                <button
+                  type="button"
+                  onClick={() => {
+                    setConfirmExcluir('');
+                    setErroExcluir('');
+                    setShowExcluirConta(true);
+                  }}
+                  style={{
+                    marginTop: 14,
+                    width: '100%',
+                    background: 'none',
+                    border: 'none',
+                    color: '#f87171',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    opacity: 0.85
+                  }}
+                >
+                  Excluir minha conta
+                </button>
+
                 <button className="btn btn-primary" onClick={() => setShowUserMenu(false)}>
                   Fechar
                 </button>
@@ -468,6 +512,104 @@ export default function Layout({ page, onNavigate, children }) {
                 }}
               >
                 Manter Atual
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showExcluirConta && (
+        <div className="modal-overlay" style={{ zIndex: 3000 }}>
+          <div className="modal-sheet" style={{ maxWidth: 400, padding: 24 }}>
+            <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 10, color: '#f87171' }}>
+              Excluir minha conta
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.5, marginBottom: 14 }}>
+              Esta acao e <strong>permanente</strong> e nao pode ser desfeita. Vao ser apagados:
+            </p>
+            <ul style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.7, margin: '0 0 14px 18px' }}>
+              <li>Sua conta e seu login (e-mail/senha e Google)</li>
+              <li>Seu perfil, foto e apelido</li>
+              <li>Suas votacoes e avaliacoes de partidas</li>
+              <li>Suas participacoes em rachoes e torneios</li>
+            </ul>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.5, marginBottom: 18 }}>
+              As partidas, atletas e rankings da comunidade <strong>continuam no ar</strong> — apenas sem
+              o seu vinculo com eles.
+            </p>
+
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
+              Digite EXCLUIR para confirmar:
+            </label>
+            <input
+              type="text"
+              value={confirmExcluir}
+              onChange={(e) => setConfirmExcluir(e.target.value)}
+              placeholder="EXCLUIR"
+              autoCapitalize="characters"
+              style={{
+                width: '100%',
+                padding: '12px',
+                borderRadius: 10,
+                border: '1px solid var(--border)',
+                background: 'var(--bg-elevated)',
+                color: 'var(--text-primary)',
+                fontSize: 15,
+                marginBottom: 14,
+                textAlign: 'center',
+                letterSpacing: 2,
+                fontWeight: 700
+              }}
+            />
+
+            {erroExcluir && (
+              <div style={{
+                background: 'rgba(239,68,68,0.12)',
+                border: '1px solid rgba(239,68,68,0.3)',
+                color: '#f87171',
+                borderRadius: 10,
+                padding: '10px 12px',
+                fontSize: 13,
+                marginBottom: 14
+              }}>
+                {erroExcluir}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <button
+                type="button"
+                disabled={excluindo || confirmExcluir.trim().toUpperCase() !== 'EXCLUIR'}
+                onClick={handleExcluirConta}
+                style={{
+                  background: confirmExcluir.trim().toUpperCase() === 'EXCLUIR' ? '#dc2626' : 'rgba(220,38,38,0.35)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 50,
+                  padding: '12px',
+                  fontWeight: 700,
+                  fontSize: 14,
+                  cursor: excluindo ? 'wait' : (confirmExcluir.trim().toUpperCase() === 'EXCLUIR' ? 'pointer' : 'not-allowed')
+                }}
+              >
+                {excluindo ? 'Excluindo...' : 'Excluir definitivamente'}
+              </button>
+              <button
+                type="button"
+                disabled={excluindo}
+                onClick={() => setShowExcluirConta(false)}
+                style={{
+                  background: 'transparent',
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 50,
+                  padding: '12px',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: 'pointer'
+                }}
+              >
+                Cancelar
               </button>
             </div>
           </div>

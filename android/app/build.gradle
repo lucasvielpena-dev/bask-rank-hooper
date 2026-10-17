@@ -1,5 +1,15 @@
 apply plugin: 'com.android.application'
 
+// -------- Assinatura de release (Play Store) --------
+// O arquivo android/keystore.properties NAO deve ser versionado.
+// Modelo pronto em android/keystore.properties.example
+def keystorePropsFile = rootProject.file("keystore.properties")
+def hasKeystore = keystorePropsFile.exists()
+def keystoreProps = new Properties()
+if (hasKeystore) {
+    keystorePropsFile.withInputStream { keystoreProps.load(it) }
+}
+
 android {
     namespace = "com.rankhooper.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,10 +26,25 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (hasKeystore) {
+                storeFile file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // Sem keystore.properties o release sai sem assinatura (nao quebra o build).
+            if (hasKeystore) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }

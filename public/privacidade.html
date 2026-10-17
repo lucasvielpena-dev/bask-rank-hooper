@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     POLITICA DE PRIVACIDADE - Ranks Hoops / Rank Hooper
+     Publicada em: https://bask-rank-hooper.vercel.app/privacidade.html
+     Usada na Play Console em:
+       - "Politica de privacidade"      -> url desta pagina
+       - "Exclusao de dados" (Data safety) -> url desta pagina + #excluir
+
+     ATENCAO ANTES DE PUBLICAR:
+     1. Troque TODOS os "contato@rankhooper.app" pelo e-mail real de suporte.
+     2. Confira se as datas de "Ultima atualizacao" estao corretas.
+     3. Preencha o CNPJ/CPF e a cidade no bloco "Quem e o responsavel".
+     ============================================================ -->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Politica de Privacidade - Ranks Hoops</title>
+<meta name="description" content="Como o aplicativo Ranks Hoops coleta, usa, guarda e exclui seus dados pessoais." />
+<meta name="theme-color" content="#0C0C14" />
+<style>
+  :root{
+    --lime:#C8F135;
+    --bg:#0C0C14;
+    --card:#141420;
+    --line:rgba(255,255,255,.10);
+    --txt:#E9E9F0;
+    --dim:#9A9AAE;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:28px 20px 80px}
+  header{display:flex;align-items:center;gap:12px;padding:18px 0 24px;border-bottom:1px solid var(--line);margin-bottom:28px}
+  .seal{
+    width:44px;height:44px;border-radius:12px;flex:0 0 auto;
+    background:linear-gradient(135deg,#D4FF4A,#A8D020);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .seal svg{width:26px;height:26px}
+  .brand{font-weight:800;font-size:20px;letter-spacing:.5px}
+  .brand span{color:var(--lime)}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.4px}
+  h2{font-size:18px;margin:34px 0 10px;color:var(--lime)}
+  h3{font-size:15px;margin:22px 0 6px}
+  p,li{font-size:15px;color:var(--txt)}
+  ul{padding-left:20px}
+  li{margin-bottom:6px}
+  a{color:var(--lime)}
+  .upd{color:var(--dim);font-size:13px;margin-bottom:26px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:18px 0}
+  .hl{border-left:3px solid var(--lime)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--lime);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.4px}
+  code{background:rgba(255,255,255,.08);padding:2px 6px;border-radius:5px;font-size:13px}
+  footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+  .back{display:inline-block;margin-bottom:18px;font-size:13px;text-decoration:none;color:var(--dim)}
+  .back:hover{color:var(--lime)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="/">&larr; Voltar para o app</a>
+
+  <header>
+    <div class="seal">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="22" fill="#0B1208"/>
+        <g stroke="#C8F135" stroke-width="2.4" stroke-linecap="round" fill="none">
+          <line x1="32" y1="10" x2="32" y2="54"/>
+          <line x1="10" y1="32" x2="54" y2="32"/>
+          <path d="M27 11 A 24 24 0 0 0 27 53"/>
+          <path d="M37 11 A 24 24 0 0 1 37 53"/>
+        </g>
+      </svg>
+    </div>
+    <div class="brand">RANK<span>HOOPER</span></div>
+  </header>
+
+  <h1>Politica de Privacidade</h1>
+  <p class="upd">Ultima atualizacao: <strong>16 de outubro de 2026</strong></p>
+
+  <p>
+    Esta politica explica, de forma direta, quais dados o aplicativo
+    <strong>Ranks Hoops</strong> (tambem exibido como <em>Rank Hooper</em>) coleta,
+    por que coleta, com quem compartilha, por quanto tempo guarda e como voce pode
+    apagar tudo. Ela vale para o site <a href="https://bask-rank-hooper.vercel.app">bask-rank-hooper.vercel.app</a>,
+    para o aplicativo instalado pela Google Play e para o atalho instalado no celular (PWA).
+  </p>
+
+  <div class="card hl">
+    <strong>Resumo rapido</strong>
+    <ul style="margin-bottom:0">
+      <li>Coletamos apenas o necessario para o ranking funcionar: conta, perfil e desempenho nas partidas.</li>
+      <li><strong>Nao vendemos</strong> dados pessoais e <strong>nao exibimos anuncios</strong> de terceiros.</li>
+      <li>Sua localizacao e usada so para dizer em qual cidade/regiao voce entra no ranking.</li>
+      <li>Voce pode <a href="#excluir">excluir sua conta e seus dados</a> a qualquer momento, direto no app.</li>
+    </ul>
+  </div>
+
+  <h2>1. Quem e o responsavel pelos dados</h2>
+  <p>
+    O aplicativo e operado por <strong>Lucas Viel Pena</strong> (desenvolvedor responsavel),
+    na cidade de <strong>Altamira - PA, Brasil</strong>.<br>
+    Encarregado de dados / contato: <a href="mailto:contato@rankhooper.app">contato@rankhooper.app</a>.
+  </p>
+  <p>
+    O aplicativo e destinado a organizar rachoes, campeonatos e torneios de basquete e
+    ao ranking dos atletas. Ele nao e um servico de saude, nao coleta dados medicos e
+    nao tem fins comerciais de publicidade.
+  </p>
+
+  <h2>2. Dados que coletamos</h2>
+
+    <h3>2.1 Dados de conta e perfil</h3>
+    <table>
+      <tr><th>Dado</th><th>Exemplo</th><th>Para que serve</th></tr>
+      <tr><td>E-mail</td><td>voce@email.com</td><td>Login, recuperacao de senha e contato do organizador</td></tr>
+      <tr><td>Nome e sobrenome</td><td>Joao da Silva</td><td>Identificacao e vinculo com atletas cadastrados</td></tr>
+      <tr><td>Apelido</td><td>Joao "Cesta"</td><td>Como voce aparece no ranking e nas listas</td></tr>
+      <tr><td>Foto de perfil</td><td>imagem escolhida por voce</td><td>Exibicao no seu perfil e nas listas</td></tr>
+      <tr><td>Altura, idade e posicao</td><td>1,85 m / 24 anos / Ala</td><td>Organizacao das partidas e estatisticas</td></tr>
+      <tr><td>Cidade e localizacao aproximada</td><td>Altamira - PA</td><td>Definir em qual ranking municipal voce participa</td></tr>
+    </table>
+
+    <h3>2.2 Dados de uso e desempenho</h3>
+    <ul>
+      <li>Partidas, rachoes e torneios em que voce participou (data, placar, equipes);</li>
+      <li>Estatisticas que voce ou outros participantes registram: pontos, assistencias, rebotes, etc.;</li>
+      <li>Votos e notas que <strong>outras pessoas</strong> dao ao seu desempenho (e os que voce da a elas);</li>
+      <li>Avaliacao geral da partida, feita de forma <strong>anonima</strong> (quem avaliou nao e exibido a ninguem).</li>
+    </ul>
+
+    <h3>2.3 Dados tecnicos</h3>
+    <ul>
+      <li>Informacoes basicas do navegador/aparelho necessarias para o app funcionar (tipo de dispositivo e versao);</li>
+      <li>Registros de acesso e erro dos servidores, usados para seguranca e correcao de falhas;</li>
+      <li>Se voce permitir, sua localizacao (somente enquanto o app esta aberto).</li>
+    </ul>
+    <p>
+      <strong>Nao coletamos</strong> CPF, dados bancarios, senha em texto puro (o login e processado
+      pelo provedor de identidade), lista de contatos, SMS, historico de chamadas nem dados de saude.
+    </p>
+
+  <h2>3. Base legal (LGPD)</h2>
+  <ul>
+    <li><strong>Execucao de contrato</strong> (art. 7, V): para criar sua conta e operar o ranking.</li>
+    <li><strong>Consentimento</strong> (art. 7, I): para usar sua localizacao e enviar notificacoes.</li>
+    <li><strong>Legitimo interesse</strong> (art. 7, IX): para seguranca, antifraude e melhoria do app.</li>
+    <li><strong>Obrigacao legal</strong> (art. 7, II): quando a lei exigir guarda de registros.</li>
+  </ul>
+
+  <h2>4. Com quem compartilhamos</h2>
+  <p>
+    Nao vendemos nem alugamos seus dados. Usamos fornecedores que atuam como operadores,
+    apenas para o app funcionar:
+  </p>
+  <table>
+    <tr><th>Fornecedor</th><th>O que faz</th><th>Dados envolvidos</th></tr>
+    <tr><td>Supabase</td><td>Banco de dados, login e armazenamento de fotos</td><td>Conta, perfil, estatisticas e imagens</td></tr>
+    <tr><td>Vercel</td><td>Hospedagem do site e do app</td><td>Dados tecnicos de acesso</td></tr>
+    <tr><td>Google (Play Store e login)</td><td>Distribuicao do app e login com conta Google</td><td>Dados da conta Google usada no login</td></tr>
+    <tr><td>OpenStreetMap / Nominatim</td><td>Converter coordenadas em cidade</td><td>Coordenadas aproximadas do aparelho</td></tr>
+  </table>
+  <p>
+    Dados de ranking, apelido, foto e estatisticas sao <strong>visiveis para outros usuarios</strong> do
+    app — essa e a propria finalidade de um ranking esportivo. Nunca exibimos seu e-mail publicamente.
+  </p>
+  <p>
+    Alguns desses fornecedores podem processar dados fora do Brasil (servidores nos Estados Unidos).
+    Nesses casos, a transferencia ocorre com base nas clausulas contratuais e nas politicas de
+    privacidade dos proprios fornecedores.
+  </p>
+
+  <h2>5. Por quanto tempo guardamos</h2>
+  <ul>
+    <li><strong>Dados de conta e perfil:</strong> enquanto sua conta existir.</li>
+    <li><strong>Apos excluir a conta:</strong> apagados imediatamente, exceto registros minimos de log, que podem permanecer por ate 6 meses para seguranca e cumprimento de obrigacoes legais.</li>
+    <li><strong>Dados esportivos de conjunto</strong> (partidas e placares): continuam no ranking da comunidade, mas <strong>sem nenhum vinculo com a sua identidade</strong>.</li>
+  </ul>
+
+  <h2>6. Seus direitos</h2>
+  <p>Como titular de dados, voce pode, a qualquer momento:</p>
+  <ul>
+    <li>Confirmar se tratamos seus dados e acessa-los;</li>
+    <li>Corrigir dados incompletos, inexatos ou desatualizados (direto no perfil do app);</li>
+    <li>Pedir anonimizacao, bloqueio ou eliminacao de dados desnecessarios;</li>
+    <li>Revogar o consentimento (por exemplo, desligar a localizacao no Android);</li>
+    <li><strong>Excluir sua conta e seus dados pessoais</strong> (veja a secao 7);</li>
+    <li>Reclamar a Autoridade Nacional de Protecao de Dados (ANPD).</li>
+  </ul>
+  <p>Para exercer qualquer direito, escreva para <a href="mailto:contato@rankhooper.app">contato@rankhooper.app</a>. Respondemos em ate 15 dias.</p>
+
+  <h2 id="excluir">7. Excluir sua conta e seus dados</h2>
+  <div class="card hl">
+    <p style="margin-top:0"><strong>Dentro do app (imediato):</strong></p>
+    <ol>
+      <li>Abra o app e toque no seu perfil (icone de usuario no topo);</li>
+      <li>Desca ate o fim da tela e toque em <strong>"Excluir minha conta"</strong>;</li>
+      <li>Digite <code>EXCLUIR</code> para confirmar.</li>
+    </ol>
+    <p style="margin-bottom:0">
+      A exclusao e <strong>imediata e definitiva</strong>. Sao apagados: sua conta e login, perfil,
+      foto, apelido, votos, avaliacoes e participacoes em rachoes e torneios.
+      Partidas, atletas e rankings da comunidade continuam no ar, apenas sem vinculo com voce.
+    </p>
+  </div>
+  <p>
+    <strong>Pela web (sem instalar o app):</strong> envie um e-mail para
+    <a href="mailto:contato@rankhooper.app?subject=Excluir%20minha%20conta%20-%20Ranks%20Hoops">contato@rankhooper.app</a>
+    com o assunto "Excluir minha conta" e o e-mail usado no cadastro. A conta e os dados sao
+    apagados em ate <strong>7 dias</strong> e voce recebe confirmacao por e-mail.
+  </p>
+
+  <h2>8. Seguranca</h2>
+  <ul>
+    <li>Todo o trafego e criptografado (HTTPS/TLS); o app bloqueia conexoes sem criptografia;</li>
+    <li>O banco de dados usa regras de acesso por linha (RLS): cada usuario so altera o que e seu;</li>
+    <li>As avaliacoes de partida sao anonimas e o sistema nao devolve quem avaliou;</li>
+    <li>As senhas sao processadas e protegidas pelo provedor de identidade; nao temos acesso a elas.</li>
+  </ul>
+
+  <h2>9. Criancas e adolescentes</h2>
+  <p>
+    O app nao e direcionado a menores de 13 anos. Usuarios entre 13 e 18 anos devem usar o
+    aplicativo com o conhecimento e a autorizacao de um responsavel. Se identificarmos conta
+    de menor de 13 anos, ela sera removida.
+  </p>
+
+  <h2>10. Notificacoes</h2>
+  <p>
+    Enviamos notificacoes dentro do proprio app (convites, confirmacoes e avisos de partidas).
+    Voce controla o que quer receber nas configuracoes do aparelho e do app.
+  </p>
+
+  <h2>11. Alteracoes desta politica</h2>
+  <p>
+    Podemos atualizar este texto para acompanhar mudancas no app ou na lei. A data no topo sempre
+    indica a ultima versao. Mudancas relevantes sao avisadas dentro do aplicativo.
+  </p>
+
+  <h2>12. Contato</h2>
+  <p>
+    Duvidas, pedidos ou reclamacoes sobre privacidade:<br>
+    <a href="mailto:contato@rankhooper.app">contato@rankhooper.app</a>
+  </p>
+
+  <footer>
+    Ranks Hoops &middot; esta politica e valida para o aplicativo Android publicado na Google Play
+    e para o site <a href="https://bask-rank-hooper.vercel.app">bask-rank-hooper.vercel.app</a>.<br>
+    Documento em conformidade com a Lei Geral de Protecao de Dados (Lei 13.709/2018).
+  </footer>
+
+</div>
+</body>
+</html>

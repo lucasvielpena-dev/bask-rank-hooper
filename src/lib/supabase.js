@@ -285,6 +285,35 @@ export const authAPI = {
     });
     return { data, error };
   },
+
+  // Exclusao de conta pelo proprio usuario (exigencia da Play Store).
+  // 1) tenta apagar os arquivos do usuario no Storage (melhor esforco)
+  // 2) chama a RPC que remove o profile + o login (auth.users) no servidor
+  excluirConta: async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData?.user?.id;
+
+    if (userId) {
+      try {
+        const { data: arquivos } = await supabase.storage
+          .from('avatars')
+          .list('', { limit: 1000 });
+        const meus = (arquivos || [])
+          .filter((f) => (f.name || '').startsWith(`${userId}-`))
+          .map((f) => f.name);
+        if (meus.length) await supabase.storage.from('avatars').remove(meus);
+      } catch {
+        // sem permissao de listagem: segue (o SQL ainda remove o resto)
+      }
+    }
+
+    const { data, error } = await supabase.rpc('excluir_minha_conta');
+    if (error) return { error };
+    if (data && data.sucesso === false) {
+      return { error: new Error(data.erro || 'Nao foi possivel excluir a conta.') };
+    }
+    return { data };
+  },
 };
 
 export const profilesAPI = {
