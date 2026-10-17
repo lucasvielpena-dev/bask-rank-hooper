@@ -29,7 +29,10 @@ android {
     signingConfigs {
         release {
             if (hasKeystore) {
-                storeFile file(keystoreProps['storeFile'])
+                // rootProject.file(): o caminho em keystore.properties e relativo a
+                // android/ (onde o guia manda gerar o .jks). Com file() puro o Gradle
+                // procuraria em android/app/ e a assinatura falharia.
+                storeFile rootProject.file(keystoreProps['storeFile'])
                 storePassword keystoreProps['storePassword']
                 keyAlias keystoreProps['keyAlias']
                 keyPassword keystoreProps['keyPassword']
