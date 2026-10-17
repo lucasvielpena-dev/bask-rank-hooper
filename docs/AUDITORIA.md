@@ -10,6 +10,8 @@ Observação: itens de severidade Alta foram verificados diretamente no código-
 
 Diferente das demais seções (leitura de código), esta foi feita **batendo no banco real** com a chave pública que vai no bundle do site — exatamente o que um curioso tem em mãos. Correção: `supabase/migration_seguranca_v3.sql`.
 
+**Status (2026-10-17): ✅ APLICADO no banco de produção.** Confirmado por sonda anônima depois do deploy: `rotina_semanal_domingo()`, `admin_get_users()`, `admin_get_players()`, `admin_get_logs()`, `get_master_stats()`, `get_master_reports()` e `get_city_stats()` respondem `permission denied for function` (antes **executavam**); `profiles` e `avaliacoes_jogo` seguem `42501`; verificação `has_*_privilege` retornou `false` em tudo, exceto `authenticated → touch_last_seen` (que o app precisa). Na mesma data foram aplicadas as pendentes `migration_nota_jogo_na_media.sql` (colunas `total_notas_jogo`/`media_notas_jogo`/`total_votos_estrelas` confirmadas) e `migration_exclusao_conta.sql` (RPC `excluir_minha_conta()` existe e está negada ao anônimo).
+
 **Confirmado OK (com prova):**
 - Anônimo não lê nenhuma tabela: `42501 permission denied` em todas as 19 testadas.
 - `email` e GPS de `profiles` escondidos de quem está logado (Passo 2 do hardening rodou — comprovado indiretamente: `partidas.criado_por`, criada no Passo 3, existe; o Passo 2 vem antes).
