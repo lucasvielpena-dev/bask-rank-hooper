@@ -218,7 +218,18 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       carregarOperadores(id);
       puxarPlacarDoBanco(id);
     }, 5000);
-    return () => clearInterval(intervalo);
+    // Caminho instantâneo: se as tabelas estiverem ligadas no Realtime
+    // (`alter publication supabase_realtime add table ...`), o placar e o
+    // aceite chegam na hora. Sem isso, a conferência de 5s cobre.
+    const canalLinha = supabase
+      .channel(`partida_linha_${id}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'partidas', filter: `id=eq.${id}` }, () => puxarPlacarDoBanco(id))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'partida_operadores', filter: `partida_id=eq.${id}` }, () => carregarOperadores(id))
+      .subscribe();
+    return () => {
+      clearInterval(intervalo);
+      supabase.removeChannel(canalLinha);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tela, partidaAtiva?.id]);
 
@@ -232,13 +243,21 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     const meus = partidas.filter(p => p.criado_por === profile?.id);
     const canais = meus.map(p => assinarAviso(`partida_${p.id}`, recarregarTudo));
     // E, para não depender de aviso nenhum: a lista se atualiza sozinha.
-    // 5s quando EU tenho partida em andamento (é quando o pedido de operador
-    // precisa chegar logo); 30s quando não tenho, para não gastar à toa.
-    const intervalo = setInterval(recarregarTudo, meus.length > 0 ? 5000 : 30000);
+    // 5s quando existe partida em andamento na lista (é quando o pedido de
+    // operador precisa chegar logo e o placar do outro precisa aparecer);
+    // 30s quando não há nada em andamento, para não gastar à toa.
+    const intervalo = setInterval(recarregarTudo, partidas.length > 0 ? 5000 : 30000);
     const aoVoltarVisivel = () => { if (document.visibilityState === 'visible') recarregarTudo(); };
     document.addEventListener('visibilitychange', aoVoltarVisivel);
+    // Caminho instantâneo para o pedido de operador (se a tabela estiver
+    // ligada no Realtime). Sem isso, a conferência de 5s cobre.
+    const canalPedidos = supabase
+      .channel('pedidos_operador_lista')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'partida_operadores' }, recarregarTudo)
+      .subscribe();
     return () => {
       canais.forEach(c => supabase.removeChannel(c));
+      supabase.removeChannel(canalPedidos);
       clearInterval(intervalo);
       document.removeEventListener('visibilitychange', aoVoltarVisivel);
     };

@@ -30,6 +30,7 @@ function NotificationsPanel({
   onMarkAllRead,
   onDelete,
   onRefresh,
+  onAbrirJogos,
 }) {
   const [filter, setFilter] = useState('all'); // all | unread
   const [busyId, setBusyId] = useState(null);
@@ -142,9 +143,22 @@ function NotificationsPanel({
                   <p className="notif-item-msg">{n.mensagem}</p>
                   {/* Onde responder: sem esta dica o aviso era um beco sem saída. */}
                   {/placar compartilhado/i.test(n.titulo) && (
-                    <p className="notif-item-msg" style={{ color: 'var(--accent)', fontWeight: 700, marginTop: 4 }}>
-                      → Abra Rachões → Jogos da Noite para aceitar ou recusar.
-                    </p>
+                    <div style={{ marginTop: 6 }}>
+                      <p className="notif-item-msg" style={{ color: 'var(--accent)', fontWeight: 700 }}>
+                        Para aceitar ou recusar, abra Competições:
+                      </p>
+                      <button
+                        type="button"
+                        className="notif-action primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!n.lida) handleRead(n.id);
+                          if (onAbrirJogos) onAbrirJogos();
+                        }}
+                      >
+                        Abrir Competições
+                      </button>
+                    </div>
                   )}
                   <div className="notif-item-actions">
                     {!n.lida && (

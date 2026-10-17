@@ -6,6 +6,7 @@ import Header from './Header';
 import BottomNavigation from './BottomNavigation';
 import { IconSino, IconLocalizacao } from './Icons';
 import NotificationsPanel from './NotificationsPanel';
+import AvisoVersao from './AvisoVersao';
 import { motion, AnimatePresence } from 'framer-motion';
 import { authAPI } from '../lib/supabase';
 import { preloadBackgrounds, backgroundsProntos, aoTerminarBackgrounds } from '../lib/backgrounds';
@@ -214,6 +215,9 @@ export default function Layout({ page, onNavigate, children }) {
       </div>
 
       <BottomNavigation page={page} onNavigate={onNavigate} isMaster={isMaster} />
+
+      {/* Avisa quando o celular está rodando um pacote antigo (cache do app). */}
+      <AvisoVersao />
 
       {showUserMenu && profile && (
         <div className="modal-overlay" onClick={() => { if (!salvandoPerfil) { setShowUserMenu(false); setIsEditingProfile(false); } }}>
@@ -619,6 +623,7 @@ export default function Layout({ page, onNavigate, children }) {
         onMarkAllRead={handleMarcarTodasLidas}
         onDelete={handleExcluirNotificacao}
         onRefresh={carregarNotificacoes}
+        onAbrirJogos={() => { setShowNotificacoes(false); onNavigate('jogos'); }}
       />
     </div>
   );
