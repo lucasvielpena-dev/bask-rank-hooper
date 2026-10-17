@@ -45,6 +45,10 @@ Correção: Passo 4 do `migration_seguranca_v3.sql` (policy passa a `avaliador_i
 ### S6. Baixa
 Signup aberto (`disable_signup: false`) e sem CAPTCHA → contas falsas para brigada de votos. Mitigado por `UNIQUE(avaliador_id, jogador_id)` + limite de 20/dia. Login anônimo **desligado** ✔; sem buckets públicos ✔.
 
+### S7. Placar ao vivo só gravava para quem criou a partida 🟠 ✅ resolvido (2026-10-17)
+`partidas_update_own USING (criado_por = auth.uid() OR criado_por IS NULL)` (`migration_rls_hardening.sql:231`) só deixava **o criador** gravar. Só que o app adota automaticamente a partida ativa de qualquer pessoa logada (`Jogos.jsx`, no efeito de carregamento: `setPartidaAtiva(ativas[0])`), ou seja: com dois celulares na quadra, o segundo pontuava na tela e **nada era salvo** — e `sincronizarPlacarBanco` não conferia o retorno, então o app não avisava.
+Correção: `supabase/migration_placar_compartilhado.sql` — o segundo celular **pede** para operar o placar, o criador recebe o pedido na tela da partida (aviso em tempo real no tópico `partida_<id>`) e **aceita/recusa**; só depois grava. Tabela `partida_operadores` fechada (sem policies de escrita), escrita só pelas RPCs `pedir_operar_partida` / `responder_pedido_operador` e pela policy nova da tabela `partidas`. No app: o gate em `ajustarPlacar` (avisa em vez de falhar em silêncio) e o cartão "Placar compartilhado" na tela da partida.
+
 ### Bug funcional achado de passagem
 `sortear_jogadores_para_voto()` (`schema.sql:586`) quebra sempre com `42702 column reference "id" is ambiguous`: o `RETURNS TABLE` declara `id`/`uf` como parâmetros de saída e o corpo usa `WHERE id = auth.uid()`. O frontend não chama essa RPC (dead code) — mas se religar, precisa qualificar (`profiles.id`).
 

@@ -431,6 +431,32 @@ export const partidasAPI = {
       .select()
       .single();
     return { data, error };
+  },
+
+  // ---- Placar compartilhado (pedido + aceite do criador) ----
+  // A tabela `partida_operadores` é fechada: só se lê, e só as RPCs escrevem.
+  // Ver supabase/migration_placar_compartilhado.sql.
+  listarOperadores: async (partidaId) => {
+    const { data, error } = await supabase
+      .from('partida_operadores')
+      .select('usuario_id, nome, aprovado, pedido_em')
+      .eq('partida_id', partidaId)
+      .order('pedido_em', { ascending: true });
+    return { data, error };
+  },
+
+  pedirOperar: async (partidaId) => {
+    const { data, error } = await supabase.rpc('pedir_operar_partida', { p_partida_id: partidaId });
+    return { data, error };
+  },
+
+  responderPedidoOperador: async (partidaId, usuarioId, aceitar) => {
+    const { data, error } = await supabase.rpc('responder_pedido_operador', {
+      p_partida_id: partidaId,
+      p_usuario_id: usuarioId,
+      p_aceitar: aceitar
+    });
+    return { data, error };
   }
 };
 
