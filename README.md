@@ -61,7 +61,7 @@ bask-rank-hooper-main/
 │   ├── migration_perf_realtime.sql   # ⚡ performance: acaba com o "efeito manada" do Realtime/heartbeat
 │   ├── migration_realtime_broadcast.sql # 📡 Realtime escalável: Broadcast no lugar de postgres_changes
 │   ├── fix_nomes_jogador.sql         # correção pontual dos nomes genéricos ("Jogador"/e-mail)
-│   ├── supabase_migration_handebol.sql  # suporte a handebol (incompleto no frontend)
+│   ├── supabase_migration_handebol.sql  # suporte a handebol — DESATIVADO (app é só basquete)
 │   ├── fix_criado_por_fk.sql         # diagnóstico/ajuste da FK jogadores.criado_por
 │   └── fix_drop_criado_por_fk.sql    # remoção da FK (fix urgente)
 ├── public/                           # index.html, sw.js, manifest.json, ícones e mídias
@@ -90,8 +90,10 @@ bask-rank-hooper-main/
    7. `supabase/migration_evolucao_jogador.sql` — 📈 linha de evolução do atleta (média mensal das avaliações recebidas)
    8. `supabase/migration_perf_realtime.sql` — ⚡ **recomendada**: corta o efeito manada de Realtime (1 refresh não pode atualizar o app de todo mundo)
    9. `supabase/migration_realtime_broadcast.sql` — 📡 **recomendada**: ranking/torneios atualizando por Broadcast (indispensável se tiver muita gente online ao mesmo tempo)
+   10. `supabase/migration_nota_jogo_na_media.sql` — ⭐ a nota do jogo passa a contar na média/ranking do atleta (ver "Nota do jogo na média", abaixo)
+   11. `supabase/migration_exclusao_conta.sql` — 🗑️ RPC de exclusão de conta (exigência da Play Store)
    - `supabase/fix_nomes_jogador.sql` — correção pontual: troca nomes genéricos (“Jogador”/e-mail) pelo apelido real. Rode se o ranking mostrar “Jogador”.
-   - `supabase_migration_handebol.sql` só é necessário se for habilitar handebol.
+   - ⚠️ **Não rode `supabase_migration_handebol.sql`**: o app é **exclusivo de basquete** (`EsporteContext` fixa `basquete`) e não há mais código de handebol no frontend. O arquivo fica só como histórico, caso o esporte volte um dia.
    - ⚠️ **Não rode `migration_features_v2.sql`**: ele redefine `get_ranking` com 5 argumentos (overload ambíguo com a versão de 4 args → quebra o ranking) e reabre leitura pública/anônima nas rações. Foi substituído por `migration_racoes.sql`.
    - ⚠️ **Não rode `migration_cleanup.sql`**: ele remove a tabela `auditoria_votos` usada por `registrar_avaliacao` e quebra a votação. O `migration_rls_hardening.sql` já cobre a parte de RLS.
    - `fix_*.sql` são correções pontuais — rode apenas se encontrar o erro descrito no cabeçalho do arquivo.
@@ -256,7 +258,7 @@ Criação de jogo aberto, entrada/saída de participantes e finalização (`raco
 
 ## ⚠️ Observações / dívidas técnicas
 
-- **Multi-esporte incompleto**: `EsporteContext`/`esportes.js` só definem `basquete`, mas várias APIs passam `'basquete'` fixo e existe `votacaoHandebolAPI` + migration de handebol sem uso no app.
+- **App exclusivo de basquete**: `EsporteContext`/`esportes.js` só definem `basquete` (a troca de esporte é um no-op proposital) e o código morto de handebol foi removido do frontend em 2026-10-17. No banco restam apenas colunas ociosas (`finalizacao`, `passes`, `media_finalizacao`, `media_passes`) e a RPC `registrar_avaliacao_handebol`, como saída de emergência.
 - **SQL sem versionador**: as migrations são aplicadas manualmente no SQL Editor e dependem da ordem acima.
 - **Lint desligado no build** (`DISABLE_ESLINT_PLUGIN=true`, `CI=false`) e sem testes.
 - **Node**: `package.json` pede `24.x`; `docs/GERAR_APK.md` cita Node 18+.

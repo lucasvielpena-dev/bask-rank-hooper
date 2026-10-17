@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from 'react';
-import { supabase, jogadoresAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
+import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import { sortByConfianca } from '../lib/ranking';
 import { nomeAtleta } from '../lib/nomes';
 import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime';
@@ -221,8 +221,7 @@ export default function Atletas({ profile }) {
     }
     setEnviandoVoto(true);
     try {
-      const apiVoto = esporte === 'handebol' ? votacaoHandebolAPI : votacaoAPI;
-      const { data, error } = await apiVoto.votar(votingPlayer.id, {
+      const { data, error } = await votacaoAPI.votar(votingPlayer.id, {
         ...estrelasVoto,
         comentario: comentarioVoto.trim() || null
       });

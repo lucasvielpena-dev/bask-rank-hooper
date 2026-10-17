@@ -38,8 +38,10 @@ INSERT INTO public.auditoria_votos (avaliacao_id, ip, device_id, localizacao, st
 
 As demais RPCs (ex.: `admin_get_users`, linha 178) validam `role IN ('master','admin')`. Essas duas vazam métricas internas para qualquer usuário autenticado.
 
-### A4. Trigger de média corrompe dados cross-sport
-`atualizar_media_jogador` (`supabase/schema.sql:279`) recalcula a média usando colunas de basquete (`arremesso`, `controle_de_bola`) e filtra apenas por `jogador_id`, **sem `esporte`**. A votação de handebol (`supabase_migration_handebol.sql:149`) insere na **mesma tabela `avaliacoes`** com `finalizacao/passes` (e `total_votos = total_votos + 1` na linha 180). Resultado: médias de handebol sobrescritas com NULLs e `total_votos` contando todos os esportes; risco de unique violation no índice `(avaliador_id, jogador_id)`.
+### ~~A4. Trigger de média corrompe dados cross-sport~~ ✅ resolvido (2026-10-17)
+`atualizar_media_jogador` (`supabase/schema.sql:279`) recalculava a média usando colunas de basquete (`arremesso`, `controle_de_bola`) e filtrava apenas por `jogador_id`, **sem `esporte`**. A votação de handebol (`supabase_migration_handebol.sql:149`) insere na **mesma tabela `avaliacoes`** com `finalizacao/passes` (e `total_votos = total_votos + 1` na linha 180). Resultado: médias de handebol sobrescritas com NULLs e `total_votos` contando todos os esportes; risco de unique violation no índice `(avaliador_id, jogador_id)`.
+
+**Resolvido** em `supabase/migration_nota_jogo_na_media.sql`: a recalculadora unificada `recalcular_media_jogador` sai cedo quando `esporte <> 'basquete'`, então o gatilho de basquete não encosta mais em linhas de handebol. Como o handebol está desativado no app (`EsporteContext` fixa `basquete`), hoje o ramo nem é alcançado; o guard fica como rede de proteção caso o esporte seja religado um dia (a média de handebol continuaria sob responsabilidade da RPC `registrar_avaliacao_handebol`).
 
 ### A5. Upload de avatar — `createBucket` no cliente
 `src/lib/supabase.js:260-282`:
@@ -86,7 +88,7 @@ A RPC devolve só `cidade, user_count, player_count, tournament_count, match_cou
 
 ## 🟡 Baixa
 
-- **B1. Código morto de handebol:** `EsporteContext.jsx:9` fixa `basquete` e `setEsporte` é no-op; ainda há ramos de handebol em `AnimatedBackgrounds.jsx`, `Icons.jsx:323`, `Torneios.jsx`, `Atletas.jsx:223`, `PlayerProfileModal.jsx:153` e a RPC `registrar_avaliacao_handebol`.
+- **B1. ~~Código morto de handebol~~ ✅ resolvido (2026-10-17):** ramos removidos de `AnimatedBackgrounds.jsx` (−43% do arquivo: 27,7 kB → 15,9 kB, incluindo o import de `useEsporte`), `Icons.jsx` (`IconHandebol` excluído; `IconSportDynamic` virou atalho de `IconBasquete`), `Torneios.jsx` (rótulos e tabela de stats), `Atletas.jsx` e `PlayerProfileModal.jsx` (o `apiVoto` ternário) e `src/lib/supabase.js` (`votacaoHandebolAPI`). `EsporteContext.jsx` continua fixando `basquete` — isso é intencional (app exclusivo de basquete). No banco sobram apenas colunas ociosas (`finalizacao`, `passes`, `media_finalizacao`, `media_passes`) e a RPC `registrar_avaliacao_handebol`, mantidas como saída de emergência.
 - **B2. Acessibilidade:** cartões `div onClick` sem `role`/`tabIndex`/keydown (`Home.jsx:306`, `NotificationsPanel.jsx:130`); SVGs sem `aria-hidden`; inputs de busca sem `aria-label`.
 - **B3. Sem recorte por esporte** em `get_city_stats`/`get_master_stats`.
 - **B4. Android:** `capacitor.config.ts:26` usa `android.allowMixedContent: true`, contradizendo `usesCleartextTraffic="false"` do manifest.
@@ -115,14 +117,14 @@ Ordem sugerida, com conflitos:
 | `migration_master.sql` | RPCs admin | `get_master_stats`/`get_city_stats` sem role; `admin_get_players` órfã |
 | `migration_features_v2.sql` | ⚠️ **OBSOLETO** — não executa SQL (aviso no topo) | substituído por `migration_racoes.sql` |
 | `migration_racoes.sql` | cria `racoes` + `racao_participantes` com RLS endurecida | **sem** o overload de `get_ranking` |
-| `supabase_migration_handebol.sql` | votação handebol | trigger de média corrompe; código desativado |
+| `supabase_migration_handebol.sql` | votação handebol | desativado no app; média protegida pelo guard de esporte (A4 ✅) |
 | `migration_cleanup.sql` | DROP `votos`/`auditoria_votos` | **quebra `registrar_avaliacao`** |
 | `fix_*.sql` | FK `criado_por` | par fix/desfix — estado final indefinido |
 
 ---
 
 ## Priorização sugerida
-1. **A1** e **A4** — antes de qualquer deploy/execução de SQL.
+1. **A1** — antes de qualquer deploy/execução de SQL. (**A4** ✅ resolvido em 2026-10-17.)
 2. **A3** e **A5** — segurança.
 3. **A2 / M1 / M2** — contratos de RPC e telas admin quebradas.
 4. **M5 / M7 / M8** — performance e manutenibilidade.
@@ -141,7 +143,7 @@ Arquivos alterados/criados nesta rodada:
 - **`src/lib/supabase.js`** — `PROFILE_SAFE_COLUMNS` + consultas de `profiles` sem `select('*')`; **A5** corrigido (`createBucket` removido do cliente, validação de tipo/tamanho no upload).
 - **`src/contexts/AuthContext.jsx`**, **`src/components/Layout.jsx`**, **`src/components/CompleteProfileScreen.jsx`** — email lido da sessão de auth, não mais de `profiles`.
 
-Ainda **pendentes** (não alterados): **A1** (conflito `migration_cleanup` × `registrar_avaliacao`), **A4** (trigger de média × handebol), **M1/M2** (chaves EN/PT e `uf` ausente), **M5/M7/M8**. (**A2** mitigado — ver acima.)
+Ainda **pendentes** (não alterados): **A1** (conflito `migration_cleanup` × `registrar_avaliacao`), **M1/M2** (chaves EN/PT e `uf` ausente), **M5/M7/M8**. (**A2** mitigado — ver acima. **A4** e **B1** resolvidos em 2026-10-17.)
 
 ### Correção de UI — modais atrás da barra de navegação
 

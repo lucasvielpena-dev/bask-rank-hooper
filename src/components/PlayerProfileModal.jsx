@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from 'react';
-import { supabase, denunciasAPI, votacaoAPI, votacaoHandebolAPI } from '../lib/supabase';
+import { supabase, denunciasAPI, votacaoAPI } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import AnimatedCounter from './AnimatedCounter';
 import { useEsporte } from '../contexts/EsporteContext';
@@ -152,8 +152,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   async function handleConfirmarAvaliacao() {
     if (fundamentos.some(f => !estrelas[f.key])) { showToast('Selecione uma nota para todos os 5 fundamentos', 'error'); return; }
     setEnviandoAvaliacao(true);
-    const apiVoto = esporte === 'handebol' ? votacaoHandebolAPI : votacaoAPI;
-    const { data, error } = await apiVoto.votar(jogador.id, estrelas);
+    const { data, error } = await votacaoAPI.votar(jogador.id, estrelas);
     if (error || !data?.sucesso) { showToast(data?.erro || error?.message || 'Erro ao registrar avaliação', 'error'); }
     else {
       showToast(`✓ Avaliação registrada! Média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');

@@ -1395,11 +1395,11 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     <div style={{ flex: 1 }}>
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.rebotes.nome}</strong>
                       <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                        {esporte === 'handebol' ? 'Líder em Defesas (Goleiro)' : 'Líder em Rebotes'}
+                        Líder em Rebotes
                       </span>
                     </div>
                     <div style={{ fontSize: '22px', fontWeight: 900, color: 'var(--accent)', fontFamily: "'Bebas Neue', sans-serif" }}>
-                      {lideres.rebotes.reb} {esporte === 'handebol' ? 'DEF' : 'REB'}
+                      {lideres.rebotes.reb} REB
                     </div>
                   </div>
                 )}
@@ -1419,11 +1419,11 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     <div style={{ flex: 1 }}>
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.tocos.nome}</strong>
                       <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
-                        {esporte === 'handebol' ? 'Líder em Faltas Cometidas' : 'Líder em Tocos (Blocks)'}
+                        Líder em Tocos (Blocks)
                       </span>
                     </div>
                     <div style={{ fontSize: '22px', fontWeight: 900, color: 'var(--accent)', fontFamily: "'Bebas Neue', sans-serif" }}>
-                      {lideres.tocos.tocos} {esporte === 'handebol' ? 'FLT' : 'BLK'}
+                      {lideres.tocos.tocos} BLK
                     </div>
                   </div>
                 )}
@@ -1639,7 +1639,6 @@ function InscricaoEquipeModal({ torneio, profile, onClose, onSuccess }) {
 // CONSOLE DO PLACAR: GERENCIADOR DE JOGO AO VIVO
 // ============================================================
 function ConsolePlacarJogo({ jogo, torneio, onBack }) {
-  const { esporte } = useEsporte();
   const [placarA, setPlacarA] = useState(jogo.placar_a || 0);
   const [placarB, setPlacarB] = useState(jogo.placar_b || 0);
   const [periodo, setPeriodo] = useState(jogo.periodos || 1);
@@ -2419,19 +2418,13 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
                   </span>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: 6 }}>
-                  {(esporte === 'handebol' ? [
-                    { label: 'GOL', key: 'pontos' },
-                    { label: 'DEF', key: 'rebotes' },
-                    { label: 'AST', key: 'assistencias' },
-                    { label: 'FLT', key: 'tocos' },
-                    { label: 'REC', key: 'roubos' }
-                  ] : [
+                  {[
                     { label: 'PTS', key: 'pontos' },
                     { label: 'REB', key: 'rebotes' },
                     { label: 'AST', key: 'assistencias' },
                     { label: 'BLK', key: 'tocos' },
                     { label: 'STL', key: 'roubos' }
-                  ]).map(stat => (
+                  ].map(stat => (
                     <div key={stat.key} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'var(--bg-secondary)', borderRadius: 6, padding: '4px 0', border: '1px solid var(--border)' }}>
                       <span style={{ fontSize: 9, color: 'var(--text-muted)', fontWeight: 800 }}>{stat.label}</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, margin: '2px 0' }}>

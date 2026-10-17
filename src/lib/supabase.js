@@ -122,24 +122,6 @@ export const votacaoAPI = {
   },
 };
 
-export const votacaoHandebolAPI = {
-  votar: async (jogadorId, avaliacao, metadata = {}) => {
-    const { data, error } = await supabase.rpc('registrar_avaliacao_handebol', {
-      p_jogador_id: jogadorId,
-      p_finalizacao: avaliacao.finalizacao,
-      p_defesa: avaliacao.defesa,
-      p_passes: avaliacao.passes,
-      p_explosao_fisica: avaliacao.explosao_fisica,
-      p_visao_de_jogo: avaliacao.visao_de_jogo,
-      p_ip: metadata.ip || null,
-      p_device_id: metadata.deviceId || null,
-      p_localizacao: metadata.localizacao || null,
-      p_comentario: avaliacao.comentario || null,
-    });
-    return { data, error };
-  },
-};
-
 // ============================================================
 // NOTAS DE JOGO (rachão / competição) — avaliação anônima da partida
 // Tudo passa por RPC: a tabela é fechada e ninguém vê quem avaliou.
