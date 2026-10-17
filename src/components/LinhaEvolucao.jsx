@@ -193,7 +193,7 @@ function Grafico({ serie }) {
   );
 }
 
-const LinhaEvolucao = memo(function LinhaEvolucao({ serie = [], loading = false }) {
+const LinhaEvolucao = memo(function LinhaEvolucao({ serie = [], loading = false, proprio = true }) {
   const temDados = serie.some((p) => p.total > 0);
   const totalPeriodo = serie.reduce((s, p) => s + (p.total || 0), 0);
   const periodo = agregar(serie);
@@ -214,9 +214,9 @@ const LinhaEvolucao = memo(function LinhaEvolucao({ serie = [], loading = false 
         </div>
       ) : !temDados ? (
         <div style={{ padding: '16px 4px 10px', fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.5 }}>
-          Ainda não há avaliações no seu histórico.
+          {proprio ? 'Ainda não há avaliações no seu histórico.' : 'Ainda não há avaliações no histórico deste atleta.'}
           <br />
-          Sua linha aparece assim que você receber notas nos <strong style={{ color: 'var(--text-secondary)' }}>rachões</strong>, <strong style={{ color: 'var(--text-secondary)' }}>competições</strong>/<strong style={{ color: 'var(--text-secondary)' }}>torneios</strong> ou votos na aba <strong style={{ color: 'var(--text-secondary)' }}>Atletas</strong>.
+          {proprio ? 'Sua linha aparece' : 'A linha aparece'} assim que {proprio ? 'você receber' : 'ele receber'} notas nos <strong style={{ color: 'var(--text-secondary)' }}>rachões</strong>, <strong style={{ color: 'var(--text-secondary)' }}>competições</strong>/<strong style={{ color: 'var(--text-secondary)' }}>torneios</strong> ou votos na aba <strong style={{ color: 'var(--text-secondary)' }}>Atletas</strong>.
         </div>
       ) : (
         <>

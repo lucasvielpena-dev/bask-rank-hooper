@@ -6,6 +6,7 @@ import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from './Icons';
 import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
 import { resumoAvaliacoes } from '../lib/ranking';
+import LinhaEvolucao from './LinhaEvolucao';
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
 
@@ -47,6 +48,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   const [loading, setLoading] = useState(true);
   const [perfilTab, setPerfilTab] = useState('sobre');
   const [historicoJogos, setHistoricoJogos] = useState([]);
+  const [evolucao, setEvolucao] = useState([]);
+  const [loadingEvolucao, setLoadingEvolucao] = useState(true);
 
   const [showDenunciar, setShowDenunciar] = useState(false);
   const [tipoDenuncia, setTipoDenuncia] = useState('perfil_falso');
@@ -124,6 +127,28 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
 
       setCommunityStats({ games: totalGames, wins, losses, winRate, points: totalPoints, rebounds: totalRebounds, assists: totalAssists, steals: totalSteals, blocks: totalBlocks });
 
+      // Linha de evolução: média mensal das avaliações recebidas (notas de
+      // partida + votos de estrela). Mesma fonte usada na tela de Perfil.
+      setLoadingEvolucao(true);
+      const { data: evo, error: evoError } = await supabase.rpc('evolucao_jogador', {
+        p_jogador_id: jogador.id,
+        p_meses: 6,
+      });
+      if (evoError) {
+        console.warn('Linha de evolução indisponível:', evoError.message);
+        setEvolucao([]);
+      } else {
+        setEvolucao((evo || []).map(r => ({
+          mes: r.mes,
+          media: r.media === null || r.media === undefined ? null : Number(r.media),
+          total: Number(r.total) || 0,
+          jogos: Number(r.jogos) || 0,
+          votos: Number(r.votos) || 0,
+          pct_bom: Number(r.pct_bom) || 0,
+        })));
+      }
+      setLoadingEvolucao(false);
+
       const user = (await supabase.auth.getUser()).data.user;
       if (user) {
         setMinhaId(user.id);
@@ -135,6 +160,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
       }
     } catch (e) {
       console.error('Erro ao buscar detalhes do jogador:', e);
+      setLoadingEvolucao(false);
     }
     setLoading(false);
   }
@@ -174,10 +200,6 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   const blk = totalGamesNum > 0 ? (communityStats.blocks / totalGamesNum).toFixed(1) : '0.0';
 
   const starsVal = localJogador.media_estrelas || 0;
-  let evolutionIndex = 0;
-  if (starsVal >= 4.5) evolutionIndex = 3;
-  else if (starsVal >= 4.0) evolutionIndex = 2;
-  else if (starsVal >= 3.0) evolutionIndex = 1;
 
   const hasAnyGameStats = communityStats && (communityStats.points > 0 || communityStats.rebounds > 0 || communityStats.assists > 0 || communityStats.steals > 0 || communityStats.blocks > 0);
 
@@ -309,48 +331,12 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
                 )}
               </div>
 
-              {/* Evolution Timeline */}
+              {/* Linha de Evolução — mesma fonte da tela de Perfil: a RPC
+                  evolucao_jogador devolve a média mensal das avaliações
+                  recebidas. Antes, aqui, era uma timeline fixa ("Rookie 2023",
+                  "Promessa 2024", "MVP 2026") que não vinha de voto nenhum. */}
               <div style={{ padding: '0 16px 16px' }}>
-                <div style={{ fontSize: 11, fontWeight: 400, color: '#6B7280', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: 12 }}>Linha de Evolução</div>
-                <motion.div 
-                  initial="hidden" 
-                  animate="show" 
-                  variants={{ show: { transition: { staggerChildren: 0.1 } } }}
-                  style={{ display: 'flex', alignItems: 'flex-start', position: 'relative', padding: '0 8px' }}
-                >
-                  <div style={{ position: 'absolute', top: 10, left: 24, right: 24, height: 2, background: 'rgba(255,255,255,0.06)' }} />
-                  <div style={{ position: 'absolute', top: 10, left: 24, width: `${evolutionIndex * 33.3}%`, maxWidth: 'calc(100% - 48px)', height: 2, background: '#C8F135', transition: 'width 0.6s ease' }} />
-                  {[
-                    { label: 'Rookie', year: '2023', val: 0 },
-                    { label: 'Promessa', year: '2024', val: 1 },
-                    { label: 'Elite', year: '2025', val: 2 },
-                    { label: 'MVP', year: '2026', val: 3 },
-                  ].map((step, i) => {
-                    const isCompleted = evolutionIndex >= step.val;
-                    const isActive = evolutionIndex === step.val;
-                    return (
-                      <motion.div 
-                        key={step.label} 
-                        variants={{ hidden: { scale: 0 }, show: { scale: 1, transition: { type: 'spring', stiffness: 300, damping: 20 } } }}
-                        style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 2 }}
-                      >
-                        <div style={{
-                          width: 20, height: 20, borderRadius: '50%',
-                          background: isCompleted ? '#C8F135' : 'transparent',
-                          border: isCompleted ? 'none' : '2px dashed #333344',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          boxShadow: isActive ? '0 0 12px rgba(200,241,53,0.4)' : 'none',
-                          animation: isActive ? 'pulse 2s infinite' : 'none',
-                          marginBottom: 6,
-                        }}>
-                          {isCompleted && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#FFFFFF' }} />}
-                        </div>
-                        <div style={{ fontSize: 10, fontWeight: isCompleted ? 700 : 400, color: isCompleted ? 'var(--text-primary)' : '#444', fontFamily: "'Inter',sans-serif", textAlign: 'center' }}>{step.label}</div>
-                        <div style={{ fontSize: 9, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif", marginTop: 1 }}>{step.year}</div>
-                      </motion.div>
-                    );
-                  })}
-                </motion.div>
+                <LinhaEvolucao serie={evolucao} loading={loadingEvolucao} proprio={!!isMe} />
               </div>
 
               {/* Tabs */}
@@ -498,8 +484,6 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
       </div>
 
       {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
-
-      <style>{`@keyframes pulse { 0%, 100% { box-shadow: 0 0 8px rgba(200,241,53,0.3); } 50% { box-shadow: 0 0 16px rgba(200,241,53,0.6); } }`}</style>
     </div>
   );
 }
