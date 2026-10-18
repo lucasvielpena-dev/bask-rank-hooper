@@ -298,7 +298,7 @@ export default function Atletas({ profile, onNavigate }) {
           </p>
         </div>
 
-        {/* Minha cidade | Outras cidades — entrada clara */}
+        {/* Minha cidade | Cidades — entrada clara */}
         {onNavigate && (
           <div
             style={{
@@ -343,7 +343,7 @@ export default function Atletas({ profile, onNavigate }) {
                 fontFamily: "'Inter', sans-serif",
               }}
             >
-              OUTRAS CIDADES
+              CIDADES
             </button>
           </div>
         )}
