@@ -375,7 +375,7 @@ export default function Racoes({ profile, onNavigate }) {
                 <div>
                   <label style={{ fontSize: 12, color: 'var(--text-muted)' }}>Vagas</label>
                   <select value={form.max_jogadores} onChange={(e) => setForm({ ...form, max_jogadores: e.target.value })}>
-                    {[6, 8, 10, 12, 14].map((n) => <option key={n} value={n}>{n}</option>)}
+                    {Array.from({ length: 10 }, (_, i) => (i + 1) * 2).map((n) => <option key={n} value={n}>{n}</option>)}
                   </select>
                 </div>
                 <div>
