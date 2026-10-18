@@ -1,7 +1,31 @@
-/** Score de confiança no frontend (fallback se RPC antiga não devolver score_confianca) */
-export function scoreConfianca(media = 0, votos = 0, prior = 5, priorMedia = 3) {
-  const v = Number(votos) || 0;
+/**
+ * Ranking com média bayesiana (confiança).
+ *
+ * Problema da média pura: 3 votos 5,0 passam na frente de 10 votos 4,5.
+ * Solução: puxar a nota para a média da base até haver votos suficientes.
+ *
+ * score = (média × votos + prior_média × prior_votos) / (votos + prior_votos)
+ *
+ * prior_votos ≈ "peso de votos imaginários na média da base"
+ * Com prior=8 e prior_média=3.0:
+ *   - 3×5,0  → ~3,73
+ *   - 4×4,0  → ~3,33
+ *   - 8×4,5  → ~3,75  (já compete de igual)
+ *   - 15×4,2 → ~3,78  (estável)
+ */
+
+export const RANKING_PRIOR_VOTOS = 8;
+export const RANKING_PRIOR_MEDIA = 3.0;
+
+export function scoreConfianca(
+  media = 0,
+  votos = 0,
+  prior = RANKING_PRIOR_VOTOS,
+  priorMedia = RANKING_PRIOR_MEDIA
+) {
+  const v = Math.max(0, Number(votos) || 0);
   const m = Number(media) || 0;
+  if (v <= 0) return 0;
   return (m * v + priorMedia * prior) / (v + prior);
 }
 
@@ -19,28 +43,19 @@ export function labelConfianca(nivel) {
 }
 
 export function sortByConfianca(list = []) {
-  // filter(Boolean): uma lista com item nulo (ex.: linha incompleta vinda do
-  // banco) derrubava a tela inteira no comparador.
   return [...(list || [])].filter(Boolean).sort((a, b) => {
     const sa = a.score_confianca ?? scoreConfianca(a.media_estrelas, a.total_votos);
     const sb = b.score_confianca ?? scoreConfianca(b.media_estrelas, b.total_votos);
     if (sb !== sa) return sb - sa;
-    return (b.total_votos || 0) - (a.total_votos || 0);
+    // Empate: quem tem mais votos; depois média pura
+    const va = Number(a.total_votos) || 0;
+    const vb = Number(b.total_votos) || 0;
+    if (vb !== va) return vb - va;
+    return (Number(b.media_estrelas) || 0) - (Number(a.media_estrelas) || 0);
   });
 }
 
-/**
- * Descreve de onde vem a nota do atleta.
- * A nota junta duas fontes: votos de estrela (aba Atletas, 5 fundamentos) e
- * notas de jogo (rachão, competição e torneio). Chamar tudo de "votos" fica
- * impreciso — e o atleta não entende por que a nota mudou depois de um rachão.
- *
- * `compacto` devolve só "12 avaliações" (para listas apertadas).
- * Se as colunas de detalhe ainda não existirem no banco, cai no formato antigo.
- */
 export function resumoAvaliacoes(jogador, { compacto = false } = {}) {
-  // Atenção: o valor padrão `= {}` só cobre `undefined`. Passar `null` (o que
-  // acontece enquanto o ranking ainda está carregando) estourava a tela.
   const j = jogador || {};
   const total = Number(j.total_votos) || 0;
   const estrelas = Number(j.total_votos_estrelas) || 0;

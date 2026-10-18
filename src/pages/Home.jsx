@@ -4,7 +4,7 @@ import { nomeAtleta } from '../lib/nomes';
 import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from '../components/Icons';
-import { labelConfianca, nivelConfianca, resumoAvaliacoes } from '../lib/ranking';
+import { labelConfianca, nivelConfianca, resumoAvaliacoes, sortByConfianca, scoreConfianca } from '../lib/ranking';
 
 export default function Home({ profile, onNavigate }) {
   const { esporte, cfg } = useEsporte();
@@ -43,7 +43,7 @@ export default function Home({ profile, onNavigate }) {
           const only = rankList.filter((j) => norm(j.cidade) === cityN);
           if (only.length) list = only;
         }
-        const sorted = [...list].sort((a, b) => (b.media_estrelas || 0) - (a.media_estrelas || 0));
+        const sorted = sortByConfianca(list);
         setTopPlayers(sorted.slice(0, 5));
 
         if (profile?.player_id) {

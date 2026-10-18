@@ -3,6 +3,7 @@ import { supabase, rankingAPI } from '../lib/supabase';
 import { nomeAtleta } from '../lib/nomes';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconVoltar, IconCalendario, IconRanking } from '../components/Icons';
+import { sortByConfianca } from '../lib/ranking';
 
 function normalizarCidade(v) {
   return String(v || '')
@@ -69,10 +70,9 @@ export default function Destaques({ profile, onNavigate }) {
         if (onlyCity.length) top = onlyCity;
       }
       if ((!top || top.length === 0) && jogs.length) {
-        top = [...jogs]
-          .filter((j) => (j.total_votos || 0) >= 1)
-          .sort((a, b) => (Number(b.media_estrelas) || 0) - (Number(a.media_estrelas) || 0))
-          .slice(0, 5);
+        top = sortByConfianca(jogs.filter((j) => (j.total_votos || 0) >= 1)).slice(0, 5);
+      } else if (top.length) {
+        top = sortByConfianca(top).slice(0, 5);
       }
 
       setStats({
