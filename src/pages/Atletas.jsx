@@ -22,7 +22,9 @@ const FILTROS = [
   { key: 'ranking', label: 'Ranking' },
   { key: 'todos', label: 'Todos' },
   { key: 'recentes', label: 'Recentes' },
-  { key: 'elite', label: 'Elite' }
+  { key: 'elite', label: 'Elite' },
+  // Quem tem menos votos aparece primeiro — é onde a avaliação faz diferença.
+  { key: 'menos', label: 'Menos avaliados' }
 ];
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
@@ -113,13 +115,17 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
   );
 });
 
-export default function Atletas({ profile, onNavigate }) {
+export default function Atletas({ profile, onNavigate, initialFiltro }) {
   const { esporte, cfg } = useEsporte();
   const _cache = lerCache('atletas');
   const [jogadores, setJogadores] = useState(_cache?.jogadores || []);
   const [filtrados, setFiltrados] = useState([]);
   const [busca, setBusca] = useState('');
-  const [filtroAtivo, setFiltroAtivo] = useState('todos');
+  // `initialFiltro` vem da Home (aviso "Ainda há N jogadores sem avaliação"),
+  // que abre esta tela já no filtro certo.
+  const [filtroAtivo, setFiltroAtivo] = useState(
+    FILTROS.some(f => f.key === initialFiltro) ? initialFiltro : 'todos'
+  );
   const [loading, setLoading] = useState(!_cache);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   
@@ -158,7 +164,10 @@ export default function Atletas({ profile, onNavigate }) {
         jogadoresAPI.listarPorEstado(stateUfVal, esporte),
         votacaoAPI.getStatusHoje(),
         userId
-          ? supabase.from('avaliacoes').select('jogador_id').eq('avaliador_id', userId).eq('esporte', esporte)
+          // `avaliacoes` não tem coluna de esporte: filtrar por ela derrubava a
+          // consulta inteira (e o "✓ Avaliado" nunca aparecia). O cruzamento com
+          // o esporte já acontece na lista de atletas carregada acima.
+          ? supabase.from('avaliacoes').select('jogador_id').eq('avaliador_id', userId)
           : Promise.resolve({ data: [] })
       ]);
 
@@ -206,6 +215,10 @@ export default function Atletas({ profile, onNavigate }) {
     } else if (filtroAtivo === 'ranking') {
       // Mostra todos da cidade; quem tem 0 votos fica no fim (média "--")
       result = sortByConfianca(result);
+    } else if (filtroAtivo === 'menos') {
+      // Menos avaliados primeiro: quem tem menos votos precisa de nota.
+      // Empate no número de votos: ordem alfabética (não muda sozinho na tela).
+      result.sort((a, b) => (Number(a.total_votos) || 0) - (Number(b.total_votos) || 0) || a.nome.localeCompare(b.nome));
     } else if (filtroAtivo === 'recentes') {
       result.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
     } else {
@@ -372,9 +385,11 @@ export default function Atletas({ profile, onNavigate }) {
           />
         </div>
 
-        {/* Segmented Control */}
+        {/* Segmented Control — 5 filtros não cabem espremidos em tela estreita,
+            então a barra rola na horizontal em vez de cortar os nomes. */}
         <div className="tabs" style={{
-          display: 'flex', background: 'var(--bg-card)', borderRadius: 12, padding: 4, marginBottom: 20, border: '1px solid var(--border)'
+          display: 'flex', background: 'var(--bg-card)', borderRadius: 12, padding: 4, marginBottom: 20, border: '1px solid var(--border)',
+          overflowX: 'auto', overflowY: 'hidden', scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch'
         }}>
           {FILTROS.map(f => {
             const active = filtroAtivo === f.key;
@@ -385,11 +400,12 @@ export default function Atletas({ profile, onNavigate }) {
                 onClick={() => setFiltroAtivo(f.key)}
                 style={{
                   position: 'relative',
-                  flex: 1, padding: '8px 0', borderRadius: 8,
+                  flex: '1 0 auto', padding: '8px 6px', borderRadius: 8,
                   border: 'none', background: 'transparent',
                   color: active ? 'var(--text-primary)' : 'var(--text-muted)',
-                  fontWeight: active ? 600 : 500, fontSize: 13, cursor: 'pointer',
+                  fontWeight: active ? 600 : 500, fontSize: 12, cursor: 'pointer',
                   fontFamily: "'Inter',sans-serif", transition: 'color 0.2s',
+                  whiteSpace: 'nowrap',
                   zIndex: 1
                 }}
               >

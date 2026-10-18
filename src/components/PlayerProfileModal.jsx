@@ -38,7 +38,10 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
   );
 });
 
-export default function PlayerProfileModal({ jogador, rank, onClose }) {
+// `iniciarAvaliando`: abre já no formulário de avaliação (usado pelo cartão
+// "Quem jogou com você", na Home). Sem essa prop, o comportamento é o de
+// sempre — o formulário só aparece depois de tocar em "Avaliar Este Jogador".
+export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAvaliando = false }) {
   const { esporte, cfg } = useEsporte();
   const fundamentos = cfg.habilidades;
 
@@ -60,7 +63,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   const [minhaId, setMinhaId] = useState(null);
   const [minhaCidade, setMinhaCidade] = useState('');
   const [minhaUf, setMinhaUf] = useState('');
-  const [showAvaliar, setShowAvaliar] = useState(false);
+  const [showAvaliar, setShowAvaliar] = useState(!!iniciarAvaliando);
   const [estrelas, setEstrelas] = useState(() => Object.fromEntries(cfg.habilidades.map(h => [h.key, 0])));
   const [enviandoAvaliacao, setEnviandoAvaliacao] = useState(false);
   const [jaAvaliou, setJaAvaliou] = useState(false);

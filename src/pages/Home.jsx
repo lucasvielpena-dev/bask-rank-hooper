@@ -5,6 +5,7 @@ import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime'
 import { lerCache, salvarCache } from '../lib/pageCache';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from '../components/Icons';
+import PendenciasAvaliacao from '../components/PendenciasAvaliacao';
 import { labelConfianca, nivelConfianca, resumoAvaliacoes, sortByConfianca, scoreConfianca } from '../lib/ranking';
 
 export default function Home({ profile, onNavigate }) {
@@ -280,6 +281,11 @@ export default function Home({ profile, onNavigate }) {
           </button>
         </div>
         </div>
+
+        {/* Pendências de avaliação: cartão "Quem jogou com você" e o aviso da
+            cidade. Os dois são opcionais e discretos — se não houver nada (ou
+            se a consulta falhar), não aparece nada aqui. */}
+        <PendenciasAvaliacao profile={profile} onNavigate={onNavigate} />
 
         <div className="home-highlights-section">
           <div className="home-highlights-header">

@@ -39,7 +39,7 @@ import AdminActivity from './pages/AdminActivity';
 const ABAS_FIXAS = ['inicio', 'atletas', 'racoes', 'jogos', 'perfil'];
 
 function chaveDaTela(p, props) {
-  return `${p}|${props?.aba || ''}|${props?.openAdd ? 'a' : ''}`;
+  return `${p}|${props?.aba || ''}|${props?.openAdd ? 'a' : ''}|${props?.filtro || ''}`;
 }
 
 function AppRoutes() {
@@ -92,7 +92,7 @@ function AppRoutes() {
     const props = t.props || {};
     switch (t.page) {
       case 'inicio': return <Home profile={profile} onNavigate={navigate} />;
-      case 'atletas': return <Atletas profile={profile} initialOpenAdd={props.openAdd} onNavigate={navigate} />;
+      case 'atletas': return <Atletas profile={profile} initialOpenAdd={props.openAdd} initialFiltro={props.filtro} onNavigate={navigate} />;
       case 'explorar': return <Explorar profile={profile} onNavigate={navigate} />;
       case 'torneios': return <Jogos profile={profile} initialAba="torneios" />;
       case 'jogos': return <Jogos profile={profile} initialAba={props.aba || 'jogos'} />;

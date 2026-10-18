@@ -4,6 +4,7 @@ import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
 import { useEsporte } from '../contexts/EsporteContext';
 import LinhaEvolucao from '../components/LinhaEvolucao';
 import { lerCache, salvarCache } from '../lib/pageCache';
+import { meusAvaliados } from '../lib/avaliacaoPendente';
 
 
 
@@ -30,6 +31,9 @@ export default function Stats({ profile, onNavigate }) {
   const [evolucao, setEvolucao] = useState(_cache?.evolucao || []);
   const [loadingEvolucao, setLoadingEvolucao] = useState(!_cache);
   const [careerStats, setCareerStats] = useState(_cache?.careerStats || { games: 0, points: 0, rebounds: 0, assists: 0, steals: 0, blocks: 0 });
+  // Contribuição da própria pessoa (quantos atletas ela já avaliou). É só
+  // informação dela — de propósito, não existe ranking de quem mais avalia.
+  const [avaliouQtd, setAvaliouQtd] = useState(null);
 
   const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
   const uf = profile?.uf || 'PA';
@@ -225,6 +229,10 @@ export default function Stats({ profile, onNavigate }) {
           blocks: totalBlocks
         });
       }
+
+      // Contribuição própria: quantos atletas já receberam nota minha.
+      const { total: totalAvaliados } = await meusAvaliados();
+      setAvaliouQtd(totalAvaliados);
     } catch (e) {
       console.error(e);
       showToast('Erro ao carregar dados.', 'error');
@@ -462,6 +470,25 @@ export default function Stats({ profile, onNavigate }) {
             </div>
           ))}
         </div>
+
+        {/* Contribuição própria — só a pessoa vê a dela. De propósito, não
+            existe ranking de quem mais avalia. */}
+        {avaliouQtd !== null && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            fontSize: 12, color: 'var(--text-secondary)',
+            fontFamily: "'Inter',sans-serif", marginBottom: 10,
+          }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--accent-text)" stroke="none">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            {avaliouQtd === 0 ? (
+              <span>Você ainda não avaliou nenhum jogador</span>
+            ) : (
+              <span>Você avaliou <strong style={{ color: 'var(--text-primary)' }}>{avaliouQtd}</strong> {avaliouQtd === 1 ? 'jogador' : 'jogadores'}</span>
+            )}
+          </div>
+        )}
 
         {/* Linha de Evolução (média mensal real das avaliações recebidas) */}
         <LinhaEvolucao serie={evolucao} loading={loadingEvolucao} />
