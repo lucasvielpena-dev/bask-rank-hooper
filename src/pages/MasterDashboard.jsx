@@ -40,32 +40,44 @@ export default function MasterDashboard({ onNavigate }) {
   const [stats, setStats] = useState({});
   const [cities, setCities] = useState([]);
   const [players, setPlayers] = useState([]);
-  const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
 
   async function loadAll() {
     try {
-      const [statsRes, cityRes, playersRes, reportsRes] = await Promise.all([
-        supabase.rpc('get_master_stats'),
-        masterAPI.getCityStats(),
-        masterAPI.getPlayers(),
-        masterAPI.getReports(),
-      ]);
-
+      // Stats é o essencial; o resto não pode derrubar a tela
+      const statsRes = await supabase.rpc('get_master_stats');
       if (statsRes.error) throw statsRes.error;
       const d = Array.isArray(statsRes.data) ? statsRes.data[0] : statsRes.data;
-      setStats(d || {});
+      setStats(d && typeof d === 'object' ? d : {});
 
-      if (!cityRes.error) setCities(cityRes.data || []);
-      if (!playersRes.error) setPlayers(playersRes.data || []);
-      if (!reportsRes.error) setReports(reportsRes.data || []);
+      try {
+        const cityRes = await masterAPI.getCityStats();
+        if (!cityRes.error && Array.isArray(cityRes.data)) {
+          setCities(cityRes.data);
+        } else {
+          setCities([]);
+        }
+      } catch (_) {
+        setCities([]);
+      }
+
+      try {
+        const playersRes = await masterAPI.getPlayers();
+        if (!playersRes.error && Array.isArray(playersRes.data)) {
+          setPlayers(playersRes.data);
+        } else {
+          setPlayers([]);
+        }
+      } catch (_) {
+        setPlayers([]);
+      }
 
       setError(null);
       setLastUpdate(new Date());
     } catch (e) {
-      setError(e.message || 'Erro ao carregar painel');
+      setError(e?.message || 'Erro ao carregar painel');
     } finally {
       setLoading(false);
     }
@@ -78,23 +90,14 @@ export default function MasterDashboard({ onNavigate }) {
   }, []);
 
   const insights = useMemo(() => {
-    const semCidade = players.filter(
-      (p) => !p.cidade || String(p.cidade).trim() === ''
+    const list = Array.isArray(players) ? players : [];
+    const semCidade = list.filter((p) => !p?.cidade || String(p.cidade).trim() === '');
+    const suspensos = list.filter((p) => p?.ativo === false);
+    const semVotos = list.filter(
+      (p) => p?.ativo !== false && (Number(p?.total_votos) || 0) === 0
     );
-    const suspensos = players.filter((p) => p.ativo === false);
-    const semVotos = players.filter(
-      (p) => p.ativo !== false && (p.total_votos || 0) === 0
-    );
-    const denunciasAbertas = (reports || []).filter(
-      (r) => !r.status || r.status === 'aberto' || r.status === 'pendente'
-    );
-    return {
-      semCidade,
-      suspensos,
-      semVotos,
-      denunciasAbertas,
-    };
-  }, [players, reports]);
+    return { semCidade, suspensos, semVotos };
+  }, [players]);
 
   if (loading) {
     return (
@@ -107,16 +110,13 @@ export default function MasterDashboard({ onNavigate }) {
     );
   }
 
-  const isEmpty = Object.keys(stats).length === 0;
+  const isEmpty = !stats || Object.keys(stats).length === 0;
   const alertCount =
-    insights.semCidade.length +
-    insights.suspensos.length +
-    insights.denunciasAbertas.length;
+    insights.semCidade.length + insights.suspensos.length;
 
   return (
     <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
       <div style={{ padding: 'clamp(14px, 4vw, 20px) clamp(12px, 3vw, 20px) 0', maxWidth: 960, margin: '0 auto' }}>
-        {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, gap: 12 }}>
           <div>
             <h1 style={{ fontSize: 'clamp(20px, 5vw, 26px)', fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
@@ -128,17 +128,11 @@ export default function MasterDashboard({ onNavigate }) {
                 : 'Visão geral e alertas'}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={loadAll}
-            className="btn btn-secondary btn-sm"
-            style={{ flexShrink: 0 }}
-          >
+          <button type="button" onClick={loadAll} className="btn btn-secondary btn-sm" style={{ flexShrink: 0 }}>
             Atualizar
           </button>
         </div>
 
-        {/* Tabs */}
         <div
           style={{
             display: 'flex',
@@ -153,7 +147,7 @@ export default function MasterDashboard({ onNavigate }) {
             <button
               key={tab.label}
               type="button"
-              onClick={() => (tab.page ? onNavigate(tab.page) : null)}
+              onClick={() => (tab.page ? onNavigate?.(tab.page) : null)}
               style={{
                 flexShrink: 0,
                 padding: '8px 12px',
@@ -194,16 +188,8 @@ export default function MasterDashboard({ onNavigate }) {
           </div>
         ) : (
           <>
-            {/* ALERTAS — o que exige atenção */}
             <div style={{ marginBottom: 20 }}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: 10,
-                }}
-              >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                 <h2 style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                   Precisa de atenção
                 </h2>
@@ -212,40 +198,35 @@ export default function MasterDashboard({ onNavigate }) {
                 )}
               </div>
 
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: 10,
-                }}
-              >
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
                 <AlertCard
                   title="Sem cidade"
                   count={insights.semCidade.length}
                   hint="Não entram no ranking municipal"
                   tone={insights.semCidade.length ? 'warn' : 'ok'}
-                  onClick={() => onNavigate('master-players')}
+                  onClick={() => onNavigate?.('master-players')}
                 />
                 <AlertCard
                   title="Suspensos"
                   count={insights.suspensos.length}
                   hint="Jogadores desativados"
                   tone={insights.suspensos.length ? 'muted' : 'ok'}
-                  onClick={() => onNavigate('master-players')}
+                  onClick={() => onNavigate?.('master-players')}
                 />
                 <AlertCard
                   title="Sem votos"
                   count={insights.semVotos.length}
                   hint="Ativos ainda sem avaliação"
                   tone="info"
-                  onClick={() => onNavigate('master-players')}
+                  onClick={() => onNavigate?.('master-players')}
                 />
                 <AlertCard
-                  title="Denúncias"
-                  count={insights.denunciasAbertas.length}
-                  hint="Relatórios abertos"
-                  tone={insights.denunciasAbertas.length ? 'danger' : 'ok'}
-                  onClick={() => onNavigate('master-reports')}
+                  title="Relatórios"
+                  count={null}
+                  hint="Gráficos e histórico"
+                  tone="info"
+                  onClick={() => onNavigate?.('master-reports')}
+                  label="Ver"
                 />
               </div>
 
@@ -260,7 +241,7 @@ export default function MasterDashboard({ onNavigate }) {
                   }}
                 >
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#fbbf24', marginBottom: 8 }}>
-                    Atletas sem cidade (toque em Jogadores para gerir)
+                    Atletas sem cidade
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                     {insights.semCidade.slice(0, 8).map((p) => (
@@ -288,7 +269,6 @@ export default function MasterDashboard({ onNavigate }) {
               )}
             </div>
 
-            {/* NÚMEROS */}
             <h2 style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10 }}>
               Números do sistema
             </h2>
@@ -335,14 +315,13 @@ export default function MasterDashboard({ onNavigate }) {
               })}
             </div>
 
-            {/* CIDADES */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
               <h2 style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                 Por cidade
               </h2>
               <button
                 type="button"
-                onClick={() => onNavigate('master-cities')}
+                onClick={() => onNavigate?.('master-cities')}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -379,9 +358,9 @@ export default function MasterDashboard({ onNavigate }) {
                   const pct = Math.round(((Number(c.user_count) || 0) / maxUsers) * 100);
                   return (
                     <button
-                      key={c.cidade}
+                      key={String(c.cidade)}
                       type="button"
-                      onClick={() => onNavigate('master-cities')}
+                      onClick={() => onNavigate?.('master-cities')}
                       style={{
                         background: 'var(--bg-card)',
                         border: '1px solid var(--border)',
@@ -435,7 +414,6 @@ export default function MasterDashboard({ onNavigate }) {
               </div>
             )}
 
-            {/* ATALHOS */}
             <h2 style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-primary)', marginBottom: 10 }}>
               Atalhos
             </h2>
@@ -453,12 +431,12 @@ export default function MasterDashboard({ onNavigate }) {
                 { label: 'Usuários', tab: 'master-users', hint: 'Contas e papéis' },
                 { label: 'Torneios', tab: 'master-tournaments', hint: 'Competições' },
                 { label: 'Notificações', tab: 'master-notifications', hint: 'Avisos globais' },
-                { label: 'Relatórios', tab: 'master-reports', hint: 'Denúncias' },
+                { label: 'Relatórios', tab: 'master-reports', hint: 'Gráficos do sistema' },
               ].map((action) => (
                 <button
                   key={action.tab}
                   type="button"
-                  onClick={() => onNavigate(action.tab)}
+                  onClick={() => onNavigate?.(action.tab)}
                   style={{
                     background: 'var(--bg-card)',
                     border: '1px solid rgba(200,241,53,0.15)',
@@ -497,14 +475,15 @@ export default function MasterDashboard({ onNavigate }) {
   );
 }
 
-function AlertCard({ title, count, hint, tone, onClick }) {
-  const styles = {
-    warn: { border: 'rgba(245,158,11,0.35)', bg: 'rgba(245,158,11,0.08)', num: '#fbbf24' },
-    danger: { border: 'rgba(239,68,68,0.35)', bg: 'rgba(239,68,68,0.08)', num: '#f87171' },
-    muted: { border: 'var(--border)', bg: 'var(--bg-card)', num: 'var(--text-secondary)' },
-    info: { border: 'rgba(96,165,250,0.3)', bg: 'rgba(96,165,250,0.08)', num: '#93c5fd' },
-    ok: { border: 'rgba(74,222,128,0.25)', bg: 'rgba(74,222,128,0.06)', num: '#4ade80' },
-  }[tone] || { border: 'var(--border)', bg: 'var(--bg-card)', num: 'var(--text-primary)' };
+function AlertCard({ title, count, hint, tone, onClick, label }) {
+  const styles =
+    {
+      warn: { border: 'rgba(245,158,11,0.35)', bg: 'rgba(245,158,11,0.08)', num: '#fbbf24' },
+      danger: { border: 'rgba(239,68,68,0.35)', bg: 'rgba(239,68,68,0.08)', num: '#f87171' },
+      muted: { border: 'var(--border)', bg: 'var(--bg-card)', num: 'var(--text-secondary)' },
+      info: { border: 'rgba(96,165,250,0.3)', bg: 'rgba(96,165,250,0.08)', num: '#93c5fd' },
+      ok: { border: 'rgba(74,222,128,0.25)', bg: 'rgba(74,222,128,0.06)', num: '#4ade80' },
+    }[tone] || { border: 'var(--border)', bg: 'var(--bg-card)', num: 'var(--text-primary)' };
 
   return (
     <button
@@ -520,8 +499,15 @@ function AlertCard({ title, count, hint, tone, onClick }) {
         fontFamily: 'inherit',
       }}
     >
-      <div style={{ fontSize: 22, fontWeight: 900, color: styles.num, fontFamily: "'Barlow Condensed', sans-serif" }}>
-        {count}
+      <div
+        style={{
+          fontSize: 22,
+          fontWeight: 900,
+          color: styles.num,
+          fontFamily: "'Barlow Condensed', sans-serif",
+        }}
+      >
+        {count === null || count === undefined ? label || '→' : count}
       </div>
       <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--text-primary)', marginTop: 2 }}>{title}</div>
       <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 4, lineHeight: 1.3 }}>{hint}</div>
