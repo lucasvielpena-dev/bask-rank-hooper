@@ -37,6 +37,9 @@ export default function Layout({ page, onNavigate, children }) {
     solicitarLocalizacaoBanner,
     handleConfirmCityUpdate,
     handleRejectCityUpdate,
+    pedirLocalizacao,
+    pedirLocalizacaoAgora,
+    dispensarPedidoLocalizacao,
     showNotificacoes,
     setShowNotificacoes,
     notificacoes,
@@ -462,6 +465,28 @@ export default function Layout({ page, onNavigate, children }) {
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {pedirLocalizacao && !cityPrompt && (
+        <div className="modal-overlay" style={{ zIndex: 2000 }}>
+          <div className="modal-sheet" style={{ maxWidth: 400, padding: 24, textAlign: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+              <IconLocalizacao size={40} color="var(--accent)" />
+            </div>
+            <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 10 }}>Confirmar sua cidade</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
+              Podemos usar sua localização para confirmar em qual cidade você está? Assim as avaliações e os rachões ficam na cidade certa. Se você estiver em outra cidade, a gente pergunta antes de mudar.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <button onClick={pedirLocalizacaoAgora} style={{ background: 'var(--accent)', color: '#000', border: 'none', borderRadius: 50, padding: '12px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
+                Permitir localização
+              </button>
+              <button onClick={dispensarPedidoLocalizacao} style={{ background: 'transparent', color: 'var(--text-secondary)', border: 'none', padding: '10px', fontSize: 13, cursor: 'pointer' }}>
+                Agora não
+              </button>
+            </div>
           </div>
         </div>
       )}

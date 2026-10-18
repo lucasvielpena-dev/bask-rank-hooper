@@ -47,6 +47,7 @@ export function AuthProvider({ children }) {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   const [cityPrompt, setCityPrompt] = useState(null);
+  const [pedirLocalizacao, setPedirLocalizacao] = useState(false);
 
   const [notificacoes, setNotificacoes] = useState([]);
   const [showNotificacoes, setShowNotificacoes] = useState(false);
@@ -342,18 +343,41 @@ export function AuthProvider({ children }) {
   }
 
   function handleRejectCityUpdate() {
-    if (cityPrompt) {
-      localStorage.setItem(`rejected_city_update_${cityPrompt.city}`, 'true');
+    if (cityPrompt && profile) {
+      localStorage.setItem(`rejeitou_${profile.id}_${cityPrompt.city}_${hojeISO()}`, 'true');
+      marcarVerificadaHoje(profile);
     }
     setCityPrompt(null);
   }
 
-  function verificarLocalizacao(prof) {
-    if (!navigator.geolocation || !prof.player_id) return;
+  const hojeISO = () => new Date().toISOString().slice(0, 10);
 
+  // Pede permissão de forma explícita (pelo app, antes do aviso do navegador)
+  // e confere a cidade no máximo uma vez por dia por usuário.
+  async function verificarLocalizacao(prof) {
+    if (!navigator.geolocation || !prof?.cadastro_completo) return;
+    try {
+      if (localStorage.getItem(`loc_verificada_${prof.id}`) === hojeISO()) return;
+    } catch { /* sem localStorage: segue */ }
+
+    let estado = 'prompt';
+    try {
+      const r = await navigator.permissions?.query({ name: 'geolocation' });
+      if (r?.state) estado = r.state;
+    } catch { /* navegador sem Permissions API: trata como 'prompt' */ }
+
+    if (estado === 'denied') return;
+    if (estado === 'prompt') { setPedirLocalizacao(true); return; }
+    conferirCidadePorGPS(prof);
+  }
+
+  function marcarVerificadaHoje(prof) {
+    try { localStorage.setItem(`loc_verificada_${prof.id}`, hojeISO()); } catch { /* ignora */ }
+  }
+
+  function conferirCidadePorGPS(prof) {
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
-
       try {
         const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`, {
           headers: { 'Accept-Language': 'pt-BR' }
@@ -363,27 +387,35 @@ export function AuthProvider({ children }) {
         const detectedCity = address.municipality || address.city || address.town || address.village || null;
         const stateName = (address.state || '').toLowerCase();
         const detectedUf = ESTADO_TO_UF[stateName] || null;
-
-        // Sem cidade ou UF identificados, não sugere troca nenhuma.
         if (!detectedCity || !detectedUf) return;
 
-        if (detectedCity.toLowerCase() !== (prof.cidade_atual || '').toLowerCase()) {
-          const alreadyRejected = localStorage.getItem(`rejected_city_update_${detectedCity}`);
-          if (!alreadyRejected) {
-            setCityPrompt({
-              city: detectedCity,
-              uf: detectedUf,
-              latitude,
-              longitude
-            });
+        const atual = (prof.cidade_atual || '').toLowerCase();
+        if (detectedCity.toLowerCase() !== atual) {
+          // Recusa vale só para o dia, para o app perguntar de novo se a pessoa mudar de lugar.
+          const recusou = localStorage.getItem(`rejeitou_${prof.id}_${detectedCity}_${hojeISO()}`);
+          if (!recusou) {
+            setCityPrompt({ city: detectedCity, uf: detectedUf, latitude, longitude });
           }
         }
+        marcarVerificadaHoje(prof);
       } catch (err) {
         console.error('Erro na geolocalização / geocodificação:', err);
       }
     }, (err) => {
       console.warn('Erro ao obter coordenadas de geolocalização:', err);
     });
+  }
+
+  // Chamado pelo botão "Permitir" no aviso do app.
+  function pedirLocalizacaoAgora() {
+    setPedirLocalizacao(false);
+    if (profile) conferirCidadePorGPS(profile);
+  }
+
+  // Chamado pelo botão "Agora não": não pergunta de novo hoje.
+  function dispensarPedidoLocalizacao() {
+    setPedirLocalizacao(false);
+    if (profile) marcarVerificadaHoje(profile);
   }
 
   async function solicitarLocalizacaoBanner() {
@@ -733,6 +765,9 @@ export function AuthProvider({ children }) {
     handleUpdateTheme,
     handleConfirmCityUpdate,
     handleRejectCityUpdate,
+    pedirLocalizacao,
+    pedirLocalizacaoAgora,
+    dispensarPedidoLocalizacao,
     solicitarLocalizacaoBanner,
     handleMarcarLida,
     handleMarcarTodasLidas,
