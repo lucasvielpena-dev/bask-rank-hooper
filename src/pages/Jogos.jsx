@@ -416,7 +416,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           const remaining = Math.max(0, Math.ceil((timerEndAtRef.current - Date.now()) / 1000));
           setTempo(remaining);
           if (remaining <= 0) setTimerAtivo(false);
-        }, 250);
+        }, 1000);
       }
       return () => clearInterval(interval);
     }
@@ -440,7 +440,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             timer_end_at: new Date(timerEndAtRef.current).toISOString(),
           }).catch(() => {});
         }
-      }, 250);
+      }, 1000);
     } else {
       // Só grava NULL se ESTE celular pausou de verdade (play → pause).
       // Evita o 2º celular zerar o cronômetro do 1º ao montar a tela.

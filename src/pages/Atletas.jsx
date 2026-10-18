@@ -6,7 +6,6 @@ import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime'
 import { useEsporte } from '../contexts/EsporteContext';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { motion, AnimatePresence } from 'framer-motion';
-import AnimatedCounter from '../components/AnimatedCounter';
 
 function normalizarCidade(v) {
   return String(v || '')
@@ -493,7 +492,7 @@ export default function Atletas({ profile, onNavigate }) {
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 13, fontWeight: 700, color: 'var(--accent)', fontFamily: "'Barlow Condensed',sans-serif", marginTop: 4 }}>
                         <span>★</span>
-                        <span>{j.total_votos >= 1 ? <AnimatedCounter value={score} /> : '--'}</span>
+                        <span>{j.total_votos >= 1 ? Number(score).toFixed(1) : '--'}</span>
                       </div>
                       <div style={{ width: 80, height: 4, background: 'var(--bg-secondary)', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
                         <div style={{ width: `${(score / 5) * 100}%`, height: '100%', background: 'var(--accent)', borderRadius: 2 }} />
