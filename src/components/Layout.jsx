@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useEsporte } from '../contexts/EsporteContext';
@@ -113,6 +113,15 @@ export default function Layout({ page, onNavigate, children }) {
   }, []);
 
   const isHome = page === 'inicio';
+
+  // Algumas telas rolam no PRÓPRIO envolvedor de conteúdo (o que tem
+  // `overflow-x:hidden` — que por tabela também habilita rolagem vertical).
+  // Essa rolagem ficava "grudada" ao trocar de aba: a tela nova aparecia
+  // deslocada para cima, como se tivesse pulado. Aqui ela volta ao topo.
+  const scrollerRef = useRef(null);
+  useEffect(() => {
+    if (scrollerRef.current) scrollerRef.current.scrollTop = 0;
+  }, [page]);
   // UMA única camada de fundo, sem `filter` e sem segunda imagem.
   //
   // Antes eram DUAS imagens de tela cheia empilhadas, cada uma com
@@ -188,7 +197,7 @@ export default function Layout({ page, onNavigate, children }) {
       {/* Pedido para operar o placar: aparece em qualquer tela, com Aceitar/Recusar. */}
       <AvisosPlacar />
 
-      <div style={{ flex: 1, position: 'relative', overflowX: 'hidden', zIndex: 120 }}>
+      <div ref={scrollerRef} style={{ flex: 1, position: 'relative', overflowX: 'hidden', zIndex: 120 }}>
         {/* Troca de tela instantânea: nada de fade/scale (que dava sensação de
             "pisca e pula"). A nova tela entra já montada no lugar da anterior. */}
         <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>

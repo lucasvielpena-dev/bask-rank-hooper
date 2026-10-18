@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ranks-hoops-cache-v30';
+const CACHE_NAME = 'ranks-hoops-cache-v31';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
