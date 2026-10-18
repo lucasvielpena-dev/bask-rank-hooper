@@ -1,5 +1,15 @@
 import { memo, useEffect, useMemo, useState } from 'react';
-import { IconSino, IconVoltar } from './Icons';
+import {
+  IconSino,
+  IconVoltar,
+  IconAvaliar,
+  IconTrofeu,
+  IconPlacar,
+  IconBasquete,
+  IconJogador,
+  IconLocalizacao,
+  IconNotificacao,
+} from './Icons';
 import { notificacoesAPI, partidasAPI } from '../lib/supabase';
 
 function timeAgo(iso) {
@@ -24,16 +34,15 @@ function formatFull(iso) {
   });
 }
 
-function iconForTitle(titulo = '') {
+function IconForTitle({ titulo = '', size = 18, color = 'var(--accent)' }) {
   const t = titulo.toLowerCase();
-  if (t.includes('avalia')) return '⭐';
-  if (t.includes('torneio') || t.includes('campe')) return '🏆';
-  if (t.includes('placar') || t.includes('operar')) return '📊';
-  if (t.includes('jogo') || t.includes('partida') || t.includes('compet')) return '🏀';
-  if (t.includes('rach') || t.includes('pickup')) return '🤝';
-  if (t.includes('bem-vindo') || t.includes('boas')) return '👋';
-  if (t.includes('cidade') || t.includes('local')) return '📍';
-  return '🔔';
+  if (t.includes('avalia')) return <IconAvaliar size={size} color={color} />;
+  if (t.includes('torneio') || t.includes('campe')) return <IconTrofeu size={size} color={color} />;
+  if (t.includes('placar') || t.includes('operar')) return <IconPlacar size={size} color={color} />;
+  if (t.includes('jogo') || t.includes('partida') || t.includes('compet')) return <IconBasquete size={size} color={color} />;
+  if (t.includes('rach') || t.includes('pickup')) return <IconJogador size={size} color={color} />;
+  if (t.includes('cidade') || t.includes('local')) return <IconLocalizacao size={size} color={color} />;
+  return <IconNotificacao size={size} color={color} />;
 }
 
 /** Destino sugerido a partir do título/mensagem */
@@ -219,7 +228,7 @@ function NotificationsPanel({
               >
                 <IconVoltar size={16} color="var(--accent)" />
               </button>
-              <div className="notif-header-icon">{iconForTitle(selected.titulo)}</div>
+              <div className="notif-header-icon"><IconForTitle titulo={selected.titulo} size={20} /></div>
               <div>
                 <h3 className="notif-title">Detalhe</h3>
                 <p className="notif-subtitle">{formatFull(selected.created_at)}</p>
@@ -237,7 +246,7 @@ function NotificationsPanel({
                 marginBottom: 14,
               }}
             >
-              <div style={{ fontSize: 28, marginBottom: 10 }}>{iconForTitle(selected.titulo)}</div>
+              <div style={{ fontSize: 28, marginBottom: 10 }}><IconForTitle titulo={selected.titulo} size={20} /></div>
               <h2
                 style={{
                   fontSize: 18,
@@ -480,7 +489,7 @@ function NotificationsPanel({
                   border: undefined,
                 }}
               >
-                <div className="notif-item-icon">{iconForTitle(n.titulo)}</div>
+                <div className="notif-item-icon"><IconForTitle titulo={n.titulo} size={18} /></div>
                 <div className="notif-item-body">
                   <div className="notif-item-top">
                     <span className="notif-item-title">{n.titulo}</span>
