@@ -81,14 +81,14 @@ export default function Torneios({ profile, isNested = false }) {
               </div>
               
               <button className="btn btn-primary btn-sm" onClick={() => setShowCriar(true)}>
-                Criar Torneio
+                Cadastrar Torneio
               </button>
             </div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
               <h3 style={{ fontWeight: 800, fontSize: 16 }}>Torneios Regionais</h3>
               <button className="btn btn-primary btn-sm" onClick={() => setShowCriar(true)}>
-                Criar Torneio
+                Cadastrar Torneio
               </button>
             </div>
           )}
@@ -107,9 +107,6 @@ export default function Torneios({ profile, isNested = false }) {
               </svg>
               <h3>Nenhum torneio ativo</h3>
               <p>Crie o primeiro torneio e organize as equipes!</p>
-              <button className="btn btn-primary" onClick={() => setShowCriar(true)} style={{ marginTop: 14 }}>
-                Cadastrar Torneio
-              </button>
             </div>
           ) : (
             <div className="responsive-card-grid" style={{ paddingBottom: 16 }}>
@@ -272,7 +269,7 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
           <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
             <button type="button" className="btn btn-secondary" onClick={onClose} disabled={salvando} style={{ flex: 1 }}>Cancelar</button>
             <button type="submit" className="btn btn-primary" disabled={salvando} style={{ flex: 2 }}>
-              {salvando ? <div className="spinner" /> : 'Criar Torneio'}
+              {salvando ? <div className="spinner" /> : 'Cadastrar Torneio'}
             </button>
           </div>
         </form>
