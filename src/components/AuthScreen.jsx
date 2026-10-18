@@ -86,17 +86,31 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
 
       } else if (tab === 'register') {
         if (!nome.trim()) throw new Error('Por favor, informe seu nome completo.');
+        if (!email.trim()) throw new Error('Por favor, informe seu e-mail.');
+        if (senha.length < 6) throw new Error('A senha precisa ter pelo menos 6 caracteres.');
         const { data, error } = await authAPI.registrar(email, senha, nome);
         if (error) throw error;
-        if (data && !data.session) {
-          setSuccessMsg('Cadastro realizado! Um e-mail de confirmação foi enviado.');
+        if (data?.session) {
+          // Confirmação de e-mail desligada no Supabase: já entra logado
+          if (onStartAnimation) onStartAnimation();
+          setIsShooting(true);
+          setTimeout(() => { if (onFinishAnimation) onFinishAnimation(); }, 2200);
+        } else {
+          setSuccessMsg(
+            'Cadastro ok! Enviamos um e-mail de confirmação. ' +
+            'Confira a caixa de entrada e o spam/lixeira do Gmail. ' +
+            'O link leva de volta ao app.'
+          );
+          setCarregando(false);
         }
-        setCarregando(false);
       } else if (tab === 'forgot') {
         if (!email.trim()) throw new Error('Por favor, informe seu e-mail.');
         const { error } = await authAPI.recuperarSenha(email);
         if (error) throw error;
-        setSuccessMsg('E-mail de recuperação enviado!');
+        setSuccessMsg(
+          'Se esse e-mail existir, enviamos o link de recuperação. ' +
+          'Olhe também spam/promoções no Gmail (pode demorar 1–2 min).'
+        );
         setTab('login');
         setCarregando(false);
       }
@@ -105,6 +119,24 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
       setCarregando(false);
       setIsShake(true);
       setTimeout(() => setIsShake(false), 300);
+    }
+  }
+
+  async function handleReenviarEmail() {
+    if (!email.trim()) {
+      setErro('Informe o e-mail usado no cadastro.');
+      return;
+    }
+    setCarregando(true);
+    setErro(null);
+    try {
+      const { error } = await authAPI.reenviarConfirmacao(email);
+      if (error) throw error;
+      setSuccessMsg('E-mail reenviado! Confira entrada e spam do Gmail.');
+    } catch (err) {
+      setErro(err.message || 'Não foi possível reenviar. Tente de novo em 1 minuto.');
+    } finally {
+      setCarregando(false);
     }
   }
 
@@ -433,7 +465,19 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
           )}
           {successMsg && (
             <div style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 10, color: '#4ade80', padding: '10px', fontSize: 12, marginBottom: 16, textAlign: 'center' }}>
-              {successMsg}
+              <div>{successMsg}</div>
+              <button
+                type="button"
+                onClick={handleReenviarEmail}
+                disabled={carregando}
+                style={{
+                  marginTop: 10, background: 'none', border: '1px solid rgba(74,222,128,0.4)',
+                  color: '#4ade80', borderRadius: 8, padding: '6px 12px', fontSize: 12,
+                  fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter',sans-serif",
+                }}
+              >
+                Reenviar e-mail de confirmação
+              </button>
             </div>
           )}
 

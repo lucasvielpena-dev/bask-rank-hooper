@@ -225,30 +225,50 @@ export const estatisticasPessoaisAPI = {
   }
 };
 
+function authRedirectUrl() {
+  // Sempre a origem atual do app (Vercel / domínio real).
+  // Evita link de confirmação apontando para localhost ou URL errada.
+  if (typeof window === 'undefined') return undefined;
+  const origin = window.location.origin;
+  return origin.endsWith('/') ? origin : `${origin}/`;
+}
+
 export const authAPI = {
   login: async (email, senha) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: String(email || '').trim().toLowerCase(),
+      password: senha,
+    });
     return { data, error };
   },
 
   registrar: async (email, senha, nome) => {
+    const redirectTo = authRedirectUrl();
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: String(email || '').trim().toLowerCase(),
       password: senha,
-      options: { data: { nome } },
+      options: {
+        data: { nome: String(nome || '').trim() },
+        emailRedirectTo: redirectTo,
+      },
+    });
+    return { data, error };
+  },
+
+  /** Reenvia o e-mail de confirmação de cadastro. */
+  reenviarConfirmacao: async (email) => {
+    const { data, error } = await supabase.auth.resend({
+      type: 'signup',
+      email: String(email || '').trim().toLowerCase(),
+      options: { emailRedirectTo: authRedirectUrl() },
     });
     return { data, error };
   },
 
   loginGoogle: async () => {
-    const redirectUrl = window.location.origin.endsWith('/') 
-      ? window.location.origin 
-      : `${window.location.origin}/`;
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: redirectUrl
-      }
+      options: { redirectTo: authRedirectUrl() },
     });
     return { data, error };
   },
@@ -259,12 +279,10 @@ export const authAPI = {
   },
 
   recuperarSenha: async (email) => {
-    const redirectUrl = window.location.origin.endsWith('/') 
-      ? window.location.origin 
-      : `${window.location.origin}/`;
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl,
-    });
+    const { data, error } = await supabase.auth.resetPasswordForEmail(
+      String(email || '').trim().toLowerCase(),
+      { redirectTo: authRedirectUrl() }
+    );
     return { data, error };
   },
 
