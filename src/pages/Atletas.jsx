@@ -122,7 +122,7 @@ export default function Atletas({ profile }) {
   const [loading, setLoading] = useState(true);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   
-  const selectedCity = profile?.cidade_atual || profile?.cidade || 'Altamira';
+  const selectedCity = profile?.cidade_atual || profile?.cidade || '';
   
   const fundamentos = cfg.habilidades;
 

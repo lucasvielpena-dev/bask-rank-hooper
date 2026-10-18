@@ -149,6 +149,9 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
       if (isNaN(parsedIdade) || parsedIdade <= 0 || parsedIdade > 120) {
         throw new Error('Por favor, informe uma idade válida.');
       }
+      if (locationStatus !== 'success' || !cidade || !uf || !coords) {
+        throw new Error('A localização é obrigatória. Permita o acesso à localização para continuar.');
+      }
 
       // Validar apelido duplicado no banco
       const { data: dupApelido } = await supabase
@@ -288,14 +291,15 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
         cadastro_completo: true,
         player_id: player_id,
         is_player: is_player,
-        cidade: is_player ? cidade : null,
-        cidade_atual: is_player ? cidade : null,
-        uf: is_player ? uf : null,
-        pais: is_player ? pais : null,
-        latitude: is_player ? coords?.latitude : null,
-        longitude: is_player ? coords?.longitude : null,
-        latitude_atual: is_player ? coords?.latitude : null,
-        longitude_atual: is_player ? coords?.longitude : null,
+        // Localização sempre obrigatória — classifica o ranking municipal
+        cidade: cidade,
+        cidade_atual: cidade,
+        uf: uf,
+        pais: pais || 'Brasil',
+        latitude: coords?.latitude ?? null,
+        longitude: coords?.longitude ?? null,
+        latitude_atual: coords?.latitude ?? null,
+        longitude_atual: coords?.longitude ?? null,
       });
 
       if (error) throw error;
@@ -466,13 +470,23 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
           {locationStatus === 'denied' && (
             <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 8, fontSize: 13, color: '#fca5a5' }}>
-              ⚠️ Acesso à localização negado. Você poderá usar o aplicativo, mas não participará dos rankings.
+              <div style={{ marginBottom: 8 }}>
+                ⚠️ Localização obrigatória. Sem ela você não entra no app — precisamos classificar você na cidade correta.
+              </div>
+              <button type="button" className="btn btn-primary btn-sm" onClick={obterLocalizacao}>
+                Tentar novamente
+              </button>
             </div>
           )}
 
           {locationStatus === 'error' && (
             <div style={{ padding: '12px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 8, fontSize: 13, color: '#fde047' }}>
-              ⚠️ Não foi possível obter sua localização. Você poderá usar o aplicativo, mas não participará dos rankings.
+              <div style={{ marginBottom: 8 }}>
+                ⚠️ Não foi possível obter a localização. Ative o GPS e permita o acesso para continuar.
+              </div>
+              <button type="button" className="btn btn-primary btn-sm" onClick={obterLocalizacao}>
+                Tentar novamente
+              </button>
             </div>
           )}
 
@@ -510,7 +524,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
             type="submit"
             className="btn btn-primary"
             style={{ marginTop: 14 }}
-            disabled={carregando}
+            disabled={carregando || locationStatus !== 'success'}
           >
             {carregando ? (
               <>

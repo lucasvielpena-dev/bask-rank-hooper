@@ -4,6 +4,7 @@ import { useEsporte } from './EsporteContext';
 import { preloadBackgrounds } from '../lib/backgrounds';
 import AuthScreen from '../components/AuthScreen';
 import CompleteProfileScreen from '../components/CompleteProfileScreen';
+import LocationGate from '../components/LocationGate';
 import SplashCarregando from '../components/SplashCarregando';
 
 // O Supabase guarda a sessão no aparelho numa chave "sb-<ref>-auth-token".
@@ -269,7 +270,7 @@ export function AuthProvider({ children }) {
           apelido: (prof.apelido || '').trim() || null,
           foto_url: prof.foto_perfil || null,
           criado_por: authUserId,
-          cidade: prof.cidade_atual || prof.cidade || 'Altamira',
+          cidade: prof.cidade_atual || prof.cidade || null,
           uf: prof.uf || 'PA',
           posicao: prof.posicao || cfg.posicoes[0],
           esporte: esporte,
@@ -737,6 +738,12 @@ export function AuthProvider({ children }) {
   };
 
   // O app por baixo (monta assim que o perfil chega, ainda coberto pela capa)
+  const precisaLocalizacao = !!(
+    profile &&
+    profile.cadastro_completo &&
+    !(profile.cidade_atual || profile.cidade)
+  );
+
   const conteudo = !conteudoPronto ? null : (
     (!profile || !profile.cadastro_completo) ? (
       <CompleteProfileScreen
@@ -746,6 +753,13 @@ export function AuthProvider({ children }) {
           setEditApelido(updatedProfile.apelido || '');
           setEditAltura(updatedProfile.altura ? updatedProfile.altura.toString().replace('.', ',') : '');
           setEditIdade(updatedProfile.idade || '');
+        }}
+      />
+    ) : precisaLocalizacao ? (
+      <LocationGate
+        profile={profile}
+        onResolved={(updatedProfile) => {
+          setProfile(updatedProfile);
         }}
       />
     ) : (
