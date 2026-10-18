@@ -2,61 +2,16 @@ import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
 import { nomeAtleta } from '../lib/nomes';
 import { useEsporte } from '../contexts/EsporteContext';
-import { IconRanking, IconCalendario, IconSportDynamic } from '../components/Icons';
+import { IconVoltar, IconCalendario, IconRanking } from '../components/Icons';
 
-function StatCard({ icon, label, value, color }) {
-  return (
-    <div style={{
-      background: 'var(--bg-card)',
-      border: '1px solid var(--border)',
-      borderRadius: '10px',
-      padding: '10px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 6
-    }}>
-      <div style={{
-        width: 34,
-        height: 34,
-        borderRadius: 10,
-        background: 'var(--accent-dim)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        {icon}
-      </div>
-      <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)' }}>{value}</div>
-      <div style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600 }}>{label}</div>
-    </div>
-  );
-}
-
-function HighlightSection({ title, icon, children }) {
-  return (
-    <div style={{ marginBottom: 16 }}>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 6,
-        marginBottom: 10
-      }}>
-        <div style={{
-          width: 30,
-          height: 30,
-          borderRadius: 8,
-              background: 'var(--accent-dim)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          {icon}
-        </div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em' }}>{title}</div>
-      </div>
-      {children}
-    </div>
-  );
+function normalizarCidade(v) {
+  return String(v || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s*-\s*[a-z]{2}$/i, '')
+    .replace(/\s+/g, ' ');
 }
 
 export default function Destaques({ profile, onNavigate }) {
@@ -68,16 +23,6 @@ export default function Destaques({ profile, onNavigate }) {
   const city = profile?.cidade_atual || profile?.cidade || '';
   const uf = (profile?.uf || '').toUpperCase();
 
-  function normalizarCidade(v) {
-    return String(v || '')
-      .trim()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/\s*-\s*[a-z]{2}$/i, '')
-      .replace(/\s+/g, ' ');
-  }
-
   useEffect(() => {
     loadData();
   }, [profile, esporte]);
@@ -86,14 +31,10 @@ export default function Destaques({ profile, onNavigate }) {
     setLoading(true);
     try {
       const cityNorm = normalizarCidade(city);
-
-      // Ranking top da CIDADE (não do estado inteiro)
       const rankingPromise = cityNorm
         ? rankingAPI.getTop5(city, uf || null, esporte)
         : Promise.resolve({ data: [] });
 
-      // Jogadores: busca por UF (se houver) e filtra cidade no cliente
-      // (evita mismatch de acento / "Altamira-PA")
       let jogsQuery = supabase
         .from('jogadores')
         .select('*')
@@ -101,10 +42,7 @@ export default function Destaques({ profile, onNavigate }) {
         .eq('esporte', esporte);
       if (uf) jogsQuery = jogsQuery.eq('uf', uf);
 
-      // Torneios só da cidade do perfil
-      let torneiosQuery = supabase
-        .from('torneios')
-        .select('*', { count: 'exact', head: true });
+      let torneiosQuery = supabase.from('torneios').select('*', { count: 'exact', head: true });
       if (city) torneiosQuery = torneiosQuery.eq('cidade', city);
       if (uf) torneiosQuery = torneiosQuery.eq('uf', uf);
 
@@ -125,13 +63,11 @@ export default function Destaques({ profile, onNavigate }) {
       const averageStarsSum = withMedia.reduce((acc, curr) => acc + (Number(curr.media_estrelas) || 0), 0);
       const generalAvg = withMedia.length > 0 ? averageStarsSum / withMedia.length : 0;
 
-      // Se a RPC não filtrar bem, reforça cidade no top
       let top = ranking || [];
       if (cityNorm && top.length) {
         const onlyCity = top.filter((j) => normalizarCidade(j.cidade) === cityNorm);
         if (onlyCity.length) top = onlyCity;
       }
-      // Fallback: monta top a partir dos jogadores locais
       if ((!top || top.length === 0) && jogs.length) {
         top = [...jogs]
           .filter((j) => (j.total_votos || 0) >= 1)
@@ -154,237 +90,276 @@ export default function Destaques({ profile, onNavigate }) {
 
   if (loading) {
     return (
-      <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '30vh' }}>
+      <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '40vh' }}>
         <div className="spinner" />
       </div>
     );
   }
 
-  return (
-    <div className="page-content home-page">
-      <div className="home-container">
+  const cityLabel = city ? `${city}${uf ? ` · ${uf}` : ''}` : 'sua cidade';
 
-        {/* Header */}
-        <div style={{ marginBottom: 14 }}>
+  return (
+    <div className="page-content" style={{ background: 'var(--bg-primary)', position: 'relative' }}>
+      <div style={{ padding: '20px 16px 28px', position: 'relative', zIndex: 1, maxWidth: 560, margin: '0 auto' }}>
+
+        {/* Header — mesmo padrão Atletas */}
+        <div style={{ marginBottom: 20 }}>
           <button
-            onClick={() => onNavigate('inicio')}
+            type="button"
+            onClick={() => onNavigate?.('inicio')}
             style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
               background: 'none',
               border: 'none',
               color: 'var(--accent)',
               cursor: 'pointer',
               fontSize: 13,
-              fontWeight: 600,
+              fontWeight: 700,
               padding: 0,
-              marginBottom: 4,
-              fontFamily: 'inherit',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 4
+              marginBottom: 10,
+              fontFamily: "'Inter', sans-serif",
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="m15 18-6-6 6-6"/>
-            </svg>
+            <IconVoltar size={16} color="var(--accent)" />
             Voltar
           </button>
-          <h1 style={{ fontSize: 20, fontWeight: 900, color: 'var(--text-primary)', lineHeight: 1.2, fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <h1
+            style={{
+              color: 'var(--text-primary)',
+              fontSize: 24,
+              fontWeight: 900,
+              fontFamily: "'Barlow Condensed', sans-serif",
+              letterSpacing: '0.02em',
+              margin: 0,
+              textTransform: 'uppercase',
+            }}
+          >
             Destaques
           </h1>
-          <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 2 }}>
-            O melhor de {city ? `${city}${uf ? ` · ${uf}` : ''}` : 'sua cidade'} esta semana
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: "'Inter', sans-serif", marginTop: 4 }}>
+            O melhor de {cityLabel} esta semana
           </p>
         </div>
 
-        {/* Resumo Geral */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 10,
-          marginBottom: 16
-        }}>
-          <StatCard
-            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
-            label="Jogadores ativos"
-            value={stats.jogadores}
-            color="blue"
-          />
-          <StatCard
-            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>}
-            label="Média geral"
-            value={stats.mediaGeral > 0 ? stats.mediaGeral.toFixed(1) : '--'}
-            color="gold"
-          />
-          <StatCard
-            icon={<IconSportDynamic sport={esporte} size={20} color="var(--accent)" />}
-            label="Avaliações"
-            value={stats.avaliacoes}
-            color="blue"
-          />
-          <StatCard
-            icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>}
-            label="Torneios"
-            value={stats.torneios}
-            color="gold"
-          />
+        {/* Stats em cards iguais ao resto */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, marginBottom: 22 }}>
+          {[
+            { label: 'Jogadores', value: stats.jogadores },
+            { label: 'Média geral', value: stats.mediaGeral > 0 ? stats.mediaGeral.toFixed(1) : '—' },
+            { label: 'Avaliações', value: stats.avaliacoes },
+            { label: 'Torneios', value: stats.torneios },
+          ].map((s) => (
+            <div
+              key={s.label}
+              className="premium-card"
+              style={{ borderRadius: 14, padding: '14px 12px' }}
+            >
+              <div
+                style={{
+                  fontSize: 22,
+                  fontWeight: 900,
+                  color: 'var(--text-primary)',
+                  fontFamily: "'Barlow Condensed', sans-serif",
+                  lineHeight: 1,
+                }}
+              >
+                {s.value}
+              </div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: 'var(--text-muted)',
+                  fontWeight: 600,
+                  marginTop: 6,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                  fontFamily: "'Inter', sans-serif",
+                }}
+              >
+                {s.label}
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Top Ranking */}
-        <HighlightSection
-          title="Top Ranking"
-          icon={<IconRanking size={18} color="var(--accent)" />}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {topJogadores.length === 0 ? (
-              <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '12px 0' }}>
-                Nenhum jogador no ranking ainda
-              </div>
-            ) : (
-              topJogadores.slice(0, 5).map((jogador, i) => (
-                <div key={jogador.id} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border)',
-                  borderRadius: '10px',
-                  padding: '8px 10px'
-                }}>
-                  <div style={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: 6,
-                    background: i === 0 ? 'rgba(200,241,53,0.12)' : i === 1 ? 'rgba(148,163,184,0.12)' : i === 2 ? 'rgba(205,124,47,0.12)' : 'var(--accent-dim)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 14,
-                    fontWeight: 800,
-                    color: i === 0 ? 'var(--accent)' : i === 1 ? '#94A3B8' : i === 2 ? '#CD7C2F' : 'var(--accent)',
-                    flexShrink: 0
-                  }}>
-                    {i + 1}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {nomeAtleta(jogador)}
-                    </div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                      {jogador.posicao || cfg.posicoes[0]} · {jogador.cidade}
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
-                    <span style={{ color: 'var(--accent)', fontSize: 12 }}>{'\u2605'}</span>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--text-primary)' }}>
-                      {jogador.media_estrelas ? Number(jogador.media_estrelas).toFixed(1) : '--'}
-                    </span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </HighlightSection>
+        {/* Top ranking */}
+        <div className="home-section-label" style={{ marginBottom: 10 }}>
+          Top da cidade
+        </div>
 
-        {/* Torneios Ativos */}
-        <HighlightSection
-          title="Torneios"
-          icon={<IconCalendario size={18} color="var(--accent)" />}
-        >
-          <div style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            borderRadius: '10px',
-            padding: '12px',
-            textAlign: 'center'
-          }}>
-            <div style={{
-              width: 38,
-              height: 38,
-              borderRadius: 10,
-          background: 'var(--accent-dim)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 8px'
-            }}>
-              <IconCalendario size={24} color="var(--accent)" />
-            </div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 }}>
-              {stats.torneios > 0 ? `${stats.torneios} torneio(s) ativo(s)` : 'Nenhum torneio ativo'}
-            </div>
-            <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8 }}>
-              {stats.torneios > 0
-                ? 'Participe dos torneios da sua cidade'
-                : 'Novos torneios em breve'}
-            </div>
+        {topJogadores.length === 0 ? (
+          <div
+            className="premium-card"
+            style={{ borderRadius: 14, padding: 24, textAlign: 'center', marginBottom: 20 }}
+          >
+            <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0, fontFamily: "'Inter', sans-serif" }}>
+              Ainda não há ranking com avaliações em {cityLabel}.
+            </p>
             <button
-              onClick={() => onNavigate('torneios')}
-              style={{
-                background: 'var(--accent)',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '8px 14px',
-                fontSize: 13,
-                fontWeight: 700,
-                cursor: 'pointer',
-                fontFamily: 'inherit'
-              }}
+              type="button"
+              className="btn btn-primary"
+              style={{ marginTop: 14, width: '100%' }}
+              onClick={() => onNavigate?.('atletas')}
             >
-              Ver Torneios
+              Ir para Atletas
             </button>
           </div>
-        </HighlightSection>
-
-        {/* Ação Rápida */}
-        <div style={{
-          background: 'linear-gradient(135deg, rgba(200,241,53,0.15) 0%, rgba(200,241,53,0.05) 100%)',
-          borderRadius: '12px',
-          padding: '14px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          boxShadow: '0 4px 16px rgba(200,241,53,0.15)'
-        }}>
-          <div style={{
-            width: 38,
-            height: 38,
-            borderRadius: 10,
-            background: 'rgba(255,255,255,0.16)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0
-          }}>
-            <IconSportDynamic sport={esporte} size={24} color="#fff" />
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 22 }}>
+            {topJogadores.map((jogador, i) => {
+              const nome = nomeAtleta(jogador);
+              const media =
+                (jogador.total_votos || 0) >= 1
+                  ? Number(jogador.media_estrelas).toFixed(1)
+                  : '—';
+              return (
+                <div
+                  key={jogador.id || i}
+                  className="premium-card"
+                  style={{
+                    borderRadius: 14,
+                    padding: '12px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 22,
+                      fontWeight: 900,
+                      fontSize: 15,
+                      color: i < 3 ? 'var(--accent)' : 'var(--text-muted)',
+                      fontFamily: "'Barlow Condensed', sans-serif",
+                    }}
+                  >
+                    {i + 1}
+                  </span>
+                  <div
+                    style={{
+                      width: 42,
+                      height: 42,
+                      borderRadius: '50%',
+                      background: 'var(--accent-dim)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 800,
+                      color: 'var(--accent)',
+                      fontSize: 16,
+                      overflow: 'hidden',
+                      flexShrink: 0,
+                      border: '1.5px solid rgba(200,241,53,0.3)',
+                    }}
+                  >
+                    {jogador.foto_url ? (
+                      <img
+                        src={jogador.foto_url}
+                        alt=""
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      (nome || '?').charAt(0).toUpperCase()
+                    )}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        fontSize: 14,
+                        color: 'var(--text-primary)',
+                        fontFamily: "'Inter', sans-serif",
+                      }}
+                    >
+                      {nome}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: 'var(--text-muted)',
+                        marginTop: 2,
+                        fontFamily: "'Inter', sans-serif",
+                      }}
+                    >
+                      {jogador.posicao || cfg?.posicoes?.[0] || '—'} · {jogador.total_votos || 0}{' '}
+                      {(jogador.total_votos || 0) === 1 ? 'avaliação' : 'avaliações'}
+                    </div>
+                  </div>
+                  <div
+                    className="highlight-score"
+                    style={{
+                      fontSize: 18,
+                      fontWeight: 900,
+                      color: 'var(--accent)',
+                      fontFamily: "'Barlow Condensed', sans-serif",
+                    }}
+                  >
+                    {media}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 1 }}>
-              Avalie um jogador
+        )}
+
+        {/* Torneios */}
+        <div className="home-section-label" style={{ marginBottom: 10 }}>
+          Torneios
+        </div>
+        <div className="premium-card" style={{ borderRadius: 14, padding: 16, marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 12,
+                background: 'var(--accent-dim)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <IconCalendario size={18} color="var(--accent)" />
             </div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>
-              Contribua para o ranking da comunidade
+            <div>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: 'var(--text-primary)',
+                  fontFamily: "'Inter', sans-serif",
+                }}
+              >
+                {stats.torneios > 0
+                  ? `${stats.torneios} torneio(s) na cidade`
+                  : 'Nenhum torneio ativo'}
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                {stats.torneios > 0 ? 'Participe dos torneios locais' : 'Novos torneios em breve'}
+              </div>
             </div>
           </div>
           <button
-            onClick={() => onNavigate('atletas')}
-            style={{
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '8px 12px',
-              color: '#fff',
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              flexShrink: 0
-            }}
+            type="button"
+            className="btn btn-primary"
+            style={{ width: '100%' }}
+            onClick={() => onNavigate?.('torneios')}
           >
-            Avaliar
+            Ver torneios
           </button>
         </div>
 
+        <button
+          type="button"
+          className="btn btn-secondary"
+          style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+          onClick={() => onNavigate?.('atletas')}
+        >
+          <IconRanking size={16} color="currentColor" />
+          Ver ranking completo
+        </button>
       </div>
     </div>
   );
