@@ -8,6 +8,16 @@ import { IconJogo, IconMais, IconCalendario } from '../components/Icons';
 import { useEsporte } from '../contexts/EsporteContext';
 import { assinarAviso } from '../lib/realtime';
 
+function normalizarCidade(v) {
+  return String(v || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s*-\s*[a-z]{2}$/i, '')
+    .replace(/\s+/g, ' ');
+}
+
 export default function Jogos({ profile, initialAba = 'jogos' }) {
   const { esporte } = useEsporte();
   const [tela, setTela] = useState('lista'); // 'lista' | 'novo' | 'partida'
@@ -479,15 +489,31 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   async function loadDados() {
     setLoading(true);
     try {
-      // 1. Carregar jogadores para o formulário de times (filtrar pela cidade do usuário)
-      const { data: jogs } = await jogadoresAPI.listar(esporte);
-      const userCity = profile.cidade_atual || profile.cidade || 'Altamira';
-      const userUf = profile.uf || '';
-      setJogadores((jogs || []).filter(j => {
-        if (!j.cidade) return true;
-        return j.cidade.toLowerCase() === userCity.toLowerCase() &&
-               (!userUf || !j.uf || j.uf.toLowerCase() === userUf.toLowerCase());
-      }));
+      // 1. Jogadores só da mesma cidade do perfil (escalação da partida)
+      const userCity = profile?.cidade_atual || profile?.cidade || '';
+      const userUf = (profile?.uf || '').trim().toUpperCase();
+      const cityNorm = normalizarCidade(userCity);
+
+      let jogs = [];
+      if (userUf) {
+        const { data } = await jogadoresAPI.listarPorEstado(userUf, esporte);
+        jogs = data || [];
+      } else {
+        const { data } = await jogadoresAPI.listar(esporte);
+        jogs = data || [];
+      }
+
+      setJogadores(
+        (jogs || []).filter((j) => {
+          if (!cityNorm) return false; // sem cidade no perfil: não lista ninguém de fora
+          const jc = normalizarCidade(j.cidade);
+          if (!jc) return false; // atleta sem cidade não entra na escalação local
+          if (jc !== cityNorm) return false;
+          const jUf = (j.uf || '').trim().toUpperCase();
+          if (userUf && jUf && jUf !== userUf) return false;
+          return true;
+        })
+      );
 
       // 2. Carregar partidas
       const { data: parts } = await partidasAPI.listar(esporte);
@@ -624,7 +650,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
         tempo_total: tempoTotalInicial,
         periodos: 1,
         status: 'ativo',
-        cidade: 'Altamira',
+        cidade: profile?.cidade_atual || profile?.cidade || null,
         uf: 'PA',
         esporte: esporte
       };
