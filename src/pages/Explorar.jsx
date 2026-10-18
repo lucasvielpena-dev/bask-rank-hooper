@@ -10,6 +10,7 @@ import {
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconBuscar, IconLocalizacao, IconVoltar, IconRanking } from '../components/Icons';
 import PlayerProfileModal from '../components/PlayerProfileModal';
+import { lerCache, salvarCache } from '../lib/pageCache';
 
 function normalizar(s) {
   return String(s || '')
@@ -42,9 +43,10 @@ function confBadge(votos) {
 
 export default function Explorar({ profile, onNavigate }) {
   const { esporte } = useEsporte();
-  const [cidades, setCidades] = useState([]);
+  const _cache = lerCache('explorar');
+  const [cidades, setCidades] = useState(_cache?.cidades || []);
   const [busca, setBusca] = useState('');
-  const [loadingCities, setLoadingCities] = useState(true);
+  const [loadingCities, setLoadingCities] = useState(!_cache);
   const [selected, setSelected] = useState(null);
   const [atletas, setAtletas] = useState([]);
   const [loadingAtletas, setLoadingAtletas] = useState(false);
@@ -62,7 +64,10 @@ export default function Explorar({ profile, onNavigate }) {
       try {
         const { data, error } = await jogadoresAPI.listarCidades(esporte);
         if (error) throw error;
-        if (vivo) setCidades(data || []);
+        if (vivo) {
+          setCidades(data || []);
+          salvarCache('explorar', { cidades: data || [] });
+        }
       } catch (e) {
         if (vivo) setErro(e.message || 'Erro ao carregar cidades');
       } finally {
@@ -330,7 +335,7 @@ export default function Explorar({ profile, onNavigate }) {
 
         {erro && <p style={{ color: '#f87171', fontSize: 13, marginBottom: 12 }}>{erro}</p>}
 
-        {loadingCities ? (
+        {loadingCities && cidades.length === 0 ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
             <div className="spinner" />
           </div>

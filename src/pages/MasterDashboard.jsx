@@ -11,6 +11,7 @@ import {
   IconEstatisticas,
 } from '../components/Icons';
 import MasterNav from '../components/MasterNav';
+import { lerCache, salvarCache } from '../lib/pageCache';
 
 const STAT_CARDS = [
   { key: 'total_users', label: 'Usuários', icon: IconJogador },
@@ -24,10 +25,11 @@ const STAT_CARDS = [
 ];
 
 export default function MasterDashboard({ onNavigate }) {
-  const [stats, setStats] = useState({});
-  const [cities, setCities] = useState([]);
-  const [players, setPlayers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const _cache = lerCache('master');
+  const [stats, setStats] = useState(_cache?.stats || {});
+  const [cities, setCities] = useState(_cache?.cities || []);
+  const [players, setPlayers] = useState(_cache?.players || []);
+  const [loading, setLoading] = useState(!_cache);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
 
@@ -67,6 +69,12 @@ export default function MasterDashboard({ onNavigate }) {
     return () => clearInterval(interval);
   }, []);
 
+  // Guarda o painel para reabrir já preenchido (sem tela preta de carregando).
+  useEffect(() => {
+    if (loading || !lastUpdate) return;
+    salvarCache('master', { stats, cities, players });
+  }, [loading, lastUpdate, stats, cities, players]);
+
   const insights = useMemo(() => {
     const list = Array.isArray(players) ? players : [];
     return {
@@ -76,7 +84,7 @@ export default function MasterDashboard({ onNavigate }) {
     };
   }, [players]);
 
-  if (loading) {
+  if (loading && !_cache) {
     return (
       <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
         <div className="spinner" />

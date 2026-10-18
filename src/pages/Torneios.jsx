@@ -6,6 +6,7 @@ import { useEsporte } from '../contexts/EsporteContext';
 import { GRADES, GradePicker, gradePorValor, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
 import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
 import { criarAtualizador, assinarAviso, TOPICO_TORNEIOS } from '../lib/realtime';
+import { lerCache, salvarCache } from '../lib/pageCache';
 
 // Formatos de Torneio Traduzidos
 const FORMATOS = {
@@ -22,8 +23,9 @@ const STATUS_TORNEIO = {
 };
 
 export default function Torneios({ profile, isNested = false }) {
-  const [torneios, setTorneios] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const _cache = lerCache('torneios');
+  const [torneios, setTorneios] = useState(_cache || []);
+  const [loading, setLoading] = useState(!_cache);
   const [selectedTorneio, setSelectedTorneio] = useState(null);
   
   // View states
@@ -48,6 +50,7 @@ export default function Torneios({ profile, isNested = false }) {
     setLoading(true);
     const { data } = await torneiosAPI.listar();
     setTorneios(data || []);
+    salvarCache('torneios', data || []);
     
     // Se um torneio estiver selecionado, recarrega seus dados em tempo real
     if (selectedTorneio) {
@@ -94,7 +97,7 @@ export default function Torneios({ profile, isNested = false }) {
           )}
 
           {/* Listagem */}
-          {loading ? (
+          {loading && torneios.length === 0 ? (
             <div className="responsive-card-grid" style={{ paddingBottom: 16 }}>
               {[1, 2, 3].map(idx => (
                 <div key={idx} className="skeleton" style={{ height: 100, borderRadius: '12px' }} />
