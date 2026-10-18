@@ -58,6 +58,8 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
   const [toast, setToast] = useState(null);
 
   const [minhaId, setMinhaId] = useState(null);
+  const [minhaCidade, setMinhaCidade] = useState('');
+  const [minhaUf, setMinhaUf] = useState('');
   const [showAvaliar, setShowAvaliar] = useState(false);
   const [estrelas, setEstrelas] = useState(() => Object.fromEntries(cfg.habilidades.map(h => [h.key, 0])));
   const [enviandoAvaliacao, setEnviandoAvaliacao] = useState(false);
@@ -152,6 +154,15 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
       const user = (await supabase.auth.getUser()).data.user;
       if (user) {
         setMinhaId(user.id);
+        const { data: meuPerfil } = await supabase
+          .from('profiles')
+          .select('cidade_atual, cidade, uf')
+          .eq('id', user.id)
+          .maybeSingle();
+        if (meuPerfil) {
+          setMinhaCidade(meuPerfil.cidade_atual || meuPerfil.cidade || '');
+          setMinhaUf((meuPerfil.uf || '').toUpperCase());
+        }
         const { data: av } = await supabase.from('avaliacoes').select('*').eq('avaliador_id', user.id).eq('jogador_id', jogador.id).maybeSingle();
         if (av) {
           setEstrelas({ arremesso: av.arremesso, defesa: av.defesa, controle_de_bola: av.controle_de_bola, explosao_fisica: av.explosao_fisica, visao_de_jogo: av.visao_de_jogo });
@@ -175,7 +186,23 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
     setEnviandoDenuncia(false);
   }
 
+  function mesmaCidadeQueEu(j) {
+    const norm = (v) => String(v || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s*-\s*[a-z]{2}$/i, '');
+    const c1 = norm(minhaCidade);
+    const c2 = norm(j?.cidade);
+    if (!c1 || !c2) return false;
+    if (c1 !== c2) return false;
+    const u1 = (minhaUf || '').toUpperCase();
+    const u2 = (j?.uf || '').toUpperCase();
+    if (u1 && u2 && u1 !== u2) return false;
+    return true;
+  }
+
   async function handleConfirmarAvaliacao() {
+    if (!mesmaCidadeQueEu(localJogador || jogador)) {
+      showToast('Você só pode avaliar atletas da sua cidade.', 'error');
+      return;
+    }
     if (fundamentos.some(f => !estrelas[f.key])) { showToast('Selecione uma nota para todos os 5 fundamentos', 'error'); return; }
     setEnviandoAvaliacao(true);
     const { data, error } = await votacaoAPI.votar(jogador.id, estrelas);
@@ -443,9 +470,20 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
             {/* Bottom CTAs */}
             {!isMe && (
               <div style={{ padding: '12px 16px 20px', borderTop: '1px solid var(--border)', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <button onClick={() => setShowAvaliar(true)} style={{ width: '100%', height: 52, borderRadius: 12, background: '#C8F135', border: 'none', color: '#0C0C14', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em', boxShadow: '0 4px 16px rgba(200,241,53,0.25)' }}>
-                  {jaAvaliou ? 'Editar Avaliação' : 'Avaliar Este Jogador'}
-                </button>
+                {mesmaCidadeQueEu(localJogador || jogador) ? (
+                  <button onClick={() => setShowAvaliar(true)} style={{ width: '100%', height: 52, borderRadius: 12, background: '#C8F135', border: 'none', color: '#0C0C14', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em', boxShadow: '0 4px 16px rgba(200,241,53,0.25)' }}>
+                    {jaAvaliou ? 'Editar Avaliação' : 'Avaliar Este Jogador'}
+                  </button>
+                ) : (
+                  <div style={{
+                    width: '100%', padding: '12px 14px', borderRadius: 12,
+                    background: 'rgba(148,163,184,0.1)', border: '1px solid var(--border)',
+                    fontSize: 13, color: 'var(--text-secondary)', textAlign: 'center',
+                    fontFamily: "'Inter',sans-serif", lineHeight: 1.4,
+                  }}>
+                    Só é possível avaliar atletas da sua cidade. Aqui você consulta o perfil e as estatísticas.
+                  </div>
+                )}
                 <button onClick={() => setShowDenunciar(true)} style={{ width: '100%', height: 44, borderRadius: 12, background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>
                   Denunciar Perfil
                 </button>

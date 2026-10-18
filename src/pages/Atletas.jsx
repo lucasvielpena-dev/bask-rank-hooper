@@ -217,10 +217,25 @@ export default function Atletas({ profile, onNavigate }) {
     setTimeout(() => setToast(null), 3500);
   }
 
+  function mesmaCidade(player) {
+    const norm = (v) => String(v || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s*-\s*[a-z]{2}$/i, '');
+    const c1 = norm(selectedCity);
+    const c2 = norm(player?.cidade);
+    if (!c1 || !c2 || c1 !== c2) return false;
+    const u1 = (profile?.uf || '').toUpperCase();
+    const u2 = (player?.uf || '').toUpperCase();
+    if (u1 && u2 && u1 !== u2) return false;
+    return true;
+  }
+
   function handleOpenVote(player, e) {
     e.stopPropagation();
     if (profile?.player_id === player.id) {
       showToast('Você não pode avaliar a si mesmo!', 'error');
+      return;
+    }
+    if (!mesmaCidade(player)) {
+      showToast('Você só pode avaliar atletas da sua cidade.', 'error');
       return;
     }
     if (votosStatus && votosStatus.restantes <= 0) {
