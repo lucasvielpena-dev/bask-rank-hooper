@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { partidasAPI, racoesAPI, torneiosAPI } from '../lib/supabase';
+import { partidasAPI, racoesAPI, torneiosAPI, masterAPI } from '../lib/supabase';
+import Portal from '../components/Portal';
 import MasterNav from '../components/MasterNav';
 
 const ABAS = [
@@ -79,6 +80,8 @@ export default function AdminActivity({ profile, onNavigate }) {
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState(null);
   const [detalhe, setDetalhe] = useState(null); // { tipo, item }
+  const [confirmacao, setConfirmacao] = useState(null); // { acao: 'fechar'|'excluir', item }
+  const [executando, setExecutando] = useState(false);
 
   const isMaster = profile?.role === 'master' || profile?.role === 'admin';
 
@@ -210,10 +213,41 @@ export default function AdminActivity({ profile, onNavigate }) {
         )}
 
         {detalhe && (
-          <DetalheModal
-            detalhe={detalhe}
-            onClose={() => setDetalhe(null)}
-          />
+          <Portal>
+            <DetalheModal
+              detalhe={detalhe}
+              onClose={() => setDetalhe(null)}
+              onFechar={(item) => setConfirmacao({ acao: 'fechar', item })}
+              onExcluir={(item) => setConfirmacao({ acao: 'excluir', item })}
+            />
+          </Portal>
+        )}
+
+        {confirmacao && (
+          <Portal>
+            <ConfirmacaoTorneio
+              confirmacao={confirmacao}
+              executando={executando}
+              onCancelar={() => setConfirmacao(null)}
+              onConfirmar={async () => {
+                setExecutando(true);
+                try {
+                  const id = confirmacao.item.id;
+                  const { error } = confirmacao.acao === 'fechar'
+                    ? await masterAPI.closeTournament(id)
+                    : await masterAPI.deleteTournament(id);
+                  if (error) throw error;
+                  setConfirmacao(null);
+                  setDetalhe(null);
+                  carregar();
+                } catch (err) {
+                  alert('Erro: ' + (err.message || 'Erro desconhecido'));
+                } finally {
+                  setExecutando(false);
+                }
+              }}
+            />
+          </Portal>
         )}
       </div>
     </div>
@@ -367,7 +401,7 @@ function ListaTorneios({ list, onOpen }) {
   );
 }
 
-function DetalheModal({ detalhe, onClose }) {
+function DetalheModal({ detalhe, onClose, onFechar, onExcluir }) {
   const { tipo, item } = detalhe;
 
   return (
@@ -442,9 +476,56 @@ function DetalheModal({ detalhe, onClose }) {
           </>
         )}
 
-        <button type="button" className="btn btn-secondary" style={{ width: '100%', marginTop: 16 }} onClick={onClose}>
+        {tipo === 'torneio' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 16 }}>
+            {item.status !== 'finalizado' && (
+              <button type="button" className="btn" style={{ width: '100%', background: '#f59e0b', color: '#000', fontWeight: 800 }} onClick={() => onFechar?.(item)}>
+                Fechar torneio
+              </button>
+            )}
+            <button type="button" className="btn" style={{ width: '100%', background: '#ef4444', color: '#fff', fontWeight: 800 }} onClick={() => onExcluir?.(item)}>
+              Excluir torneio
+            </button>
+          </div>
+        )}
+
+        <button type="button" className="btn btn-secondary" style={{ width: '100%', marginTop: 8 }} onClick={onClose}>
           Fechar
         </button>
+      </div>
+    </div>
+  );
+}
+
+function ConfirmacaoTorneio({ confirmacao, executando, onCancelar, onConfirmar }) {
+  const excluir = confirmacao.acao === 'excluir';
+  const nome = confirmacao.item?.nome || 'este torneio';
+  return (
+    <div className="modal-overlay" onClick={executando ? undefined : onCancelar} style={{ zIndex: 1300 }}>
+      <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 400 }}>
+        <div className="modal-handle" />
+        <h3 className="page-title" style={{ fontSize: 18, marginBottom: 8, color: excluir ? '#ef4444' : 'var(--text-primary)' }}>
+          {excluir ? 'Excluir torneio' : 'Fechar torneio'}
+        </h3>
+        <p className="text-sm" style={{ color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 18 }}>
+          {excluir
+            ? <>Excluir <strong>{nome}</strong>? Isso apaga equipes, jogos e estatísticas e não pode ser desfeito.</>
+            : <>Fechar <strong>{nome}</strong>? Ele será marcado como finalizado.</>}
+        </p>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button type="button" className="btn btn-secondary" style={{ flex: 1 }} disabled={executando} onClick={onCancelar}>
+            Cancelar
+          </button>
+          <button
+            type="button"
+            className="btn"
+            style={{ flex: 1, fontWeight: 800, background: excluir ? '#ef4444' : '#f59e0b', color: excluir ? '#fff' : '#000' }}
+            disabled={executando}
+            onClick={onConfirmar}
+          >
+            {executando ? <div className="spinner" /> : (excluir ? 'Excluir' : 'Fechar torneio')}
+          </button>
+        </div>
       </div>
     </div>
   );

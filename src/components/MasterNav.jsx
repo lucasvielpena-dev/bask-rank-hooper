@@ -5,7 +5,6 @@ const ITEMS = [
   { id: 'master-users', label: 'Usuários' },
   { id: 'master-cities', label: 'Cidades' },
   { id: 'master-activity', label: 'Atividade' },
-  { id: 'master-tournaments', label: 'Torneios' },
   { id: 'master-notifications', label: 'Avisos' },
   { id: 'master-reports', label: 'Relatórios' },
   { id: 'master-logs', label: 'Logs' },

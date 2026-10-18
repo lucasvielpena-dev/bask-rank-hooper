@@ -18,7 +18,6 @@ import MasterDashboard from './pages/MasterDashboard';
 import AdminUsers from './pages/AdminUsers';
 import AdminCities from './pages/AdminCities';
 import AdminPlayers from './pages/AdminPlayers';
-import AdminTournaments from './pages/AdminTournaments';
 import AdminNotifications from './pages/AdminNotifications';
 import AdminReports from './pages/AdminReports';
 import AdminLogs from './pages/AdminLogs';
@@ -104,7 +103,6 @@ function AppRoutes() {
       case 'master-cities': return <AdminCities profile={profile} onNavigate={navigate} />;
       case 'master-players': return <AdminPlayers profile={profile} onNavigate={navigate} />;
       case 'master-activity': return <AdminActivity profile={profile} onNavigate={navigate} />;
-      case 'master-tournaments': return <AdminTournaments profile={profile} onNavigate={navigate} />;
       case 'master-notifications': return <AdminNotifications profile={profile} onNavigate={navigate} />;
       case 'master-reports': return <AdminReports profile={profile} onNavigate={navigate} />;
       case 'master-logs': return <AdminLogs profile={profile} onNavigate={navigate} />;
