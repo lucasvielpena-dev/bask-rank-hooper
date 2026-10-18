@@ -34,7 +34,7 @@ function AppRoutes() {
     // O app já está rodando o pacote novo, então recarregar aqui só dava a
     // sensação de "o app recarregou sozinho". Atualização forçada (com reload)
     // fica só no botão da faixa "Nova versão disponível".
-    const swVersion = 'v32';
+    const swVersion = 'v33';
     try {
       if (localStorage.getItem('sw_version') === swVersion) return;
       localStorage.setItem('sw_version', swVersion);
