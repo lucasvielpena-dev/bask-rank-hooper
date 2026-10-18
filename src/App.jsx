@@ -30,24 +30,21 @@ function AppRoutes() {
   const [pageProps, setPageProps] = useState({});
 
   useEffect(() => {
-    const swVersion = 'v31';
-    const currentVersion = localStorage.getItem('sw_version');
-    if (currentVersion !== swVersion) {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(registrations => {
-          if (registrations.length > 0) {
-            for (let registration of registrations) {
-              registration.unregister();
-            }
-            localStorage.setItem('sw_version', swVersion);
-            window.location.reload();
-          } else {
-            localStorage.setItem('sw_version', swVersion);
-          }
-        });
-      } else {
-        localStorage.setItem('sw_version', swVersion);
-      }
+    // Deploy novo: limpa o service worker/cache antigo e SEGUE, sem recarregar.
+    // O app já está rodando o pacote novo, então recarregar aqui só dava a
+    // sensação de "o app recarregou sozinho". Atualização forçada (com reload)
+    // fica só no botão da faixa "Nova versão disponível".
+    const swVersion = 'v32';
+    try {
+      if (localStorage.getItem('sw_version') === swVersion) return;
+      localStorage.setItem('sw_version', swVersion);
+    } catch (_) {
+      /* sem localStorage: segue mesmo assim, sem travar o app */
+    }
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations()
+        .then((regs) => Promise.all(regs.map((r) => r.unregister())))
+        .catch(() => {});
     }
   }, []);
 

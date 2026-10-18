@@ -3,6 +3,7 @@ import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import { sortByConfianca } from '../lib/ranking';
 import { nomeAtleta } from '../lib/nomes';
 import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime';
+import { lerCache, salvarCache } from '../lib/pageCache';
 import { useEsporte } from '../contexts/EsporteContext';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -114,11 +115,12 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
 
 export default function Atletas({ profile, onNavigate }) {
   const { esporte, cfg } = useEsporte();
-  const [jogadores, setJogadores] = useState([]);
+  const _cache = lerCache('atletas');
+  const [jogadores, setJogadores] = useState(_cache?.jogadores || []);
   const [filtrados, setFiltrados] = useState([]);
   const [busca, setBusca] = useState('');
   const [filtroAtivo, setFiltroAtivo] = useState('todos');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!_cache);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   
   const selectedCity = profile?.cidade_atual || profile?.cidade || '';
@@ -129,24 +131,25 @@ export default function Atletas({ profile, onNavigate }) {
   const [estrelasVoto, setEstrelasVoto] = useState(Object.fromEntries(cfg.habilidades.map(h => [h.key, 0])));
   const [comentarioVoto, setComentarioVoto] = useState('');
   const [enviandoVoto, setEnviandoVoto] = useState(false);
-  const [votosStatus, setVotosStatus] = useState(null);
+  const [votosStatus, setVotosStatus] = useState(_cache?.votosStatus || null);
   const [toast, setToast] = useState(null);
 
   useEffect(() => {
-    if (profile) loadJogadores();
+    // Se já temos dados na memória, revalida em silêncio (sem esqueleto).
+    if (profile) loadJogadores(!!lerCache('atletas'));
   }, [profile, esporte]);
 
   useEffect(() => {
     if (!profile) return;
-    const atualizar = criarAtualizador(() => loadJogadores(), { debounce: 2000, minimo: 10000 });
+    const atualizar = criarAtualizador(() => loadJogadores(true), { debounce: 2000, minimo: 10000 });
     // Um único assunto cobre o que interessa: o voto já atualiza a média do
     // atleta no banco, então não precisa assinar `avaliacoes` também.
     const channel = assinarAviso(TOPICO_RANKING, atualizar);
     return () => { atualizar.parar(); supabase.removeChannel(channel); };
   }, [profile, esporte]);
 
-  async function loadJogadores() {
-    setLoading(true);
+  async function loadJogadores(silencioso = false) {
+    if (!silencioso) setLoading(true);
     try {
       const stateUfVal = profile?.uf || 'PA';
       const userId = (await supabase.auth.getUser()).data.user?.id;
@@ -179,6 +182,7 @@ export default function Atletas({ profile, onNavigate }) {
 
       setJogadores(players);
       setVotosStatus(votesStatus);
+      salvarCache('atletas', { jogadores: players, votosStatus: votesStatus });
     } catch (e) {
       console.error('Erro ao carregar atletas:', e);
     }
@@ -278,19 +282,6 @@ export default function Atletas({ profile, onNavigate }) {
     if (index === 1) return '🥈';
     if (index === 2) return '🥉';
     return `#${index + 1}`;
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.05 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
   };
 
   return (
@@ -403,8 +394,7 @@ export default function Atletas({ profile, onNavigate }) {
                 }}
               >
                 {active && (
-                  <motion.div
-                    layoutId="filterPill"
+                  <div
                     className="tab-indicator"
                     style={{
                       position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
@@ -419,7 +409,7 @@ export default function Atletas({ profile, onNavigate }) {
         </div>
 
         {/* List */}
-        {loading ? (
+        {loading && jogadores.length === 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[1, 2, 3].map(idx => (
               <div key={idx} className="skeleton card" style={{ height: 110, borderRadius: 20 }} />
@@ -432,10 +422,7 @@ export default function Atletas({ profile, onNavigate }) {
             <p style={{ color: 'var(--text-secondary)', fontSize: 14, fontFamily: "'Inter',sans-serif" }}>Tente ajustar os filtros ou a sua busca.</p>
           </div>
         ) : (
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
+          <div
             style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
           >
             {filtrados.map((j, i) => {
@@ -445,9 +432,8 @@ export default function Atletas({ profile, onNavigate }) {
               const isFirst = isRankingFilter && i === 0;
 
               return (
-                <motion.div
+                <div
                   key={j.id}
-                  variants={itemVariants}
                   className="card"
                   style={{
                     background: isFirst ? 'var(--bg-elevated)' : 'var(--bg-card)',
@@ -529,10 +515,10 @@ export default function Atletas({ profile, onNavigate }) {
                       </button>
                     )}
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </motion.div>
+          </div>
         )}
       </div>
 

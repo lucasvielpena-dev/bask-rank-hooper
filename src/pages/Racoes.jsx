@@ -3,6 +3,7 @@ import { racoesAPI, notasJogoAPI } from '../lib/supabase';
 import { resolveAuthUserId } from '../lib/authUser';
 import { GRADES, GradePicker, gradePorValor, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
 import { nomeAtleta } from '../lib/nomes';
+import { lerCache, salvarCache } from '../lib/pageCache';
 
 function formatWhen(iso) {
   if (!iso) return '';
@@ -18,8 +19,9 @@ function countParts(r) {
 }
 
 export default function Racoes({ profile, onNavigate }) {
-  const [lista, setLista] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const _cache = lerCache('racoes');
+  const [lista, setLista] = useState(_cache || []);
+  const [loading, setLoading] = useState(!_cache);
   const [erro, setErro] = useState(null);
   const [toast, setToast] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
@@ -52,6 +54,7 @@ export default function Racoes({ profile, onNavigate }) {
       setLista([]);
     } else {
       setLista(data || []);
+      salvarCache('racoes', data || []);
     }
     setLoading(false);
   }
@@ -329,7 +332,7 @@ export default function Racoes({ profile, onNavigate }) {
         </div>
       )}
 
-      {loading ? (
+      {loading && lista.length === 0 ? (
         <div className="loading"><div className="spinner" /> Carregando...</div>
       ) : (
         <>

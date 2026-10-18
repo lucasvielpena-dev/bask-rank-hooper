@@ -8,7 +8,6 @@ import { IconSino, IconLocalizacao } from './Icons';
 import NotificationsPanel from './NotificationsPanel';
 import AvisoVersao from './AvisoVersao';
 import AvisosPlacar from './AvisosPlacar';
-import { motion, AnimatePresence } from 'framer-motion';
 import { authAPI } from '../lib/supabase';
 import { preloadBackgrounds, backgroundsProntos, aoTerminarBackgrounds } from '../lib/backgrounds';
 
@@ -216,18 +215,11 @@ export default function Layout({ page, onNavigate, children }) {
       <AvisosPlacar />
 
       <div style={{ flex: 1, position: 'relative', overflowX: 'hidden', zIndex: 120 }}>
-        <AnimatePresence mode="wait">
-          <motion.div 
-            key={page} 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.12, ease: "easeInOut" }}
-            style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
+        {/* Troca de tela instantânea: nada de fade/scale (que dava sensação de
+            "pisca e pula"). A nova tela entra já montada no lugar da anterior. */}
+        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+          {children}
+        </div>
       </div>
 
       <BottomNavigation page={page} onNavigate={onNavigate} isMaster={isMaster} />

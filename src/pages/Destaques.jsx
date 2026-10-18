@@ -4,6 +4,7 @@ import { nomeAtleta } from '../lib/nomes';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconVoltar, IconCalendario, IconRanking } from '../components/Icons';
 import { sortByConfianca } from '../lib/ranking';
+import { lerCache, salvarCache } from '../lib/pageCache';
 
 function normalizarCidade(v) {
   return String(v || '')
@@ -17,9 +18,10 @@ function normalizarCidade(v) {
 
 export default function Destaques({ profile, onNavigate }) {
   const { esporte, cfg } = useEsporte();
-  const [stats, setStats] = useState({ jogadores: 0, mediaGeral: 0, avaliacoes: 0, torneios: 0 });
-  const [topJogadores, setTopJogadores] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const _cache = lerCache('destaques');
+  const [stats, setStats] = useState(_cache?.stats || { jogadores: 0, mediaGeral: 0, avaliacoes: 0, torneios: 0 });
+  const [topJogadores, setTopJogadores] = useState(_cache?.topJogadores || []);
+  const [loading, setLoading] = useState(!_cache);
 
   const city = profile?.cidade_atual || profile?.cidade || '';
   const uf = (profile?.uf || '').toUpperCase();
@@ -82,13 +84,17 @@ export default function Destaques({ profile, onNavigate }) {
         torneios: torneiosRes?.count || 0,
       });
       setTopJogadores(top);
+      salvarCache('destaques', {
+        stats: { jogadores: total, mediaGeral: generalAvg, avaliacoes: totalVotes, torneios: torneiosRes?.count || 0 },
+        topJogadores: top,
+      });
     } catch (e) {
       console.error(e);
     }
     setLoading(false);
   }
 
-  if (loading) {
+  if (loading && topJogadores.length === 0) {
     return (
       <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '40vh' }}>
         <div className="spinner" />

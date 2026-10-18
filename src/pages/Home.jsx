@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
 import { nomeAtleta } from '../lib/nomes';
 import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime';
+import { lerCache, salvarCache } from '../lib/pageCache';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from '../components/Icons';
 import { labelConfianca, nivelConfianca, resumoAvaliacoes, sortByConfianca, scoreConfianca } from '../lib/ranking';
 
 export default function Home({ profile, onNavigate }) {
   const { esporte, cfg } = useEsporte();
-  const [topPlayers, setTopPlayers] = useState([]);
-  const [myPlayerInfo, setMyPlayerInfo] = useState(null);
-  const [myRank, setMyRank] = useState('--');
-  const [loading, setLoading] = useState(true);
+  const _cache = lerCache('home');
+  const [topPlayers, setTopPlayers] = useState(_cache?.topPlayers || []);
+  const [myPlayerInfo, setMyPlayerInfo] = useState(_cache?.myPlayerInfo || null);
+  const [myRank, setMyRank] = useState(_cache?.myRank || '--');
+  const [loading, setLoading] = useState(!_cache);
   const [heroTransform, setHeroTransform] = useState('rotateX(4deg) rotateY(-4deg) translateZ(0px)');
   const [heroShadow, setHeroShadow] = useState('0 16px 40px rgba(0,0,0,0.4)');
 
@@ -19,20 +21,20 @@ export default function Home({ profile, onNavigate }) {
   const uf = profile?.uf || 'PA';
 
   useEffect(() => {
-    if (profile) loadData(city, uf);
+    if (profile) loadData(city, uf, !!lerCache('home'));
   }, [profile, city, uf, esporte]);
 
   useEffect(() => {
     if (!profile) return;
     // Aviso curto do banco ("ranking mudou") + consulta agrupada.
     // Nada roda com a aba em segundo plano.
-    const atualizar = criarAtualizador(() => loadData(city, uf), { debounce: 2000, minimo: 10000 });
+    const atualizar = criarAtualizador(() => loadData(city, uf, true), { debounce: 2000, minimo: 10000 });
     const channel = assinarAviso(TOPICO_RANKING, atualizar);
     return () => { atualizar.parar(); supabase.removeChannel(channel); };
   }, [profile, city, uf, esporte]);
 
-  async function loadData(cityVal = city, ufVal = uf) {
-    setLoading(true);
+  async function loadData(cityVal = city, ufVal = uf, silencioso = false) {
+    if (!silencioso) setLoading(true);
     try {
       const { data: rankList } = await rankingAPI.get(cityVal || null, ufVal || null, 50, esporte);
       if (rankList) {
@@ -44,15 +46,21 @@ export default function Home({ profile, onNavigate }) {
           if (only.length) list = only;
         }
         const sorted = sortByConfianca(list);
-        setTopPlayers(sorted.slice(0, 5));
+        const top = sorted.slice(0, 5);
+        setTopPlayers(top);
 
+        let rank = myRank;
+        let info = myPlayerInfo;
         if (profile?.player_id) {
           const myIndex = sorted.findIndex(j => j.id === profile.player_id);
-          setMyRank(myIndex !== -1 ? `#${myIndex + 1}` : '--');
+          rank = myIndex !== -1 ? `#${myIndex + 1}` : '--';
           if (myIndex !== -1) {
-            setMyPlayerInfo(sorted[myIndex]);
+            info = sorted[myIndex];
+            setMyPlayerInfo(info);
           }
+          setMyRank(rank);
         }
+        salvarCache('home', { topPlayers: top, myRank: rank, myPlayerInfo: info });
       }
     } catch (e) {
       console.error(e);
@@ -125,8 +133,6 @@ export default function Home({ profile, onNavigate }) {
             className="premium-card premium-card-border-green stagger-enter stagger-1" 
             onMouseMove={handleHeroMove}
             onMouseLeave={handleHeroLeave}
-            onTouchMove={handleHeroMove}
-            onTouchEnd={handleHeroLeave}
             style={{
               padding: '16px', 
               transform: heroTransform,

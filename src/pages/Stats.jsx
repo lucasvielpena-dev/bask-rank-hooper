@@ -3,31 +3,33 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
 import { useEsporte } from '../contexts/EsporteContext';
 import LinhaEvolucao from '../components/LinhaEvolucao';
+import { lerCache, salvarCache } from '../lib/pageCache';
 
 
 
 export default function Stats({ profile, onNavigate }) {
   const { esporte, cfg } = useEsporte();
   const fundamentos = cfg.habilidades;
+  const _cache = lerCache('stats');
   const [aba, setAba] = useState('sobre'); // 'sobre' | 'estatisticas' | 'historico'
   const [subAbaHistorico, setSubAbaHistorico] = useState('pessoal'); // 'pessoal' | 'quadra'
-  const [historicoPrivado, setHistoricoPrivado] = useState([]);
-  const [historicoQuadra, setHistoricoQuadra] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [historicoPrivado, setHistoricoPrivado] = useState(_cache?.historicoPrivado || []);
+  const [historicoQuadra, setHistoricoQuadra] = useState(_cache?.historicoQuadra || []);
+  const [loading, setLoading] = useState(!_cache);
   const [showRegistrar, setShowRegistrar] = useState(false);
   const [showAvancado, setShowAvancado] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [toast, setToast] = useState(null);
 
   // States de estatísticas calculadas privadas
-  const [mediasPrivadas, setMediasPrivadas] = useState(null);
+  const [mediasPrivadas, setMediasPrivadas] = useState(_cache?.mediasPrivadas || null);
 
   // States do jogador público
-  const [myPlayerInfo, setMyPlayerInfo] = useState(null);
-  const [myRank, setMyRank] = useState('--');
-  const [evolucao, setEvolucao] = useState([]);
-  const [loadingEvolucao, setLoadingEvolucao] = useState(true);
-  const [careerStats, setCareerStats] = useState({ games: 0, points: 0, rebounds: 0, assists: 0, steals: 0, blocks: 0 });
+  const [myPlayerInfo, setMyPlayerInfo] = useState(_cache?.myPlayerInfo || null);
+  const [myRank, setMyRank] = useState(_cache?.myRank || '--');
+  const [evolucao, setEvolucao] = useState(_cache?.evolucao || []);
+  const [loadingEvolucao, setLoadingEvolucao] = useState(!_cache);
+  const [careerStats, setCareerStats] = useState(_cache?.careerStats || { games: 0, points: 0, rebounds: 0, assists: 0, steals: 0, blocks: 0 });
 
   const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
   const uf = profile?.uf || 'PA';
@@ -61,6 +63,12 @@ export default function Stats({ profile, onNavigate }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile, esporte]);
+
+  // Guarda o último resultado para a tela já abrir preenchida na próxima visita.
+  useEffect(() => {
+    if (loading) return;
+    salvarCache('stats', { historicoPrivado, mediasPrivadas, myPlayerInfo, myRank, evolucao, careerStats, historicoQuadra });
+  }, [loading, historicoPrivado, mediasPrivadas, myPlayerInfo, myRank, evolucao, careerStats, historicoQuadra]);
 
   async function loadAllStats() {
     setLoading(true);
@@ -339,7 +347,7 @@ export default function Stats({ profile, onNavigate }) {
   const starsVal = myPlayerInfo?.media_estrelas || 0;
   const badgeText = starsVal >= 4.5 ? 'ELITE' : starsVal >= 4.0 ? 'DESTAQUE' : starsVal >= 3.5 ? 'PROMESSA' : '';
 
-  if (loading) {
+  if (loading && !_cache) {
     return (
       <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '30vh' }}>
         <div className="spinner" />

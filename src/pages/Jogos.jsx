@@ -7,6 +7,7 @@ import Torneios from './Torneios';
 import { IconJogo, IconMais, IconCalendario } from '../components/Icons';
 import { useEsporte } from '../contexts/EsporteContext';
 import { assinarAviso } from '../lib/realtime';
+import { lerCache, salvarCache } from '../lib/pageCache';
 
 function normalizarCidade(v) {
   return String(v || '')
@@ -24,10 +25,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   const [aba, setAba] = useState(initialAba); // 'jogos' | 'historico' | 'torneios'
   
   // Lista de partidas e jogadores para seleção
-  const [partidas, setPartidas] = useState([]);
-  const [historico, setHistorico] = useState([]);
+  const _cache = lerCache('jogos');
+  const [partidas, setPartidas] = useState(_cache?.partidas || []);
+  const [historico, setHistorico] = useState(_cache?.historico || []);
   const [jogadores, setJogadores] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!_cache);
   const [salvando, setSalvando] = useState(false);
   const [toast, setToast] = useState(null);
 
@@ -524,6 +526,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
       setPartidas(ativas);
       setHistorico(finalizadas);
+      salvarCache('jogos', { partidas: ativas, historico: finalizadas });
 
       // Se EU tenho partida ativa, entra nela. Antes o app entrava na partida
       // ativa de QUALQUER pessoa — inclusive ao encerrar a sua: encerrava uma
@@ -973,7 +976,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           {/* Renderização conforme Aba */}
           {aba === 'torneios' ? (
             <Torneios profile={profile} isNested={true} />
-          ) : loading ? (
+          ) : loading && partidas.length === 0 && historico.length === 0 ? (
             aba === 'jogos' ? (
               <div className="responsive-card-grid">
                 <div className="skeleton" style={{ height: 130, borderRadius: '12px' }} />

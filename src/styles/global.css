@@ -683,7 +683,9 @@ input:focus { border-color:#C8F135; }
   100% { box-shadow: 0 0 0 0 rgba(200, 241, 53, 0); }
 }
 .avatar-pulse {
-  animation: pulse-lima 2s infinite;
+  /* Brilho fixo (sem pulso infinito): evita repintar o card o tempo todo,
+     o que travava a rolagem em aparelhos mais simples. */
+  box-shadow: 0 0 0 3px rgba(200, 241, 53, 0.25);
 }
 
 /* Loading skeleton shimmer */
@@ -1620,8 +1622,9 @@ input:focus, select:focus, textarea:focus {
 .rank-chip.bronze { background: rgba(205, 127, 50, 0.12); color: #E0A05A; }
 
 /* Subtle list stagger helper */
+/* Sem animação no mount: a tela aparece pronta (evita o "pisca/pula"). */
 .stagger-enter {
-  animation: fadeUp 0.45s var(--ease-out) both;
+  animation: none;
 }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
