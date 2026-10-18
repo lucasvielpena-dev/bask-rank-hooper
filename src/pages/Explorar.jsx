@@ -172,7 +172,7 @@ export default function Explorar({ profile, onNavigate }) {
             {selected.uf ? ` · ${selected.uf}` : ''}
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 4, fontFamily: "'Inter', sans-serif" }}>
-            Consulta · ranking local
+            Só consulta · sem votar de fora
           </p>
 
           {/* Cartão resumo */}
@@ -300,7 +300,7 @@ export default function Explorar({ profile, onNavigate }) {
           Explorar
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 4, fontFamily: "'Inter', sans-serif" }}>
-          Ranking de outras cidades · só consulta
+          Veja o ranking de atletas em outra cidade
         </p>
 
         {/* Busca — mesmo estilo Atletas */}

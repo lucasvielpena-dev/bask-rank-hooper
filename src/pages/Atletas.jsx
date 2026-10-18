@@ -299,36 +299,64 @@ export default function Atletas({ profile, onNavigate }) {
       <div style={{ padding: '20px 16px 0', position: 'relative', zIndex: 1 }}>
 
         {/* Header */}
-        <div style={{ marginBottom: 16, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-          <div>
-            <h1 style={{ color: '#FFFFFF', fontSize: 24, fontWeight: 900, fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.02em', margin: 0 }}>
-              ATLETAS
-            </h1>
-            <p style={{ color: '#A1A1AA', fontSize: 13, fontFamily: "'Inter', sans-serif", marginTop: 2 }}>
-              {selectedCity || 'Sua cidade'} • {jogadores.length} atletas
-            </p>
-          </div>
-          {onNavigate && (
+        <div style={{ marginBottom: 12 }}>
+          <h1 style={{ color: '#FFFFFF', fontSize: 24, fontWeight: 900, fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.02em', margin: 0 }}>
+            ATLETAS
+          </h1>
+          <p style={{ color: '#A1A1AA', fontSize: 13, fontFamily: "'Inter', sans-serif", marginTop: 2 }}>
+            {selectedCity || 'Sua cidade'} • {jogadores.length} atletas
+          </p>
+        </div>
+
+        {/* Minha cidade | Outras cidades — entrada clara */}
+        {onNavigate && (
+          <div
+            style={{
+              display: 'flex',
+              background: 'var(--bg-card)',
+              borderRadius: 12,
+              padding: 4,
+              marginBottom: 16,
+              border: '1px solid var(--border)',
+            }}
+          >
+            <button
+              type="button"
+              style={{
+                flex: 1,
+                padding: '10px 8px',
+                borderRadius: 8,
+                border: 'none',
+                background: 'var(--accent)',
+                color: '#0C0C14',
+                fontWeight: 800,
+                fontSize: 13,
+                cursor: 'default',
+                fontFamily: "'Inter', sans-serif",
+              }}
+            >
+              Minha cidade
+            </button>
             <button
               type="button"
               onClick={() => onNavigate('explorar')}
               style={{
-                flexShrink: 0,
-                padding: '8px 12px',
-                borderRadius: 10,
-                border: '1px solid rgba(200,241,53,0.35)',
-                background: 'rgba(200,241,53,0.1)',
-                color: '#C8F135',
-                fontSize: 12,
-                fontWeight: 800,
+                flex: 1,
+                padding: '10px 8px',
+                borderRadius: 8,
+                border: 'none',
+                background: 'transparent',
+                color: 'var(--text-secondary)',
+                fontWeight: 700,
+                fontSize: 13,
                 cursor: 'pointer',
                 fontFamily: "'Inter', sans-serif",
               }}
             >
-              Explorar
+              Outras cidades
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Search */}
         <div style={{ position: 'relative', marginBottom: 16 }}>
