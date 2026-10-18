@@ -937,39 +937,37 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       {/* TELA 1: LISTAGEM DE PARTIDAS / HISTÓRICO */}
       {tela === 'lista' && (
         <div className="home-container" style={{ padding: '12px 12px 0', position: 'relative', zIndex: 1 }}>
-          {/* Header — sem ícone duplicado (já existe no menu inferior) */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-            <div>
-              <h2 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 17, margin: 0 }}>
-                {aba === 'torneios' ? 'Torneios Regionais' : 'Jogos da Noite'}
-              </h2>
-              <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>
-                {aba === 'torneios' ? 'Competições e campeonatos ativos' : 'Gerenciador de partidas'}
-              </p>
-            </div>
-            
-            {aba !== 'torneios' && (
-              <button className="btn btn-primary btn-sm" onClick={() => setTela('novo')}>
-                <IconMais size={14} color="currentColor" />
-                Novo Jogo
-              </button>
-            )}
-          </div>
- 
-          {/* Tabs */}
-          <div className="tabs" style={{ marginBottom: 10 }}>
-            <button className={`tab ${aba === 'jogos' ? 'active' : ''}`} onClick={() => setAba('jogos')}>
-              Partida Ativa
-            </button>
-            <button className={`tab ${aba === 'historico' ? 'active' : ''}`} onClick={() => setAba('historico')}>
-              Histórico
-              {historico.length > 0 && (
-                <span style={{ background: 'var(--accent)', color: '#111111', borderRadius: '50%', width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, marginLeft: 6 }}>{historico.length}</span>
+          {/* Header + tabs na mesma lógica visual */}
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 10 }}>
+              <div style={{ minWidth: 0 }}>
+                <h2 className="page-title" style={{ fontSize: 'var(--fs-lg)' }}>
+                  Competições
+                </h2>
+                <p className="page-sub">
+                  {aba === 'torneios' ? 'Torneios da região' : aba === 'historico' ? 'Partidas finalizadas' : 'Partidas em andamento'}
+                </p>
+              </div>
+              {aba !== 'torneios' && (
+                <button className="btn btn-primary btn-sm" onClick={() => setTela('novo')} style={{ flexShrink: 0 }}>
+                  <IconMais size={16} color="currentColor" />
+                  Novo jogo
+                </button>
               )}
-            </button>
-            <button className={`tab ${aba === 'torneios' ? 'active' : ''}`} onClick={() => setAba('torneios')}>
-              Torneios
-            </button>
+            </div>
+
+            <div className="tabs-row">
+              <button type="button" className={`tab ${aba === 'jogos' ? 'active' : ''}`} onClick={() => setAba('jogos')}>
+                Partidas
+              </button>
+              <button type="button" className={`tab ${aba === 'historico' ? 'active' : ''}`} onClick={() => setAba('historico')}>
+                Histórico
+                {historico.length > 0 && <span className="tab-badge">{historico.length}</span>}
+              </button>
+              <button type="button" className={`tab ${aba === 'torneios' ? 'active' : ''}`} onClick={() => setAba('torneios')}>
+                Torneios
+              </button>
+            </div>
           </div>
 
           {/* Renderização conforme Aba */}
@@ -1573,14 +1571,14 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                 + Pontuar {timeANome.substring(0,6)}
               </span>
-              <div style={{ display: 'flex', gap: 6, width: '100%' }}>
-                <button onClick={() => ajustarPlacar('A', 1)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-a-bg-1)', border: '1px solid var(--time-a-border-1)', color: 'var(--time-a-color-1)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
-                <button onClick={() => ajustarPlacar('A', 2)} style={{ flex: 1.2, padding: '6px 0', background: 'var(--time-a-bg-2)', border: 'var(--time-a-border-2)', color: 'var(--time-a-color-2)', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
-                <button onClick={() => ajustarPlacar('A', 3)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-a-bg-3)', border: '1px solid var(--time-a-border-3)', color: 'var(--time-a-color-3)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
+              <div className="score-btns">
+                <button type="button" className="score-btn score-btn--a1" onClick={() => ajustarPlacar('A', 1)}>+1</button>
+                <button type="button" className="score-btn score-btn--a2" onClick={() => ajustarPlacar('A', 2)}>+2</button>
+                <button type="button" className="score-btn score-btn--a3" onClick={() => ajustarPlacar('A', 3)}>+3</button>
               </div>
-              <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center' }}>
-                <button onClick={() => ajustarPlacar('A', -1)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-a-color-neg)', background: 'var(--time-a-bg-neg)', border: 'var(--time-a-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-1</button>
-                <button onClick={() => ajustarPlacar('A', -2)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-a-color-neg)', background: 'var(--time-a-bg-neg)', border: 'var(--time-a-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-2</button>
+              <div className="score-btns">
+                <button type="button" className="score-btn score-btn--neg" onClick={() => ajustarPlacar('A', -1)}>-1</button>
+                <button type="button" className="score-btn score-btn--neg" onClick={() => ajustarPlacar('A', -2)}>-2</button>
               </div>
             </div>
 
@@ -1598,14 +1596,14 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                 + Pontuar {timeBNome.substring(0,6)}
               </span>
-              <div style={{ display: 'flex', gap: 6, width: '100%' }}>
-                <button onClick={() => ajustarPlacar('B', 1)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-b-bg-1)', border: '1px solid var(--time-b-border-1)', color: 'var(--time-b-color-1)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
-                <button onClick={() => ajustarPlacar('B', 2)} style={{ flex: 1.2, padding: '6px 0', background: 'var(--time-b-bg-2)', border: 'var(--time-b-border-2)', color: 'var(--time-b-color-2)', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
-                <button onClick={() => ajustarPlacar('B', 3)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-b-bg-3)', border: '1px solid var(--time-b-border-3)', color: 'var(--time-b-color-3)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
+              <div className="score-btns">
+                <button type="button" className="score-btn score-btn--b1" onClick={() => ajustarPlacar('B', 1)}>+1</button>
+                <button type="button" className="score-btn score-btn--b2" onClick={() => ajustarPlacar('B', 2)}>+2</button>
+                <button type="button" className="score-btn score-btn--b3" onClick={() => ajustarPlacar('B', 3)}>+3</button>
               </div>
-              <div style={{ display: 'flex', gap: 4, width: '100%', justifyContent: 'center' }}>
-                <button onClick={() => ajustarPlacar('B', -1)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-b-color-neg)', background: 'var(--time-b-bg-neg)', border: 'var(--time-b-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-1</button>
-                <button onClick={() => ajustarPlacar('B', -2)} style={{ flex: 1, padding: '4px 0', fontSize: '9px', color: 'var(--time-b-color-neg)', background: 'var(--time-b-bg-neg)', border: 'var(--time-b-border-neg)', borderRadius: '4px', cursor: 'pointer', fontFamily: 'inherit' }}>-2</button>
+              <div className="score-btns">
+                <button type="button" className="score-btn score-btn--neg" onClick={() => ajustarPlacar('B', -1)}>-1</button>
+                <button type="button" className="score-btn score-btn--neg" onClick={() => ajustarPlacar('B', -2)}>-2</button>
               </div>
             </div>
           </div>

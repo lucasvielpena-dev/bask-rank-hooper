@@ -21,6 +21,17 @@
   --border-inset: inset 0 1px 0 rgba(255,255,255,0.06);
   --radius: 20px;
   --radius-sm: 12px;
+
+  /* ===== Design system (máx. 3 tamanhos) ===== */
+  --fs-sm: 12px;   /* legendas, chips, meta */
+  --fs-md: 14px;   /* corpo, botões, listas */
+  --fs-lg: 22px;   /* títulos de página */
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+  --ctrl-sm: 32px; /* botões compactos */
+  --ctrl-md: 40px; /* padrão */
+  --ctrl-lg: 48px; /* CTA principal */
   --nav-height: 64px;
   --header-height: 72px;
   --nav-active-color: #C8F135;
@@ -912,6 +923,17 @@ input, select, textarea {
 
 /* Fix nav height variable */
 :root {
+
+  /* ===== Design system (máx. 3 tamanhos) ===== */
+  --fs-sm: 12px;   /* legendas, chips, meta */
+  --fs-md: 14px;   /* corpo, botões, listas */
+  --fs-lg: 22px;   /* títulos de página */
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+  --ctrl-sm: 32px; /* botões compactos */
+  --ctrl-md: 40px; /* padrão */
+  --ctrl-lg: 48px; /* CTA principal */
   --nav-height: 64px;
 }
 
@@ -2022,4 +2044,148 @@ body:not(.light-theme) .premium-card {
 .light-theme .admin-summary-item,
 .light-theme .admin-search {
   background: #fff;
+}
+
+/* ============================================================
+   Design system utilities — tipografia e controles (3 níveis)
+   ============================================================ */
+.text-sm { font-size: var(--fs-sm) !important; line-height: 1.35; }
+.text-md { font-size: var(--fs-md) !important; line-height: 1.45; }
+.text-lg {
+  font-size: var(--fs-lg) !important;
+  line-height: 1.2;
+  font-weight: 800;
+  font-family: 'Barlow Condensed', 'Oswald', sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.icon-sm { width: var(--icon-sm); height: var(--icon-sm); }
+.icon-md { width: var(--icon-md); height: var(--icon-md); }
+.icon-lg { width: var(--icon-lg); height: var(--icon-lg); }
+
+/* Botões de placar (+1 / +2 / +3 / -1 / -2) — mesmo tamanho e forma */
+.score-btns {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+.score-btn {
+  flex: 1;
+  min-height: var(--ctrl-sm);
+  padding: 6px 0;
+  border-radius: 8px;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.score-btn:active { transform: scale(0.96); }
+.score-btn--a1 {
+  background: var(--time-a-bg-1);
+  border: 1px solid rgba(200,241,53,0.35);
+  color: var(--time-a-color-1);
+}
+.score-btn--a2 {
+  background: var(--time-a-bg-2);
+  border: none;
+  color: var(--time-a-color-2);
+  font-weight: 800;
+}
+.score-btn--a3 {
+  background: var(--time-a-bg-3);
+  border: 1px solid rgba(200,241,53,0.4);
+  color: var(--time-a-color-3);
+}
+.score-btn--b1 {
+  background: var(--time-b-bg-1);
+  border: 1px solid rgba(76,201,240,0.4);
+  color: var(--time-b-color-1);
+}
+.score-btn--b2 {
+  background: var(--time-b-bg-2);
+  border: none;
+  color: var(--time-b-color-2);
+  font-weight: 800;
+}
+.score-btn--b3 {
+  background: var(--time-b-bg-3);
+  border: 1px solid rgba(76,201,240,0.45);
+  color: var(--time-b-color-3);
+}
+.score-btn--neg {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  min-height: calc(var(--ctrl-sm) - 4px);
+}
+
+/* Tabs de seção (Competições) — uma linha só */
+.tabs-row {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 12px;
+}
+.tabs-row .tab {
+  flex: 1;
+  min-height: var(--ctrl-md);
+  padding: 8px 6px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.tabs-row .tab.active {
+  background: var(--accent);
+  color: #0C0C14;
+}
+.tabs-row .tab-badge {
+  background: rgba(12,12,20,0.2);
+  color: inherit;
+  border-radius: 99px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.tabs-row .tab.active .tab-badge {
+  background: rgba(12,12,20,0.25);
+}
+
+/* Título de página padrão */
+.page-title {
+  font-size: var(--fs-lg);
+  font-weight: 900;
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.15;
+}
+.page-sub {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin: 4px 0 0;
+  font-family: 'Inter', sans-serif;
 }
