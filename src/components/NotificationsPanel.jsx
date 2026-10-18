@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useState } from 'react';
-import { IconSino } from './Icons';
+import { IconSino, IconVoltar } from './Icons';
 import { notificacoesAPI, partidasAPI } from '../lib/supabase';
 
 function timeAgo(iso) {
@@ -13,13 +13,50 @@ function timeAgo(iso) {
   return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
 }
 
+function formatFull(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleString('pt-BR', {
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 function iconForTitle(titulo = '') {
   const t = titulo.toLowerCase();
   if (t.includes('avalia')) return '⭐';
   if (t.includes('torneio') || t.includes('campe')) return '🏆';
-  if (t.includes('jogo') || t.includes('partida')) return '🏀';
+  if (t.includes('placar') || t.includes('operar')) return '📊';
+  if (t.includes('jogo') || t.includes('partida') || t.includes('compet')) return '🏀';
+  if (t.includes('rach') || t.includes('pickup')) return '🤝';
   if (t.includes('bem-vindo') || t.includes('boas')) return '👋';
+  if (t.includes('cidade') || t.includes('local')) return '📍';
   return '🔔';
+}
+
+/** Destino sugerido a partir do título/mensagem */
+function destinoPara(n) {
+  const t = `${n?.titulo || ''} ${n?.mensagem || ''}`.toLowerCase();
+  if (t.includes('placar') || t.includes('operar') || t.includes('partida') || t.includes('compet')) {
+    return { page: 'jogos', label: 'Abrir Competições' };
+  }
+  if (t.includes('torneio') || t.includes('campeonato') || t.includes('equipe')) {
+    return { page: 'torneios', label: 'Abrir Torneios' };
+  }
+  if (t.includes('rach')) {
+    return { page: 'racoes', label: 'Abrir Rachões' };
+  }
+  if (t.includes('avalia') || t.includes('ranking') || t.includes('atleta')) {
+    return { page: 'atletas', label: 'Abrir Atletas' };
+  }
+  return null;
+}
+
+function isPlacarNotif(n) {
+  const t = `${n?.titulo || ''} ${n?.mensagem || ''}`.toLowerCase();
+  return t.includes('placar') || t.includes('operar o placar') || t.includes('operador');
 }
 
 function NotificationsPanel({
@@ -31,54 +68,84 @@ function NotificationsPanel({
   onDelete,
   onRefresh,
   onAbrirJogos,
+  onNavigate,
 }) {
-  const [filter, setFilter] = useState('all'); // all | unread
+  const [filter, setFilter] = useState('all');
   const [busyId, setBusyId] = useState(null);
   const [deleting, setDeleting] = useState(null);
-  // Pedidos de operador esperando a MINHA resposta (chegam aqui pela RLS).
+  const [selected, setSelected] = useState(null); // notificação aberta em detalhe
   const [pedidos, setPedidos] = useState([]);
   const [respondendo, setRespondendo] = useState(null);
+  const [toast, setToast] = useState(null);
 
-  // O aviso "Placar compartilhado" dizia que alguém pediu para operar, mas o
-  // botão de aceitar só existia dentro da tela da partida — um beco sem saída.
-  // Agora o pedido é lido e respondido aqui mesmo, na notificação.
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setSelected(null);
+      return;
+    }
     let vivo = true;
     const carregar = async () => {
-      const { data } = await partidasAPI.listarPedidosPendentes();
-      if (vivo) setPedidos(data || []);
+      try {
+        const { data } = await partidasAPI.listarPedidosPendentes();
+        if (vivo) setPedidos(Array.isArray(data) ? data : []);
+      } catch (_) {
+        if (vivo) setPedidos([]);
+      }
     };
     carregar();
     const t = setInterval(carregar, 5000);
-    return () => { vivo = false; clearInterval(t); };
+    return () => {
+      vivo = false;
+      clearInterval(t);
+    };
   }, [open]);
 
-  async function handleResponder(pedido, aceitar) {
-    const chave = `${pedido.partida_id}:${pedido.usuario_id}`;
-    setRespondendo(chave);
-    const { error } = await partidasAPI.responderPedidoOperador(
-      pedido.partida_id,
-      pedido.usuario_id,
-      aceitar
-    );
-    setRespondendo(null);
-    if (!error) {
-      setPedidos((prev) => prev.filter((p) => `${p.partida_id}:${p.usuario_id}` !== chave));
+  // Se a notificação selecionada sumiu da lista, fecha o detalhe
+  useEffect(() => {
+    if (!selected) return;
+    const still = notificacoes.some((n) => n.id === selected.id);
+    if (!still) setSelected(null);
+    else {
+      const fresh = notificacoes.find((n) => n.id === selected.id);
+      if (fresh) setSelected(fresh);
     }
-  }
+  }, [notificacoes, selected?.id]);
 
   const unreadCount = useMemo(
-    () => notificacoes.filter((n) => !n.lida).length,
+    () => (notificacoes || []).filter((n) => !n.lida).length,
     [notificacoes]
   );
 
   const list = useMemo(() => {
-    if (filter === 'unread') return notificacoes.filter((n) => !n.lida);
-    return notificacoes;
+    const all = Array.isArray(notificacoes) ? notificacoes : [];
+    if (filter === 'unread') return all.filter((n) => !n.lida);
+    return all;
   }, [notificacoes, filter]);
 
   if (!open) return null;
+
+  function showToast(msg) {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2500);
+  }
+
+  async function handleRead(id) {
+    if (!id) return;
+    setBusyId(id);
+    try {
+      if (onMarkRead) await onMarkRead(id);
+      else await notificacoesAPI.marcarComoLida(id);
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  async function handleOpen(n) {
+    setSelected(n);
+    if (!n.lida) {
+      await handleRead(n.id);
+    }
+  }
 
   async function handleDelete(id) {
     setDeleting(id);
@@ -88,20 +155,259 @@ function NotificationsPanel({
         await notificacoesAPI.excluir(id);
         if (onRefresh) onRefresh();
       }
+      if (selected?.id === id) setSelected(null);
     } finally {
       setDeleting(null);
     }
   }
 
-  async function handleRead(id) {
-    setBusyId(id);
+  async function handleResponder(pedido, aceitar) {
+    const chave = `${pedido.partida_id}:${pedido.usuario_id}`;
+    setRespondendo(chave);
     try {
-      await onMarkRead(id);
+      const { error } = await partidasAPI.responderPedidoOperador(
+        pedido.partida_id,
+        pedido.usuario_id,
+        aceitar
+      );
+      if (error) {
+        showToast(error.message || 'Não foi possível responder');
+        return;
+      }
+      setPedidos((prev) => prev.filter((p) => `${p.partida_id}:${p.usuario_id}` !== chave));
+      showToast(aceitar ? 'Pedido aceito' : 'Pedido recusado');
     } finally {
-      setBusyId(null);
+      setRespondendo(null);
     }
   }
 
+  function goTo(page) {
+    if (onNavigate) onNavigate(page);
+    else if (page === 'jogos' && onAbrirJogos) onAbrirJogos();
+    onClose?.();
+  }
+
+  // ---------- DETALHE ----------
+  if (selected) {
+    const dest = destinoPara(selected);
+    const placar = isPlacarNotif(selected);
+
+    return (
+      <div className="modal-overlay notif-overlay" onClick={onClose}>
+        <div className="modal-sheet notif-sheet" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-handle" />
+
+          <div className="notif-header">
+            <div className="notif-header-left">
+              <button
+                type="button"
+                className="notif-back"
+                onClick={() => setSelected(null)}
+                aria-label="Voltar"
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  border: '1px solid var(--border)',
+                  background: 'var(--bg-card)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  marginRight: 4,
+                }}
+              >
+                <IconVoltar size={16} color="var(--accent)" />
+              </button>
+              <div className="notif-header-icon">{iconForTitle(selected.titulo)}</div>
+              <div>
+                <h3 className="notif-title">Detalhe</h3>
+                <p className="notif-subtitle">{formatFull(selected.created_at)}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="notif-detail" style={{ flex: 1, overflowY: 'auto', padding: '4px 2px 12px' }}>
+            <div
+              style={{
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 14,
+                padding: 16,
+                marginBottom: 14,
+              }}
+            >
+              <div style={{ fontSize: 28, marginBottom: 10 }}>{iconForTitle(selected.titulo)}</div>
+              <h2
+                style={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: 'var(--text-primary)',
+                  marginBottom: 8,
+                  lineHeight: 1.25,
+                }}
+              >
+                {selected.titulo}
+              </h2>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.55,
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                }}
+              >
+                {selected.mensagem || 'Sem mensagem adicional.'}
+              </p>
+              <div
+                style={{
+                  marginTop: 12,
+                  fontSize: 11,
+                  color: 'var(--text-muted)',
+                  fontWeight: 600,
+                }}
+              >
+                {selected.lida ? 'Lida' : 'Marcada como lida'} · {timeAgo(selected.created_at)}
+              </div>
+            </div>
+
+            {/* Aceitar / recusar operador de placar */}
+            {placar && (
+              <div style={{ marginBottom: 14 }}>
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 800,
+                    color: 'var(--text-primary)',
+                    marginBottom: 8,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  Pedidos de placar
+                </div>
+                {pedidos.length === 0 ? (
+                  <div
+                    style={{
+                      padding: 12,
+                      borderRadius: 12,
+                      background: 'rgba(200,241,53,0.06)',
+                      border: '1px solid rgba(200,241,53,0.2)',
+                      fontSize: 13,
+                      color: 'var(--text-secondary)',
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    Nenhum pedido pendente agora. Você pode abrir Competições para ver o placar.
+                  </div>
+                ) : (
+                  pedidos.map((p) => {
+                    const chave = `${p.partida_id}:${p.usuario_id}`;
+                    const ocupado = respondendo === chave;
+                    return (
+                      <div
+                        key={chave}
+                        style={{
+                          padding: 12,
+                          borderRadius: 12,
+                          background: 'var(--bg-card)',
+                          border: '1px solid var(--border)',
+                          marginBottom: 8,
+                        }}
+                      >
+                        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>
+                          {p.nome || 'Alguém'} quer operar o placar
+                        </div>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            style={{ flex: 1 }}
+                            disabled={ocupado}
+                            onClick={() => handleResponder(p, true)}
+                          >
+                            {ocupado ? '...' : 'Aceitar'}
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-secondary btn-sm"
+                            style={{ flex: 1 }}
+                            disabled={ocupado}
+                            onClick={() => handleResponder(p, false)}
+                          >
+                            Recusar
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {dest && (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  style={{ width: '100%' }}
+                  onClick={() => goTo(dest.page)}
+                >
+                  {dest.label}
+                </button>
+              )}
+              {!dest && placar && (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  style={{ width: '100%' }}
+                  onClick={() => goTo('jogos')}
+                >
+                  Abrir Competições
+                </button>
+              )}
+              <button
+                type="button"
+                className="btn btn-secondary"
+                style={{ width: '100%', color: '#f87171' }}
+                disabled={deleting === selected.id}
+                onClick={() => handleDelete(selected.id)}
+              >
+                {deleting === selected.id ? 'Excluindo...' : 'Excluir notificação'}
+              </button>
+              <button type="button" className="btn btn-secondary" style={{ width: '100%' }} onClick={() => setSelected(null)}>
+                Voltar à lista
+              </button>
+            </div>
+          </div>
+
+          {toast && (
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 24,
+                left: 16,
+                right: 16,
+                padding: '10px 14px',
+                borderRadius: 12,
+                background: 'rgba(12,12,20,0.95)',
+                border: '1px solid rgba(200,241,53,0.3)',
+                color: 'var(--accent)',
+                fontSize: 13,
+                fontWeight: 700,
+                textAlign: 'center',
+              }}
+            >
+              {toast}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ---------- LISTA ----------
   return (
     <div className="modal-overlay notif-overlay" onClick={onClose}>
       <div className="modal-sheet notif-sheet" onClick={(e) => e.stopPropagation()}>
@@ -116,7 +422,7 @@ function NotificationsPanel({
               <h3 className="notif-title">Notificações</h3>
               <p className="notif-subtitle">
                 {unreadCount > 0
-                  ? `${unreadCount} não lida${unreadCount > 1 ? 's' : ''}`
+                  ? `${unreadCount} não lida${unreadCount > 1 ? 's' : ''} · toque para abrir`
                   : 'Tudo em dia'}
               </p>
             </div>
@@ -156,15 +462,23 @@ function NotificationsPanel({
                 {filter === 'unread' ? 'Nenhuma não lida' : 'Nenhuma notificação'}
               </p>
               <p className="notif-empty-text">
-                Você será avisado quando receber avaliações, novidades de torneios e avisos do sistema.
+                Você será avisado sobre avaliações, placar, torneios e avisos do sistema.
               </p>
             </div>
           ) : (
             list.map((n) => (
-              <div
+              <button
                 key={n.id}
+                type="button"
                 className={`notif-item ${n.lida ? 'is-read' : 'is-unread'}`}
-                onClick={() => !n.lida && handleRead(n.id)}
+                onClick={() => handleOpen(n)}
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  border: undefined,
+                }}
               >
                 <div className="notif-item-icon">{iconForTitle(n.titulo)}</div>
                 <div className="notif-item-body">
@@ -172,87 +486,29 @@ function NotificationsPanel({
                     <span className="notif-item-title">{n.titulo}</span>
                     <span className="notif-item-time">{timeAgo(n.created_at)}</span>
                   </div>
-                  <p className="notif-item-msg">{n.mensagem}</p>
-                  {/* Onde responder: sem esta dica o aviso era um beco sem saída. */}
-                  {/placar compartilhado/i.test(n.titulo) && (
-                    <div style={{ marginTop: 6 }}>
-                      {pedidos.length > 0 ? (
-                        pedidos.map((p) => {
-                          const chave = `${p.partida_id}:${p.usuario_id}`;
-                          const ocupado = respondendo === chave;
-                          return (
-                            <div key={chave} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                              <span className="notif-item-msg" style={{ fontWeight: 700, flex: 1, minWidth: 120 }}>
-                                {p.nome || 'Alguém'} pediu para operar:
-                              </span>
-                              <button
-                                type="button"
-                                className="notif-action primary"
-                                disabled={ocupado}
-                                onClick={(e) => { e.stopPropagation(); handleResponder(p, true); }}
-                              >
-                                {ocupado ? '...' : 'Aceitar'}
-                              </button>
-                              <button
-                                type="button"
-                                className="notif-action danger"
-                                disabled={ocupado}
-                                onClick={(e) => { e.stopPropagation(); handleResponder(p, false); }}
-                              >
-                                Recusar
-                              </button>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <>
-                          <p className="notif-item-msg" style={{ color: 'var(--accent)', fontWeight: 700 }}>
-                            Nada pendente agora. Para ver o placar, abra Competições:
-                          </p>
-                          <button
-                            type="button"
-                            className="notif-action primary"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (!n.lida) handleRead(n.id);
-                              if (onAbrirJogos) onAbrirJogos();
-                            }}
-                          >
-                            Abrir Competições
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  )}
-                  <div className="notif-item-actions">
-                    {!n.lida && (
-                      <button
-                        type="button"
-                        className="notif-action primary"
-                        disabled={busyId === n.id}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRead(n.id);
-                        }}
-                      >
-                        {busyId === n.id ? '...' : 'Marcar lida'}
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      className="notif-action danger"
-                      disabled={deleting === n.id}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(n.id);
+                  <p className="notif-item-msg">
+                    {n.mensagem
+                      ? n.mensagem.length > 100
+                        ? `${n.mensagem.slice(0, 100)}…`
+                        : n.mensagem
+                      : 'Toque para ver detalhes'}
+                  </p>
+                  {isPlacarNotif(n) && pedidos.length > 0 && (
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        marginTop: 6,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: 'var(--accent)',
                       }}
                     >
-                      {deleting === n.id ? '...' : 'Excluir'}
-                    </button>
-                  </div>
+                      {pedidos.length} pedido{pedidos.length > 1 ? 's' : ''} para aceitar →
+                    </span>
+                  )}
                 </div>
                 {!n.lida && <span className="notif-dot" />}
-              </div>
+              </button>
             ))
           )}
         </div>
@@ -260,6 +516,27 @@ function NotificationsPanel({
         <button type="button" className="btn btn-secondary notif-close" onClick={onClose}>
           Fechar
         </button>
+
+        {toast && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 72,
+              left: 16,
+              right: 16,
+              padding: '10px 14px',
+              borderRadius: 12,
+              background: 'rgba(12,12,20,0.95)',
+              border: '1px solid rgba(200,241,53,0.3)',
+              color: 'var(--accent)',
+              fontSize: 13,
+              fontWeight: 700,
+              textAlign: 'center',
+            }}
+          >
+            {toast}
+          </div>
+        )}
       </div>
     </div>
   );
