@@ -6,6 +6,7 @@ import AuthScreen from '../components/AuthScreen';
 import CompleteProfileScreen from '../components/CompleteProfileScreen';
 import LocationGate from '../components/LocationGate';
 import SplashCarregando from '../components/SplashCarregando';
+import ContaSuspensa from '../components/ContaSuspensa';
 
 // O Supabase guarda a sessão no aparelho numa chave "sb-<ref>-auth-token".
 // Checar isso de forma síncrona evita piscar a tela de login para quem já
@@ -744,8 +745,21 @@ export function AuthProvider({ children }) {
     !(profile.cidade_atual || profile.cidade)
   );
 
+  // Conta suspensa pelo Master (profiles.is_active = false).
+  //
+  // O master NUNCA é bloqueado aqui — se não, o dono poderia se trancar fora do
+  // próprio painel. Suspender de verdade funciona: a pessoa cai nesta tela.
+  const contaSuspensa = !!profile && profile.is_active === false && profile.role !== 'master';
+
   const conteudo = !conteudoPronto ? null : (
-    (!profile || !profile.cadastro_completo) ? (
+    contaSuspensa ? (
+      <ContaSuspensa
+        onSair={async () => {
+          await authAPI.logout();
+          setShowUserMenu(false);
+        }}
+      />
+    ) : (!profile || !profile.cadastro_completo) ? (
       <CompleteProfileScreen
         profile={profile}
         onComplete={(updatedProfile) => {

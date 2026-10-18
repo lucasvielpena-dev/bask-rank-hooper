@@ -3,6 +3,15 @@ import { masterAPI } from '../lib/supabase';
 import { IconVoltar, IconBuscar, IconLixeira } from '../components/Icons';
 import MasterNav from '../components/MasterNav';
 
+// O RPC `admin_get_users` devolve a coluna `is_active` (é o nome real no banco).
+// O código antigo lia `user.ativo`, que não existe no retorno — o painel então
+// mostrava TODO MUNDO como "Ativo" e o botão ficava sempre em "Suspender",
+// mesmo depois de suspender. Aqui aceitamos os dois nomes.
+function estaAtivo(user) {
+  const v = user?.is_active !== undefined ? user.is_active : user?.ativo;
+  return v !== false && v !== 0;
+}
+
 export default function AdminUsers({ profile, onNavigate }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,7 +60,7 @@ export default function AdminUsers({ profile, onNavigate }) {
   }
 
   async function handleToggleActive(user) {
-    const newActive = user.ativo === false || user.ativo === 0 ? true : false;
+    const newActive = !estaAtivo(user);
     setActionLoading(user.id);
     const { error } = await masterAPI.toggleActive(user.id, newActive);
     setActionLoading(null);
@@ -59,7 +68,7 @@ export default function AdminUsers({ profile, onNavigate }) {
       showToast('Erro ao alterar status', 'error');
     } else {
       showToast(newActive ? 'Conta ativada' : 'Conta suspensa');
-      setUsers(prev => prev.map(u => u.id === user.id ? { ...u, ativo: newActive } : u));
+      setUsers(prev => prev.map(u => u.id === user.id ? { ...u, is_active: newActive, ativo: newActive } : u));
     }
   }
 
@@ -69,10 +78,14 @@ export default function AdminUsers({ profile, onNavigate }) {
     setActionLoading(null);
     setConfirmDelete(null);
     if (error) {
-      showToast('Erro ao excluir usuário', 'error');
+      showToast('Erro ao remover usuário', 'error');
     } else {
-      showToast('Usuário excluído');
-      setUsers(prev => prev.filter(u => u.id !== userId));
+      showToast('Conta bloqueada e dados apagados');
+      // A conta continua existindo (bloqueada): mantemos na lista marcada como
+      // suspensa, em vez de sumir da tela e dar a impressão de que ela volta.
+      setUsers(prev => prev.map(u => u.id === userId
+        ? { ...u, is_active: false, ativo: false, nome_completo: 'Conta suspensa', apelido: null }
+        : u));
     }
   }
 
@@ -197,7 +210,7 @@ export default function AdminUsers({ profile, onNavigate }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 24 }}>
             {filtered.map((user, index) => {
               const online = isOnline(user.last_seen);
-              const isSuspended = user.ativo === false || user.ativo === 0;
+              const isSuspended = !estaAtivo(user);
               const isAdmin = user.role === 'admin';
               const isLoading = actionLoading === user.id;
 
@@ -309,6 +322,24 @@ export default function AdminUsers({ profile, onNavigate }) {
                       }}>
                         {user.role || 'user'}
                       </span>
+
+                      {isSuspended && (
+                        <span style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          padding: '2px 8px',
+                          borderRadius: 50,
+                          fontSize: 10,
+                          fontWeight: 800,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.04em',
+                          background: 'rgba(239,68,68,0.12)',
+                          color: '#f87171',
+                          border: '1px solid rgba(239,68,68,0.3)'
+                        }}>
+                          Suspenso
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -433,7 +464,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                 color: 'var(--text-primary)',
                 marginBottom: 6
               }}>
-                Excluir usuário?
+                Remover usuário?
               </h3>
               <p style={{
                 fontSize: 13,
@@ -441,7 +472,9 @@ export default function AdminUsers({ profile, onNavigate }) {
                 lineHeight: 1.5,
                 marginBottom: 20
               }}>
-                Essa ação não pode ser desfeita. O usuário e todos os seus dados serão removidos permanentemente.
+                A conta fica bloqueada (a pessoa cai na tela "Conta suspensa") e os
+                dados pessoais são apagados. O login continua cadastrado — assim ela
+                não consegue criar outra conta com o mesmo e-mail.
               </p>
               <div style={{ display: 'flex', gap: 10 }}>
                 <button
@@ -478,7 +511,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                     opacity: actionLoading === confirmDelete ? 0.6 : 1
                   }}
                 >
-                  {actionLoading === confirmDelete ? 'Excluindo...' : 'Excluir'}
+                  {actionLoading === confirmDelete ? 'Removendo...' : 'Remover'}
                 </button>
               </div>
             </div>
