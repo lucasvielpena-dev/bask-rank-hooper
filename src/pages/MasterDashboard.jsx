@@ -207,6 +207,28 @@ export default function MasterDashboard({ onNavigate }) {
               </div>
             )}
 
+
+            <button
+              type="button"
+              className="premium-card"
+              onClick={() => onNavigate?.('master-activity')}
+              style={{
+                borderRadius: 14,
+                padding: 14,
+                textAlign: 'left',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                width: '100%',
+                marginBottom: 18,
+                border: '1px solid rgba(200,241,53,0.25)',
+              }}
+            >
+              <div className="text-md" style={{ fontWeight: 800, color: 'var(--text-primary)' }}>Atividade global</div>
+              <div className="text-sm" style={{ color: 'var(--text-muted)', marginTop: 4 }}>
+                Partidas, rachões e torneios de todas as cidades · placares e status
+              </div>
+            </button>
+
             {/* Números */}
             <div className="home-section-label" style={{ marginBottom: 10 }}>Números</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 18 }}>
