@@ -335,7 +335,7 @@ export default function Atletas({ profile, onNavigate }) {
                 fontFamily: "'Inter', sans-serif",
               }}
             >
-              Minha cidade
+              MINHA CIDADE
             </button>
             <button
               type="button"
@@ -353,7 +353,7 @@ export default function Atletas({ profile, onNavigate }) {
                 fontFamily: "'Inter', sans-serif",
               }}
             >
-              Outras cidades
+              OUTRAS CIDADES
             </button>
           </div>
         )}
