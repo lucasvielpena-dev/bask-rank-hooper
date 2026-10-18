@@ -329,16 +329,20 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
       `}</style>
 
       {/* VIDEO BACKGROUND */}
+      {/* Sem `filter` no <video>: filtrar vídeo de tela cheia obriga a GPU a
+          refazer o filtro em TODO quadro — era o que engasgava a tela de login.
+          O escurecimento virou um véu escuro fixo por cima do vídeo. */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#000000' }}>
         <video 
           autoPlay 
           loop 
           muted 
           playsInline
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', filter: 'brightness(0.8)' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
         >
           <source src="/images/site.mp4" type="video/mp4" />
         </video>
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.2)' }} />
       </div>
 
       {/* BACKGROUND SVG LINE ART (Desativado a pedido do vídeo) */}

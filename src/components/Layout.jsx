@@ -113,14 +113,19 @@ export default function Layout({ page, onNavigate, children }) {
   }, []);
 
   const isHome = page === 'inicio';
-  // Sem `blur()`: borrar uma imagem de tela cheia é caro e re-rasteriza a cada
-  // mudança de camada. O escurecimento (brightness) sozinho é aplicado uma vez
-  // e o navegador guarda o resultado em cache.
-  const bgFilter = themePref === 'light' ? 'brightness(0.92) sepia(0.15)' : 'brightness(0.35)';
+  // UMA única camada de fundo, sem `filter` e sem segunda imagem.
+  //
+  // Antes eram DUAS imagens de tela cheia empilhadas, cada uma com
+  // `filter: brightness()`. Filtro em elemento de tela cheia + camada extra
+  // obrigavam o celular a redesenhar a tela inteira a cada troca de aba — era
+  // isso que piscava/engasgava. O escurecimento agora é um véu sólido por cima
+  // (resultado visual igual, custo zero).
+  const bgUrl = isHome ? '/images/bg-1.jpg' : '/images/bg-2.jpg';
+  const bgVeu = themePref === 'light' ? 'rgba(255, 236, 198, 0.10)' : 'rgba(0, 0, 0, 0.65)';
 
   return (
     <div className="app-shell">
-      {/* Fundo do app (fixo, sem parallax) */}
+      {/* Fundo do app (fixo, sem parallax, sem filtro) */}
       <div
         style={{
           position: 'fixed',
@@ -128,31 +133,22 @@ export default function Layout({ page, onNavigate, children }) {
           zIndex: 0,
           pointerEvents: 'none',
           opacity: bgLoaded ? 1 : 0,
-          transition: 'opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1)',
+          transition: 'opacity 0.5s ease-out',
         }}
       >
-        {/* Background 1 (Home) */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: "url('/images/bg-1.jpg')",
+          backgroundImage: `url('${bgUrl}')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center bottom',
           backgroundRepeat: 'no-repeat',
-          filter: bgFilter,
-          opacity: isHome ? 1 : 0,
         }} />
-        
-        {/* Background 2 (Other pages / Ranking) */}
+        {/* Véu de escurecimento (faz o papel do antigo brightness) */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: "url('/images/bg-2.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center bottom',
-          backgroundRepeat: 'no-repeat',
-          filter: bgFilter,
-          opacity: isHome ? 0 : 1,
+          background: bgVeu,
         }} />
       </div>
       <Header />
