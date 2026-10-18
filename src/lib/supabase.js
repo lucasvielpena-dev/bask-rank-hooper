@@ -75,6 +75,66 @@ export const jogadoresAPI = {
     return { data, error };
   },
 
+  /** Atletas ativos de uma cidade (modo Explorar — consulta). */
+  listarPorCidade: async (cidade, uf = null, esporte = 'basquete') => {
+    let q = supabase
+      .from('jogadores')
+      .select('*')
+      .eq('ativo', true)
+      .eq('esporte', esporte)
+      .eq('cidade', cidade);
+    if (uf) q = q.eq('uf', uf);
+    const { data, error } = await q
+      .order('media_estrelas', { ascending: false })
+      .order('total_votos', { ascending: false })
+      .limit(80);
+    return { data: data || [], error };
+  },
+
+  /**
+   * Cidades com atletas ativos (para busca do Explorar).
+   * Agrega no cliente: evita RPC nova e funciona com RLS atual.
+   */
+  listarCidades: async (esporte = 'basquete') => {
+    const { data, error } = await supabase
+      .from('jogadores')
+      .select('cidade, uf, total_votos, media_estrelas, updated_at, created_at')
+      .eq('ativo', true)
+      .eq('esporte', esporte)
+      .not('cidade', 'is', null)
+      .neq('cidade', '')
+      .limit(2000);
+    if (error) return { data: [], error };
+    const map = new Map();
+    for (const j of data || []) {
+      const cidade = String(j.cidade || '').trim();
+      if (!cidade) continue;
+      const uf = String(j.uf || '').trim().toUpperCase();
+      const key = `${cidade.toLowerCase()}|${uf}`;
+      let row = map.get(key);
+      if (!row) {
+        row = {
+          cidade,
+          uf,
+          player_count: 0,
+          total_votos: 0,
+          with_votes: 0,
+          last_activity: null,
+        };
+        map.set(key, row);
+      }
+      row.player_count += 1;
+      row.total_votos += Number(j.total_votos) || 0;
+      if ((Number(j.total_votos) || 0) >= 1) row.with_votes += 1;
+      const ts = j.updated_at || j.created_at;
+      if (ts && (!row.last_activity || ts > row.last_activity)) row.last_activity = ts;
+    }
+    const list = [...map.values()]
+      .filter((c) => c.player_count >= 1)
+      .sort((a, b) => b.player_count - a.player_count || a.cidade.localeCompare(b.cidade));
+    return { data: list, error: null };
+  },
+
 };
 
 export const rankingAPI = {

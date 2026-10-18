@@ -113,7 +113,7 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
   );
 });
 
-export default function Atletas({ profile }) {
+export default function Atletas({ profile, onNavigate }) {
   const { esporte, cfg } = useEsporte();
   const [jogadores, setJogadores] = useState([]);
   const [filtrados, setFiltrados] = useState([]);
@@ -284,13 +284,35 @@ export default function Atletas({ profile }) {
       <div style={{ padding: '20px 16px 0', position: 'relative', zIndex: 1 }}>
 
         {/* Header */}
-        <div style={{ marginBottom: 16 }}>
-          <h1 style={{ color: '#FFFFFF', fontSize: 24, fontWeight: 900, fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.02em', margin: 0 }}>
-            ATLETAS
-          </h1>
-          <p style={{ color: '#A1A1AA', fontSize: 13, fontFamily: "'Inter', sans-serif", marginTop: 2 }}>
-            {selectedCity} • {jogadores.length} atletas
-          </p>
+        <div style={{ marginBottom: 16, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+          <div>
+            <h1 style={{ color: '#FFFFFF', fontSize: 24, fontWeight: 900, fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.02em', margin: 0 }}>
+              ATLETAS
+            </h1>
+            <p style={{ color: '#A1A1AA', fontSize: 13, fontFamily: "'Inter', sans-serif", marginTop: 2 }}>
+              {selectedCity || 'Sua cidade'} • {jogadores.length} atletas
+            </p>
+          </div>
+          {onNavigate && (
+            <button
+              type="button"
+              onClick={() => onNavigate('explorar')}
+              style={{
+                flexShrink: 0,
+                padding: '8px 12px',
+                borderRadius: 10,
+                border: '1px solid rgba(200,241,53,0.35)',
+                background: 'rgba(200,241,53,0.1)',
+                color: '#C8F135',
+                fontSize: 12,
+                fontWeight: 800,
+                cursor: 'pointer',
+                fontFamily: "'Inter', sans-serif",
+              }}
+            >
+              Explorar
+            </button>
+          )}
         </div>
 
         {/* Search */}

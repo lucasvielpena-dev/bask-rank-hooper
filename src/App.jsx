@@ -9,6 +9,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 import Home from './pages/Home';
 import Atletas from './pages/Atletas';
+import Explorar from './pages/Explorar';
 import Jogos from './pages/Jogos';
 import Racoes from './pages/Racoes';
 import Stats from './pages/Stats';
@@ -57,7 +58,8 @@ function AppRoutes() {
   function renderPage() {
     switch (page) {
       case 'inicio': return <Home profile={profile} onNavigate={navigate} />;
-      case 'atletas': return <Atletas profile={profile} initialOpenAdd={pageProps.openAdd} />;
+      case 'atletas': return <Atletas profile={profile} initialOpenAdd={pageProps.openAdd} onNavigate={navigate} />;
+      case 'explorar': return <Explorar profile={profile} onNavigate={navigate} />;
       case 'torneios': return <Jogos profile={profile} initialAba="torneios" />;
       case 'jogos': return <Jogos profile={profile} initialAba={pageProps.aba || 'jogos'} />;
       case 'racoes': return <Racoes profile={profile} onNavigate={navigate} />;
