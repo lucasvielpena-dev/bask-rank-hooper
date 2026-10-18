@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { masterAPI } from '../lib/supabase';
-import { IconVoltar, IconBuscar, IconSportDynamic } from '../components/Icons';
+import { IconBuscar, IconSportDynamic } from '../components/Icons';
+import MasterNav from '../components/MasterNav';
 
 function StarRow({ value }) {
   const v = Number(value) || 0;
@@ -141,19 +142,16 @@ export default function AdminPlayers({ profile, onNavigate }) {
   return (
     <div className="page-content admin-page">
       <div className="admin-wrap">
-        {/* Header */}
-        <div className="admin-header">
-          <button type="button" className="admin-back" onClick={() => onNavigate('master')} aria-label="Voltar">
-            <IconVoltar size={18} color="var(--accent)" />
-          </button>
-          <div style={{ flex: 1 }}>
-            <h1 className="admin-title">Jogadores</h1>
-            <p className="admin-sub">Situação, cidade e status de cada atleta</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, marginBottom: 12 }}>
+          <div>
+            <h1 className="page-title">Jogadores</h1>
+            <p className="page-sub">Status, cidade e votos — tudo nesta lista</p>
           </div>
           <button type="button" className="btn btn-secondary btn-sm" onClick={loadPlayers}>
             Atualizar
           </button>
         </div>
+        <MasterNav current="master-players" onNavigate={onNavigate} />
 
         {/* Resumo rápido */}
         <div className="admin-summary">
@@ -279,7 +277,7 @@ export default function AdminPlayers({ profile, onNavigate }) {
                       <span>{player.posicao || '—'}</span>
                       <span className="dot">·</span>
                       <span className="admin-player-city">
-                        📍 {player.cidade || 'Sem cidade'}
+                        {player.cidade || 'Sem cidade'}
                         {player.uf ? ` - ${player.uf}` : ''}
                       </span>
                     </div>

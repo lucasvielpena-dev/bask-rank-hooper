@@ -1,3 +1,4 @@
+import MasterNav from '../components/MasterNav';
 ﻿import { useState, useEffect } from 'react';
 import { masterAPI } from '../lib/supabase';
 
@@ -122,11 +123,12 @@ export default function AdminLogs({ profile, onNavigate }) {
           </button>
           <div>
             <h2 style={{ fontWeight: 800, fontSize: 20, margin: 0 }}>Logs de Admin</h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 13, margin: 0 }}>
+            <p className="page-sub" style={{ margin: 0 }}>
               {logs.length} registros
             </p>
           </div>
         </div>
+        <MasterNav current="master-logs" onNavigate={onNavigate} />
 
         {loading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '40vh' }}>

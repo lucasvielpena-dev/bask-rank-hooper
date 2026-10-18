@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { masterAPI, torneiosAPI } from '../lib/supabase';
 import { IconCalendario, IconVoltar, IconTrofeu } from '../components/Icons';
+import MasterNav from '../components/MasterNav';
 
 const STATUS_TORNEIO = {
   inscricoes_abertas: { label: 'Inscrições Abertas', color: '#22c55e', bg: 'rgba(34,197,94,0.12)' },
@@ -86,10 +87,11 @@ export default function AdminTournaments({ profile, onNavigate }) {
           </div>
           <div>
             <h2 style={{ fontWeight: 800, fontSize: 20, color: 'var(--text-primary)' }}>Gerenciar Torneios</h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{torneios.length} torneio(s) encontrado(s)</p>
+            <p className="page-sub">{torneios.length} torneio(s)</p>
           </div>
         </div>
       </div>
+      <MasterNav current="master-tournaments" onNavigate={onNavigate} />
 
       {/* Loading */}
       {loading ? (

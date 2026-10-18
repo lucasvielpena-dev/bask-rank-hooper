@@ -1,3 +1,4 @@
+import MasterNav from '../components/MasterNav';
 import { useState, useEffect } from 'react';
 import { masterAPI } from '../lib/supabase';
 
@@ -223,6 +224,8 @@ export default function AdminReports({ profile, onNavigate }) {
             </p>
           </div>
         </div>
+        <MasterNav current="master-reports" onNavigate={onNavigate} />
+
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(12px, 3vw, 16px)' }}>
 

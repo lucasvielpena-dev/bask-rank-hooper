@@ -1,3 +1,4 @@
+import MasterNav from '../components/MasterNav';
 import { useState } from 'react';
 import { masterAPI } from '../lib/supabase';
 
@@ -102,6 +103,8 @@ export default function AdminNotifications({ profile, onNavigate }) {
             </p>
           </div>
         </div>
+        <MasterNav current="master-notifications" onNavigate={onNavigate} />
+
 
         {/* Form Card */}
         <form onSubmit={handleEnviar} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

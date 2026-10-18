@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { masterAPI } from '../lib/supabase';
 import { IconVoltar, IconLocalizacao, IconBuscar } from '../components/Icons';
+import MasterNav from '../components/MasterNav';
 
 export default function AdminCities({ profile, onNavigate }) {
   const [cities, setCities] = useState([]);
@@ -69,7 +70,7 @@ export default function AdminCities({ profile, onNavigate }) {
   return (
     <div className="page-content admin-page">
       <div className="admin-wrap">
-        <div className="admin-header">
+        <div className="admin-header" data-master-page="1">
           <button type="button" className="admin-back" onClick={() => onNavigate?.('master')} aria-label="Voltar">
             <IconVoltar size={18} color="var(--accent)" />
           </button>
@@ -100,6 +101,7 @@ export default function AdminCities({ profile, onNavigate }) {
             <span className="admin-summary-lbl">Partidas</span>
           </div>
         </div>
+        <MasterNav current="master-cities" onNavigate={onNavigate} />
 
         <div className="admin-search">
           <IconBuscar size={16} color="var(--text-muted)" />

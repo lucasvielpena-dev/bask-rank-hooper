@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { masterAPI } from '../lib/supabase';
 import { IconVoltar, IconBuscar, IconLixeira } from '../components/Icons';
+import MasterNav from '../components/MasterNav';
 
 export default function AdminUsers({ profile, onNavigate }) {
   const [users, setUsers] = useState([]);
@@ -146,11 +147,12 @@ export default function AdminUsers({ profile, onNavigate }) {
             }}>
               Gerenciar Usuários
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: 2 }}>
-              {filtered.length} usuário{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
+            <p className="page-sub">
+              {filtered.length} usuário{filtered.length !== 1 ? 's' : ''} · contas e papéis
             </p>
           </div>
         </div>
+        <MasterNav current="master-users" onNavigate={onNavigate} />
 
         <div style={{ position: 'relative', marginBottom: 16 }}>
           <div style={{
