@@ -360,9 +360,12 @@ export function AuthProvider({ children }) {
         });
         const data = await res.json();
         const address = data.address || {};
-        const detectedCity = address.city || address.town || address.village || address.municipality || 'Altamira';
+        const detectedCity = address.municipality || address.city || address.town || address.village || null;
         const stateName = (address.state || '').toLowerCase();
-        const detectedUf = ESTADO_TO_UF[stateName] || 'PA';
+        const detectedUf = ESTADO_TO_UF[stateName] || null;
+
+        // Sem cidade ou UF identificados, não sugere troca nenhuma.
+        if (!detectedCity || !detectedUf) return;
 
         if (detectedCity.toLowerCase() !== (prof.cidade_atual || '').toLowerCase()) {
           const alreadyRejected = localStorage.getItem(`rejected_city_update_${detectedCity}`);
@@ -397,9 +400,12 @@ export function AuthProvider({ children }) {
         });
         const data = await res.json();
         const address = data.address || {};
-        const detectedCity = address.city || address.town || address.village || address.municipality || 'Altamira';
+        const detectedCity = address.municipality || address.city || address.town || address.village || null;
         const stateName = (address.state || '').toLowerCase();
-        const detectedUf = ESTADO_TO_UF[stateName] || 'PA';
+        const detectedUf = ESTADO_TO_UF[stateName] || null;
+
+        // Sem cidade ou UF identificados, não sugere troca nenhuma.
+        if (!detectedCity || !detectedUf) return;
         const detectedCountry = address.country || 'Brasil';
 
         let authUserId = null;

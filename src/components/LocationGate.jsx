@@ -40,7 +40,7 @@ export default function LocationGate({ profile, onResolved }) {
           const data = await res.json();
           const address = data.address || {};
           const cidade =
-            address.city || address.town || address.village || address.municipality || null;
+            address.municipality || address.city || address.town || address.village || null;
           const stateName = (address.state || '').toLowerCase();
           const uf = ESTADO_TO_UF[stateName] || null;
           if (!cidade || !uf) {

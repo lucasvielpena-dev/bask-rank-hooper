@@ -69,10 +69,16 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           });
           const data = await res.json();
           const address = data.address || {};
-          const detectedCity = address.city || address.town || address.village || address.municipality || 'Altamira';
+          const detectedCity = address.municipality || address.city || address.town || address.village || null;
           const stateName = (address.state || '').toLowerCase();
-          const detectedUf = ESTADO_TO_UF[stateName] || 'PA';
+          const detectedUf = ESTADO_TO_UF[stateName] || null;
           const detectedCountry = address.country || 'Brasil';
+
+          // Sem cidade ou UF confiáveis, não preenche nada: o usuário precisa tentar de novo.
+          if (!detectedCity || !detectedUf) {
+            setLocationStatus('error');
+            return;
+          }
 
           setCidade(detectedCity);
           setUf(detectedUf);
