@@ -22,7 +22,6 @@ const FILTROS = [
   { key: 'ranking', label: 'Ranking' },
   { key: 'todos', label: 'Todos' },
   { key: 'recentes', label: 'Recentes' },
-  { key: 'elite', label: 'Elite' },
   // Quem tem menos votos aparece primeiro — é onde a avaliação faz diferença.
   { key: 'menos', label: 'Menos avaliados' }
 ];
@@ -209,10 +208,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
       );
     }
 
-    if (filtroAtivo === 'elite') {
-      result = result.filter(j => Number(j.media_estrelas) >= 4.0 && (j.total_votos || 0) >= 1);
-      result = sortByConfianca(result);
-    } else if (filtroAtivo === 'ranking') {
+    if (filtroAtivo === 'ranking') {
       // Mostra todos da cidade; quem tem 0 votos fica no fim (média "--")
       result = sortByConfianca(result);
     } else if (filtroAtivo === 'menos') {
@@ -444,7 +440,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
             {filtrados.map((j, i) => {
               const score = j.total_votos >= 1 ? Number(j.media_estrelas) : 0;
               const hasVoted = j.ja_votou_hoje;
-              const isRankingFilter = filtroAtivo === 'ranking' || filtroAtivo === 'elite';
+              const isRankingFilter = filtroAtivo === 'ranking';
               const isFirst = isRankingFilter && i === 0;
 
               return (
