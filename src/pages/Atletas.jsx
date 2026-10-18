@@ -251,7 +251,7 @@ export default function Atletas({ profile, onNavigate }) {
     e.preventDefault();
     const faltando = fundamentos.some(f => !estrelasVoto[f.key]);
     if (faltando) {
-      showToast('Selecione uma nota para todos os 5 fundamentos', 'error');
+      showToast('Selecione uma nota para todos os fundamentos', 'error');
       return;
     }
     setEnviandoVoto(true);

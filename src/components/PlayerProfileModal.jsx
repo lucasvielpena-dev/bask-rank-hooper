@@ -165,7 +165,18 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
         }
         const { data: av } = await supabase.from('avaliacoes').select('*').eq('avaliador_id', user.id).eq('jogador_id', jogador.id).maybeSingle();
         if (av) {
-          setEstrelas({ arremesso: av.arremesso, defesa: av.defesa, controle_de_bola: av.controle_de_bola, explosao_fisica: av.explosao_fisica, visao_de_jogo: av.visao_de_jogo });
+          setEstrelas({
+            arremesso: av.arremesso || 0,
+            finalizacao: av.finalizacao || 0,
+            controle_de_bola: av.controle_de_bola || 0,
+            passe_visao: av.passe_visao || av.visao_de_jogo || 0,
+            defesa_perimetral: av.defesa_perimetral || av.defesa || 0,
+            defesa_garrafao: av.defesa_garrafao || av.defesa || 0,
+            rebote: av.rebote || 0,
+            velocidade_agilidade: av.velocidade_agilidade || 0,
+            explosao_forca: av.explosao_forca || av.explosao_fisica || 0,
+            hustle_equipe: av.hustle_equipe || 0,
+          });
           setJaAvaliou(true);
         }
       }
@@ -203,7 +214,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose }) {
       showToast('Você só pode avaliar atletas da sua cidade.', 'error');
       return;
     }
-    if (fundamentos.some(f => !estrelas[f.key])) { showToast('Selecione uma nota para todos os 5 fundamentos', 'error'); return; }
+    if (fundamentos.some(f => !estrelas[f.key])) { showToast('Selecione uma nota para todos os fundamentos', 'error'); return; }
     setEnviandoAvaliacao(true);
     const { data, error } = await votacaoAPI.votar(jogador.id, estrelas);
     if (error || !data?.sucesso) { showToast(data?.erro || error?.message || 'Erro ao registrar avaliação', 'error'); }
