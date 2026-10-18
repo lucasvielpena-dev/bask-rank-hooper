@@ -257,7 +257,7 @@ export default function Destaques({ profile, onNavigate }) {
                       fontSize: 16,
                       overflow: 'hidden',
                       flexShrink: 0,
-                      border: '1.5px solid rgba(200,241,53,0.3)',
+                      border: '1.5px solid var(--accent-line)',
                     }}
                   >
                     {jogador.foto_url ? (

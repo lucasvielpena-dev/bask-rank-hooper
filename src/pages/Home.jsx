@@ -121,7 +121,7 @@ export default function Home({ profile, onNavigate }) {
 
         <div className="home-greeting" style={{ marginBottom: 12 }}>
           <div className="home-greeting-title" style={{ fontSize: 14, color: '#6A6A82', fontFamily: "'Inter', sans-serif", fontWeight: 400, textTransform: 'uppercase', letterSpacing: 0, display: 'flex', alignItems: 'baseline', gap: 6 }}>
-            {getGreeting()}, <span className="home-greeting-name" style={{ fontSize: 24, color: '#C8F135', fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 'bold', letterSpacing: '1px' }}>{greetingName}</span>
+            {getGreeting()}, <span className="home-greeting-name" style={{ fontSize: 24, color: 'var(--accent-text)', fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 'bold', letterSpacing: '1px' }}>{greetingName}</span>
           </div>
           <div className="home-greeting-sub" style={{ fontSize: 13, color: '#6A6A82', textTransform: 'uppercase', fontWeight: 600 }}>
             {cfg.divisionName} — {cfg.divisionSlogan}
@@ -165,7 +165,7 @@ export default function Home({ profile, onNavigate }) {
               {/* Rank + Name */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
                 <span style={{
-                  fontSize: 32, fontWeight: 800, color: '#C8F135',
+                  fontSize: 32, fontWeight: 800, color: 'var(--accent-text)',
                   fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 1,
                 }}>
                   {myRank}
@@ -188,7 +188,7 @@ export default function Home({ profile, onNavigate }) {
               {/* Stats row */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#C8F135" stroke="none">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--accent-text)" stroke="none">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                   </svg>
                   <span style={{
@@ -224,7 +224,7 @@ export default function Home({ profile, onNavigate }) {
             ) : (
               <div className="premium-photo" style={{
                 width: 80, height: 80, borderRadius: 16, flexShrink: 0,
-                background: 'rgba(182, 255, 28, 0.1)',
+                background: 'var(--accent-soft)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 border: '1px solid rgba(255,255,255,0.06)',
               }}>
@@ -322,7 +322,7 @@ export default function Home({ profile, onNavigate }) {
                     className="premium-photo"
                     style={{
                       width: 48, height: 48, borderRadius: 12, objectFit: 'cover',
-                      border: '1px solid rgba(200, 241, 53, 0.18)',
+                      border: '1px solid var(--accent-line)',
                       flexShrink: 0,
                     }}
                   />
@@ -331,7 +331,7 @@ export default function Home({ profile, onNavigate }) {
                     width: 48, height: 48, borderRadius: 12, flexShrink: 0,
                     background: '#131C27',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    border: '1px solid rgba(200, 241, 53, 0.18)',
+                    border: '1px solid var(--accent-line)',
                   }}>
                     <span style={{
                       fontSize: 20, fontWeight: 800, color: '#6A6A82',
@@ -368,7 +368,7 @@ export default function Home({ profile, onNavigate }) {
                     {resumoAvaliacoes(player, { compacto: true })} · {labelConfianca(player.nivel_confianca || nivelConfianca(player.total_votos))}
                   </div>
                   <div style={{ width: 80, height: 4, background: '#1A2433', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
-                    <div style={{ width: `${(Number(player.media_estrelas || 0) / 5) * 100}%`, height: '100%', background: 'var(--accent)', borderRadius: 2, boxShadow: '0 0 8px rgba(182, 255, 28, 0.6)' }} />
+                    <div style={{ width: `${(Number(player.media_estrelas || 0) / 5) * 100}%`, height: '100%', background: 'var(--accent)', borderRadius: 2 }} />
                   </div>
                 </div>
               </div>

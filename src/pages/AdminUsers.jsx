@@ -295,13 +295,13 @@ export default function AdminUsers({ profile, onNavigate }) {
                           width: 8,
                           height: 8,
                           borderRadius: '50%',
-                          background: online ? '#22c55e' : '#ef4444',
-                          boxShadow: online ? '0 0 6px rgba(34,197,94,0.5)' : 'none'
+                          background: online ? 'var(--success)' : '#ef4444',
+                          boxShadow: online ? '0 0 6px var(--success-soft)' : 'none'
                         }} />
                         <span style={{
                           fontSize: 10,
                           fontWeight: 600,
-                          color: online ? '#22c55e' : '#ef4444'
+                          color: online ? 'var(--success-text)' : '#ef4444'
                         }}>
                           {online ? 'Online' : 'Offline'}
                         </span>
@@ -316,9 +316,9 @@ export default function AdminUsers({ profile, onNavigate }) {
                         fontWeight: 800,
                         textTransform: 'uppercase',
                         letterSpacing: '0.04em',
-                        background: isAdmin ? 'rgba(200,241,53,0.12)' : 'var(--accent-dim)',
+                        background: isAdmin ? 'var(--accent-soft)' : 'var(--accent-dim)',
                         color: isAdmin ? 'var(--accent)' : 'var(--accent)',
-                        border: isAdmin ? '1px solid rgba(200,241,53,0.3)' : '1px solid rgba(200,241,53,0.2)'
+                        border: isAdmin ? '1px solid var(--accent-line)' : '1px solid var(--accent-line)'
                       }}>
                         {user.role || 'user'}
                       </span>
@@ -378,8 +378,8 @@ export default function AdminUsers({ profile, onNavigate }) {
                         minWidth: 'clamp(80px, 25vw, 110px)',
                         padding: '7px 10px',
                         borderRadius: 8,
-                        border: isAdmin ? '1px solid rgba(200,241,53,0.3)' : '1px solid rgba(200,241,53,0.2)',
-                        background: isAdmin ? 'rgba(200,241,53,0.08)' : 'var(--accent-dim)',
+                        border: isAdmin ? '1px solid var(--accent-line)' : '1px solid var(--accent-line)',
+                        background: isAdmin ? 'var(--accent-soft)' : 'var(--accent-dim)',
                         color: isAdmin ? 'var(--accent)' : 'var(--accent)',
                         fontSize: 11,
                         fontWeight: 700,
@@ -399,9 +399,9 @@ export default function AdminUsers({ profile, onNavigate }) {
                         minWidth: 'clamp(80px, 25vw, 110px)',
                         padding: '7px 10px',
                         borderRadius: 8,
-                        border: isSuspended ? '1px solid rgba(34,197,94,0.3)' : '1px solid rgba(239,68,68,0.2)',
-                        background: isSuspended ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)',
-                        color: isSuspended ? '#22c55e' : '#f87171',
+                        border: isSuspended ? '1px solid var(--success-soft)' : '1px solid rgba(239,68,68,0.2)',
+                        background: isSuspended ? 'var(--success-soft)' : 'rgba(239,68,68,0.08)',
+                        color: isSuspended ? 'var(--success-text)' : '#f87171',
                         fontSize: 11,
                         fontWeight: 700,
                         cursor: isLoading ? 'not-allowed' : 'pointer',

@@ -407,9 +407,9 @@ export default function Stats({ profile, onNavigate }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4 }}>
               {badgeText && (
                 <span style={{
-                  background: 'rgba(200,241,53,0.12)',
+                  background: 'var(--accent-soft)',
                   color: 'var(--accent)',
-                  border: '1px solid rgba(200,241,53,0.3)',
+                  border: '1px solid var(--accent-line)',
                   borderRadius: '6px',
                   padding: '2px 8px',
                   fontSize: '9px',
@@ -688,7 +688,6 @@ export default function Stats({ profile, onNavigate }) {
                                       height: `${alturaPct}%`, 
                                       background: 'linear-gradient(to top, var(--accent-dim) 0%, var(--accent) 100%)',
                                       borderRadius: '4px 4px 0 0',
-                                      boxShadow: '0 0 10px var(--accent-dim)',
                                       transition: 'height 0.3s ease'
                                     }} />
                                     {/* Data ou número da partida embaixo */}
@@ -722,8 +721,8 @@ export default function Stats({ profile, onNavigate }) {
                 <button
                   onClick={() => setSubAbaHistorico('pessoal')}
                   style={{
-                    background: subAbaHistorico === 'pessoal' ? 'rgba(200,241,53,0.1)' : 'none',
-                    border: subAbaHistorico === 'pessoal' ? '1px solid rgba(200,241,53,0.2)' : '1px solid transparent',
+                    background: subAbaHistorico === 'pessoal' ? 'var(--accent-soft)' : 'none',
+                    border: subAbaHistorico === 'pessoal' ? '1px solid var(--accent-soft)' : '1px solid transparent',
                     borderRadius: '20px',
                     padding: '4px 12px',
                     fontSize: '11px',
@@ -737,8 +736,8 @@ export default function Stats({ profile, onNavigate }) {
                 <button
                   onClick={() => setSubAbaHistorico('quadra')}
                   style={{
-                    background: subAbaHistorico === 'quadra' ? 'rgba(200,241,53,0.1)' : 'none',
-                    border: subAbaHistorico === 'quadra' ? '1px solid rgba(200,241,53,0.2)' : '1px solid transparent',
+                    background: subAbaHistorico === 'quadra' ? 'var(--accent-soft)' : 'none',
+                    border: subAbaHistorico === 'quadra' ? '1px solid var(--accent-soft)' : '1px solid transparent',
                     borderRadius: '20px',
                     padding: '4px 12px',
                     fontSize: '11px',

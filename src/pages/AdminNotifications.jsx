@@ -180,9 +180,9 @@ export default function AdminNotifications({ profile, onNavigate }) {
           {/* Feedback */}
           {feedback && (
             <div style={{
-              color: feedback.type === 'success' ? '#22c55e' : '#f87171',
-              background: feedback.type === 'success' ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)',
-              border: feedback.type === 'success' ? '1px solid rgba(34,197,94,0.3)' : '1px solid rgba(239,68,68,0.3)',
+              color: feedback.type === 'success' ? 'var(--success-text)' : '#f87171',
+              background: feedback.type === 'success' ? 'var(--success-soft)' : 'rgba(239,68,68,0.1)',
+              border: feedback.type === 'success' ? '1px solid var(--success-soft)' : '1px solid rgba(239,68,68,0.3)',
               padding: 14,
               borderRadius: 12,
               fontSize: 'clamp(12px, 3vw, 14px)',
@@ -192,7 +192,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
               gap: 8
             }}>
               {feedback.type === 'success' ? (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success-text)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                   <polyline points="22 4 12 14.01 9 11.01" />
                 </svg>
@@ -210,8 +210,8 @@ export default function AdminNotifications({ profile, onNavigate }) {
           {/* Recipient Count */}
           {recipientCount !== null && (
             <div className="card" style={{
-              background: 'linear-gradient(135deg, var(--bg-card) 0%, rgba(200,241,53,0.06) 100%)',
-              border: '1px solid rgba(200,241,53,0.12)',
+              background: 'linear-gradient(135deg, var(--bg-card) 0%, var(--accent-soft) 100%)',
+              border: '1px solid var(--accent-line)',
               borderRadius: 'clamp(12px, 2vw, 16px)',
               padding: 'clamp(14px, 3vw, 20px)',
               display: 'flex',
@@ -276,7 +276,6 @@ export default function AdminNotifications({ profile, onNavigate }) {
               justifyContent: 'center',
               gap: 10,
               width: '100%',
-              boxShadow: '0 4px 14px rgba(200,241,53,0.2)',
               fontFamily: 'inherit',
               letterSpacing: '0.02em'
             }}

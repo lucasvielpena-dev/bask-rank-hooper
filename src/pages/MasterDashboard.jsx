@@ -228,7 +228,7 @@ export default function MasterDashboard({ onNavigate }) {
                 fontFamily: 'inherit',
                 width: '100%',
                 marginBottom: 18,
-                border: '1px solid rgba(200,241,53,0.25)',
+                border: '1px solid var(--accent-line)',
               }}
             >
               <div className="text-md" style={{ fontWeight: 800, color: 'var(--text-primary)' }}>Atividade global</div>

@@ -74,7 +74,7 @@ function BadgeTendencia({ tendencia }) {
     );
   }
   const subiu = tendencia.estado === 'subiu';
-  const cor = subiu ? CORES_RENDIMENTO.bem : CORES_RENDIMENTO.mal;
+  const cor = subiu ? CORES_RENDIMENTO.bem.cor : CORES_RENDIMENTO.mal.cor;
   return (
     <span style={{ fontSize: 10, color: cor, fontWeight: 800 }}>
       {subiu ? '▲' : '▼'} {subiu ? '+' : '−'}{formatarNota(Math.abs(tendencia.delta))} · {subiu ? 'em evolução' : 'em queda'}
@@ -154,8 +154,8 @@ function Grafico({ serie }) {
         if (!p.total || p.media === null) return null;
         const confiavel = p.total >= MINIMO_CONFIAVEL;
         const cor = confiavel
-          ? (p.media >= 3.5 ? CORES_RENDIMENTO.bem : p.media >= 2.5 ? CORES_RENDIMENTO.media : CORES_RENDIMENTO.mal)
-          : CORES_RENDIMENTO.neutro;
+          ? (p.media >= 3.5 ? CORES_RENDIMENTO.bem.cor : p.media >= 2.5 ? CORES_RENDIMENTO.media.cor : CORES_RENDIMENTO.mal.cor)
+          : CORES_RENDIMENTO.neutro.cor;
         return (
           <g key={p.mes}>
             <title>

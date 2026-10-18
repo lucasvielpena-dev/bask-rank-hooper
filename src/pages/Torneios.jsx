@@ -16,9 +16,9 @@ const FORMATOS = {
 };
 
 const STATUS_TORNEIO = {
-  inscricoes_abertas: { label: '🟢 Inscrições Abertas', color: '#22c55e', bg: 'rgba(34,197,94,0.12)' },
+  inscricoes_abertas: { label: '🟢 Inscrições Abertas', color: 'var(--success-text)', bg: 'var(--success-soft)' },
   inscricoes_encerradas: { label: '🟡 Aguardando Início', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  em_andamento: { label: '🔵 Em Andamento', color: 'var(--accent)', bg: 'rgba(200,241,53,0.12)' },
+  em_andamento: { label: '🔵 Em Andamento', color: 'var(--accent)', bg: 'var(--accent-soft)' },
   finalizado: { label: '🏆 Finalizado', color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' }
 };
 
@@ -74,7 +74,7 @@ export default function Torneios({ profile, isNested = false }) {
           {!isNested ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 34, height: 34, background: 'rgba(200,241,53,0.15)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 34, height: 34, background: 'var(--accent-soft)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <IconCalendario size={20} color="var(--accent)" />
                 </div>
                 <div>
@@ -861,7 +861,6 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   justifyContent: 'center',
                   gap: '8px',
                   width: '100%',
-                  boxShadow: '0 4px 14px var(--accent-dim)',
                   fontFamily: 'inherit'
                 }}
               >
@@ -933,7 +932,6 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       justifyContent: 'center',
                       gap: '8px',
                       width: '100%',
-                      boxShadow: '0 4px 14px var(--accent-dim)',
                       fontFamily: 'inherit'
                     }}
                   >
@@ -1121,7 +1119,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                         </div>
                         <div>
                           {e.aprovado ? (
-                            <span style={{ color: '#22c55e', fontSize: '12px', fontWeight: 800 }}>✓ Confirmada</span>
+                            <span style={{ color: 'var(--success-text)', fontSize: '12px', fontWeight: 800 }}>✓ Confirmada</span>
                           ) : isOrganizador ? (
                             <button 
                               onClick={async () => { await equipesAPI.aprovar(e.id, true); carregarDados(); }}
@@ -1192,7 +1190,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                         <td style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 900, color: 'var(--accent)' }}>{c.pts}</td>
                         <td style={{ padding: '12px 10px', textAlign: 'center' }}>{c.v}</td>
                         <td style={{ padding: '12px 10px', textAlign: 'center' }}>{c.d}</td>
-                        <td style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 700, color: c.sg >= 0 ? '#22c55e' : '#ef4444' }}>
+                        <td style={{ padding: '12px 10px', textAlign: 'center', fontWeight: 700, color: c.sg >= 0 ? 'var(--success-text)' : '#ef4444' }}>
                           {c.sg >= 0 ? `+${c.sg}` : c.sg}
                         </td>
                         <td style={{ padding: '12px 16px', textAlign: 'center' }}>{c.pts_pro}</td>
@@ -1341,7 +1339,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                         style={{
                           width: '100%',
                           marginTop: '12px',
-                          background: 'rgba(200,241,53,0.10)',
+                          background: 'var(--accent-soft)',
                           border: '1px solid var(--accent)',
                           color: 'var(--accent)',
                           padding: '10px 14px',
@@ -1565,7 +1563,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
               {gradeAtualNota ? (
                 <div style={{
                   marginTop: 12, padding: '12px 14px', borderRadius: 12,
-                  background: 'var(--bg-card)', border: `1px solid ${gradeAtualNota.cor}66`,
+                  background: 'var(--bg-card)', border: `1px solid ${gradeAtualNota.line}`,
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <span style={{
@@ -2337,7 +2335,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         <div style={{
           padding: '12px',
           background: 'var(--bg-card)',
-          border: '1px solid rgba(200, 241, 53, 0.2)',
+          border: '1px solid var(--accent-line)',
           borderRadius: '12px',
           display: 'flex',
           flexDirection: 'column',
@@ -2407,7 +2405,6 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(200,241,53,0.3)',
             transition: 'transform 0.1s'
           }}
         >
@@ -2469,7 +2466,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, margin: '2px 0' }}>
                         <button type="button" onClick={() => incrementarStat(p.jogador_id, stat.key, -1)} style={{ background: 'none', border: 'none', color: '#ef4444', fontWeight: 900, cursor: 'pointer', fontSize: 14, padding: '0 4px', fontFamily: 'inherit' }}>-</button>
                         <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>{st[stat.key]}</span>
-                        <button type="button" onClick={() => incrementarStat(p.jogador_id, stat.key, 1)} style={{ background: 'none', border: 'none', color: '#22c55e', fontWeight: 900, cursor: 'pointer', fontSize: 14, padding: '0 4px', fontFamily: 'inherit' }}>+</button>
+                        <button type="button" onClick={() => incrementarStat(p.jogador_id, stat.key, 1)} style={{ background: 'none', border: 'none', color: 'var(--success-text)', fontWeight: 900, cursor: 'pointer', fontSize: 14, padding: '0 4px', fontFamily: 'inherit' }}>+</button>
                       </div>
                     </div>
                   ))}
@@ -2528,7 +2525,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
 
             <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
               <button className="btn btn-secondary" onClick={() => setShowFinalizarModal(false)} style={{ flex: 1 }}>Voltar</button>
-              <button className="btn btn-primary" onClick={handleFinalizarJogo} disabled={loading} style={{ flex: 2, background: '#22c55e', border: 'none' }}>
+              <button className="btn btn-primary" onClick={handleFinalizarJogo} disabled={loading} style={{ flex: 2, background: 'var(--success)', border: 'none' }}>
                 {loading ? <><div className="spinner" /> Salvando...</> : 'Confirmar Encerramento'}
               </button>
             </div>

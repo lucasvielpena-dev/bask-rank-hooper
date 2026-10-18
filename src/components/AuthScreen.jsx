@@ -314,7 +314,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
           color: rgba(255,255,255,0.4);
         }
         .glass-input:focus {
-          border-color: #C8F135;
+          border-color: var(--accent);
         }
 
         .shake-animation {
@@ -446,13 +446,12 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
           <div style={{
             width: 64, height: 64, background: 'rgba(255,255,255,0.05)', borderRadius: 18,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 12px', border: '1px solid rgba(200,241,53,0.3)',
+            margin: '0 auto 12px', border: '1px solid var(--accent-line)',
             backdropFilter: 'blur(10px)',
-            boxShadow: '0 0 30px rgba(200,241,53,0.1)',
           }}>
             <span style={{
               fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800,
-              fontSize: 24, color: '#C8F135', letterSpacing: '-0.02em',
+              fontSize: 24, color: 'var(--accent-text)', letterSpacing: '-0.02em',
             }}>RH</span>
           </div>
           <h1 style={{
@@ -476,7 +475,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
             </div>
           )}
           {successMsg && (
-            <div style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 10, color: '#4ade80', padding: '10px', fontSize: 12, marginBottom: 16, textAlign: 'center' }}>
+            <div style={{ background: 'var(--success-soft)', border: '1px solid var(--success-soft)', borderRadius: 10, color: 'var(--success-text)', padding: '10px', fontSize: 12, marginBottom: 16, textAlign: 'center' }}>
               {successMsg}
             </div>
           )}
@@ -497,7 +496,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
                   onClick={() => { setTab(t.key); setErro(null); setSuccessMsg(null); }}
                   style={{
                     flex: 1, padding: '8px 4px', borderRadius: 8, border: 'none',
-                    background: tab === t.key ? '#C8F135' : 'transparent',
+                    background: tab === t.key ? 'var(--accent)' : 'transparent',
                     color: tab === t.key ? '#0C0C14' : 'rgba(255,255,255,0.5)',
                     fontSize: 13, fontWeight: 700, cursor: 'pointer',
                     fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
@@ -559,7 +558,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
                 
                 {tab === 'login' && (
                   <div style={{ textAlign: 'right' }}>
-                    <button type="button" onClick={() => { setTab('forgot'); setErro(null); setSuccessMsg(null); }} style={{ background: 'none', border: 'none', color: '#C8F135', cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: 0, fontFamily: "'Inter',sans-serif" }}>
+                    <button type="button" onClick={() => { setTab('forgot'); setErro(null); setSuccessMsg(null); }} style={{ background: 'none', border: 'none', color: 'var(--accent-text)', cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: 0, fontFamily: "'Inter',sans-serif" }}>
                       Esqueci minha senha
                     </button>
                   </div>
@@ -569,11 +568,11 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
 
             <button type="submit" disabled={carregando || isShooting} style={{
               width: '100%', height: 50, borderRadius: 12, border: 'none',
-              background: '#C8F135', color: '#0C0C14', fontSize: 15, fontWeight: 700,
+              background: 'var(--accent)', color: '#0C0C14', fontSize: 15, fontWeight: 700,
               cursor: 'pointer', fontFamily: "'Barlow Condensed',sans-serif",
               textTransform: 'uppercase', letterSpacing: '0.06em',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              boxShadow: '0 4px 20px rgba(200,241,53,0.4)', transition: 'all 0.2s',
+              transition: 'all 0.2s',
               marginTop: 4, opacity: (carregando || isShooting) ? 0.7 : 1
             }}>
               {carregando ? (
@@ -623,7 +622,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
         <div style={{
           position: 'absolute', left: '50%', bottom: '10%', transform: 'translateX(-50%)',
           display: 'flex', alignItems: 'center', gap: 8, zIndex: 2,
-          background: 'rgba(12,12,20,0.75)', border: '1px solid rgba(200,241,53,0.25)',
+          background: 'rgba(12,12,20,0.75)', border: '1px solid var(--accent-line)',
           borderRadius: 999, padding: '9px 16px',
           backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
           animation: 'fadeIn 0.3s ease both',

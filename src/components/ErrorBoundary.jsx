@@ -50,7 +50,7 @@ export default class ErrorBoundary extends Component {
             style={{
               width: 52, height: 52, margin: '0 auto 14px',
               borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'rgba(200,241,53,0.08)', border: '1px solid rgba(200,241,53,0.25)',
+              background: 'var(--accent-soft)', border: '1px solid var(--accent-line)',
             }}
           >
             <span style={{ fontSize: 24 }}>🏀</span>

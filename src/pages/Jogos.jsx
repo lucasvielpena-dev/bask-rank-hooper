@@ -998,7 +998,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <>
               {/* Pedidos de placar compartilhado que EU (criador) preciso responder */}
               {pedidosCriador.length > 0 && (
-                <div className="card" style={{ padding: '10px 12px', marginBottom: 10, border: '1px solid rgba(200,241,53,0.35)', background: 'rgba(200,241,53,0.06)' }}>
+                <div className="card" style={{ padding: '10px 12px', marginBottom: 10, border: '1px solid var(--accent-line)', background: 'var(--accent-soft)' }}>
                   <div style={{ fontSize: 10.5, fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Pedidos para operar o placar
                   </div>
@@ -1032,7 +1032,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   {partidas.map((p, i) => (
                     <div key={p.id} className="card card-enter" style={{ display: 'flex', flexDirection: 'column', gap: 8, animationDelay: `${i * 30}ms` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ background: 'rgba(34,197,94,0.15)', color: '#4ade80', padding: '3px 10px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>EM ANDAMENTO</span>
+                        <span style={{ background: 'var(--success-soft)', color: 'var(--success-text)', padding: '3px 10px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>EM ANDAMENTO</span>
                         <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span>
                       </div>
                       <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'center', gap: 16, margin: '6px 0' }}>
@@ -1068,7 +1068,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     const venceA = p.placar_time_a > p.placar_time_b;
                     const venceB = p.placar_time_b > p.placar_time_a;
                     return (
-                      <div key={p.id} className="card card-enter" onClick={() => abrirDetalhe(p)} style={{ borderLeft: `4px solid ${venceA ? '#4ade80' : venceB ? '#f87171' : '#64748b'}`, animationDelay: `${i * 30}ms`, cursor: 'pointer' }}>
+                      <div key={p.id} className="card card-enter" onClick={() => abrirDetalhe(p)} style={{ borderLeft: `4px solid ${venceA ? 'var(--success-text)' : venceB ? '#f87171' : '#64748b'}`, animationDelay: `${i * 30}ms`, cursor: 'pointer' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>
                           <span>{p.cidade} • {p.uf}</span>
                           <span>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span>
@@ -1078,9 +1078,9 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             <span style={{ fontWeight: venceA ? 800 : 500, color: venceA ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_a}</span>
                           </div>
                           <div style={{ display: 'flex', gap: 6, padding: '3px 8px', background: 'var(--bg-secondary)', borderRadius: 6, fontWeight: 800, fontSize: 13 }}>
-                            <span style={{ color: venceA ? '#22c55e' : 'var(--text-primary)' }}>{p.placar_time_a}</span>
+                            <span style={{ color: venceA ? 'var(--success-text)' : 'var(--text-primary)' }}>{p.placar_time_a}</span>
                             <span style={{ color: 'var(--text-muted)' }}>x</span>
-                            <span style={{ color: venceB ? '#22c55e' : 'var(--text-primary)' }}>{p.placar_time_b}</span>
+                            <span style={{ color: venceB ? 'var(--success-text)' : 'var(--text-primary)' }}>{p.placar_time_b}</span>
                           </div>
                           <div style={{ flex: 1, textAlign: 'right' }}>
                             <span style={{ fontWeight: venceB ? 800 : 500, color: venceB ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_b}</span>
@@ -1289,7 +1289,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   {operadoresAprovados.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
                       {operadoresAprovados.map(o => (
-                        <button key={o.usuario_id} onClick={() => handleResponderPedido(partidaAtiva.id, o.usuario_id, false)} title="Remover autorização" style={{ background: 'rgba(200,241,53,0.12)', color: 'var(--accent)', border: '1px solid rgba(200,241,53,0.35)', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                        <button key={o.usuario_id} onClick={() => handleResponderPedido(partidaAtiva.id, o.usuario_id, false)} title="Remover autorização" style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--accent-line)', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
                           {o.nome || 'Um atleta'} ✕
                         </button>
                       ))}
@@ -1297,7 +1297,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   )}
                 </>
               ) : possoOperarPlacar ? (
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#22C55E' }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--success-text)' }}>
                   ✓ O criador liberou: você pode pontuar neste placar
                 </div>
               ) : meuPedido ? (
@@ -1372,7 +1372,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 width: 'clamp(32px, 8vw, 40px)',
                 height: 'clamp(32px, 8vw, 40px)',
                 borderRadius: '50%',
-                background: 'rgba(200,241,53,0.06)',
+                background: 'var(--accent-soft)',
                 border: '2px solid var(--accent)',
                 display: 'flex',
                 alignItems: 'center',
@@ -1570,7 +1570,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <div style={{
               padding: '8px',
               background: 'var(--bg-card)',
-              border: '1px solid rgba(200,241,53,0.12)',
+              border: '1px solid var(--accent-line)',
               borderRadius: '8px',
               display: 'flex',
               flexDirection: 'column',
@@ -1595,7 +1595,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <div style={{
               padding: '8px',
               background: 'var(--bg-card)',
-              border: '1px solid rgba(200, 241, 53, 0.2)',
+              border: '1px solid var(--accent-line)',
               borderRadius: '8px',
               display: 'flex',
               flexDirection: 'column',
@@ -1666,7 +1666,6 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                boxShadow: '0 4px 12px var(--accent-dim)',
                 transition: 'transform 0.1s'
               }}
             >
@@ -1748,7 +1747,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
             <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
               <button className="btn btn-secondary" onClick={() => setShowFinalizarModal(false)} style={{ flex: 1 }}>Voltar</button>
-              <button className="btn btn-primary" onClick={handleFinalizarJogo} disabled={salvando} style={{ flex: 2, background: '#22c55e', border: 'none' }}>
+              <button className="btn btn-primary" onClick={handleFinalizarJogo} disabled={salvando} style={{ flex: 2, background: 'var(--success)', border: 'none' }}>
                 {salvando ? <><div className="spinner" /> Salvando...</> : 'Confirmar Encerramento'}
               </button>
             </div>
@@ -1842,7 +1841,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               {gradeAtual ? (
                 <div style={{
                   marginTop: 12, padding: '12px 14px', borderRadius: 12,
-                  background: 'var(--bg-card)', border: `1px solid ${gradeAtual.cor}66`,
+                  background: 'var(--bg-card)', border: `1px solid ${gradeAtual.line}`,
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <span style={{

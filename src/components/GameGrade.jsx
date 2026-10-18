@@ -5,11 +5,11 @@ import { memo } from 'react';
 // Usado nos Rachões e nas Competições.
 // ============================================================
 export const GRADES = [
-  { key: 'A+', titulo: 'MVP do Racha', desc: 'Dominou o jogo, decidiu nos momentos decisivos e carregou o time.', valor: 5, cor: '#C8F135' },
-  { key: 'A', titulo: 'Ótima Atuação', desc: 'Jogou muito acima da média, eficiente no ataque e na defesa.', valor: 4, cor: '#A3E635' },
-  { key: 'B', titulo: 'Sólido / Cumpriu o Papel', desc: 'Fez o feijão com arroz bem feito, ajudou o time a ser competitivo.', valor: 3, cor: '#38BDF8' },
-  { key: 'C', titulo: 'Apagado / Discreto', desc: 'Jogou abaixo do seu potencial ou cometeu erros bobos, mas não comprometeu totalmente.', valor: 2, cor: '#FBBF24' },
-  { key: 'D/F', titulo: 'Dia para Esquecer', desc: 'Forçou arremessos, não defendeu, prendeu a bola ou entregou o jogo.', valor: 1, cor: '#EF4444' },
+  { key: 'A+', titulo: 'MVP do Racha', desc: 'Dominou o jogo, decidiu nos momentos decisivos e carregou o time.', valor: 5, cor: 'var(--accent-text)', soft: 'var(--accent-soft)', line: 'var(--accent-line)' },
+  { key: 'A', titulo: 'Ótima Atuação', desc: 'Jogou muito acima da média, eficiente no ataque e na defesa.', valor: 4, cor: '#A3E635', soft: 'rgba(163,230,53,0.13)', line: 'rgba(163,230,53,0.4)' },
+  { key: 'B', titulo: 'Sólido / Cumpriu o Papel', desc: 'Fez o feijão com arroz bem feito, ajudou o time a ser competitivo.', valor: 3, cor: '#38BDF8', soft: 'rgba(56,189,248,0.13)', line: 'rgba(56,189,248,0.4)' },
+  { key: 'C', titulo: 'Apagado / Discreto', desc: 'Jogou abaixo do seu potencial ou cometeu erros bobos, mas não comprometeu totalmente.', valor: 2, cor: '#FBBF24', soft: 'rgba(251,191,36,0.13)', line: 'rgba(251,191,36,0.4)' },
+  { key: 'D/F', titulo: 'Dia para Esquecer', desc: 'Forçou arremessos, não defendeu, prendeu a bola ou entregou o jogo.', valor: 1, cor: '#EF4444', soft: 'rgba(239,68,68,0.13)', line: 'rgba(239,68,68,0.4)' },
 ];
 
 export function gradePorValor(valor) {
@@ -39,7 +39,7 @@ export const GradePicker = memo(function GradePicker({ value, onChange, disabled
             style={{
               flex: 1, padding: '12px 0', borderRadius: 12,
               border: sel ? `2px solid ${g.cor}` : '1px solid var(--border)',
-              background: sel ? `${g.cor}22` : 'var(--bg-card)',
+              background: sel ? g.soft : 'var(--bg-card)',
               color: sel ? g.cor : 'var(--text-primary)',
               fontWeight: 900, fontSize: g.key.length > 1 ? 15 : 17,
               fontFamily: "'Barlow Condensed', sans-serif",
@@ -60,20 +60,20 @@ export const GradePicker = memo(function GradePicker({ value, onChange, disabled
 // como o jogador foi no jogo: verde, amarelo ou vermelho.
 // ============================================================
 export const CORES_RENDIMENTO = {
-  bem: '#22C55E',
-  media: '#FACC15',
-  mal: '#EF4444',
-  neutro: '#64748B',
+  bem: { cor: 'var(--success-text)', soft: 'var(--success-soft)', line: 'var(--success)' },
+  media: { cor: '#FACC15', soft: 'rgba(250,204,21,0.13)', line: 'rgba(250,204,21,0.4)' },
+  mal: { cor: '#EF4444', soft: 'rgba(239,68,68,0.13)', line: 'rgba(239,68,68,0.4)' },
+  neutro: { cor: '#64748B', soft: 'rgba(100,116,139,0.13)', line: 'rgba(100,116,139,0.4)' },
 };
 
 export function rendimento(media, total) {
   const t = Number(total) || 0;
-  if (!t) return { cor: CORES_RENDIMENTO.neutro, label: 'Sem notas', pct: null, total: 0 };
+  if (!t) return { ...CORES_RENDIMENTO.neutro, label: 'Sem notas', pct: null, total: 0 };
   const m = Number(media) || 0;
   const pct = Math.max(0, Math.min(100, Math.round((m / 5) * 100)));
-  if (m >= 3.5) return { cor: CORES_RENDIMENTO.bem, label: 'Foi bem', pct, total: t };
-  if (m >= 2.5) return { cor: CORES_RENDIMENTO.media, label: 'Na média', pct, total: t };
-  return { cor: CORES_RENDIMENTO.mal, label: 'Não foi bem', pct, total: t };
+  if (m >= 3.5) return { ...CORES_RENDIMENTO.bem, label: 'Foi bem', pct, total: t };
+  if (m >= 2.5) return { ...CORES_RENDIMENTO.media, label: 'Na média', pct, total: t };
+  return { ...CORES_RENDIMENTO.mal, label: 'Não foi bem', pct, total: t };
 }
 
 export const RendimentoPill = memo(function RendimentoPill({ media, total, showLabel = false }) {
@@ -84,7 +84,7 @@ export const RendimentoPill = memo(function RendimentoPill({ media, total, showL
       style={{
         display: 'inline-flex', alignItems: 'center', gap: 6,
         padding: '3px 9px', borderRadius: 999,
-        background: `${r.cor}22`, border: `1px solid ${r.cor}66`,
+        background: r.soft, border: `1px solid ${r.line}`,
         color: r.cor, fontSize: 11, fontWeight: 800,
         fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap',
       }}
@@ -100,9 +100,9 @@ export const LegendaRendimento = memo(function LegendaRendimento() {
   return (
     <div style={{ marginBottom: 8 }}>
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', fontSize: 11, color: 'var(--text-muted)' }}>
-        <span><span style={{ color: CORES_RENDIMENTO.bem }}>●</span> Verde = foi bem</span>
-        <span><span style={{ color: CORES_RENDIMENTO.media }}>●</span> Amarelo = na média</span>
-        <span><span style={{ color: CORES_RENDIMENTO.mal }}>●</span> Vermelho = não foi bem</span>
+        <span><span style={{ color: CORES_RENDIMENTO.bem.cor }}>●</span> Verde = foi bem</span>
+        <span><span style={{ color: CORES_RENDIMENTO.media.cor }}>●</span> Amarelo = na média</span>
+        <span><span style={{ color: CORES_RENDIMENTO.mal.cor }}>●</span> Vermelho = não foi bem</span>
       </div>
       <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }}>
         Anônimo: o atleta vê o resultado, mas nunca quem avaliou. Cada nota entra na{' '}

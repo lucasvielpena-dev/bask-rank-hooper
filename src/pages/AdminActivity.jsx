@@ -24,7 +24,7 @@ function fmtData(iso) {
 
 function StatusPill({ label, tone = 'muted' }) {
   const colors = {
-    ok: { bg: 'rgba(74,222,128,0.12)', fg: '#4ade80' },
+    ok: { bg: 'var(--success-soft)', fg: 'var(--success-text)' },
     warn: { bg: 'rgba(251,191,36,0.12)', fg: '#fbbf24' },
     info: { bg: 'rgba(96,165,250,0.12)', fg: '#93c5fd' },
     muted: { bg: 'rgba(148,163,184,0.12)', fg: '#94a3b8' },

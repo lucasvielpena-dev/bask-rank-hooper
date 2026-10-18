@@ -42,11 +42,10 @@ export default function SplashCarregando({ mensagem = 'Preparando sua quadra' })
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 12px',
-            border: '1px solid rgba(200,241,53,0.3)',
-            boxShadow: '0 0 30px rgba(200,241,53,0.1)',
+            border: '1px solid var(--accent-line)',
           }}
         >
-          <IconBasquete size={28} color="#C8F135" />
+          <IconBasquete size={28} color="var(--accent-text)" />
         </div>
 
         <h1

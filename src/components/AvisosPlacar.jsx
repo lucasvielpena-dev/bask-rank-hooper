@@ -94,9 +94,9 @@ export default function AvisosPlacar() {
   return (
     <div style={{
       padding: '10px 14px',
-      background: 'rgba(200,241,53,0.10)',
-      borderTop: '1px solid rgba(200,241,53,0.35)',
-      borderBottom: '1px solid rgba(200,241,53,0.35)',
+      background: 'var(--accent-soft)',
+      borderTop: '1px solid var(--accent-line)',
+      borderBottom: '1px solid var(--accent-line)',
       display: 'flex',
       flexDirection: 'column',
       gap: 8,

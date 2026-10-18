@@ -36,7 +36,7 @@ function confBadge(votos) {
   const colors = {
     provisorio: { bg: 'rgba(148,163,184,0.15)', fg: '#94a3b8' },
     em_evolucao: { bg: 'rgba(251,191,36,0.15)', fg: '#fbbf24' },
-    consolidado: { bg: 'rgba(74,222,128,0.15)', fg: '#4ade80' },
+    consolidado: { bg: 'var(--success-soft)', fg: 'var(--success-text)' },
   };
   return { label, ...(colors[nivel] || colors.provisorio) };
 }
@@ -369,7 +369,7 @@ export default function Explorar({ profile, onNavigate }) {
                     textAlign: 'left',
                     cursor: 'pointer',
                     fontFamily: 'inherit',
-                    border: isMinha ? '1px solid rgba(200,241,53,0.35)' : undefined,
+                    border: isMinha ? '1px solid var(--accent-line)' : undefined,
                     width: '100%',
                   }}
                 >
@@ -477,7 +477,7 @@ function PlayerList({ list, onOpen }) {
                 fontSize: 16,
                 overflow: 'hidden',
                 flexShrink: 0,
-                border: '1.5px solid rgba(200,241,53,0.3)',
+                border: '1.5px solid var(--accent-line)',
               }}
             >
               {j.foto_url ? (

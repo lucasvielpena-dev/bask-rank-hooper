@@ -56,7 +56,7 @@ function PlayerAvatar({ fotoUrl, nome, size = 48, className = '' }) {
     height: size,
     borderRadius: '50%',
     objectFit: 'cover',
-    border: '1.5px solid rgba(200,241,53,0.3)',
+    border: '1.5px solid var(--accent-line)',
   };
 
   const initialsStyle = {
@@ -71,7 +71,7 @@ function PlayerAvatar({ fotoUrl, nome, size = 48, className = '' }) {
     fontWeight: 800,
     fontSize: size * 0.4,
     fontFamily: "'Barlow Condensed',sans-serif",
-    border: '1.5px solid rgba(200,241,53,0.3)',
+    border: '1.5px solid var(--accent-line)',
   };
 
   return (
@@ -444,7 +444,6 @@ export default function Atletas({ profile, onNavigate }) {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 8,
-                    boxShadow: isFirst ? '0 4px 20px rgba(200,241,53,0.15)' : 'none',
                     position: 'relative'
                   }}
                 >
