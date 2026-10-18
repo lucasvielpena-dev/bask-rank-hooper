@@ -285,9 +285,10 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
 
         /* FORM STYLES */
         .glass-form {
-          background: rgba(255,255,255,0.05);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
+          /* Sem backdrop-filter: atrás deste formulário há vídeo/animação, e o
+             navegador re-borrava o quadro inteiro o tempo todo. Fundo sólido
+             escuro dá o mesmo contraste e é instantâneo. */
+          background: rgba(18, 18, 26, 0.78);
           border: 0.5px solid rgba(255,255,255,0.12);
           border-radius: 20px;
           padding: 1.5rem;

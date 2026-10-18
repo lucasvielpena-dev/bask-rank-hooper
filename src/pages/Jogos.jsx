@@ -7,7 +7,7 @@ import Torneios from './Torneios';
 import { IconJogo, IconMais, IconCalendario } from '../components/Icons';
 import { useEsporte } from '../contexts/EsporteContext';
 import { assinarAviso } from '../lib/realtime';
-import { lerCache, salvarCache } from '../lib/pageCache';
+import { lerCache, salvarCache, igualLista } from '../lib/pageCache';
 
 function normalizarCidade(v) {
   return String(v || '')
@@ -72,7 +72,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   // Pedidos que EU (criador) preciso responder — vale em qualquer tela.
   async function carregarPedidosCriador() {
     const { data } = await partidasAPI.listarPedidosPendentes();
-    setPedidosCriador((data || []).filter(p => p.usuario_id !== profile?.id));
+    const lista = (data || []).filter(p => p.usuario_id !== profile?.id);
+    setPedidosCriador(prev => (igualLista(prev, lista) ? prev : lista));
   }
 
   // Recarrega a lista SEM abrir o placar (diferente do loadDados) — a lista
@@ -81,8 +82,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     try {
       const { data } = await partidasAPI.listar(esporte);
       const todas = data || [];
-      setPartidas(todas.filter(p => p.status === 'ativo'));
-      setHistorico(todas.filter(p => p.status === 'finalizado'));
+      // Só troca o estado (e re-renderiza a lista) se algo mudou de verdade.
+      // Antes, este ciclo de 5s criava arrays novos com os mesmos dados e a
+      // lista inteira redesenhava no meio da rolagem — a "engasgada".
+      const ativas = todas.filter(p => p.status === 'ativo');
+      const finalizadas = todas.filter(p => p.status === 'finalizado');
+      setPartidas(prev => (igualLista(prev, ativas) ? prev : ativas));
+      setHistorico(prev => (igualLista(prev, finalizadas) ? prev : finalizadas));
     } catch (e) {
       console.warn('Falha ao recarregar partidas:', e);
     }

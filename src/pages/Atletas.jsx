@@ -3,7 +3,7 @@ import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import { sortByConfianca } from '../lib/ranking';
 import { nomeAtleta } from '../lib/nomes';
 import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime';
-import { lerCache, salvarCache } from '../lib/pageCache';
+import { lerCache, salvarCache, igualLista } from '../lib/pageCache';
 import { useEsporte } from '../contexts/EsporteContext';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -77,7 +77,7 @@ function PlayerAvatar({ fotoUrl, nome, size = 48, className = '' }) {
   return (
     <div style={wrapperStyle}>
       {fotoUrl ? (
-        <img src={fotoUrl} alt={nome} style={imgStyle} className={className} />
+        <img src={fotoUrl} alt={nome} loading="lazy" decoding="async" style={imgStyle} className={className} />
       ) : (
         <div style={initialsStyle} className={className}>{initial}</div>
       )}
@@ -180,7 +180,7 @@ export default function Atletas({ profile, onNavigate }) {
         ja_votou_hoje: avaliadosSet.has(j.id)
       }));
 
-      setJogadores(players);
+      setJogadores(prev => (igualLista(prev, players) ? prev : players));
       setVotosStatus(votesStatus);
       salvarCache('atletas', { jogadores: players, votosStatus: votesStatus });
     } catch (e) {

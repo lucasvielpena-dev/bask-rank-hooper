@@ -29,5 +29,20 @@ export function limparCache(chave) {
   else store.clear();
 }
 
-const pageCache = { lerCache, salvarCache, limparCache };
+// Compara duas listas por conteúdo. Serve para o refresh silencioso (realtime /
+// polling) não re-renderizar a tela quando o banco devolve exatamente os mesmos
+// dados — era isso que dava aquela "engasgada" de tempo em tempo numa lista
+// parada. Uso: setLista(prev => (igualLista(prev, novo) ? prev : novo)).
+export function igualLista(a, b) {
+  if (a === b) return true;
+  if (!a || !b) return false;
+  if (a.length !== b.length) return false;
+  try {
+    return JSON.stringify(a) === JSON.stringify(b);
+  } catch (_) {
+    return false;
+  }
+}
+
+const pageCache = { lerCache, salvarCache, limparCache, igualLista };
 export default pageCache;

@@ -260,7 +260,7 @@ export default function AdminPlayers({ profile, onNavigate }) {
               >
                 <div className="admin-player-top">
                   {player.foto_url ? (
-                    <img src={player.foto_url} alt="" className="admin-player-avatar" />
+                    <img src={player.foto_url} alt="" loading="lazy" decoding="async" className="admin-player-avatar" />
                   ) : (
                     <div className="admin-player-avatar fallback">
                       {(player.nome || '?').charAt(0).toUpperCase()}

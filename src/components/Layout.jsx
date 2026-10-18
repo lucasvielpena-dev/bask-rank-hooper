@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useEsporte } from '../contexts/EsporteContext';
@@ -86,35 +86,14 @@ export default function Layout({ page, onNavigate, children }) {
     window.location.reload();
   }
 
-  // Parallax Logic
   // Fundo: quando as imagens vieram pré-carregadas do login, elas aparecem já
   // na primeira pintura (sem o fade de 1,2s chegando depois da tela).
+  //
+  // Parallax REMOVIDO (auditoria de desempenho): o fundo era reprojetado a cada
+  // quadro da rolagem (`scale(1.05) translateY(scrollY*0.3)` num elemento de
+  // tela cheia com filtro). Isso é o que engasgava a rolagem no celular. Agora
+  // o fundo é estático e o navegador rasteriza uma única vez.
   const [bgLoaded, setBgLoaded] = useState(backgroundsProntos);
-  const parallaxRef = useRef(null);
-  
-  useEffect(() => {
-    // Disable parallax if reduced motion is preferred
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    let ticking = false;
-    
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          if (parallaxRef.current) {
-            const offset = window.scrollY * 0.3;
-            parallaxRef.current.style.transform = `scale(1.05) translateY(${offset}px)`;
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Preload background images (compartilhado com a tela de login)
   useEffect(() => {
@@ -134,13 +113,15 @@ export default function Layout({ page, onNavigate, children }) {
   }, []);
 
   const isHome = page === 'inicio';
-  const bgFilter = themePref === 'light' ? 'blur(3px) brightness(0.92) sepia(0.15)' : 'blur(3px) brightness(0.35)';
+  // Sem `blur()`: borrar uma imagem de tela cheia é caro e re-rasteriza a cada
+  // mudança de camada. O escurecimento (brightness) sozinho é aplicado uma vez
+  // e o navegador guarda o resultado em cache.
+  const bgFilter = themePref === 'light' ? 'brightness(0.92) sepia(0.15)' : 'brightness(0.35)';
 
   return (
     <div className="app-shell">
-      {/* Background Images Parallax */}
-      <div 
-        ref={parallaxRef}
+      {/* Fundo do app (fixo, sem parallax) */}
+      <div
         style={{
           position: 'fixed',
           inset: 0,
@@ -148,33 +129,30 @@ export default function Layout({ page, onNavigate, children }) {
           pointerEvents: 'none',
           opacity: bgLoaded ? 1 : 0,
           transition: 'opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1)',
-          willChange: 'transform, opacity'
         }}
       >
         {/* Background 1 (Home) */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: "url('/images/bg-1.png')",
+          backgroundImage: "url('/images/bg-1.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center bottom',
           backgroundRepeat: 'no-repeat',
           filter: bgFilter,
           opacity: isHome ? 1 : 0,
-          transition: 'opacity 0.6s ease'
         }} />
         
         {/* Background 2 (Other pages / Ranking) */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage: "url('/images/bg-2.png')",
+          backgroundImage: "url('/images/bg-2.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center bottom',
           backgroundRepeat: 'no-repeat',
           filter: bgFilter,
           opacity: isHome ? 0 : 1,
-          transition: 'opacity 0.6s ease'
         }} />
       </div>
       <Header />

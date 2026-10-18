@@ -1,12 +1,16 @@
-// src/lib/backgrounds.js
-//
 // Pre-carregamento das imagens de fundo do app (bg-1/bg-2).
-// Cada uma passa de 1 MB, e o Layout só as mostra quando as DUAS terminam de
-// carregar (com um fade de 1,2s). Se o download começar já no login — enquanto
-// a animação de arremesso roda —, elas chegam prontas e o fundo aparece junto
-// com a tela, sem aquele "atraso" depois de entrar.
+//
+// Formato: JPEG em vez de PNG. Eram dois PNGs de ~1,4 MB cada (2,8 MB de
+// download e de decodificação antes da primeira pintura); convertidos para
+// JPEG ficaram em ~85 KB cada, com a mesma aparência (elas aparecem
+// escurecidas por cima). Se quiser gerar de novo:
+//   ffmpeg -i bg-1.png -q:v 5 bg-1.jpg
+//
+// Cada uma é mostrada quando as DUAS terminam de carregar (com um fade de
+// 1,2s). Se o download começar já no login — enquanto a animação de arremesso
+// roda —, elas chegam prontas e o fundo aparece junto com a tela.
 
-const FONTES = ['/images/bg-1.png', '/images/bg-2.png'];
+const FONTES = ['/images/bg-1.jpg', '/images/bg-2.jpg'];
 
 let iniciado = false;
 let carregadas = 0;

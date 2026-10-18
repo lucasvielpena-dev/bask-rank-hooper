@@ -264,6 +264,8 @@ export default function Destaques({ profile, onNavigate }) {
                       <img
                         src={jogador.foto_url}
                         alt=""
+                        loading="lazy"
+                        decoding="async"
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     ) : (
