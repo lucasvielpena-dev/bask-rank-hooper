@@ -65,8 +65,18 @@ export default function Destaques({ profile, onNavigate }) {
   const [topJogadores, setTopJogadores] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
-  const uf = profile?.uf || 'PA';
+  const city = profile?.cidade_atual || profile?.cidade || '';
+  const uf = (profile?.uf || '').toUpperCase();
+
+  function normalizarCidade(v) {
+    return String(v || '')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s*-\s*[a-z]{2}$/i, '')
+      .replace(/\s+/g, ' ');
+  }
 
   useEffect(() => {
     loadData();
@@ -75,19 +85,67 @@ export default function Destaques({ profile, onNavigate }) {
   async function loadData() {
     setLoading(true);
     try {
-      const [{ data: jogs }, { data: ranking }, { count: tCount }] = await Promise.all([
-        supabase.from('jogadores').select('*').eq('uf', uf).eq('esporte', esporte),
-        rankingAPI.getTop5(city, uf, esporte),
-        supabase.from('torneios').select('*', { count: 'exact', head: true })
+      const cityNorm = normalizarCidade(city);
+
+      // Ranking top da CIDADE (não do estado inteiro)
+      const rankingPromise = cityNorm
+        ? rankingAPI.getTop5(city, uf || null, esporte)
+        : Promise.resolve({ data: [] });
+
+      // Jogadores: busca por UF (se houver) e filtra cidade no cliente
+      // (evita mismatch de acento / "Altamira-PA")
+      let jogsQuery = supabase
+        .from('jogadores')
+        .select('*')
+        .eq('ativo', true)
+        .eq('esporte', esporte);
+      if (uf) jogsQuery = jogsQuery.eq('uf', uf);
+
+      // Torneios só da cidade do perfil
+      let torneiosQuery = supabase
+        .from('torneios')
+        .select('*', { count: 'exact', head: true });
+      if (city) torneiosQuery = torneiosQuery.eq('cidade', city);
+      if (uf) torneiosQuery = torneiosQuery.eq('uf', uf);
+
+      const [{ data: jogsRaw }, { data: ranking }, torneiosRes] = await Promise.all([
+        jogsQuery,
+        rankingPromise,
+        torneiosQuery,
       ]);
 
-      const total = jogs?.length || 0;
-      const totalVotes = jogs?.reduce((acc, curr) => acc + (curr.total_votos || 0), 0) || 0;
-      const averageStarsSum = jogs?.reduce((acc, curr) => acc + (curr.media_estrelas || 0), 0) || 0;
-      const generalAvg = total > 0 ? (averageStarsSum / total) : 0;
+      const jogs = (jogsRaw || []).filter((j) => {
+        if (!cityNorm) return false;
+        return normalizarCidade(j.cidade) === cityNorm;
+      });
 
-      setStats({ jogadores: total, mediaGeral: generalAvg, avaliacoes: totalVotes, torneios: tCount || 0 });
-      setTopJogadores(ranking || []);
+      const total = jogs.length;
+      const totalVotes = jogs.reduce((acc, curr) => acc + (curr.total_votos || 0), 0);
+      const withMedia = jogs.filter((j) => (j.total_votos || 0) >= 1);
+      const averageStarsSum = withMedia.reduce((acc, curr) => acc + (Number(curr.media_estrelas) || 0), 0);
+      const generalAvg = withMedia.length > 0 ? averageStarsSum / withMedia.length : 0;
+
+      // Se a RPC não filtrar bem, reforça cidade no top
+      let top = ranking || [];
+      if (cityNorm && top.length) {
+        const onlyCity = top.filter((j) => normalizarCidade(j.cidade) === cityNorm);
+        if (onlyCity.length) top = onlyCity;
+      }
+      // Fallback: monta top a partir dos jogadores locais
+      if ((!top || top.length === 0) && jogs.length) {
+        top = [...jogs]
+          .filter((j) => (j.total_votos || 0) >= 1)
+          .sort((a, b) => (Number(b.media_estrelas) || 0) - (Number(a.media_estrelas) || 0))
+          .slice(0, 5);
+      }
+
+      setStats({
+        jogadores: total,
+        mediaGeral: generalAvg,
+        avaliacoes: totalVotes,
+        torneios: torneiosRes?.count || 0,
+      });
+      setTopJogadores(top);
     } catch (e) {
       console.error(e);
     }
@@ -134,7 +192,7 @@ export default function Destaques({ profile, onNavigate }) {
             Destaques
           </h1>
           <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 2 }}>
-            O melhor de {city} - {uf} esta semana
+            O melhor de {city ? `${city}${uf ? ` · ${uf}` : ''}` : 'sua cidade'} esta semana
           </p>
         </div>
 
@@ -260,7 +318,7 @@ export default function Destaques({ profile, onNavigate }) {
                 : 'Novos torneios em breve'}
             </div>
             <button
-              onClick={() => onNavigate('jogos', { aba: 'torneios' })}
+              onClick={() => onNavigate('torneios')}
               style={{
                 background: 'var(--accent)',
                 color: '#fff',

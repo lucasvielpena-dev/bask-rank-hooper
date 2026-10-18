@@ -15,7 +15,7 @@ export default function Home({ profile, onNavigate }) {
   const [heroTransform, setHeroTransform] = useState('rotateX(4deg) rotateY(-4deg) translateZ(0px)');
   const [heroShadow, setHeroShadow] = useState('0 16px 40px rgba(0,0,0,0.4)');
 
-  const city = profile?.cidade_atual || profile?.cidade || 'Altamira';
+  const city = profile?.cidade_atual || profile?.cidade || '';
   const uf = profile?.uf || 'PA';
 
   useEffect(() => {
@@ -34,9 +34,16 @@ export default function Home({ profile, onNavigate }) {
   async function loadData(cityVal = city, ufVal = uf) {
     setLoading(true);
     try {
-      const { data: rankList } = await rankingAPI.get(cityVal, ufVal, 50, esporte);
+      const { data: rankList } = await rankingAPI.get(cityVal || null, ufVal || null, 50, esporte);
       if (rankList) {
-        const sorted = [...rankList].sort((a, b) => (b.media_estrelas || 0) - (a.media_estrelas || 0));
+        const norm = (v) => String(v || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s*-\s*[a-z]{2}$/i, '');
+        const cityN = norm(cityVal);
+        let list = rankList;
+        if (cityN) {
+          const only = rankList.filter((j) => norm(j.cidade) === cityN);
+          if (only.length) list = only;
+        }
+        const sorted = [...list].sort((a, b) => (b.media_estrelas || 0) - (a.media_estrelas || 0));
         setTopPlayers(sorted.slice(0, 5));
 
         if (profile?.player_id) {
