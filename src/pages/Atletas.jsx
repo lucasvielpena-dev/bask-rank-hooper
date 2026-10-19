@@ -493,32 +493,42 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                  <div style={{ display: 'flex', gap: 6, marginTop: 2 }}>
                     <button
-                      className="btn-primary btn-sm"
+                      type="button"
+                      className="btn-primary"
                       onClick={() => setSelectedPlayer(j)}
-                      style={{ flex: 1, padding: '7px 0', fontSize: 12 }}
+                      style={{
+                        flex: 1, padding: '5px 0', fontSize: 11, fontWeight: 700,
+                        minHeight: 28, lineHeight: 1.2, borderRadius: 999,
+                      }}
                     >
                       Perfil
                     </button>
                     {!hasVoted && profile?.player_id !== j.id ? (
                       <button
-                        className="btn-secondary btn-sm"
+                        type="button"
+                        className="btn-secondary"
                         onClick={(e) => handleOpenVote(j, e)}
-                        style={{ flex: 1, padding: '7px 0', fontSize: 12 }}
+                        style={{
+                          flex: 1, padding: '5px 0', fontSize: 11, fontWeight: 700,
+                          minHeight: 28, lineHeight: 1.2, borderRadius: 999,
+                        }}
                       >
                         Avaliar
                       </button>
                     ) : (
                       <button
+                        type="button"
                         disabled
                         style={{
-                          flex: 1, background: 'var(--bg-secondary)', border: 'none', borderRadius: 999,
-                          padding: '7px 0', color: 'var(--text-muted)', fontSize: 11, fontWeight: 600,
-                          fontFamily: "'Inter',sans-serif", cursor: 'not-allowed'
+                          flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--border)',
+                          borderRadius: 999, padding: '5px 0', minHeight: 28, lineHeight: 1.2,
+                          color: 'var(--text-muted)', fontSize: 11, fontWeight: 600,
+                          fontFamily: "'Inter',sans-serif", cursor: 'not-allowed',
                         }}
                       >
-                        {profile?.player_id === j.id ? 'Seu Perfil' : '✓ Avaliado'}
+                        {profile?.player_id === j.id ? 'Seu perfil' : '✓ Avaliado'}
                       </button>
                     )}
                   </div>
