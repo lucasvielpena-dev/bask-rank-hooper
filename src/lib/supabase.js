@@ -98,14 +98,22 @@ export const jogadoresAPI = {
 
   /** Nomes que NÃO são município IBGE (povoado/rua/erro de GPS) */
   const CIDADES_INVALIDAS = new Set([
-    'leste', 'betel', 'leste para', 'leste pará', 'betel para', 'betel pará',
+    'leste', 'betel', 'bethel',
+    'leste para', 'leste pa',
+    'betel para', 'betel pa',
+    'bethel para', 'bethel pa',
+    'betel-pa', 'bethel-pa', 'leste-pa',
   ]);
   function cidadeInvalida(nome) {
-    const n = String(nome || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const n = String(nome || '')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
     if (!n) return true;
     if (CIDADES_INVALIDAS.has(n)) return true;
-    // só "leste" ou "betel" como palavra única
-    if (/^(leste|betel)$/.test(n)) return true;
+    // Leste / Betel / Bethel sozinhos ou com UF
+    if (/^(leste|betel|bethel)(\s|-|$)/.test(n)) return true;
     return false;
   }
 
