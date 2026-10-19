@@ -418,9 +418,9 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
 
         {/* List */}
         {loading && jogadores.length === 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {[1, 2, 3].map(idx => (
-              <div key={idx} className="skeleton card" style={{ height: 110, borderRadius: 20 }} />
+              <div key={idx} className="skeleton card" style={{ height: 88, borderRadius: 12 }} />
             ))}
           </div>
         ) : filtrados.length === 0 ? (
@@ -447,32 +447,32 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                     background: isFirst ? 'var(--bg-elevated)' : 'var(--bg-card)',
                     borderColor: isFirst ? 'var(--border-active)' : 'var(--border)',
                     borderTop: isFirst ? '2px solid var(--accent)' : '1px solid var(--border)',
-                    borderRadius: 14,
-                    padding: '12px 14px',
+                    borderRadius: 12,
+                    padding: '10px 12px',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: 8,
+                    gap: 6,
                     position: 'relative'
                   }}
                 >
                   {isRankingFilter && (
                     <div style={{
-                      position: 'absolute', top: -10, right: 16,
+                      position: 'absolute', top: -8, right: 12,
                       background: isFirst ? 'var(--accent)' : 'var(--bg-elevated)',
                       color: isFirst ? '#000000' : 'var(--text-primary)',
-                      padding: '4px 10px', borderRadius: 12,
-                      fontSize: 14, fontWeight: 800, fontFamily: "'Barlow Condensed',sans-serif",
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.5)', zIndex: 1
+                      padding: '2px 8px', borderRadius: 999,
+                      fontSize: 12, fontWeight: 800, fontFamily: "'Barlow Condensed',sans-serif",
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.35)', zIndex: 1
                     }}>
                       {getMedal(i)}
                     </div>
                   )}
                   
-                  <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
-                    <PlayerAvatar fotoUrl={j.foto_url} nome={nomeAtleta(j)} size={48} className={isFirst ? 'avatar-pulse' : ''} />
+                  <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                    <PlayerAvatar fotoUrl={j.foto_url} nome={nomeAtleta(j)} size={40} className={isFirst ? 'avatar-pulse' : ''} />
                     
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ color: 'var(--text-primary)', fontSize: 16, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div style={{ color: 'var(--text-primary)', fontSize: 14, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.2 }}>
                         {nomeAtleta(j)}
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
@@ -495,17 +495,17 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
 
                   <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                     <button
-                      className="btn-primary"
+                      className="btn-primary btn-sm"
                       onClick={() => setSelectedPlayer(j)}
-                      style={{ flex: 1, padding: '10px 0', fontSize: 13, borderRadius: 10 }}
+                      style={{ flex: 1, padding: '7px 0', fontSize: 12 }}
                     >
                       Perfil
                     </button>
                     {!hasVoted && profile?.player_id !== j.id ? (
                       <button
-                        className="btn-secondary"
+                        className="btn-secondary btn-sm"
                         onClick={(e) => handleOpenVote(j, e)}
-                        style={{ flex: 1, padding: '10px 0', fontSize: 13, borderRadius: 10 }}
+                        style={{ flex: 1, padding: '7px 0', fontSize: 12 }}
                       >
                         Avaliar
                       </button>
@@ -513,8 +513,8 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                       <button
                         disabled
                         style={{
-                          flex: 1, background: 'var(--bg-secondary)', border: 'none', borderRadius: 10,
-                          padding: '10px 0', color: 'var(--text-muted)', fontSize: 11, fontWeight: 600,
+                          flex: 1, background: 'var(--bg-secondary)', border: 'none', borderRadius: 999,
+                          padding: '7px 0', color: 'var(--text-muted)', fontSize: 11, fontWeight: 600,
                           fontFamily: "'Inter',sans-serif", cursor: 'not-allowed'
                         }}
                       >
