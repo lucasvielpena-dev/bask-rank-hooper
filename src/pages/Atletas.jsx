@@ -493,14 +493,14 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: 6, marginTop: 2 }}>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                     <button
                       type="button"
-                      className="btn-primary"
+                      className="btn-primary btn-sm"
                       onClick={() => setSelectedPlayer(j)}
                       style={{
-                        flex: 1, padding: '5px 0', fontSize: 11, fontWeight: 700,
-                        minHeight: 28, lineHeight: 1.2, borderRadius: 999,
+                        flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 700,
+                        minHeight: 34, lineHeight: 1.2, borderRadius: 999,
                       }}
                     >
                       Perfil
@@ -508,11 +508,11 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                     {!hasVoted && profile?.player_id !== j.id ? (
                       <button
                         type="button"
-                        className="btn-secondary"
+                        className="btn-secondary btn-sm"
                         onClick={(e) => handleOpenVote(j, e)}
                         style={{
-                          flex: 1, padding: '5px 0', fontSize: 11, fontWeight: 700,
-                          minHeight: 28, lineHeight: 1.2, borderRadius: 999,
+                          flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 700,
+                          minHeight: 34, lineHeight: 1.2, borderRadius: 999,
                         }}
                       >
                         Avaliar
@@ -523,8 +523,8 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                         disabled
                         style={{
                           flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--border)',
-                          borderRadius: 999, padding: '5px 0', minHeight: 28, lineHeight: 1.2,
-                          color: 'var(--text-muted)', fontSize: 11, fontWeight: 600,
+                          borderRadius: 999, padding: '8px 0', minHeight: 34, lineHeight: 1.2,
+                          color: 'var(--text-muted)', fontSize: 12, fontWeight: 600,
                           fontFamily: "'Inter',sans-serif", cursor: 'not-allowed',
                         }}
                       >
