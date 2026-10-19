@@ -23,6 +23,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   const { esporte } = useEsporte();
   const [tela, setTela] = useState('lista'); // 'lista' | 'novo' | 'partida'
   const [aba, setAba] = useState(initialAba); // 'jogos' | 'historico' | 'torneios'
+  const [showCriarTorneio, setShowCriarTorneio] = useState(false);
   
   // Lista de partidas e jogadores para seleção
   const _cache = lerCache('jogos');
@@ -957,12 +958,17 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   {aba === 'torneios' ? 'Torneios da região' : aba === 'historico' ? 'Partidas finalizadas' : 'Partidas em andamento'}
                 </p>
               </div>
-              {aba !== 'torneios' && (
-                <button className="btn btn-primary btn-sm" onClick={() => setTela('novo')} style={{ flexShrink: 0 }}>
-                  <IconMais size={16} color="currentColor" />
-                  Novo jogo
-                </button>
-              )}
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={() => {
+                  if (aba === 'torneios') setShowCriarTorneio(true);
+                  else setTela('novo');
+                }}
+                style={{ flexShrink: 0 }}
+              >
+                <IconMais size={16} color="currentColor" />
+                {aba === 'torneios' ? 'Novo torneio' : 'Novo jogo'}
+              </button>
             </div>
 
             <div className="tabs-row">
@@ -981,7 +987,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
           {/* Renderização conforme Aba */}
           {aba === 'torneios' ? (
-            <Torneios profile={profile} isNested={true} />
+            <Torneios profile={profile} isNested={true} openCriar={showCriarTorneio} onOpenCriarChange={setShowCriarTorneio} />
           ) : loading && partidas.length === 0 && historico.length === 0 ? (
             aba === 'jogos' ? (
               <div className="responsive-card-grid">

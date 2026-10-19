@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase, torneiosAPI, equipesAPI, torneioJogosAPI, profilesAPI, notasJogoAPI } from '../lib/supabase';
-import { IconCalendario, IconSportDynamic } from '../components/Icons';
+import { IconCalendario, IconSportDynamic, IconMais } from '../components/Icons';
 import { useEsporte } from '../contexts/EsporteContext';
 import { GRADES, GradePicker, gradePorValor, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
 import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
@@ -22,7 +22,7 @@ const STATUS_TORNEIO = {
   finalizado: { label: '🏆 Finalizado', color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' }
 };
 
-export default function Torneios({ profile, isNested = false }) {
+export default function Torneios({ profile, isNested = false, openCriar = false, onOpenCriarChange }) {
   const _cache = lerCache('torneios');
   const [torneios, setTorneios] = useState(_cache || []);
   const [loading, setLoading] = useState(!_cache);
@@ -30,6 +30,15 @@ export default function Torneios({ profile, isNested = false }) {
   
   // View states
   const [showCriar, setShowCriar] = useState(false);
+
+  useEffect(() => {
+    if (openCriar) setShowCriar(true);
+  }, [openCriar]);
+
+  function fecharCriar() {
+    setShowCriar(false);
+    onOpenCriarChange?.(false);
+  }
   // Realtime subscriptions
 
 
@@ -83,16 +92,15 @@ export default function Torneios({ profile, isNested = false }) {
                 </div>
               </div>
               
-              <button className="btn btn-primary btn-sm" onClick={() => setShowCriar(true)}>
-                Cadastrar Torneio
+              <button className="btn btn-primary btn-sm" onClick={() => setShowCriar(true)} style={{ flexShrink: 0 }}>
+                <IconMais size={16} color="currentColor" />
+                Novo torneio
               </button>
             </div>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-              <h3 style={{ fontWeight: 800, fontSize: 16 }}>Torneios Regionais</h3>
-              <button className="btn btn-primary btn-sm" onClick={() => setShowCriar(true)}>
-                Cadastrar Torneio
-              </button>
+            <div style={{ marginBottom: 10 }}>
+              <h3 style={{ fontWeight: 800, fontSize: 16, margin: 0 }}>Torneios da região</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>Competições e campeonatos ativos</p>
             </div>
           )}
 
@@ -150,8 +158,8 @@ export default function Torneios({ profile, isNested = false }) {
       {showCriar && (
         <CriarTorneioModal 
           profile={profile} 
-          onClose={() => setShowCriar(false)} 
-          onSuccess={() => { setShowCriar(false); carregarTorneios(); }} 
+          onClose={fecharCriar} 
+          onSuccess={() => { fecharCriar(); carregarTorneios(); }} 
         />
       )}
     </div>
