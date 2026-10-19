@@ -308,6 +308,53 @@ export default function Explorar({ profile, onNavigate }) {
           Veja o ranking de atletas em outra cidade
         </p>
 
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: 10,
+            marginTop: 14,
+            marginBottom: 4,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => onNavigate?.('atletas')}
+            style={{
+              padding: '12px 10px',
+              borderRadius: 12,
+              border: '1.5px solid var(--border)',
+              background: 'var(--bg-card)',
+              color: 'var(--text-secondary)',
+              fontWeight: 800,
+              fontSize: 12,
+              letterSpacing: '0.04em',
+              cursor: 'pointer',
+              fontFamily: "'Inter', sans-serif",
+            }}
+          >
+            MINHA CIDADE
+          </button>
+          <button
+            type="button"
+            style={{
+              padding: '12px 10px',
+              borderRadius: 12,
+              border: '1.5px solid rgba(200,241,53,0.55)',
+              background: 'var(--accent)',
+              color: '#0C0C14',
+              fontWeight: 800,
+              fontSize: 12,
+              letterSpacing: '0.04em',
+              cursor: 'default',
+              fontFamily: "'Inter', sans-serif",
+              boxShadow: '0 4px 14px rgba(200,241,53,0.2)',
+            }}
+          >
+            CIDADES
+          </button>
+        </div>
+
         {/* Busca — mesmo estilo Atletas */}
         <div style={{ position: 'relative', marginTop: 16, marginBottom: 16 }}>
           <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}>

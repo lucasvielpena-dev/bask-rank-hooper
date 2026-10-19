@@ -307,31 +307,30 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
           </p>
         </div>
 
-        {/* Minha cidade | Cidades — entrada clara */}
+        {/* Minha cidade | Cidades — dois blocos separados */}
         {onNavigate && (
           <div
             style={{
-              display: 'flex',
-              background: 'var(--bg-card)',
-              borderRadius: 12,
-              padding: 4,
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 10,
               marginBottom: 16,
-              border: '1px solid var(--border)',
             }}
           >
             <button
               type="button"
               style={{
-                flex: 1,
-                padding: '10px 8px',
-                borderRadius: 8,
-                border: 'none',
+                padding: '12px 10px',
+                borderRadius: 12,
+                border: '1.5px solid rgba(200,241,53,0.55)',
                 background: 'var(--accent)',
                 color: '#0C0C14',
                 fontWeight: 800,
-                fontSize: 13,
+                fontSize: 12,
+                letterSpacing: '0.04em',
                 cursor: 'default',
                 fontFamily: "'Inter', sans-serif",
+                boxShadow: '0 4px 14px rgba(200,241,53,0.2)',
               }}
             >
               MINHA CIDADE
@@ -340,14 +339,14 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
               type="button"
               onClick={() => onNavigate('explorar')}
               style={{
-                flex: 1,
-                padding: '10px 8px',
-                borderRadius: 8,
-                border: 'none',
-                background: 'transparent',
+                padding: '12px 10px',
+                borderRadius: 12,
+                border: '1.5px solid var(--border)',
+                background: 'var(--bg-card)',
                 color: 'var(--text-secondary)',
-                fontWeight: 700,
-                fontSize: 13,
+                fontWeight: 800,
+                fontSize: 12,
+                letterSpacing: '0.04em',
                 cursor: 'pointer',
                 fontFamily: "'Inter', sans-serif",
               }}
