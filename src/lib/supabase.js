@@ -51,6 +51,26 @@ export const PROFILE_SAFE_COLUMNS = [
 // API helpers
 // ============================================================
 
+/** Nomes que NÃO são município IBGE (povoado/rua/erro de GPS) */
+const CIDADES_INVALIDAS = new Set([
+  'leste', 'betel', 'bethel',
+  'leste para', 'leste pa',
+  'betel para', 'betel pa',
+  'bethel para', 'bethel pa',
+  'betel-pa', 'bethel-pa', 'leste-pa',
+]);
+function cidadeInvalida(nome) {
+  const n = String(nome || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+  if (!n) return true;
+  if (CIDADES_INVALIDAS.has(n)) return true;
+  if (/^(leste|betel|bethel)(\s|-|$)/.test(n)) return true;
+  return false;
+}
+
 export const jogadoresAPI = {
   listar: async (esporte = 'basquete') => {
     const { data, error } = await supabase
@@ -95,28 +115,6 @@ export const jogadoresAPI = {
    * Cidades com atletas ativos (para busca do Explorar).
    * Agrega no cliente: evita RPC nova e funciona com RLS atual.
    */
-
-  /** Nomes que NÃO são município IBGE (povoado/rua/erro de GPS) */
-  const CIDADES_INVALIDAS = new Set([
-    'leste', 'betel', 'bethel',
-    'leste para', 'leste pa',
-    'betel para', 'betel pa',
-    'bethel para', 'bethel pa',
-    'betel-pa', 'bethel-pa', 'leste-pa',
-  ]);
-  function cidadeInvalida(nome) {
-    const n = String(nome || '')
-      .trim()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-    if (!n) return true;
-    if (CIDADES_INVALIDAS.has(n)) return true;
-    // Leste / Betel / Bethel sozinhos ou com UF
-    if (/^(leste|betel|bethel)(\s|-|$)/.test(n)) return true;
-    return false;
-  }
-
   listarCidades: async (esporte = 'basquete') => {
     const { data, error } = await supabase
       .from('jogadores')
