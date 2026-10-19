@@ -1,47 +1,23 @@
 /**
- * Bandeira do município (Wikimedia Commons) quando existir.
- * Se não carregar, usa a bandeira do estado (UF).
- * Arquivos oficiais em domínio público / PD-BrazilGov no Commons.
+ * Bandeira municipal só quando temos arquivo VERIFICADO no Commons.
+ * Caso contrário, bandeira do estado na hora (sem tentar nomes inventados —
+ * isso era lento e às vezes puxava bandeira errada).
  */
 
 import { useMemo, useState } from 'react';
 
-/** Arquivos conhecidos no Wikimedia Commons (nome exato do File:) */
-const FLAG_FILES = {
-  'altamira|pa': ['Bandeira_de_Altamira_Pará.jpg', 'Bandeira_de_Altamira.jpg'],
-  'belém|pa': ['Bandeira_de_Belém_(Pará).png', 'Bandeira_de_Belém.png'],
-  'belem|pa': ['Bandeira_de_Belém_(Pará).png'],
-  'parauapebas|pa': ['Bandeira_de_Parauapebas_(Pará).svg', 'Band_peba_p.png'],
-  'ananindeua|pa': ['Bandeira_de_Ananindeua.svg', 'Bandeira_de_Ananindeua.png'],
-  'castanhal|pa': ['Bandeira_de_Castanhal.svg', 'Bandeira_de_Castanhal.png'],
-  'marabá|pa': ['Bandeira_de_Marabá.svg', 'Bandeira_de_Marabá.png', 'Bandeira_de_Maraba.png'],
-  'maraba|pa': ['Bandeira_de_Marabá.svg', 'Bandeira_de_Maraba.png'],
-  'santarém|pa': ['Bandeira_de_Santarém_(Pará).svg', 'Bandeira_de_Santarem_PA.png'],
-  'santarem|pa': ['Bandeira_de_Santarém_(Pará).svg'],
-  'tucuruí|pa': ['Bandeira_de_Tucuruí.svg', 'Bandeira_de_Tucurui.png'],
-  'tucurui|pa': ['Bandeira_de_Tucuruí.svg'],
-  'redenção|pa': ['Bandeira_de_Redenção_(Pará).svg'],
-  'redencao|pa': ['Bandeira_de_Redenção_(Pará).svg'],
-  'paragominas|pa': ['Bandeira_de_Paragominas.svg'],
-  'itaítuba|pa': ['Bandeira_de_Itaituba.svg', 'Bandeira_de_Itaituba.png'],
-  'itaituba|pa': ['Bandeira_de_Itaituba.svg'],
-  'bragança|pa': ['Bandeira_de_Bragança_(Pará).svg'],
-  'braganca|pa': ['Bandeira_de_Bragança_(Pará).svg'],
-  'abaetetuba|pa': ['Bandeira_de_Abaetetuba.svg'],
-  'cametá|pa': ['Bandeira_de_Cametá.svg'],
-  'cameta|pa': ['Bandeira_de_Cametá.svg'],
-  'barcarena|pa': ['Bandeira_de_Barcarena.svg'],
-  'marituba|pa': ['Bandeira_de_Marituba.svg'],
-  'canaã dos carajás|pa': ['Bandeira_de_Canaã_dos_Carajás.svg'],
-  'canaa dos carajas|pa': ['Bandeira_de_Canaã_dos_Carajás.svg'],
-  'xinguara|pa': ['Bandeira_de_Xinguara.svg'],
-  'dom eliseu|pa': ['Bandeira_de_Dom_Eliseu.svg'],
-  'ulianópolis|pa': ['Bandeira_de_Ulianópolis.svg'],
-  'tailândia|pa': ['Bandeira_de_Tailândia.svg'],
-  'tailandia|pa': ['Bandeira_de_Tailândia.svg'],
+/** Só entradas conferidas no Wikimedia Commons */
+const CITY_FLAGS = {
+  // Pará
+  'altamira|pa': 'Bandeira_de_Altamira_Pará.jpg',
+  'belem|pa': 'Bandeira_de_Belém_(Pará).png',
+  'belém|pa': 'Bandeira_de_Belém_(Pará).png',
+  'parauapebas|pa': 'Bandeira_de_Parauapebas_(Pará).svg',
+  'ananindeua|pa': 'Flag_of_Ananindeua.svg',
+  // se Flag_of_Ananindeua falhar, cai no estado
 };
 
-/** Bandeiras dos estados (fallback) */
+/** Bandeiras estaduais (SVG leves, carga rápida) */
 const UF_FLAGS = {
   AC: 'Bandeira_do_Acre.svg',
   AL: 'Bandeira_de_Alagoas.svg',
@@ -80,69 +56,44 @@ function normalizar(s) {
     .replace(/[\u0300-\u036f]/g, '');
 }
 
-function commonsUrl(fileName, width = 128) {
-  // Special:FilePath redireciona para o upload correto
-  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}?width=${width}`;
+/** Thumb CDN do Commons — mais rápido que Special:FilePath em cadeia */
+function thumbUrl(fileName, width = 96) {
+  // Redirect estável do Commons para o ficheiro (1 hop)
+  return `https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/${encodeURIComponent(fileName)}&width=${width}`;
 }
 
-function candidatosCidade(cidade, uf) {
-  const c = String(cidade || '').trim();
-  const u = String(uf || '').trim().toUpperCase();
-  const key = `${normalizar(c)}|${normalizar(u)}`;
-  const known = FLAG_FILES[key] || [];
-  const gen = [];
-  if (c) {
-    gen.push(`Bandeira_de_${c}.svg`);
-    gen.push(`Bandeira_de_${c}.png`);
-    gen.push(`Bandeira_de_${c}.jpg`);
-    if (u === 'PA') {
-      gen.push(`Bandeira_de_${c}_(Pará).svg`);
-      gen.push(`Bandeira_de_${c}_Pará.jpg`);
-      gen.push(`Bandeira_de_${c}_(Pará).png`);
-    }
-  }
-  // únicos
-  const seen = new Set();
-  return [...known, ...gen].filter((f) => {
-    if (seen.has(f)) return false;
-    seen.add(f);
-    return true;
-  });
+function chaveCidade(cidade, uf) {
+  return `${normalizar(cidade)}|${normalizar(uf)}`;
 }
 
 export default function CityCrest({ cidade, uf, size = 42 }) {
-  const lista = useMemo(() => candidatosCidade(cidade, uf), [cidade, uf]);
-  const ufFile = UF_FLAGS[String(uf || '').toUpperCase()] || null;
-  const [idx, setIdx] = useState(0);
-  const [usouUf, setUsouUf] = useState(false);
-  const [falhouTudo, setFalhouTudo] = useState(false);
+  const u = String(uf || '').trim().toUpperCase();
+  const cityFile = CITY_FLAGS[chaveCidade(cidade, uf)] || null;
+  const ufFile = UF_FLAGS[u] || null;
+
+  // Começa pela cidade se conhecida; senão já vai pro estado (sem atraso)
+  const [fase, setFase] = useState(cityFile ? 'cidade' : ufFile ? 'uf' : 'vazio');
 
   const src = useMemo(() => {
-    if (falhouTudo) return null;
-    if (usouUf && ufFile) return commonsUrl(ufFile, Math.round(size * 2.5));
-    if (idx < lista.length) return commonsUrl(lista[idx], Math.round(size * 2.5));
-    if (ufFile) return commonsUrl(ufFile, Math.round(size * 2.5));
+    const w = Math.min(160, Math.round(size * 3));
+    if (fase === 'cidade' && cityFile) return thumbUrl(cityFile, w);
+    if (fase === 'uf' && ufFile) return thumbUrl(ufFile, w);
     return null;
-  }, [idx, lista, usouUf, ufFile, falhouTudo, size]);
+  }, [fase, cityFile, ufFile, size]);
 
   function onError() {
-    if (!usouUf && idx + 1 < lista.length) {
-      setIdx((i) => i + 1);
+    if (fase === 'cidade' && ufFile) {
+      setFase('uf');
       return;
     }
-    if (!usouUf && ufFile) {
-      setUsouUf(true);
-      return;
-    }
-    setFalhouTudo(true);
+    setFase('vazio');
   }
 
   const w = size;
-  const h = Math.round(size * 0.72);
+  const h = Math.round(size * 0.7);
 
-  if (!src || falhouTudo) {
-    // Fallback limpo: retângulo com UF / iniciais
-    const label = (String(uf || '').toUpperCase() || String(cidade || '?').slice(0, 2)).toUpperCase();
+  if (!src) {
+    const label = (u || String(cidade || '?').slice(0, 2)).toUpperCase();
     return (
       <div
         aria-hidden
@@ -151,7 +102,7 @@ export default function CityCrest({ cidade, uf, size = 42 }) {
           height: h,
           borderRadius: 6,
           flexShrink: 0,
-          background: 'linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%)',
+          background: 'var(--bg-secondary)',
           border: '1px solid var(--border)',
           display: 'flex',
           alignItems: 'center',
@@ -159,8 +110,7 @@ export default function CityCrest({ cidade, uf, size = 42 }) {
           fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 900,
           fontSize: Math.max(10, Math.round(size * 0.28)),
-          color: '#E2E8F0',
-          letterSpacing: '0.04em',
+          color: 'var(--text-secondary)',
         }}
         title={cidade}
       >
@@ -172,7 +122,11 @@ export default function CityCrest({ cidade, uf, size = 42 }) {
   return (
     <div
       aria-hidden
-      title={cidade ? `Bandeira · ${cidade}${uf ? `-${uf}` : ''}` : ''}
+      title={
+        fase === 'cidade'
+          ? `Bandeira de ${cidade}`
+          : `Bandeira do estado ${u}`
+      }
       style={{
         width: w,
         height: h,
@@ -181,14 +135,15 @@ export default function CityCrest({ cidade, uf, size = 42 }) {
         flexShrink: 0,
         border: '1px solid var(--border)',
         background: 'var(--bg-secondary)',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.25)',
       }}
     >
       <img
+        key={src}
         src={src}
         alt=""
         onError={onError}
         loading="lazy"
+        decoding="async"
         referrerPolicy="no-referrer"
         style={{
           width: '100%',
