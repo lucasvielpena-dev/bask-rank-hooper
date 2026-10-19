@@ -133,7 +133,7 @@ export default function Layout({ page, onNavigate, children }) {
   // isso que piscava/engasgava. O escurecimento agora é um véu sólido por cima
   // (resultado visual igual, custo zero).
   const bgUrl = isHome ? '/images/bg-1.jpg' : '/images/bg-2.jpg';
-  const bgVeu = themePref === 'light' ? 'rgba(255, 236, 198, 0.10)' : 'rgba(0, 0, 0, 0.65)';
+  const bgVeu = themePref === 'light' ? 'rgba(244, 246, 248, 0.92)' : 'rgba(0, 0, 0, 0.65)';
 
   return (
     <div className="app-shell">
