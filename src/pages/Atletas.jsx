@@ -172,17 +172,14 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
 
       const avaliadosSet = new Set((minhasAvaliacoes || []).map(a => a.jogador_id));
 
-      // Mesma cidade do perfil (acentos, espaços e sufixo "- UF" ignorados).
-      // Se a cidade do atleta estiver vazia, ainda entra se o UF bater.
+      // Só mesma cidade do perfil. Sem cidade cadastrada NÃO entra em lugar nenhum
+      // (evita "Leste/Betel" limpos caírem em Altamira só porque o UF é PA).
       const cityNorm = normalizarCidade(selectedCity);
-      const myUf = (profile?.uf || 'PA').trim().toUpperCase();
       const players = (jogs || []).filter(j => {
+        if (!cityNorm) return false;
         const jogadorCity = normalizarCidade(j.cidade);
-        const jogadorUf = (j.uf || '').trim().toUpperCase();
-        if (jogadorCity && cityNorm) return jogadorCity === cityNorm;
-        // fallback: sem cidade cadastrada, mas mesmo estado
-        if (!jogadorCity && jogadorUf && jogadorUf === myUf) return true;
-        return false;
+        if (!jogadorCity) return false;
+        return jogadorCity === cityNorm;
       }).map(j => ({
         ...j,
         ja_votou_hoje: avaliadosSet.has(j.id)
