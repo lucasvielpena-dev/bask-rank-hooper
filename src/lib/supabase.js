@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { comprimirImagem, LIMITE_FOTO_PERFIL } from './imagens';
 
 const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
@@ -445,26 +446,43 @@ export const profilesAPI = {
 
   uploadAvatar: async (userId, file) => {
     const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+    // Até 5 MB a foto vai como está. Acima disso é comprimida no aparelho
+    // (ver src/lib/imagens.js) em vez de recusar o upload.
+    const MAX_BYTES = LIMITE_FOTO_PERFIL;
+
+    if (!file) {
+      return { error: new Error('Escolha uma imagem para enviar.') };
+    }
 
     const tipoOk = ALLOWED_TYPES.includes(file.type)
       || (!file.type && /\.(jpe?g|png|webp|gif)$/i.test(file.name || ''));
 
-    if (!file || !tipoOk) {
+    if (!tipoOk) {
       return { error: new Error('Formato inválido. Envie uma imagem JPG, PNG, WEBP ou GIF.') };
     }
+
+    let arquivo = file;
     if (file.size > MAX_BYTES) {
-      return { error: new Error('A imagem deve ter no máximo 5 MB.') };
+      try {
+        arquivo = await comprimirImagem(file, { maxBytes: MAX_BYTES });
+      } catch (err) {
+        return {
+          error: new Error(`Não foi possível reduzir essa imagem no aparelho (${err.message}). Tente outra foto.`)
+        };
+      }
+      if (arquivo.size > MAX_BYTES) {
+        return { error: new Error('Essa foto continua acima de 5 MB mesmo depois de comprimida. Tente outra foto.') };
+      }
     }
 
-    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    const ext = (arquivo.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
     const filePath = `avatars/${userId}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${ext}`;
 
     // O bucket `avatars` deve ser criado UMA vez pelo administrador no painel
     // do Supabase — nunca pelo cliente (isso era um vetor de abuso).
     const { error: uploadError } = await supabase.storage
       .from('avatars')
-      .upload(filePath, file, { upsert: true });
+      .upload(filePath, arquivo, { upsert: true });
 
     if (uploadError) return { error: uploadError };
 

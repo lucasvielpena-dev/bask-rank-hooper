@@ -113,17 +113,17 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
+    // Limpa o campo: assim dá para escolher o mesmo arquivo de novo se precisar.
+    e.target.value = '';
     if (!file) return;
-    
+
     if (!file.type.startsWith('image/')) {
       setErro('Por favor, selecione uma imagem válida.');
       return;
     }
-    if (file.size > 2 * 1024 * 1024) {
-      setErro('A imagem de perfil deve ter no máximo 2MB.');
-      return;
-    }
-    
+    // Foto acima de 5 MB não é recusada: o upload comprime no aparelho
+    // (ver src/lib/imagens.js).
+
     setUploading(true);
     setErro(null);
     try {
