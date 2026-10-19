@@ -2351,3 +2351,19 @@ body.light-theme .skeleton {
   background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%) !important;
   background-size: 200% 100% !important;
 }
+
+/* Home destaques — nomes legíveis no claro */
+body.light-theme .premium-name,
+body.light-theme .home-highlight-name,
+body.light-theme .highlight-name {
+  color: #020617 !important;
+  font-weight: 700 !important;
+}
+body.light-theme .home-section-label {
+  color: #475569 !important;
+  font-weight: 800 !important;
+}
+body.light-theme .home-greeting-title,
+body.light-theme .home-greeting-sub {
+  color: #475569 !important;
+}

@@ -121,10 +121,10 @@ export default function Home({ profile, onNavigate }) {
       <div className="home-container" style={{ paddingBottom: 80, position: 'relative', zIndex: 1 }}>
 
         <div className="home-greeting" style={{ marginBottom: 12 }}>
-          <div className="home-greeting-title" style={{ fontSize: 14, color: '#6A6A82', fontFamily: "'Inter', sans-serif", fontWeight: 400, textTransform: 'uppercase', letterSpacing: 0, display: 'flex', alignItems: 'baseline', gap: 6 }}>
+          <div className="home-greeting-title" style={{ fontSize: 14, color: 'var(--text-muted)', fontFamily: "'Inter', sans-serif", fontWeight: 400, textTransform: 'uppercase', letterSpacing: 0, display: 'flex', alignItems: 'baseline', gap: 6 }}>
             {getGreeting()}, <span className="home-greeting-name" style={{ fontSize: 24, color: 'var(--accent-text)', fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 'bold', letterSpacing: '1px' }}>{greetingName}</span>
           </div>
-          <div className="home-greeting-sub" style={{ fontSize: 13, color: '#6A6A82', textTransform: 'uppercase', fontWeight: 600 }}>
+          <div className="home-greeting-sub" style={{ fontSize: 13, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
             {cfg.divisionName} — {cfg.divisionSlogan}
           </div>
         </div>
@@ -335,12 +335,12 @@ export default function Home({ profile, onNavigate }) {
                 ) : (
                   <div className="premium-photo" style={{
                     width: 48, height: 48, borderRadius: 12, flexShrink: 0,
-                    background: '#131C27',
+                    background: 'var(--bg-secondary)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     border: '1px solid var(--accent-line)',
                   }}>
                     <span style={{
-                      fontSize: 20, fontWeight: 800, color: '#6A6A82',
+                      fontSize: 20, fontWeight: 800, color: 'var(--text-muted)',
                       fontFamily: "'Barlow Condensed',sans-serif",
                     }}>
                       {nomeAtleta(player) ? nomeAtleta(player).charAt(0).toUpperCase() : '?'}
@@ -350,7 +350,7 @@ export default function Home({ profile, onNavigate }) {
 
                 <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', marginRight: 2 }}>
                   <span className="premium-name" style={{
-                    fontSize: 14, fontWeight: 'bold', color: '#E8E8F0',
+                    fontSize: 14, fontWeight: 'bold', color: 'var(--text-primary)',
                     fontFamily: "'Inter',sans-serif", lineHeight: 1.2,
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                     display: 'inline-block'
@@ -358,7 +358,7 @@ export default function Home({ profile, onNavigate }) {
                     {nomeAtleta(player)}
                   </span>
                   <span style={{
-                    fontSize: 12, color: '#6A6A82', fontWeight: 400,
+                    fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500,
                     fontFamily: "'Inter',sans-serif", marginTop: 2,
                   }}>
                     {player.posicao || cfg.posicoes[0]}
@@ -373,7 +373,7 @@ export default function Home({ profile, onNavigate }) {
                   <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>
                     {resumoAvaliacoes(player, { compacto: true })} · {labelConfianca(player.nivel_confianca || nivelConfianca(player.total_votos))}
                   </div>
-                  <div style={{ width: 80, height: 4, background: '#1A2433', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
+                  <div style={{ width: 80, height: 4, background: 'var(--bg-secondary)', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
                     <div style={{ width: `${(Number(player.media_estrelas || 0) / 5) * 100}%`, height: '100%', background: 'var(--accent)', borderRadius: 2 }} />
                   </div>
                 </div>
