@@ -431,7 +431,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
           </div>
         ) : (
           <div
-            style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
           >
             {filtrados.map((j, i) => {
               const score = j.total_votos >= 1 ? Number(j.media_estrelas) : 0;
