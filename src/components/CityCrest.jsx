@@ -1,113 +1,202 @@
 /**
- * Escudo visual por cidade — cores e iniciais estáveis a partir do nome.
- * Não usa brasão oficial (copyright); cada cidade fica visualmente distinta.
+ * Bandeira do município (Wikimedia Commons) quando existir.
+ * Se não carregar, usa a bandeira do estado (UF).
+ * Arquivos oficiais em domínio público / PD-BrazilGov no Commons.
  */
 
-const PALETTES = [
-  ['#C8F135', '#1a2e05'], // limão
-  ['#4CC9F0', '#0a2540'], // ciano
-  ['#f472b6', '#3b0a2e'], // rosa
-  ['#a78bfa', '#1e1035'], // roxo
-  ['#fb923c', '#3b1a05'], // laranja
-  ['#34d399', '#06281c'], // verde
-  ['#fbbf24', '#3b2a05'], // âmbar
-  ['#60a5fa', '#0c1e3d'], // azul
-  ['#e879f9', '#2e0a3b'], // magenta
-  ['#2dd4bf', '#042f2e'], // teal
-  ['#f87171', '#3b0a0a'], // vermelho
-  ['#94a3b8', '#0f172a'], // slate
-];
+import { useMemo, useState } from 'react';
 
-function hashStr(s) {
-  let h = 0;
-  const str = String(s || '');
-  for (let i = 0; i < str.length; i++) {
-    h = (h * 31 + str.charCodeAt(i)) | 0;
-  }
-  return Math.abs(h);
-}
+/** Arquivos conhecidos no Wikimedia Commons (nome exato do File:) */
+const FLAG_FILES = {
+  'altamira|pa': ['Bandeira_de_Altamira_Pará.jpg', 'Bandeira_de_Altamira.jpg'],
+  'belém|pa': ['Bandeira_de_Belém_(Pará).png', 'Bandeira_de_Belém.png'],
+  'belem|pa': ['Bandeira_de_Belém_(Pará).png'],
+  'parauapebas|pa': ['Bandeira_de_Parauapebas_(Pará).svg', 'Band_peba_p.png'],
+  'ananindeua|pa': ['Bandeira_de_Ananindeua.svg', 'Bandeira_de_Ananindeua.png'],
+  'castanhal|pa': ['Bandeira_de_Castanhal.svg', 'Bandeira_de_Castanhal.png'],
+  'marabá|pa': ['Bandeira_de_Marabá.svg', 'Bandeira_de_Marabá.png', 'Bandeira_de_Maraba.png'],
+  'maraba|pa': ['Bandeira_de_Marabá.svg', 'Bandeira_de_Maraba.png'],
+  'santarém|pa': ['Bandeira_de_Santarém_(Pará).svg', 'Bandeira_de_Santarem_PA.png'],
+  'santarem|pa': ['Bandeira_de_Santarém_(Pará).svg'],
+  'tucuruí|pa': ['Bandeira_de_Tucuruí.svg', 'Bandeira_de_Tucurui.png'],
+  'tucurui|pa': ['Bandeira_de_Tucuruí.svg'],
+  'redenção|pa': ['Bandeira_de_Redenção_(Pará).svg'],
+  'redencao|pa': ['Bandeira_de_Redenção_(Pará).svg'],
+  'paragominas|pa': ['Bandeira_de_Paragominas.svg'],
+  'itaítuba|pa': ['Bandeira_de_Itaituba.svg', 'Bandeira_de_Itaituba.png'],
+  'itaituba|pa': ['Bandeira_de_Itaituba.svg'],
+  'bragança|pa': ['Bandeira_de_Bragança_(Pará).svg'],
+  'braganca|pa': ['Bandeira_de_Bragança_(Pará).svg'],
+  'abaetetuba|pa': ['Bandeira_de_Abaetetuba.svg'],
+  'cametá|pa': ['Bandeira_de_Cametá.svg'],
+  'cameta|pa': ['Bandeira_de_Cametá.svg'],
+  'barcarena|pa': ['Bandeira_de_Barcarena.svg'],
+  'marituba|pa': ['Bandeira_de_Marituba.svg'],
+  'canaã dos carajás|pa': ['Bandeira_de_Canaã_dos_Carajás.svg'],
+  'canaa dos carajas|pa': ['Bandeira_de_Canaã_dos_Carajás.svg'],
+  'xinguara|pa': ['Bandeira_de_Xinguara.svg'],
+  'dom eliseu|pa': ['Bandeira_de_Dom_Eliseu.svg'],
+  'ulianópolis|pa': ['Bandeira_de_Ulianópolis.svg'],
+  'tailândia|pa': ['Bandeira_de_Tailândia.svg'],
+  'tailandia|pa': ['Bandeira_de_Tailândia.svg'],
+};
 
-function iniciais(cidade, uf) {
-  const parts = String(cidade || '')
+/** Bandeiras dos estados (fallback) */
+const UF_FLAGS = {
+  AC: 'Bandeira_do_Acre.svg',
+  AL: 'Bandeira_de_Alagoas.svg',
+  AP: 'Bandeira_do_Amapá.svg',
+  AM: 'Bandeira_do_Amazonas.svg',
+  BA: 'Bandeira_da_Bahia.svg',
+  CE: 'Bandeira_do_Ceará.svg',
+  DF: 'Bandeira_do_Distrito_Federal_(Brasil).svg',
+  ES: 'Bandeira_do_Espírito_Santo.svg',
+  GO: 'Bandeira_de_Goiás.svg',
+  MA: 'Bandeira_do_Maranhão.svg',
+  MT: 'Bandeira_de_Mato_Grosso.svg',
+  MS: 'Bandeira_de_Mato_Grosso_do_Sul.svg',
+  MG: 'Bandeira_de_Minas_Gerais.svg',
+  PA: 'Bandeira_do_Pará.svg',
+  PB: 'Bandeira_da_Paraíba.svg',
+  PR: 'Bandeira_do_Paraná.svg',
+  PE: 'Bandeira_de_Pernambuco.svg',
+  PI: 'Bandeira_do_Piauí.svg',
+  RJ: 'Bandeira_do_estado_do_Rio_de_Janeiro.svg',
+  RN: 'Bandeira_do_Rio_Grande_do_Norte.svg',
+  RS: 'Bandeira_do_Rio_Grande_do_Sul.svg',
+  RO: 'Bandeira_de_Rondônia.svg',
+  RR: 'Bandeira_de_Roraima.svg',
+  SC: 'Bandeira_de_Santa_Catarina.svg',
+  SP: 'Bandeira_do_estado_de_São_Paulo.svg',
+  SE: 'Bandeira_de_Sergipe.svg',
+  TO: 'Bandeira_do_Tocantins.svg',
+};
+
+function normalizar(s) {
+  return String(s || '')
     .trim()
-    .split(/\s+/)
-    .filter((p) => p && !/^(de|da|do|das|dos|e)$/i.test(p));
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
-  if (parts.length === 1 && parts[0].length >= 2) {
-    return parts[0].slice(0, 2).toUpperCase();
-  }
-  if (uf) return String(uf).slice(0, 2).toUpperCase();
-  return (parts[0]?.[0] || '?').toUpperCase();
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
 }
 
-export function cidadePalette(cidade, uf) {
-  const h = hashStr(`${cidade}|${uf || ''}`);
-  return PALETTES[h % PALETTES.length];
+function commonsUrl(fileName, width = 128) {
+  // Special:FilePath redireciona para o upload correto
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}?width=${width}`;
+}
+
+function candidatosCidade(cidade, uf) {
+  const c = String(cidade || '').trim();
+  const u = String(uf || '').trim().toUpperCase();
+  const key = `${normalizar(c)}|${normalizar(u)}`;
+  const known = FLAG_FILES[key] || [];
+  const gen = [];
+  if (c) {
+    gen.push(`Bandeira_de_${c}.svg`);
+    gen.push(`Bandeira_de_${c}.png`);
+    gen.push(`Bandeira_de_${c}.jpg`);
+    if (u === 'PA') {
+      gen.push(`Bandeira_de_${c}_(Pará).svg`);
+      gen.push(`Bandeira_de_${c}_Pará.jpg`);
+      gen.push(`Bandeira_de_${c}_(Pará).png`);
+    }
+  }
+  // únicos
+  const seen = new Set();
+  return [...known, ...gen].filter((f) => {
+    if (seen.has(f)) return false;
+    seen.add(f);
+    return true;
+  });
 }
 
 export default function CityCrest({ cidade, uf, size = 42 }) {
-  const [fg, bg] = cidadePalette(cidade, uf);
-  const label = iniciais(cidade, uf);
-  const r = Math.round(size * 0.28);
+  const lista = useMemo(() => candidatosCidade(cidade, uf), [cidade, uf]);
+  const ufFile = UF_FLAGS[String(uf || '').toUpperCase()] || null;
+  const [idx, setIdx] = useState(0);
+  const [usouUf, setUsouUf] = useState(false);
+  const [falhouTudo, setFalhouTudo] = useState(false);
+
+  const src = useMemo(() => {
+    if (falhouTudo) return null;
+    if (usouUf && ufFile) return commonsUrl(ufFile, Math.round(size * 2.5));
+    if (idx < lista.length) return commonsUrl(lista[idx], Math.round(size * 2.5));
+    if (ufFile) return commonsUrl(ufFile, Math.round(size * 2.5));
+    return null;
+  }, [idx, lista, usouUf, ufFile, falhouTudo, size]);
+
+  function onError() {
+    if (!usouUf && idx + 1 < lista.length) {
+      setIdx((i) => i + 1);
+      return;
+    }
+    if (!usouUf && ufFile) {
+      setUsouUf(true);
+      return;
+    }
+    setFalhouTudo(true);
+  }
+
+  const w = size;
+  const h = Math.round(size * 0.72);
+
+  if (!src || falhouTudo) {
+    // Fallback limpo: retângulo com UF / iniciais
+    const label = (String(uf || '').toUpperCase() || String(cidade || '?').slice(0, 2)).toUpperCase();
+    return (
+      <div
+        aria-hidden
+        style={{
+          width: w,
+          height: h,
+          borderRadius: 6,
+          flexShrink: 0,
+          background: 'linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%)',
+          border: '1px solid var(--border)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: "'Barlow Condensed', sans-serif",
+          fontWeight: 900,
+          fontSize: Math.max(10, Math.round(size * 0.28)),
+          color: '#E2E8F0',
+          letterSpacing: '0.04em',
+        }}
+        title={cidade}
+      >
+        {label}
+      </div>
+    );
+  }
 
   return (
     <div
       aria-hidden
-      title={cidade ? `${cidade}${uf ? ` · ${uf}` : ''}` : ''}
+      title={cidade ? `Bandeira · ${cidade}${uf ? `-${uf}` : ''}` : ''}
       style={{
-        width: size,
-        height: size,
+        width: w,
+        height: h,
+        borderRadius: 6,
+        overflow: 'hidden',
         flexShrink: 0,
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        border: '1px solid var(--border)',
+        background: 'var(--bg-secondary)',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.25)',
       }}
     >
-      {/* Formato de escudo */}
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 48 48"
-        style={{ position: 'absolute', inset: 0 }}
-      >
-        <defs>
-          <linearGradient id={`crest-${hashStr(cidade + uf)}`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={fg} stopOpacity="0.95" />
-            <stop offset="100%" stopColor={bg} stopOpacity="1" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M24 2 L42 8 L42 22 C42 34 33 42 24 46 C15 42 6 34 6 22 L6 8 Z"
-          fill={`url(#crest-${hashStr(cidade + uf)})`}
-          stroke={fg}
-          strokeWidth="1.5"
-          strokeOpacity="0.5"
-        />
-        <path
-          d="M24 6 L38 11 L38 22 C38 31 31 38 24 41 C17 38 10 31 10 22 L10 11 Z"
-          fill="none"
-          stroke="rgba(255,255,255,0.15)"
-          strokeWidth="1"
-        />
-      </svg>
-      <span
+      <img
+        src={src}
+        alt=""
+        onError={onError}
+        loading="lazy"
+        referrerPolicy="no-referrer"
         style={{
-          position: 'relative',
-          zIndex: 1,
-          fontFamily: "'Barlow Condensed', sans-serif",
-          fontWeight: 900,
-          fontSize: Math.max(11, Math.round(size * 0.34)),
-          color: '#fff',
-          letterSpacing: '0.02em',
-          textShadow: '0 1px 2px rgba(0,0,0,0.45)',
-          lineHeight: 1,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          display: 'block',
         }}
-      >
-        {label}
-      </span>
+      />
     </div>
   );
 }
