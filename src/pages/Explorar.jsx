@@ -8,7 +8,8 @@ import {
   resumoAvaliacoes,
 } from '../lib/ranking';
 import { useEsporte } from '../contexts/EsporteContext';
-import { IconBuscar, IconLocalizacao, IconVoltar, IconRanking } from '../components/Icons';
+import { IconBuscar, IconVoltar, IconRanking } from '../components/Icons';
+import CityCrest from '../components/CityCrest';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { lerCache, salvarCache } from '../lib/pageCache';
 
@@ -184,20 +185,7 @@ export default function Explorar({ profile, onNavigate }) {
           <div className="premium-card" style={{ borderRadius: 14, padding: 16, marginTop: 16, marginBottom: 20 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
               <div style={{ display: 'flex', gap: 12 }}>
-                <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 12,
-                    background: 'var(--accent-dim)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <IconLocalizacao size={18} color="var(--accent)" />
-                </div>
+                <CityCrest cidade={selected.cidade} uf={selected.uf} size={44} />
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Radar da cidade</div>
                   <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4, lineHeight: 1.4 }}>
@@ -420,20 +408,7 @@ export default function Explorar({ profile, onNavigate }) {
                     width: '100%',
                   }}
                 >
-                  <div
-                    style={{
-                      width: 42,
-                      height: 42,
-                      borderRadius: 12,
-                      background: 'var(--accent-dim)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <IconLocalizacao size={18} color="var(--accent)" />
-                  </div>
+                  <CityCrest cidade={c.cidade} uf={c.uf} size={42} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                       <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-primary)' }}>
