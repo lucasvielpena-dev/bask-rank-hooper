@@ -95,6 +95,20 @@ export const jogadoresAPI = {
    * Cidades com atletas ativos (para busca do Explorar).
    * Agrega no cliente: evita RPC nova e funciona com RLS atual.
    */
+
+  /** Nomes que NÃO são município IBGE (povoado/rua/erro de GPS) */
+  const CIDADES_INVALIDAS = new Set([
+    'leste', 'betel', 'leste para', 'leste pará', 'betel para', 'betel pará',
+  ]);
+  function cidadeInvalida(nome) {
+    const n = String(nome || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (!n) return true;
+    if (CIDADES_INVALIDAS.has(n)) return true;
+    // só "leste" ou "betel" como palavra única
+    if (/^(leste|betel)$/.test(n)) return true;
+    return false;
+  }
+
   listarCidades: async (esporte = 'basquete') => {
     const { data, error } = await supabase
       .from('jogadores')
@@ -108,7 +122,7 @@ export const jogadoresAPI = {
     const map = new Map();
     for (const j of data || []) {
       const cidade = String(j.cidade || '').trim();
-      if (!cidade) continue;
+      if (!cidade || cidadeInvalida(cidade)) continue;
       const uf = String(j.uf || '').trim().toUpperCase();
       const key = `${cidade.toLowerCase()}|${uf}`;
       let row = map.get(key);

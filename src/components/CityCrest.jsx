@@ -1,5 +1,7 @@
 /**
  * Bandeira municipal só quando temos arquivo VERIFICADO no Commons.
+ * MBI Simbolopedia (mbi.com.br) tem o acervo completo, mas as imagens
+ * em alta resolução são produto comercial (marca d'água) — não usamos hotlink.
  * Caso contrário, bandeira do estado na hora (sem tentar nomes inventados —
  * isso era lento e às vezes puxava bandeira errada).
  */
