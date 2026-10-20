@@ -31,7 +31,7 @@
   /* ===== Design system (máx. 3 tamanhos) ===== */
   --fs-sm: 12px;   /* legendas, chips, meta */
   --fs-md: 14px;   /* corpo, botões, listas */
-  --fs-lg: 22px;   /* títulos de página */
+  --fs-lg: 24px;   /* títulos de página */
   --icon-sm: 16px;
   --icon-md: 20px;
   --icon-lg: 24px;
@@ -332,9 +332,9 @@ input:focus { border-color:var(--accent); }
 
 /* Home */
 .home-page { background:transparent; min-height:100%; }
-.home-container { width:100%; max-width:1120px; margin:0 auto; padding:10px 14px 0; padding-bottom:60px; }
+.home-container { width:100%; max-width:1120px; margin:0 auto; padding:10px 16px 0; padding-bottom:60px; }
 .home-greeting { margin-bottom:10px; }
-.home-greeting-title { font-size:clamp(22px,5vw,28px); font-weight:800; color:#FFFFFF; line-height:1.2; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.02em; }
+.home-greeting-title { font-size:clamp(24px,5.5vw,30px); font-weight:800; color:var(--text-primary); line-height:1.2; font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.02em; }
 .home-greeting-title .home-greeting-name { color:var(--accent-text); }
 .home-greeting-sub { color:#8A8A9A; font-size:clamp(12px,3vw,14px); margin-top:6px; font-weight:400; }
 .home-section-label {
@@ -589,7 +589,6 @@ input:focus { border-color:var(--accent); }
   background: #FFFFFF !important;
   border: 0.5px solid rgba(0,0,0,0.10) !important;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05) !important;
-  border-radius: 14px !important;
 }
 .light-theme .premium-card-border-green {
   background: linear-gradient(145deg, #FFFFFF, #F5F3EE) !important;
@@ -842,7 +841,7 @@ body {
 
 /* Better section breathing room */
 .home-container {
-  padding-top: 14px !important;
+  padding-top: 16px !important;
   padding-bottom: 80px !important;
 }
 
@@ -909,7 +908,7 @@ input, select, textarea {
   /* ===== Design system (máx. 3 tamanhos) ===== */
   --fs-sm: 12px;   /* legendas, chips, meta */
   --fs-md: 14px;   /* corpo, botões, listas */
-  --fs-lg: 22px;   /* títulos de página */
+  --fs-lg: 24px;   /* títulos de página */
   --icon-sm: 16px;
   --icon-md: 20px;
   --icon-lg: 24px;
@@ -1367,16 +1366,19 @@ h1, .page-title {
   font-weight: 800 !important;
 }
 
-/* Cards modern — padrão compacto (Home / Atletas / listas) */
+/* Cards modern — padrão compacto (Home / Atletas / listas)
+   Padding/borda/sombra são DEFAULT, sem !important: card que precisa de mais
+   respiro (hero, painel, modal) passa o próprio padding inline e ele vale.
+   Ficam forçados só o fundo e o raio, que são a identidade visual do card. */
 .card,
 .premium-card {
   background: linear-gradient(165deg, rgba(30, 39, 54, 0.9) 0%, rgba(18, 24, 32, 0.95) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 12px !important;
-  padding: 10px 12px !important;
+  padding: 10px 12px;
   box-shadow:
     0 4px 16px rgba(0, 0, 0, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   transition: transform 0.25s var(--ease-out), border-color 0.25s, box-shadow 0.25s;
 }
 .card:active,
@@ -1387,7 +1389,7 @@ h1, .page-title {
   border-color: var(--accent-line) !important;
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* Buttons modern */
@@ -2404,7 +2406,6 @@ button.btn {
 body.light-theme .card,
 body.light-theme .premium-card {
   border-radius: 12px !important;
-  padding: 10px 12px !important;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04) !important;
 }
 /* lista de atletas / destaques: densidade tipo Home */

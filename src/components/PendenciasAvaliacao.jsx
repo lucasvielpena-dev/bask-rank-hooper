@@ -151,17 +151,17 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
   return (
     <>
       {mostrarCartao && (
-        <div className="premium-card" style={{ borderRadius: 14, padding: '14px', marginBottom: 20 }}>
+        <div className="premium-card" style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{
-                fontSize: 15, fontWeight: 800, color: 'var(--text-primary)',
+                fontSize: 14, fontWeight: 800, color: 'var(--text-primary)',
                 fontFamily: "'Barlow Condensed',sans-serif",
                 textTransform: 'uppercase', letterSpacing: '0.04em', lineHeight: 1.1,
               }}>
                 Quem jogou com você
               </div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 3, fontFamily: "'Inter',sans-serif" }}>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 3, fontFamily: "'Inter',sans-serif" }}>
                 {partida.time_a} {partida.placar_time_a ?? 0} x {partida.placar_time_b ?? 0} {partida.time_b}
                 {dataCurta(partida) ? ` · ${dataCurta(partida)}` : ''}
               </div>
@@ -181,13 +181,13 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
-                    fontSize: 13, fontWeight: 700, color: 'var(--text-primary)',
+                    fontSize: 14, fontWeight: 700, color: 'var(--text-primary)',
                     whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                     fontFamily: "'Inter',sans-serif",
                   }}>
                     {nomeAtleta(p.jogador)}
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif" }}>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif" }}>
                     {p.jogador?.posicao || 'Atleta'}
                   </div>
                 </div>
@@ -195,7 +195,8 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
                   type="button"
                   onClick={() => setAvaliarAgora(p.jogador)}
                   style={{
-                    flexShrink: 0, padding: '6px 14px', borderRadius: 99,
+                    flexShrink: 0, padding: '0 14px', minHeight: 34, lineHeight: 1.2,
+                    borderRadius: 999,
                     background: 'transparent', border: '1px solid var(--accent-line)',
                     color: 'var(--accent-text)', fontSize: 12, fontWeight: 700,
                     cursor: 'pointer', fontFamily: "'Inter',sans-serif",
@@ -208,7 +209,7 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
           </div>
 
           {restantes > 0 && (
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8, fontFamily: "'Inter',sans-serif" }}>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8, fontFamily: "'Inter',sans-serif" }}>
               e mais {restantes} {restantes === 1 ? 'jogador' : 'jogadores'} desta partida
             </div>
           )}

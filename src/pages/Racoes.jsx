@@ -312,10 +312,10 @@ export default function Racoes({ profile, onNavigate }) {
   const gradeAtual = GRADES.find((g) => g.key === notaGrade) || null;
 
   return (
-    <div className="page-content" style={{ padding: '16px 14px 80px' }}>
+    <div className="page-content" style={{ padding: '16px 16px 80px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 900, fontFamily: "'Barlow Condensed', sans-serif" }}>RACHÕES</h1>
+          <h1 style={{ margin: 0, fontSize: 'var(--fs-lg)', fontWeight: 900, fontFamily: "'Barlow Condensed', sans-serif" }}>RACHÕES</h1>
           <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: 13 }}>
             Entre, jogue e avalie
           </p>

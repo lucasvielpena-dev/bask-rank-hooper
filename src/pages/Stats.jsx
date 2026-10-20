@@ -365,7 +365,7 @@ export default function Stats({ profile, onNavigate }) {
 
   return (
     <div className="page-content home-page" style={{ position: 'relative' }}>
-      <div style={{ padding: '12px 12px 0', position: 'relative', zIndex: 1 }}>
+      <div style={{ padding: '16px 16px 0', position: 'relative', zIndex: 1 }}>
         
         {/* Cabeçalho Voltar */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>

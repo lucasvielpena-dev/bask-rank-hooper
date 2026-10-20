@@ -106,7 +106,7 @@ export default function Destaques({ profile, onNavigate }) {
 
   return (
     <div className="page-content" style={{ background: 'var(--bg-primary)', position: 'relative' }}>
-      <div style={{ padding: '20px 16px 28px', position: 'relative', zIndex: 1, maxWidth: 560, margin: '0 auto' }}>
+      <div style={{ padding: '16px 16px 28px', position: 'relative', zIndex: 1, maxWidth: 560, margin: '0 auto' }}>
 
         {/* Header — mesmo padrão Atletas */}
         <div style={{ marginBottom: 20 }}>
@@ -134,7 +134,7 @@ export default function Destaques({ profile, onNavigate }) {
           <h1
             style={{
               color: 'var(--text-primary)',
-              fontSize: 24,
+              fontSize: 'var(--fs-lg)',
               fontWeight: 900,
               fontFamily: "'Barlow Condensed', sans-serif",
               letterSpacing: '0.02em',

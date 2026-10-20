@@ -946,7 +946,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     <div className="page-content home-page" style={{ position: 'relative' }}>
       {/* TELA 1: LISTAGEM DE PARTIDAS / HISTÓRICO */}
       {tela === 'lista' && (
-        <div className="home-container" style={{ padding: '12px 12px 0', position: 'relative', zIndex: 1 }}>
+        <div className="home-container" style={{ padding: '16px 16px 0', position: 'relative', zIndex: 1 }}>
           {/* Header + tabs na mesma lógica visual */}
           <div style={{ marginBottom: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 10 }}>

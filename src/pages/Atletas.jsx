@@ -292,14 +292,14 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
 
   return (
     <div className="page-content" style={{ background: 'var(--bg-primary)', position: 'relative' }}>
-      <div style={{ padding: '20px 16px 0', position: 'relative', zIndex: 1 }}>
+      <div style={{ padding: '16px 16px 0', position: 'relative', zIndex: 1 }}>
 
         {/* Header */}
         <div style={{ marginBottom: 12 }}>
-          <h1 style={{ color: '#FFFFFF', fontSize: 24, fontWeight: 900, fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.02em', margin: 0 }}>
+          <h1 style={{ color: 'var(--text-primary)', fontSize: 'var(--fs-lg)', fontWeight: 900, fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.02em', margin: 0 }}>
             ATLETAS
           </h1>
-          <p style={{ color: '#A1A1AA', fontSize: 13, fontFamily: "'Inter', sans-serif", marginTop: 2 }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: "'Inter', sans-serif", marginTop: 2 }}>
             {selectedCity || 'Sua cidade'} • {jogadores.length} atletas
           </p>
         </div>
@@ -319,7 +319,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
               style={{
                 padding: '12px 10px',
                 borderRadius: 12,
-                border: '1.5px solid rgba(200,241,53,0.55)',
+                border: '1.5px solid var(--accent)',
                 background: 'var(--accent)',
                 color: '#0C0C14',
                 fontWeight: 800,
@@ -327,7 +327,6 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 letterSpacing: '0.04em',
                 cursor: 'default',
                 fontFamily: "'Inter', sans-serif",
-                boxShadow: '0 4px 14px rgba(200,241,53,0.2)',
               }}
             >
               MINHA CIDADE

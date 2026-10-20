@@ -124,7 +124,7 @@ export default function Explorar({ profile, onNavigate }) {
   const topGeral = useMemo(() => atletas.slice(0, 15), [atletas]);
 
   const shell = {
-    padding: '20px 16px 28px',
+    padding: '16px 16px 28px',
     position: 'relative',
     zIndex: 1,
     maxWidth: 560,
@@ -166,7 +166,7 @@ export default function Explorar({ profile, onNavigate }) {
           <h1
             style={{
               color: 'var(--text-primary)',
-              fontSize: 24,
+              fontSize: 'var(--fs-lg)',
               fontWeight: 900,
               fontFamily: "'Barlow Condensed', sans-serif",
               letterSpacing: '0.02em',
@@ -282,7 +282,7 @@ export default function Explorar({ profile, onNavigate }) {
         <h1
           style={{
             color: 'var(--text-primary)',
-            fontSize: 24,
+            fontSize: 'var(--fs-lg)',
             fontWeight: 900,
             fontFamily: "'Barlow Condensed', sans-serif",
             letterSpacing: '0.02em',
@@ -328,7 +328,7 @@ export default function Explorar({ profile, onNavigate }) {
             style={{
               padding: '12px 10px',
               borderRadius: 12,
-              border: '1.5px solid rgba(200,241,53,0.55)',
+              border: '1.5px solid var(--accent)',
               background: 'var(--accent)',
               color: '#0C0C14',
               fontWeight: 800,
@@ -336,7 +336,6 @@ export default function Explorar({ profile, onNavigate }) {
               letterSpacing: '0.04em',
               cursor: 'default',
               fontFamily: "'Inter', sans-serif",
-              boxShadow: '0 4px 14px rgba(200,241,53,0.2)',
             }}
           >
             CIDADES
