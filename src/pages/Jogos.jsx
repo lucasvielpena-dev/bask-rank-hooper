@@ -921,7 +921,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     try {
       const { data: roster } = await supabase
         .from('partida_jogadores')
-        .select('id, jogador_id, time, jogador:jogadores(nome, apelido, foto_url, posicao)')
+        .select('id, jogador_id, time, pontos, assistencias, rebotes, turnovers, faltas, jogador:jogadores(nome, apelido, foto_url, posicao)')
         .eq('partida_id', p.id);
       setDetalheJogadores(roster || []);
 
@@ -1995,6 +1995,37 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               </button>
             )}
 
+            {/* Box score da mesa (se houver anotação) */}
+            {detalheJogadores.some(j => (j.pontos || j.assistencias || j.rebotes || j.turnovers || j.faltas)) && (
+              <div className="card" style={{ marginBottom: 12, padding: 10 }}>
+                <div style={{ fontSize: 12, fontWeight: 800, marginBottom: 8, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                  Box score
+                </div>
+                {['A', 'B'].map((tm) => {
+                  const rows = detalheJogadores.filter((j) => j.time === tm);
+                  if (!rows.length) return null;
+                  const nomeT = tm === 'A' ? detalhe.time_a : detalhe.time_b;
+                  return (
+                    <div key={tm} style={{ marginBottom: 8 }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4 }}>{nomeT}</div>
+                      {rows
+                        .slice()
+                        .sort((a, b) => (b.pontos || 0) - (a.pontos || 0))
+                        .map((j) => (
+                          <div key={j.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '3px 0', borderBottom: '1px solid var(--border)' }}>
+                            <span style={{ fontWeight: 600 }}>{nomeAtleta(j.jogador)}</span>
+                            <span style={{ fontFamily: 'monospace', color: 'var(--text-muted)' }}>
+                              {j.pontos || 0}/{j.assistencias || 0}/{j.rebotes || 0}
+                            </span>
+                          </div>
+                        ))}
+                    </div>
+                  );
+                })}
+                <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 6 }}>PTS / AST / REB</div>
+              </div>
+            )}
+
             <div className="section-title">Quem jogou — avaliar</div>
             <LegendaRendimento />
             <div className="card" style={{ marginBottom: 12 }}>
@@ -2006,6 +2037,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   const resumo = detalheResumo[j.jogador_id];
                   const minha = minhasNotas[j.jogador_id];
                   const souEu = profile?.player_id === j.jogador_id;
+                  const temBox = (j.pontos || j.assistencias || j.rebotes || j.turnovers || j.faltas);
                   return (
                     <div key={j.id} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
                       <span className="badge" style={{ minWidth: 20, textAlign: 'center' }}>{j.time}</span>
@@ -2016,6 +2048,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                       )}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nome}</div>
+                        {temBox ? (
+                          <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace', marginTop: 2 }}>
+                            {j.pontos || 0} PTS · {j.assistencias || 0} AST · {j.rebotes || 0} REB · {j.turnovers || 0} TO · {j.faltas || 0} F
+                          </div>
+                        ) : null}
                         <div style={{ marginTop: 2 }}>
                           <RendimentoPill media={resumo?.media} total={resumo?.total} showLabel />
                         </div>

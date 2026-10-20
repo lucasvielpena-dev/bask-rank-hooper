@@ -96,9 +96,14 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
       const { data: prof } = await supabase.from('profiles').select('altura, idade, id').eq('player_id', jogador.id).maybeSingle();
       if (prof) setProfileData(prof);
 
-      const { data: myMatches } = await supabase.from('partida_jogadores').select('time, partida:partidas(*)').eq('jogador_id', jogador.id);
+      const { data: myMatches } = await supabase
+        .from('partida_jogadores')
+        .select('time, pontos, assistencias, rebotes, turnovers, faltas, partida:partidas(*)')
+        .eq('jogador_id', jogador.id);
 
       let totalGames = 0, wins = 0, losses = 0, winRate = 0;
+      let totalPoints = 0, totalRebounds = 0, totalAssists = 0, totalTO = 0, totalFaltas = 0;
+      let gamesWithStats = 0;
       const historyList = [];
 
       if (myMatches) {
@@ -110,27 +115,55 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
           const scoreOpponent = myTeam === 'A' ? p.placar_time_b : p.placar_time_a;
           const won = scoreMyTeam > scoreOpponent;
           if (won) wins++; else losses++;
-          historyList.push({ id: p.id, data: p.created_at, timeA: p.time_a, timeB: p.time_b, placarA: p.placar_time_a, placarB: p.placar_time_b, vencedor: won ? 'Ganhou' : 'Perdeu' });
+          const pts = Number(m.pontos) || 0;
+          const ast = Number(m.assistencias) || 0;
+          const reb = Number(m.rebotes) || 0;
+          const to = Number(m.turnovers) || 0;
+          const fal = Number(m.faltas) || 0;
+          if (pts + ast + reb + to + fal > 0) gamesWithStats += 1;
+          totalPoints += pts;
+          totalAssists += ast;
+          totalRebounds += reb;
+          totalTO += to;
+          totalFaltas += fal;
+          historyList.push({
+            id: p.id,
+            data: p.created_at,
+            timeA: p.time_a,
+            timeB: p.time_b,
+            placarA: p.placar_time_a,
+            placarB: p.placar_time_b,
+            vencedor: won ? 'Ganhou' : 'Perdeu',
+            pontos: pts,
+            assistencias: ast,
+            rebotes: reb,
+            turnovers: to,
+            faltas: fal,
+          });
         });
         totalGames = finishedMatches.length;
         winRate = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
         setHistoricoJogos(historyList);
       }
 
-      const { data: myStats } = await supabase.from('estatisticas_partida').select('pontos, rebotes, assistencias, tocos, roubos_bola').eq('jogador_id', jogador.id);
-
-      let totalPoints = 0, totalRebounds = 0, totalAssists = 0, totalSteals = 0, totalBlocks = 0;
-      if (myStats) {
-        myStats.forEach(s => {
-          totalPoints += s.pontos || 0;
-          totalRebounds += s.rebotes || 0;
-          totalAssists += s.assistencias || 0;
-          totalSteals += s.roubos_bola || 0;
-          totalBlocks += s.tocos || 0;
-        });
-      }
-
-      setCommunityStats({ games: totalGames, wins, losses, winRate, points: totalPoints, rebounds: totalRebounds, assists: totalAssists, steals: totalSteals, blocks: totalBlocks });
+      const div = gamesWithStats > 0 ? gamesWithStats : (totalGames || 1);
+      setCommunityStats({
+        games: totalGames,
+        wins,
+        losses,
+        winRate,
+        points: totalPoints,
+        rebounds: totalRebounds,
+        assists: totalAssists,
+        turnovers: totalTO,
+        faltas: totalFaltas,
+        gamesWithStats,
+        ppg: totalGames ? (totalPoints / div) : 0,
+        apg: totalGames ? (totalAssists / div) : 0,
+        rpg: totalGames ? (totalRebounds / div) : 0,
+        steals: 0,
+        blocks: 0,
+      });
 
       // Linha de evolução: média mensal das avaliações recebidas (notas de
       // partida + votos de estrela). Mesma fonte usada na tela de Perfil.
@@ -234,9 +267,10 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
 
   const isMe = minhaId && (minhaId === localJogador.criado_por || (profileData && minhaId === profileData.id));
   const totalGamesNum = communityStats?.games || 0;
-  const ppj = totalGamesNum > 0 ? (communityStats.points / totalGamesNum).toFixed(1) : '0.0';
-  const reb = totalGamesNum > 0 ? (communityStats.rebounds / totalGamesNum).toFixed(1) : '0.0';
-  const ast = totalGamesNum > 0 ? (communityStats.assists / totalGamesNum).toFixed(1) : '0.0';
+  const statsGames = communityStats?.gamesWithStats || totalGamesNum || 0;
+  const ppj = statsGames > 0 ? (communityStats.points / statsGames).toFixed(1) : '0.0';
+  const reb = statsGames > 0 ? (communityStats.rebounds / statsGames).toFixed(1) : '0.0';
+  const ast = statsGames > 0 ? (communityStats.assists / statsGames).toFixed(1) : '0.0';
   const stl = totalGamesNum > 0 ? (communityStats.steals / totalGamesNum).toFixed(1) : '0.0';
   const blk = totalGamesNum > 0 ? (communityStats.blocks / totalGamesNum).toFixed(1) : '0.0';
 
@@ -356,7 +390,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
                 {!hasAnyGameStats ? (
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '20px', color: '#6A6A82' }}>
                     <IconSportDynamic sport={esporte} size={16} color="#6A6A82" />
-                    <span>Nenhuma partida registrada ainda</span>
+                    <span>{totalGamesNum > 0 ? 'Partidas sem box score da mesa ainda' : 'Nenhuma partida registrada ainda'}</span>
                   </div>
                 ) : (
                   <div style={{ display: 'grid', gridTemplateColumns: `repeat(${gameStats.length}, 1fr)`, gap: 8, textAlign: 'center' }}>
@@ -465,12 +499,19 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
                       <div style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '24px 0', fontFamily: "'Inter',sans-serif" }}>Nenhuma partida finalizada</div>
                     ) : (
                       historicoJogos.map(h => (
-                        <div key={h.id} style={{ background: 'var(--bg-card)', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <div>
-                            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Inter',sans-serif" }}>{h.timeA} {h.placarA} x {h.placarB} {h.timeB}</div>
-                            <span style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif" }}>{new Date(h.data).toLocaleDateString('pt-BR')}</span>
+                        <div key={h.id} style={{ background: 'var(--bg-card)', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--border)' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                              <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', fontFamily: "'Inter',sans-serif" }}>{h.timeA} {h.placarA} x {h.placarB} {h.timeB}</div>
+                              <span style={{ fontSize: 10, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif" }}>{new Date(h.data).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <span style={{ fontSize: 10, fontWeight: 800, color: h.vencedor === 'Ganhou' ? '#10B981' : '#EF4444', background: h.vencedor === 'Ganhou' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', padding: '2px 8px', borderRadius: 4, fontFamily: "'Inter',sans-serif" }}>{h.vencedor.toUpperCase()}</span>
                           </div>
-                          <span style={{ fontSize: 10, fontWeight: 800, color: h.vencedor === 'Ganhou' ? '#10B981' : '#EF4444', background: h.vencedor === 'Ganhou' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', padding: '2px 8px', borderRadius: 4, fontFamily: "'Inter',sans-serif" }}>{h.vencedor.toUpperCase()}</span>
+                          {(h.pontos || h.assistencias || h.rebotes || h.turnovers || h.faltas) ? (
+                            <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace', marginTop: 6 }}>
+                              {h.pontos || 0} PTS · {h.assistencias || 0} AST · {h.rebotes || 0} REB · {h.turnovers || 0} TO · {h.faltas || 0} F
+                            </div>
+                          ) : null}
                         </div>
                       ))
                     )}
