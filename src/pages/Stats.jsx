@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
 import { useEsporte } from '../contexts/EsporteContext';
@@ -30,7 +30,6 @@ export default function Stats({ profile, onNavigate }) {
   const [myRank, setMyRank] = useState(_cache?.myRank || '--');
   const [evolucao, setEvolucao] = useState(_cache?.evolucao || []);
   const [loadingEvolucao, setLoadingEvolucao] = useState(!_cache);
-  const [careerStats, setCareerStats] = useState(_cache?.careerStats || { games: 0, points: 0, rebounds: 0, assists: 0, steals: 0, blocks: 0 });
   // Contribuição da própria pessoa (quantos atletas ela já avaliou). É só
   // informação dela — de propósito, não existe ranking de quem mais avalia.
   const [avaliouQtd, setAvaliouQtd] = useState(null);
@@ -71,8 +70,8 @@ export default function Stats({ profile, onNavigate }) {
   // Guarda o último resultado para a tela já abrir preenchida na próxima visita.
   useEffect(() => {
     if (loading) return;
-    salvarCache('stats', { historicoPrivado, mediasPrivadas, myPlayerInfo, myRank, evolucao, careerStats, historicoQuadra });
-  }, [loading, historicoPrivado, mediasPrivadas, myPlayerInfo, myRank, evolucao, careerStats, historicoQuadra]);
+    salvarCache('stats', { historicoPrivado, mediasPrivadas, myPlayerInfo, myRank, evolucao, historicoQuadra });
+  }, [loading, historicoPrivado, mediasPrivadas, myPlayerInfo, myRank, evolucao, historicoQuadra]);
 
   async function loadAllStats() {
     setLoading(true);
@@ -170,7 +169,6 @@ export default function Stats({ profile, onNavigate }) {
           .select('time, partida:partidas(*)')
           .eq('jogador_id', profile.player_id);
         
-        let totalGames = 0;
         const quadraList = [];
         
         if (myMatches) {
@@ -181,8 +179,6 @@ export default function Stats({ profile, onNavigate }) {
             const scoreMyTeam = myTeam === 'A' ? p.placar_time_a : p.placar_time_b;
             const scoreOpponent = myTeam === 'A' ? p.placar_time_b : p.placar_time_a;
             const won = scoreMyTeam > scoreOpponent;
-            
-            if (won) totalGames++;
             
             quadraList.push({
               id: p.id,
@@ -195,39 +191,7 @@ export default function Stats({ profile, onNavigate }) {
             });
           });
           setHistoricoQuadra(quadraList);
-          totalGames = finishedMatches.length;
         }
-
-        // Obter estatísticas oficiais acumuladas
-        const { data: myStats } = await supabase
-          .from('estatisticas_partida')
-          .select('pontos, rebotes, assistencias, tocos, roubos_bola')
-          .eq('jogador_id', profile.player_id);
-
-        let totalPoints = 0;
-        let totalRebounds = 0;
-        let totalAssists = 0;
-        let totalSteals = 0;
-        let totalBlocks = 0;
-
-        if (myStats) {
-          myStats.forEach(s => {
-            totalPoints += s.pontos || 0;
-            totalRebounds += s.rebotes || 0;
-            totalAssists += s.assistencias || 0;
-            totalSteals += s.roubos_bola || 0;
-            totalBlocks += s.tocos || 0;
-          });
-        }
-
-        setCareerStats({
-          games: totalGames,
-          points: totalPoints,
-          rebounds: totalRebounds,
-          assists: totalAssists,
-          steals: totalSteals,
-          blocks: totalBlocks
-        });
       }
 
       // Contribuição própria: quantos atletas já receberam nota minha.
@@ -340,18 +304,6 @@ export default function Stats({ profile, onNavigate }) {
     }
   }
 
-  // Cálculos de médias oficiais/carreira
-  const { ppj, reb, ast, stl, blk } = useMemo(() => {
-    const totalGamesNum = careerStats.games || 0;
-    return {
-      ppj: totalGamesNum > 0 ? (careerStats.points / totalGamesNum).toFixed(1) : '0.0',
-      reb: totalGamesNum > 0 ? (careerStats.rebounds / totalGamesNum).toFixed(1) : '0.0',
-      ast: totalGamesNum > 0 ? (careerStats.assists / totalGamesNum).toFixed(1) : '0.0',
-      stl: totalGamesNum > 0 ? (careerStats.steals / totalGamesNum).toFixed(1) : '0.0',
-      blk: totalGamesNum > 0 ? (careerStats.blocks / totalGamesNum).toFixed(1) : '0.0',
-    };
-  }, [careerStats]);
-
   const starsVal = myPlayerInfo?.media_estrelas || 0;
   const badgeText = starsVal >= 4.5 ? 'ELITE' : starsVal >= 4.0 ? 'DESTAQUE' : starsVal >= 3.5 ? 'PROMESSA' : '';
 
@@ -443,32 +395,6 @@ export default function Stats({ profile, onNavigate }) {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Linha de Médias de Quadra */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
-          gap: 'clamp(4px, 1vw, 8px)',
-          background: 'var(--bg-secondary)',
-          padding: '6px 4px',
-          borderRadius: '8px',
-          border: '1px solid var(--border)',
-          textAlign: 'center',
-          marginBottom: 10
-        }}>
-          {[
-            { label: 'PPJ', val: ppj },
-            { label: 'REB', val: reb },
-            { label: 'AST', val: ast },
-            { label: 'STL', val: stl },
-            { label: 'BLK', val: blk },
-          ].map(item => (
-            <div key={item.label}>
-              <div style={{ fontSize: 'clamp(13px, 3.5vw, 16px)', fontWeight: 800, color: 'var(--text-primary)' }}>{item.val}</div>
-              <div style={{ fontSize: 'clamp(8px, 2vw, 9px)', color: 'var(--text-muted)', fontWeight: 600, marginTop: 2 }}>{item.label}</div>
-            </div>
-          ))}
         </div>
 
         {/* Contribuição própria — só a pessoa vê a dela. De propósito, não
