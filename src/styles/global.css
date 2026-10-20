@@ -2415,50 +2415,184 @@ body.light-theme .premium-card {
   gap: 8px;
 }
 
-/* Modo mesa — feedback ao anotar */
+/* Modo mesa — layout limpo + feedback */
 @keyframes mesaStatFlash {
-  0% { color: var(--accent-text); transform: scale(1.25); text-shadow: 0 0 12px rgba(200,241,53,0.55); }
-  60% { color: var(--accent-text); transform: scale(1.08); }
-  100% { color: var(--text-muted); transform: scale(1); text-shadow: none; }
+  0% { background: var(--accent); color: #0C0C14; transform: scale(1.12); }
+  100% { background: var(--accent-soft); color: var(--accent-text); transform: scale(1); }
 }
 @keyframes mesaBtnPress {
-  0% { transform: scale(0.92); filter: brightness(1.15); }
-  100% { transform: scale(1); filter: none; }
+  0% { transform: scale(0.94); }
+  100% { transform: scale(1); }
 }
-.mesa-stat-line { font-family: monospace; font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-.mesa-stat-line .mesa-stat-flash {
-  display: inline-block;
-  animation: mesaStatFlash 0.55s ease-out;
-  color: var(--accent-text);
+
+.mesa-panel {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+.mesa-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.mesa-team-label {
+  font-size: 11px;
   font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 12px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
 }
+
+.mesa-player {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 8px;
+  background: var(--bg-secondary);
+}
+
+.mesa-player-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.mesa-player-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mesa-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.mesa-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  min-width: 52px;
+  justify-content: center;
+}
+
+.mesa-chip strong {
+  color: var(--text-primary);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.mesa-chip.is-flash {
+  animation: mesaStatFlash 0.5s ease-out;
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.mesa-chip.is-flash strong {
+  color: var(--accent-text);
+}
+
+.mesa-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mesa-actions-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mesa-actions-row {
+  display: flex;
+  gap: 5px;
+}
+
 .mesa-btn {
-  flex: 1 1 auto;
-  min-width: 40px;
-  padding: 7px 4px;
-  border-radius: 999px;
+  flex: 1;
+  min-height: 34px;
+  padding: 6px 4px;
+  border-radius: 10px;
   border: 1px solid var(--accent-line);
   background: var(--accent-soft);
   color: var(--accent-text);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;
-  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+  transition: transform 0.12s ease, background 0.12s ease;
 }
+
 .mesa-btn:active:not(:disabled) {
-  animation: mesaBtnPress 0.25s ease-out;
+  animation: mesaBtnPress 0.2s ease-out;
   background: var(--accent);
   color: #0C0C14;
   border-color: var(--accent);
 }
-.mesa-btn:disabled { opacity: 0.55; cursor: default; }
+
+.mesa-btn.mesa-btn--muted {
+  border-color: var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+}
+
+.mesa-btn.mesa-btn--muted:active:not(:disabled) {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.mesa-btn:disabled { opacity: 0.5; cursor: default; }
+
+body.light-theme .mesa-player {
+  background: #F8FAFC;
+}
+
+body.light-theme .mesa-chip {
+  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
 body.light-theme .mesa-btn {
   background: rgba(101, 163, 13, 0.14);
   color: #3F6212;
   border-color: rgba(101, 163, 13, 0.4);
 }
+
 body.light-theme .mesa-btn:active:not(:disabled) {
   background: #65A30D;
   color: #fff;
+}
+
+body.light-theme .mesa-btn.mesa-btn--muted {
+  background: #FFFFFF;
+  color: #334155;
+  border-color: rgba(15, 23, 42, 0.16);
 }

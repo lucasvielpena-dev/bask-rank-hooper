@@ -1653,12 +1653,12 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
           
           {/* ===== MODO MESA — box score ===== */}
-          <div className="card" style={{ marginTop: 12, marginBottom: 12, padding: 12, borderRadius: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: modoMesa ? 10 : 0 }}>
+          <div className="mesa-panel">
+            <div className="mesa-panel-head" style={{ marginBottom: modoMesa ? 4 : 0 }}>
               <div>
-                <div style={{ fontWeight: 800, fontSize: 13 }}>Modo mesa</div>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-                  Anote PTS, AST, REB e perdas por jogador
+                <div style={{ fontWeight: 800, fontSize: 14, color: 'var(--text-primary)' }}>Modo mesa</div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                  Marque por jogador · pontos separados das outras stats
                 </div>
               </div>
               <button
@@ -1702,9 +1702,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   const nomeTime = tm === 'A' ? timeANome : timeBNome;
                   return (
                     <div key={tm} style={{ marginBottom: 12 }}>
-                      <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 6 }}>
-                        {nomeTime}
-                      </div>
+                      <div className="mesa-team-label">{nomeTime}</div>
                       {ids.length === 0 && (
                         <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Nenhum jogador neste time</p>
                       )}
@@ -1714,77 +1712,88 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                         const nome = j ? (j.apelido || j.nome || 'Atleta') : 'Atleta';
                         const foto = j?.foto_url || null;
                         const inicial = (nome || '?').charAt(0).toUpperCase();
+                        const chips = [
+                          { campo: 'pontos', label: 'PTS', val: st.pontos },
+                          { campo: 'assistencias', label: 'AST', val: st.assistencias },
+                          { campo: 'rebotes', label: 'REB', val: st.rebotes },
+                          { campo: 'turnovers', label: 'TO', val: st.turnovers },
+                          { campo: 'faltas', label: 'F', val: st.faltas },
+                        ];
                         return (
-                          <div
-                            key={jid}
-                            style={{
-                              border: '1px solid var(--border)', borderRadius: 10, padding: '8px 10px', marginBottom: 6,
-                              background: 'var(--bg-secondary)',
-                            }}
-                          >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                          <div key={jid} className="mesa-player">
+                            <div className="mesa-player-top">
                               {foto ? (
                                 <img
                                   src={foto}
                                   alt=""
-                                  style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '1px solid var(--border)' }}
+                                  style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '1px solid var(--border)' }}
                                 />
                               ) : (
                                 <div style={{
-                                  width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
+                                  width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
                                   background: 'var(--accent-soft)', color: 'var(--accent-text)',
                                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                  fontWeight: 800, fontSize: 14, border: '1px solid var(--accent-line)',
+                                  fontWeight: 800, fontSize: 15, border: '1px solid var(--accent-line)',
                                 }}>
                                   {inicial}
                                 </div>
                               )}
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                  {nome}
-                                </div>
-                                <div className="mesa-stat-line">
-                                  {[
-                                    { campo: 'pontos', label: 'PTS', val: st.pontos },
-                                    { campo: 'assistencias', label: 'AST', val: st.assistencias },
-                                    { campo: 'rebotes', label: 'REB', val: st.rebotes },
-                                    { campo: 'turnovers', label: 'TO', val: st.turnovers },
-                                    { campo: 'faltas', label: 'F', val: st.faltas },
-                                  ].map((s, i) => {
-                                    const flash = mesaFlash && mesaFlash.jid === jid && mesaFlash.campo === s.campo;
-                                    return (
-                                      <span key={s.campo}>
-                                        {i > 0 ? ' · ' : ''}
-                                        <span className={flash ? 'mesa-stat-flash' : undefined} key={flash ? mesaFlash.id : s.campo}>
-                                          {s.val} {s.label}
-                                        </span>
-                                      </span>
-                                    );
-                                  })}
-                                </div>
-                              </div>
+                              <div className="mesa-player-name">{nome}</div>
                             </div>
-                            {possoOperarPlacar && (
-                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-                                {[
-                                  { label: '+1', campo: 'pontos', d: 1 },
-                                  { label: '+2', campo: 'pontos', d: 2 },
-                                  { label: '+3', campo: 'pontos', d: 3 },
-                                  { label: 'AST', campo: 'assistencias', d: 1 },
-                                  { label: 'REB', campo: 'rebotes', d: 1 },
-                                  { label: 'TO', campo: 'turnovers', d: 1 },
-                                  { label: 'F', campo: 'faltas', d: 1 },
-                                ].map((b) => (
-                                  <button
-                                    key={b.label}
-                                    type="button"
-                                    className="mesa-btn"
-                                    disabled={mesaBusy}
-                                    onClick={() => registrarStatMesa(jid, b.campo, b.d)}
+
+                            <div className="mesa-chips">
+                              {chips.map((s) => {
+                                const flash = mesaFlash && mesaFlash.jid === jid && mesaFlash.campo === s.campo;
+                                return (
+                                  <span
+                                    key={flash ? `${s.campo}-${mesaFlash.id}` : s.campo}
+                                    className={`mesa-chip${flash ? ' is-flash' : ''}`}
                                   >
-                                    {b.label}
-                                  </button>
-                                ))}
+                                    <strong>{s.val}</strong> {s.label}
+                                  </span>
+                                );
+                              })}
+                            </div>
+
+                            {possoOperarPlacar && (
+                              <div className="mesa-actions">
+                                <div className="mesa-actions-label">Pontos</div>
+                                <div className="mesa-actions-row">
+                                  {[
+                                    { label: '+1', campo: 'pontos', d: 1 },
+                                    { label: '+2', campo: 'pontos', d: 2 },
+                                    { label: '+3', campo: 'pontos', d: 3 },
+                                  ].map((b) => (
+                                    <button
+                                      key={b.label}
+                                      type="button"
+                                      className="mesa-btn"
+                                      disabled={mesaBusy}
+                                      onClick={() => registrarStatMesa(jid, b.campo, b.d)}
+                                    >
+                                      {b.label}
+                                    </button>
+                                  ))}
+                                </div>
+                                <div className="mesa-actions-label">Outras</div>
+                                <div className="mesa-actions-row">
+                                  {[
+                                    { label: 'AST', campo: 'assistencias', d: 1 },
+                                    { label: 'REB', campo: 'rebotes', d: 1 },
+                                    { label: 'TO', campo: 'turnovers', d: 1 },
+                                    { label: 'F', campo: 'faltas', d: 1 },
+                                  ].map((b) => (
+                                    <button
+                                      key={b.label}
+                                      type="button"
+                                      className="mesa-btn mesa-btn--muted"
+                                      disabled={mesaBusy}
+                                      onClick={() => registrarStatMesa(jid, b.campo, b.d)}
+                                    >
+                                      {b.label}
+                                    </button>
+                                  ))}
+                                </div>
                               </div>
                             )}
                           </div>
