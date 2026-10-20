@@ -44,6 +44,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   const [partidaAtiva, setPartidaAtiva] = useState(null);
   const [placarA, setPlacarA] = useState(0);
   const [placarB, setPlacarB] = useState(0);
+  // Modo mesa — box score individual (PTS AST REB TO faltas)
+  const [modoMesa, setModoMesa] = useState(false);
+  const [boxScore, setBoxScore] = useState({}); // jogador_id -> stats
+  const [mesaUndo, setMesaUndo] = useState([]); // [{jogadorId, campo, delta}]
+  const [mesaBusy, setMesaBusy] = useState(false);
   const [tempo, setTempo] = useState(0); // em segundos
   const [timerAtivo, setTimerAtivo] = useState(false);
   const [periodo, setPeriodo] = useState(1);
@@ -195,7 +200,21 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       if (roster) {
         setTimeAJogadores(roster.filter(r => r.time === 'A').map(r => r.jogador_id));
         setTimeBJogadores(roster.filter(r => r.time === 'B').map(r => r.jogador_id));
+        const map = {};
+        roster.forEach((r) => {
+          map[r.jogador_id] = {
+            time: r.time,
+            pontos: r.pontos || 0,
+            assistencias: r.assistencias || 0,
+            rebotes: r.rebotes || 0,
+            turnovers: r.turnovers || 0,
+            faltas: r.faltas || 0,
+          };
+        });
+        setBoxScore(map);
       }
+      setModoMesa(false);
+      setMesaUndo([]);
     } catch (e) {
       /* silencioso */
     }
@@ -732,6 +751,57 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
         return finalVal;
       });
     }
+  }
+
+  // ---- Modo mesa: estatística individual ----
+  async function registrarStatMesa(jogadorId, campo, delta) {
+    if (!partidaAtiva || !possoOperarPlacar) {
+      showToast('Só a mesa (criador ou operador) pode anotar estatísticas.', 'error');
+      return;
+    }
+    if (mesaBusy) return;
+    setMesaBusy(true);
+    ultimoToqueLocalRef.current = Date.now();
+    try {
+      const { data, error } = await partidasAPI.ajustarStat(partidaAtiva.id, jogadorId, campo, delta);
+      if (error) throw error;
+      if (data) {
+        setBoxScore((prev) => ({
+          ...prev,
+          [jogadorId]: {
+            time: data.time || prev[jogadorId]?.time,
+            pontos: data.pontos ?? 0,
+            assistencias: data.assistencias ?? 0,
+            rebotes: data.rebotes ?? 0,
+            turnovers: data.turnovers ?? 0,
+            faltas: data.faltas ?? 0,
+          },
+        }));
+        if (campo === 'pontos' && data.time) {
+          // Placar do time já foi atualizado no banco pela RPC
+          await puxarPlacarDoBanco(partidaAtiva.id);
+        }
+        setMesaUndo((u) => [...u.slice(-19), { jogadorId, campo, delta }]);
+      }
+    } catch (e) {
+      console.warn(e);
+      showToast(e.message || 'Não foi possível anotar a estatística. Rode a migration do modo mesa.', 'error');
+    } finally {
+      setMesaBusy(false);
+    }
+  }
+
+  async function desfazerUltimaStatMesa() {
+    const last = mesaUndo[mesaUndo.length - 1];
+    if (!last) return;
+    setMesaUndo((u) => u.slice(0, -1));
+    await registrarStatMesa(last.jogadorId, last.campo, -last.delta);
+    // registrarStatMesa adds to undo again — pop the reverse
+    setMesaUndo((u) => u.slice(0, -1));
+  }
+
+  function statsDoJogador(id) {
+    return boxScore[id] || { pontos: 0, assistencias: 0, rebotes: 0, turnovers: 0, faltas: 0 };
   }
 
   // Salva o placar atualizado no Supabase em segundo plano
@@ -1569,6 +1639,120 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               )}
             </div>
           )}
+
+          
+          {/* ===== MODO MESA — box score ===== */}
+          <div className="card" style={{ marginTop: 12, marginBottom: 12, padding: 12, borderRadius: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: modoMesa ? 10 : 0 }}>
+              <div>
+                <div style={{ fontWeight: 800, fontSize: 13 }}>Modo mesa</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+                  Anote PTS, AST, REB e perdas por jogador
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setModoMesa((v) => !v)}
+                style={{
+                  border: 'none', borderRadius: 999, padding: '8px 14px', fontWeight: 800, fontSize: 12,
+                  cursor: 'pointer', fontFamily: 'inherit',
+                  background: modoMesa ? 'var(--accent)' : 'var(--bg-secondary)',
+                  color: modoMesa ? '#0C0C14' : 'var(--text-primary)',
+                }}
+              >
+                {modoMesa ? 'Mesa ativa' : 'Abrir mesa'}
+              </button>
+            </div>
+
+            {modoMesa && (
+              <>
+                {!possoOperarPlacar && (
+                  <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8 }}>
+                    Você pode ver o box score. Para anotar, peça para operar o placar.
+                  </p>
+                )}
+                {possoOperarPlacar && mesaUndo.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={desfazerUltimaStatMesa}
+                    disabled={mesaBusy}
+                    style={{
+                      marginBottom: 10, width: '100%', padding: '6px 0', borderRadius: 999,
+                      border: '1px solid var(--border)', background: 'transparent',
+                      color: 'var(--text-secondary)', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+                    }}
+                  >
+                    Desfazer última anotação
+                  </button>
+                )}
+
+                {['A', 'B'].map((tm) => {
+                  const ids = tm === 'A' ? timeAJogadores : timeBJogadores;
+                  const nomeTime = tm === 'A' ? timeANome : timeBNome;
+                  return (
+                    <div key={tm} style={{ marginBottom: 12 }}>
+                      <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 6 }}>
+                        {nomeTime}
+                      </div>
+                      {ids.length === 0 && (
+                        <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Nenhum jogador neste time</p>
+                      )}
+                      {ids.map((jid) => {
+                        const j = jogadores.find((x) => x.id === jid);
+                        const st = statsDoJogador(jid);
+                        const nome = j ? (j.apelido || j.nome || 'Atleta') : 'Atleta';
+                        return (
+                          <div
+                            key={jid}
+                            style={{
+                              border: '1px solid var(--border)', borderRadius: 10, padding: '8px 10px', marginBottom: 6,
+                              background: 'var(--bg-secondary)',
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                              <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{nome}</span>
+                              <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+                                {st.pontos} PTS · {st.assistencias} AST · {st.rebotes} REB · {st.turnovers} TO
+                              </span>
+                            </div>
+                            {possoOperarPlacar && (
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                                {[
+                                  { label: '+1', campo: 'pontos', d: 1 },
+                                  { label: '+2', campo: 'pontos', d: 2 },
+                                  { label: '+3', campo: 'pontos', d: 3 },
+                                  { label: 'AST', campo: 'assistencias', d: 1 },
+                                  { label: 'REB', campo: 'rebotes', d: 1 },
+                                  { label: 'TO', campo: 'turnovers', d: 1 },
+                                  { label: 'F', campo: 'faltas', d: 1 },
+                                ].map((b) => (
+                                  <button
+                                    key={b.label}
+                                    type="button"
+                                    disabled={mesaBusy}
+                                    onClick={() => registrarStatMesa(jid, b.campo, b.d)}
+                                    style={{
+                                      flex: '1 1 auto', minWidth: 40, padding: '6px 4px', borderRadius: 8,
+                                      border: '1px solid var(--border)', background: 'var(--bg-card)',
+                                      color: 'var(--text-primary)', fontSize: 11, fontWeight: 800,
+                                      cursor: mesaBusy ? 'default' : 'pointer', fontFamily: 'inherit', opacity: mesaBusy ? 0.6 : 1,
+                                    }}
+                                  >
+                                    {b.label}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </div>
+
 
           {/* Controles de Pontuação Rápidos (Botoes + / -) */}
           <div className="live-game-controls-grid">

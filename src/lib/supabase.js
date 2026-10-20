@@ -563,6 +563,26 @@ export const partidasAPI = {
     return { data, error };
   },
 
+  /** Box score / modo mesa: delta em PTS, AST, REB, TO, faltas */
+  ajustarStat: async (partidaId, jogadorId, campo, delta) => {
+    const { data, error } = await supabase.rpc('ajustar_stat_partida', {
+      p_partida_id: partidaId,
+      p_jogador_id: jogadorId,
+      p_campo: campo,
+      p_delta: delta,
+    });
+    const row = Array.isArray(data) ? data[0] : data;
+    return { data: row || null, error };
+  },
+
+  listarStats: async (partidaId) => {
+    const { data, error } = await supabase
+      .from('partida_jogadores')
+      .select('jogador_id, time, pontos, assistencias, rebotes, turnovers, faltas, jogador:jogadores(nome, apelido)')
+      .eq('partida_id', partidaId);
+    return { data: data || [], error };
+  },
+
   // ---- Placar compartilhado (pedido + aceite do criador) ----
   // A tabela `partida_operadores` é fechada: só se lê, e só as RPCs escrevem.
   // Ver supabase/migration_placar_compartilhado.sql.
