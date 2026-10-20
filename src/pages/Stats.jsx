@@ -5,6 +5,7 @@ import { useEsporte } from '../contexts/EsporteContext';
 import LinhaEvolucao from '../components/LinhaEvolucao';
 import { lerCache, salvarCache } from '../lib/pageCache';
 import { meusAvaliados } from '../lib/avaliacaoPendente';
+import { compartilharApp } from '../lib/compartilhar';
 
 
 
@@ -211,6 +212,12 @@ export default function Stats({ profile, onNavigate }) {
     setTimeout(() => setToast(null), 3000);
   }
 
+  async function handleCompartilhar() {
+    const resultado = await compartilharApp();
+    if (resultado === 'copiado') showToast('Link copiado — cole onde quiser', 'success');
+    if (resultado === 'erro') showToast('Não consegui copiar o link', 'error');
+  }
+
   // Lógica de incrementos de campos privados (totalmente independentes no formulário)
   function ajustarCampo(campo, valor) {
     setForm(prev => {
@@ -319,13 +326,40 @@ export default function Stats({ profile, onNavigate }) {
     <div className="page-content home-page" style={{ position: 'relative' }}>
       <div style={{ padding: '16px 16px 0', position: 'relative', zIndex: 1 }}>
         
-        {/* Cabeçalho Voltar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+        {/* Cabeçalho: voltar à esquerda, compartilhar à direita */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginBottom: 8 }}>
           <button 
             onClick={() => onNavigate('inicio')} 
             style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', display: 'flex', alignItems: 'center', fontSize: '13px', fontWeight: 700, padding: 0, fontFamily: 'inherit' }}
           >
             ← Início
+          </button>
+
+          <button
+            type="button"
+            onClick={handleCompartilhar}
+            aria-label="Compartilhar o app"
+            title="Compartilhar o app"
+            style={{
+              width: 36, height: 36,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'transparent', border: 'none', padding: 0,
+              marginRight: -8, marginTop: -6, marginBottom: -6,
+              color: 'var(--accent-text)', cursor: 'pointer',
+            }}
+          >
+            <svg
+              width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="1.8"
+              strokeLinecap="round" strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <path d="M8.6 10.5l6.8-4" />
+              <path d="M8.6 13.5l6.8 4" />
+            </svg>
           </button>
         </div>
 
