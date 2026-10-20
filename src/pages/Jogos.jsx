@@ -49,6 +49,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
   const [boxScore, setBoxScore] = useState({}); // jogador_id -> stats
   const [mesaUndo, setMesaUndo] = useState([]); // [{jogadorId, campo, delta}]
   const [mesaBusy, setMesaBusy] = useState(false);
+  const [mesaFlash, setMesaFlash] = useState(null); // { jid, campo, id }
   const [tempo, setTempo] = useState(0); // em segundos
   const [timerAtivo, setTimerAtivo] = useState(false);
   const [periodo, setPeriodo] = useState(1);
@@ -781,8 +782,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             },
           };
         });
+        // Feedback visual: número da stat pisca em verde
+        const flashId = Date.now();
+        setMesaFlash({ jid: jogadorId, campo, id: flashId });
+        setTimeout(() => {
+          setMesaFlash((cur) => (cur && cur.id === flashId ? null : cur));
+        }, 600);
         if (campo === 'pontos') {
-          // Placar do time já foi atualizado no banco pela RPC
           await puxarPlacarDoBanco(partidaAtiva.id);
         }
         setMesaUndo((u) => [...u.slice(-19), { jogadorId, campo, delta }]);
@@ -1737,13 +1743,29 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                                 <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                   {nome}
                                 </div>
-                                <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace', marginTop: 2 }}>
-                                  {st.pontos} PTS · {st.assistencias} AST · {st.rebotes} REB · {st.turnovers} TO · {st.faltas} F
+                                <div className="mesa-stat-line">
+                                  {[
+                                    { campo: 'pontos', label: 'PTS', val: st.pontos },
+                                    { campo: 'assistencias', label: 'AST', val: st.assistencias },
+                                    { campo: 'rebotes', label: 'REB', val: st.rebotes },
+                                    { campo: 'turnovers', label: 'TO', val: st.turnovers },
+                                    { campo: 'faltas', label: 'F', val: st.faltas },
+                                  ].map((s, i) => {
+                                    const flash = mesaFlash && mesaFlash.jid === jid && mesaFlash.campo === s.campo;
+                                    return (
+                                      <span key={s.campo}>
+                                        {i > 0 ? ' · ' : ''}
+                                        <span className={flash ? 'mesa-stat-flash' : undefined} key={flash ? mesaFlash.id : s.campo}>
+                                          {s.val} {s.label}
+                                        </span>
+                                      </span>
+                                    );
+                                  })}
                                 </div>
                               </div>
                             </div>
                             {possoOperarPlacar && (
-                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
                                 {[
                                   { label: '+1', campo: 'pontos', d: 1 },
                                   { label: '+2', campo: 'pontos', d: 2 },
@@ -1756,14 +1778,9 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                                   <button
                                     key={b.label}
                                     type="button"
+                                    className="mesa-btn"
                                     disabled={mesaBusy}
                                     onClick={() => registrarStatMesa(jid, b.campo, b.d)}
-                                    style={{
-                                      flex: '1 1 auto', minWidth: 40, padding: '6px 4px', borderRadius: 8,
-                                      border: '1px solid var(--border)', background: 'var(--bg-card)',
-                                      color: 'var(--text-primary)', fontSize: 11, fontWeight: 800,
-                                      cursor: mesaBusy ? 'default' : 'pointer', fontFamily: 'inherit', opacity: mesaBusy ? 0.6 : 1,
-                                    }}
                                   >
                                     {b.label}
                                   </button>
