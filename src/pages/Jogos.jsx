@@ -1706,6 +1706,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                         const j = jogadores.find((x) => x.id === jid);
                         const st = statsDoJogador(jid);
                         const nome = j ? (j.apelido || j.nome || 'Atleta') : 'Atleta';
+                        const foto = j?.foto_url || null;
+                        const inicial = (nome || '?').charAt(0).toUpperCase();
                         return (
                           <div
                             key={jid}
@@ -1714,11 +1716,31 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                               background: 'var(--bg-secondary)',
                             }}
                           >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                              <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{nome}</span>
-                              <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-                                {st.pontos} PTS · {st.assistencias} AST · {st.rebotes} REB · {st.turnovers} TO
-                              </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                              {foto ? (
+                                <img
+                                  src={foto}
+                                  alt=""
+                                  style={{ width: 36, height: 36, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '1px solid var(--border)' }}
+                                />
+                              ) : (
+                                <div style={{
+                                  width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
+                                  background: 'var(--accent-soft)', color: 'var(--accent-text)',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                  fontWeight: 800, fontSize: 14, border: '1px solid var(--accent-line)',
+                                }}>
+                                  {inicial}
+                                </div>
+                              )}
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  {nome}
+                                </div>
+                                <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace', marginTop: 2 }}>
+                                  {st.pontos} PTS · {st.assistencias} AST · {st.rebotes} REB · {st.turnovers} TO · {st.faltas} F
+                                </div>
+                              </div>
                             </div>
                             {possoOperarPlacar && (
                               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
