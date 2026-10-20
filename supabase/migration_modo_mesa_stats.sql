@@ -1,7 +1,3 @@
--- ============================================================
--- Modo Mesa: estatísticas individuais na partida (box score)
--- ============================================================
-
 ALTER TABLE public.partida_jogadores
   ADD COLUMN IF NOT EXISTS pontos INTEGER NOT NULL DEFAULT 0,
   ADD COLUMN IF NOT EXISTS assistencias INTEGER NOT NULL DEFAULT 0,
@@ -16,7 +12,6 @@ CREATE POLICY "partida_jogadores_update_auth"
   USING (auth.role() = 'authenticated')
   WITH CHECK (auth.role() = 'authenticated');
 
--- "time" e palavra reservada no Postgres → usa lado_time no retorno
 DROP FUNCTION IF EXISTS public.ajustar_stat_partida(UUID, UUID, TEXT, INTEGER);
 
 CREATE OR REPLACE FUNCTION public.ajustar_stat_partida(
@@ -37,7 +32,7 @@ RETURNS TABLE (
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
-AS $$
+AS $fn$
 DECLARE
   v_time CHAR(1);
 BEGIN
@@ -49,7 +44,7 @@ BEGIN
     UPDATE partida_jogadores pj
     SET pontos = GREATEST(0, pj.pontos + p_delta)
     WHERE pj.partida_id = p_partida_id AND pj.jogador_id = p_jogador_id
-    RETURNING pj.time, pj.pontos INTO v_time;
+    RETURNING pj.time INTO v_time;
 
     IF NOT FOUND THEN
       RAISE EXCEPTION 'jogador nao esta na partida';
@@ -98,7 +93,7 @@ BEGIN
   FROM partida_jogadores pj
   WHERE pj.partida_id = p_partida_id AND pj.jogador_id = p_jogador_id;
 END;
-$$;
+$fn$;
 
 GRANT EXECUTE ON FUNCTION public.ajustar_stat_partida(UUID, UUID, TEXT, INTEGER) TO authenticated;
 
