@@ -1,6 +1,5 @@
 -- ============================================================
 -- Modo Mesa: estatísticas individuais na partida (box score)
--- PTS, AST, REB, TO (turnover), faltas — em partida_jogadores
 -- ============================================================
 
 ALTER TABLE public.partida_jogadores
@@ -10,8 +9,6 @@ ALTER TABLE public.partida_jogadores
   ADD COLUMN IF NOT EXISTS turnovers INTEGER NOT NULL DEFAULT 0,
   ADD COLUMN IF NOT EXISTS faltas INTEGER NOT NULL DEFAULT 0;
 
--- Quem está autenticado pode atualizar stats (mesma regra do placar:
--- o app só deixa operar se for criador ou operador aprovado)
 DROP POLICY IF EXISTS "partida_jogadores_update_auth" ON public.partida_jogadores;
 CREATE POLICY "partida_jogadores_update_auth"
   ON public.partida_jogadores
@@ -19,7 +16,9 @@ CREATE POLICY "partida_jogadores_update_auth"
   USING (auth.role() = 'authenticated')
   WITH CHECK (auth.role() = 'authenticated');
 
--- Atualiza um campo de stat com delta (não deixa negativo)
+-- "time" e palavra reservada no Postgres → usa lado_time no retorno
+DROP FUNCTION IF EXISTS public.ajustar_stat_partida(UUID, UUID, TEXT, INTEGER);
+
 CREATE OR REPLACE FUNCTION public.ajustar_stat_partida(
   p_partida_id UUID,
   p_jogador_id UUID,
@@ -27,13 +26,13 @@ CREATE OR REPLACE FUNCTION public.ajustar_stat_partida(
   p_delta INTEGER
 )
 RETURNS TABLE (
-  jogador_id UUID,
+  out_jogador_id UUID,
   pontos INTEGER,
   assistencias INTEGER,
   rebotes INTEGER,
   turnovers INTEGER,
   faltas INTEGER,
-  time CHAR
+  lado_time CHAR
 )
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -41,7 +40,6 @@ SET search_path = public
 AS $$
 DECLARE
   v_time CHAR(1);
-  v_pts INT;
 BEGIN
   IF p_campo NOT IN ('pontos', 'assistencias', 'rebotes', 'turnovers', 'faltas') THEN
     RAISE EXCEPTION 'campo invalido';
@@ -51,13 +49,12 @@ BEGIN
     UPDATE partida_jogadores pj
     SET pontos = GREATEST(0, pj.pontos + p_delta)
     WHERE pj.partida_id = p_partida_id AND pj.jogador_id = p_jogador_id
-    RETURNING pj.time, pj.pontos INTO v_time, v_pts;
+    RETURNING pj.time, pj.pontos INTO v_time;
 
     IF NOT FOUND THEN
       RAISE EXCEPTION 'jogador nao esta na partida';
     END IF;
 
-    -- Placar do time acompanha pontos individuais
     IF p_delta <> 0 THEN
       IF v_time = 'A' THEN
         UPDATE partidas
@@ -90,7 +87,14 @@ BEGIN
   END IF;
 
   RETURN QUERY
-  SELECT pj.jogador_id, pj.pontos, pj.assistencias, pj.rebotes, pj.turnovers, pj.faltas, pj.time
+  SELECT
+    pj.jogador_id,
+    pj.pontos,
+    pj.assistencias,
+    pj.rebotes,
+    pj.turnovers,
+    pj.faltas,
+    pj.time
   FROM partida_jogadores pj
   WHERE pj.partida_id = p_partida_id AND pj.jogador_id = p_jogador_id;
 END;

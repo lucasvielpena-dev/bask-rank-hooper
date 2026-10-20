@@ -766,18 +766,21 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       const { data, error } = await partidasAPI.ajustarStat(partidaAtiva.id, jogadorId, campo, delta);
       if (error) throw error;
       if (data) {
-        setBoxScore((prev) => ({
-          ...prev,
-          [jogadorId]: {
-            time: data.time || prev[jogadorId]?.time,
-            pontos: data.pontos ?? 0,
-            assistencias: data.assistencias ?? 0,
-            rebotes: data.rebotes ?? 0,
-            turnovers: data.turnovers ?? 0,
-            faltas: data.faltas ?? 0,
-          },
-        }));
-        if (campo === 'pontos' && data.time) {
+        setBoxScore((prev) => {
+          const lado = data.lado_time || data.time || prev[jogadorId]?.time;
+          return {
+            ...prev,
+            [jogadorId]: {
+              time: lado,
+              pontos: data.pontos ?? 0,
+              assistencias: data.assistencias ?? 0,
+              rebotes: data.rebotes ?? 0,
+              turnovers: data.turnovers ?? 0,
+              faltas: data.faltas ?? 0,
+            },
+          };
+        });
+        if (campo === 'pontos') {
           // Placar do time já foi atualizado no banco pela RPC
           await puxarPlacarDoBanco(partidaAtiva.id);
         }
