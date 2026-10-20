@@ -563,16 +563,70 @@ export const partidasAPI = {
     return { data, error };
   },
 
-  /** Box score / modo mesa: delta em PTS, AST, REB, TO, faltas */
+  /** Box score / modo mesa: grava direto em partida_jogadores (sem depender de RPC). */
   ajustarStat: async (partidaId, jogadorId, campo, delta) => {
-    const { data, error } = await supabase.rpc('ajustar_stat_partida', {
-      p_partida_id: partidaId,
-      p_jogador_id: jogadorId,
-      p_campo: campo,
-      p_delta: delta,
-    });
-    const row = Array.isArray(data) ? data[0] : data;
-    return { data: row || null, error };
+    const allowed = ['pontos', 'assistencias', 'rebotes', 'turnovers', 'faltas'];
+    if (!allowed.includes(campo)) {
+      return { data: null, error: { message: 'Campo invalido: ' + campo } };
+    }
+
+    // 1) Leitura atual
+    const { data: cur, error: errRead } = await supabase
+      .from('partida_jogadores')
+      .select('jogador_id, time, pontos, assistencias, rebotes, turnovers, faltas')
+      .eq('partida_id', partidaId)
+      .eq('jogador_id', jogadorId)
+      .maybeSingle();
+
+    if (errRead) return { data: null, error: errRead };
+    if (!cur) return { data: null, error: { message: 'Jogador nao esta na partida' } };
+
+    const next = {
+      pontos: Math.max(0, (Number(cur.pontos) || 0) + (campo === 'pontos' ? delta : 0)),
+      assistencias: Math.max(0, (Number(cur.assistencias) || 0) + (campo === 'assistencias' ? delta : 0)),
+      rebotes: Math.max(0, (Number(cur.rebotes) || 0) + (campo === 'rebotes' ? delta : 0)),
+      turnovers: Math.max(0, (Number(cur.turnovers) || 0) + (campo === 'turnovers' ? delta : 0)),
+      faltas: Math.max(0, (Number(cur.faltas) || 0) + (campo === 'faltas' ? delta : 0)),
+    };
+
+    // 2) Update stats
+    const { data: updated, error: errUp } = await supabase
+      .from('partida_jogadores')
+      .update(next)
+      .eq('partida_id', partidaId)
+      .eq('jogador_id', jogadorId)
+      .select('jogador_id, time, pontos, assistencias, rebotes, turnovers, faltas')
+      .maybeSingle();
+
+    if (errUp) return { data: null, error: errUp };
+
+    // 3) Se mudou pontos, ajusta placar do time
+    if (campo === 'pontos' && delta !== 0 && cur.time) {
+      const { data: part } = await supabase
+        .from('partidas')
+        .select('placar_time_a, placar_time_b')
+        .eq('id', partidaId)
+        .maybeSingle();
+      if (part) {
+        const patch = cur.time === 'A'
+          ? { placar_time_a: Math.max(0, (Number(part.placar_time_a) || 0) + delta) }
+          : { placar_time_b: Math.max(0, (Number(part.placar_time_b) || 0) + delta) };
+        await supabase
+          .from('partidas')
+          .update({ ...patch, updated_at: new Date().toISOString() })
+          .eq('id', partidaId);
+      }
+    }
+
+    const row = updated || { ...cur, ...next };
+    return {
+      data: {
+        ...row,
+        lado_time: row.time,
+        out_jogador_id: row.jogador_id,
+      },
+      error: null,
+    };
   },
 
   listarStats: async (partidaId) => {

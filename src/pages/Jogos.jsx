@@ -765,6 +765,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     try {
       const { data, error } = await partidasAPI.ajustarStat(partidaAtiva.id, jogadorId, campo, delta);
       if (error) throw error;
+      if (!data) throw new Error('Resposta vazia ao salvar estatistica');
       if (data) {
         setBoxScore((prev) => {
           const lado = data.lado_time || data.time || prev[jogadorId]?.time;
@@ -788,7 +789,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       }
     } catch (e) {
       console.warn(e);
-      showToast(e.message || 'Não foi possível anotar a estatística. Rode a migration do modo mesa.', 'error');
+      const msg = e?.message || e?.error_description || e?.hint || (typeof e === 'string' ? e : JSON.stringify(e));
+      showToast(msg || 'Falha ao anotar estatistica', 'error');
     } finally {
       setMesaBusy(false);
     }
