@@ -3195,3 +3195,18 @@ body:not(.light-theme) [style*="color: var(--text-muted)"] {
   border-top:2px solid var(--accent);
 }
 .light-theme .card.atleta-item--destaque { background:var(--bg-elevated); }
+
+/* ===== Home: cartões de estatística, destaque e ação rápida com o mesmo padrão do .card ===== */
+.home-stat-item,
+.home-highlight-card,
+.home-quick-action {
+  border-radius:20px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.015) 100%), var(--bg-card);
+  border:1px solid rgba(255,255,255,0.09);
+  box-shadow:0 12px 32px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+/* o destaque de ouro/prata/bronze continua na borda esquerda, sem mudar o restante */
+.home-highlight-card.gold   { border-left:3px solid var(--accent); }
+.home-highlight-card.silver { border-left:3px solid #C0C7D4; }
+.home-highlight-card.bronze { border-left:3px solid #CD7F32; }
+.home-quick-action-primary { background:var(--accent); border:none; box-shadow:0 12px 32px rgba(0,0,0,0.25); }
