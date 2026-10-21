@@ -72,7 +72,36 @@ function cidadeInvalida(nome) {
   return false;
 }
 
+// Padrão ILIKE que casa a cidade com ou sem acento e sem diferenciar maiúsculas:
+// "Pacajá" -> "Pacaj_" (o "_" aceita "á" ou "a"). Caracteres de LIKE são escapados.
+function padraoCidadeIlike(nome) {
+  const base = String(nome || '').normalize('NFC');
+  let out = '';
+  for (const ch of base) {
+    const decomposto = ch.normalize('NFD');
+    if (decomposto.length > 1) out += '_';
+    else if (ch === '%' || ch === '_' || ch === String.fromCharCode(92)) out += String.fromCharCode(92) + ch;
+    else out += ch;
+  }
+  return out;
+}
+
 export const jogadoresAPI = {
+  // Só os jogadores da cidade (no banco), e não o estado inteiro.
+  listarDaCidade: async (cidade, uf, esporte = 'basquete') => {
+    if (!cidade) return { data: [], error: null };
+    let q = supabase
+      .from('jogadores')
+      .select('*')
+      .eq('ativo', true)
+      .eq('esporte', esporte)
+      .ilike('cidade', padraoCidadeIlike(cidade))
+      .order('media_estrelas', { ascending: false })
+      .order('total_votos', { ascending: false });
+    if (uf) q = q.eq('uf', uf);
+    return q;
+  },
+
   listar: async (esporte = 'basquete') => {
     const { data, error } = await supabase
       .from('jogadores')

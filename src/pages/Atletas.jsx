@@ -158,7 +158,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
       const userId = (await supabase.auth.getUser()).data.user?.id;
 
       const [{ data: jogs }, { data: votesStatus }, { data: minhasAvaliacoes }] = await Promise.all([
-        jogadoresAPI.listarPorEstado(stateUfVal, esporte),
+        jogadoresAPI.listarDaCidade(selectedCity, stateUfVal, esporte),
         votacaoAPI.getStatusHoje(),
         userId
           // `avaliacoes` não tem coluna de esporte: filtrar por ela derrubava a
