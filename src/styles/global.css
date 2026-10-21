@@ -3169,3 +3169,6 @@ body:not(.light-theme) [style*="color: var(--text-muted)"] {
 @media (prefers-reduced-motion: reduce) {
   .card { transition:none; }
 }
+
+/* Lista de atletas: o navegador só pinta os cartões que estão na tela (rolagem mais leve). */
+.atleta-item { content-visibility:auto; contain-intrinsic-size:auto 150px; }

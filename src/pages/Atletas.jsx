@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import { sortByConfianca } from '../lib/ranking';
 import { nomeAtleta } from '../lib/nomes';
@@ -118,7 +118,6 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
   const { esporte, cfg } = useEsporte();
   const _cache = lerCache('atletas');
   const [jogadores, setJogadores] = useState(_cache?.jogadores || []);
-  const [filtrados, setFiltrados] = useState([]);
   const [busca, setBusca] = useState('');
   // `initialFiltro` vem da Home (aviso "Ainda há N jogadores sem avaliação"),
   // que abre esta tela já no filtro certo.
@@ -194,7 +193,9 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
     setLoading(false);
   }
 
-  useEffect(() => {
+  // Calculado na renderização (sem estado extra): a lista muda no mesmo quadro
+  // em que busca, filtro ou jogadores mudam, sem atraso de um render.
+  const filtrados = useMemo(() => {
     let result = [...jogadores];
 
     if (busca.trim() !== '') {
@@ -218,7 +219,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
       result.sort((a, b) => a.nome.localeCompare(b.nome));
     }
 
-    setFiltrados(result);
+    return result;
   }, [busca, jogadores, filtroAtivo]);
 
   function showToast(msg, type = 'success') {
@@ -441,7 +442,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
               return (
                 <div
                   key={j.id}
-                  className="card"
+                  className="card atleta-item"
                   style={{
                     background: isFirst ? 'var(--bg-elevated)' : 'var(--bg-card)',
                     borderColor: isFirst ? 'var(--border-active)' : 'var(--border)',
