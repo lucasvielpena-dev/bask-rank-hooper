@@ -3211,3 +3211,25 @@ body:not(.light-theme) [style*="color: var(--text-muted)"] {
    Não usar padding/fontSize em linha nos botões. */
 .btn { min-height:44px; padding:12px 20px; font-size:14px; line-height:1.2; }
 .btn-sm { min-height:36px; padding:8px 14px; font-size:13px; line-height:1.2; }
+
+/* =====================================================================
+   CARTÃO ÚNICO (fonte da verdade). Vale para .card e .premium-card.
+   Fica por último no arquivo, então prevalece sobre as regras antigas.
+   Para mudar o cartão do app inteiro, altere só este bloco.
+   ===================================================================== */
+.card,
+.premium-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.015) 100%), var(--bg-card) !important;
+  border: 1px solid rgba(255,255,255,0.09) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+body.light-theme .card,
+body.light-theme .premium-card {
+  background: var(--bg-card) !important;
+  border: 1px solid rgba(15,23,42,0.08) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.07) !important;
+}
