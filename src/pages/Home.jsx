@@ -186,10 +186,16 @@ export default function Home({ profile, onNavigate }) {
                   {myPlayerInfo?.nome || greetingName}
                 </div>
                 <div className="hero-position" style={{
-                  fontSize: 12, color: getPositionColor(myPlayerInfo?.posicao), fontWeight: 600,
-                  fontFamily: "'Inter',sans-serif", marginBottom: 8,
+                  display: 'flex', alignItems: 'center', gap: 8, width: '100%', boxSizing: 'border-box',
+                  padding: '7px 10px', marginBottom: 8, borderRadius: 10,
+                  background: 'var(--accent-soft)', border: '1px solid var(--accent-line)',
+                  fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.03em',
+                  textTransform: 'uppercase', fontFamily: "'Inter',sans-serif",
                 }}>
-                  {myPlayerInfo?.posicao || 'Atleta'}
+                  <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--accent-text)', flexShrink: 0 }} />
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {myPlayerInfo?.posicao || 'Atleta'}
+                  </span>
                 </div>
               </div>
 
