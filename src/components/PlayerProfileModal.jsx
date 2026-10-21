@@ -93,6 +93,19 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
   async function loadPlayerDetails() {
     setLoading(true);
     try {
+      // `get_ranking` (usado pela Home) devolve só parte das colunas: os cinco
+      // fundamentos do modelo antigo, sem `equipe`/`criado_por`. Busca a linha
+      // completa para o perfil mostrar TODOS os fundamentos, venha ele da Home,
+      // de Destaques ou da aba Atletas.
+      const { data: jogadorCompleto } = await supabase
+        .from('jogadores')
+        .select('*')
+        .eq('id', jogador.id)
+        .maybeSingle();
+      if (jogadorCompleto) {
+        setLocalJogador(prev => ({ ...(prev || jogador), ...jogadorCompleto }));
+      }
+
       const { data: prof } = await supabase.from('profiles').select('altura, idade, id').eq('player_id', jogador.id).maybeSingle();
       if (prof) setProfileData(prof);
 
