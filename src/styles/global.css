@@ -2853,7 +2853,7 @@ body:not(.light-theme) [style*="color: var(--text-muted)"] {
 }
 
 /* Lista de atletas: o navegador só pinta os cartões que estão na tela (rolagem mais leve). */
-.atleta-item { content-visibility:auto; contain-intrinsic-size:auto 150px; }
+/* .atleta-item: sem content-visibility (ele corta o selo de ranking que sai do cartão) */
 
 /* Movimento: só feedback útil (carregamento). Demais animações rodam uma vez.
    Quem ativou "reduzir movimento" no aparelho não vê animação decorativa. */
@@ -2910,3 +2910,6 @@ body.light-theme .premium-card {
   border-radius: 20px !important;
   box-shadow: 0 8px 24px rgba(15,23,42,0.07) !important;
 }
+
+/* Espaço entre cartões de rachão (lista vertical). */
+.racao-card { margin-bottom:12px; }
