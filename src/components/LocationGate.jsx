@@ -122,8 +122,7 @@ export default function LocationGate({ profile, onResolved }) {
             fontSize: 28,
           }}
         >
-          📍
-        </div>
+                  </div>
         <h1 style={{ fontSize: 22, fontWeight: 900, marginBottom: 8 }}>Localização obrigatória</h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.5, marginBottom: 20 }}>
           O Rank Hooper mostra só atletas da <strong>sua cidade</strong>. Precisamos da sua

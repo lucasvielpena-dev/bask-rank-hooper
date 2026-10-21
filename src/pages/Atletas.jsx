@@ -163,7 +163,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
         votacaoAPI.getStatusHoje(),
         userId
           // `avaliacoes` não tem coluna de esporte: filtrar por ela derrubava a
-          // consulta inteira (e o "✓ Avaliado" nunca aparecia). O cruzamento com
+          // consulta inteira (e o "Avaliado" nunca aparecia). O cruzamento com
           // o esporte já acontece na lista de atletas carregada acima.
           ? supabase.from('avaliacoes').select('jogador_id').eq('avaliador_id', userId)
           : Promise.resolve({ data: [] })
@@ -273,7 +273,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
       if (error || !data?.sucesso) {
         showToast(data?.erro || error?.message || 'Erro ao registrar avaliação.', 'error');
       } else {
-        showToast(`✓ Avaliação computada! Nova média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
+        showToast(`Avaliação computada! Nova média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
         setVotingPlayer(null);
         loadJogadores();
       }
@@ -285,9 +285,9 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
   }
 
   const getMedal = (index) => {
-    if (index === 0) return '🥇';
-    if (index === 1) return '🥈';
-    if (index === 2) return '🥉';
+    if (index === 0) return '#1';
+    if (index === 1) return '#2';
+    if (index === 2) return '#3';
     return `#${index + 1}`;
   };
 
@@ -528,7 +528,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                           fontFamily: "'Inter',sans-serif", cursor: 'not-allowed',
                         }}
                       >
-                        {profile?.player_id === j.id ? 'Seu perfil' : '✓ Avaliado'}
+                        {profile?.player_id === j.id ? 'Seu perfil' : 'Avaliado'}
                       </button>
                     )}
                   </div>

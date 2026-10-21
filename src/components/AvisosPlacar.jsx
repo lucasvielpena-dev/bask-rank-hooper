@@ -108,7 +108,7 @@ export default function AvisosPlacar() {
         return (
           <div key={chave} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
             <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', flex: 1, minWidth: 160 }}>
-              🏀 {p.nome || 'Alguém'} quer operar o placar
+              {p.nome || 'Alguém'} quer operar o placar
               {p.partida ? ` (${p.partida.time_a} × ${p.partida.time_b})` : ''}
             </span>
             <button

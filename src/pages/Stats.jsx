@@ -694,7 +694,7 @@ export default function Stats({ profile, onNavigate }) {
                 ) : null}
 
                 <button className="btn btn-primary btn-sm" onClick={() => setShowRegistrar(true)} style={{ width: '100%', marginTop: 8 }}>
-                  ➕ Registrar Partida Pessoal
+                  Registrar Partida Pessoal
                 </button>
               </div>
             </div>
@@ -875,7 +875,7 @@ export default function Stats({ profile, onNavigate }) {
                 }}
                 style={{ alignSelf: 'flex-start', margin: '4px 0', fontSize: 11 }}
               >
-                {showAvancado ? '← Ocultar Avançados' : '⚡ Mostrar Avançados'}
+                {showAvancado ? '← Ocultar Avançados' : 'Mostrar Avançados'}
               </button>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>

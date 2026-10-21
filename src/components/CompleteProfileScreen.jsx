@@ -403,7 +403,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
             fontSize: 13,
             lineHeight: 1.4
           }}>
-            ⚠️ {erro}
+            {erro}
           </div>
         )}
 
@@ -470,14 +470,14 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
           {locationStatus === 'success' && (
             <div style={{ padding: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 8, fontSize: 13, color: '#a7f3d0' }}>
-              ✓ Localização identificada: <strong>{cidade} - {uf}</strong> (Ranking Municipal liberado)
+              Localização identificada: <strong>{cidade} - {uf}</strong> (Ranking Municipal liberado)
             </div>
           )}
 
           {locationStatus === 'denied' && (
             <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 8, fontSize: 13, color: '#fca5a5' }}>
               <div style={{ marginBottom: 8 }}>
-                ⚠️ Localização obrigatória. Sem ela você não entra no app — precisamos classificar você na cidade correta.
+                Localização obrigatória. Sem ela você não entra no app — precisamos classificar você na cidade correta.
               </div>
               <button type="button" className="btn btn-primary btn-sm" onClick={obterLocalizacao}>
                 Tentar novamente
@@ -488,7 +488,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           {locationStatus === 'error' && (
             <div style={{ padding: '12px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 8, fontSize: 13, color: '#fde047' }}>
               <div style={{ marginBottom: 8 }}>
-                ⚠️ Não foi possível obter a localização. Ative o GPS e permita o acesso para continuar.
+                Não foi possível obter a localização. Ative o GPS e permita o acesso para continuar.
               </div>
               <button type="button" className="btn btn-primary btn-sm" onClick={obterLocalizacao}>
                 Tentar novamente

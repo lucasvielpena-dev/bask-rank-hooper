@@ -158,7 +158,7 @@ export default function Home({ profile, onNavigate }) {
               fontSize: 11, fontWeight: 700,
               fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.08em',
             }}>
-              {myRank !== '--' ? '👑 Melhor da Cidade' : 'Sem Posição'}
+              {myRank !== '--' ? 'Melhor da Cidade' : 'Sem Posição'}
             </span>
           </div>
 

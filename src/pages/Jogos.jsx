@@ -384,7 +384,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       showToast(data?.erro || error?.message || 'Não foi possível responder ao pedido.', 'error');
       return;
     }
-    showToast(aceitar ? '✓ Placar liberado para ele.' : 'Autorização removida.', 'success');
+    showToast(aceitar ? 'Placar liberado para ele.' : 'Autorização removida.', 'success');
     carregarPedidosCriador();
     if (partidaAtiva?.id === partidaId) carregarOperadores(partidaId);
   }
@@ -977,7 +977,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       }));
       const { data: resumo } = await notasJogoAPI.resumo({ partidaId: detalhe.id });
       setDetalheResumo(Object.fromEntries((resumo || []).map((r) => [r.jogador_id, r])));
-      showToast(`✓ Nota ${grade.key} registrada (anônima)`);
+      showToast(`Nota ${grade.key} registrada (anônima)`);
       setVotingPlayer(null);
     } catch (err) {
       showToast(err.message || 'Erro ao avaliar', 'error');
@@ -1385,11 +1385,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 </>
               ) : possoOperarPlacar ? (
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--success-text)' }}>
-                  ✓ O criador liberou: você pode pontuar neste placar
+                  O criador liberou: você pode pontuar neste placar
                 </div>
               ) : meuPedido ? (
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)' }}>
-                  ⏳ Pedido enviado — aguardando o criador da partida aceitar
+                  Pedido enviado — aguardando o criador da partida aceitar
                 </div>
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -2089,7 +2089,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                           disabled={enviandoVoto}
                           onClick={() => abrirAvaliacao(j)}
                         >
-                          {minha ? `✓ ${gradePorValor(minha.nota)}` : 'Avaliar'}
+                          {minha ? `${gradePorValor(minha.nota)}` : 'Avaliar'}
                         </button>
                       )}
                     </div>
@@ -2098,7 +2098,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               )}
             </div>
             <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>
-              🔒 As notas são <strong>anônimas</strong>: ninguém vê quem avaliou quem. O <strong>semáforo</strong> mostra só o resultado do grupo.
+              As notas são <strong>anônimas</strong>: ninguém vê quem avaliou quem. O <strong>semáforo</strong> mostra só o resultado do grupo.
             </p>
             <button className="btn btn-secondary" style={{ width: '100%' }} onClick={() => setDetalhe(null)}>Fechar</button>
           </div>

@@ -210,7 +210,7 @@ export default function Layout({ page, onNavigate, children }) {
                 fontSize: 13,
                 marginBottom: 16
               }}>
-                ⚠️ {erroPerfil}
+                {erroPerfil}
               </div>
             )}
 
@@ -361,9 +361,9 @@ export default function Layout({ page, onNavigate, children }) {
                   </label>
                   <div style={{ display: 'flex', gap: 8 }}>
                     {[
-                      { key: 'light', label: '☀️ Claro' },
-                      { key: 'dark', label: '🌙 Escuro' },
-                      { key: 'system', label: '📱 Sistema' }
+                      { key: 'light', label: 'Claro' },
+                      { key: 'dark', label: 'Escuro' },
+                      { key: 'system', label: 'Sistema' }
                     ].map(t => (
                       <button
                         key={t.key}

@@ -53,7 +53,7 @@ export default class ErrorBoundary extends Component {
               background: 'var(--accent-soft)', border: '1px solid var(--accent-line)',
             }}
           >
-            <span style={{ fontSize: 24 }}>🏀</span>
+            <span style={{ fontSize: 24 }}></span>
           </div>
 
           <h2

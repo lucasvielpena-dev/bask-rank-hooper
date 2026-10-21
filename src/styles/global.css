@@ -227,8 +227,8 @@ body {
 
 /* Empty State */
 .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:40px 16px; text-align:center; color:var(--text-muted); }
-.empty-state svg { opacity:0.3; width:48px; height:48px; }
-.empty-state h3 { font-size:16px; color:var(--text-secondary); font-family:var(--font-display); text-transform:uppercase; }
+.empty-state svg { opacity:0.5; width:40px; height:40px; }
+.empty-state h3 { font-size:17px; font-weight:700; color:var(--text-primary); font-family:'Inter',sans-serif; text-transform:none; }
 .empty-state p { font-size:13px; line-height:1.5; }
 
 /* Loading */

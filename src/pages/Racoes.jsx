@@ -260,7 +260,7 @@ export default function Racoes({ profile, onNavigate }) {
         },
       }));
       await carregarNotas(selected.id);
-      showMsg(`✓ Nota ${grade.key} registrada (anônima)`);
+      showMsg(`Nota ${grade.key} registrada (anônima)`);
       setVotingPlayer(null);
     } catch (err) {
       showMsg(err.message || 'Erro ao avaliar', 'error');
@@ -363,26 +363,26 @@ export default function Racoes({ profile, onNavigate }) {
             <h3 style={{ marginBottom: 14, fontWeight: 800 }}>Novo rachão</h3>
             <form onSubmit={handleCreate}>
               <div className="form-group" style={{ marginBottom: 12 }}>
-                <label style={{ fontSize: 12, color: 'var(--text-muted)' }}>Título</label>
+                <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>Título</label>
                 <input value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} placeholder="Ex: Rachão sexta 19h" required />
               </div>
               <div className="form-group" style={{ marginBottom: 12 }}>
-                <label style={{ fontSize: 12, color: 'var(--text-muted)' }}>Local</label>
+                <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>Local</label>
                 <input value={form.local} onChange={(e) => setForm({ ...form, local: e.target.value })} placeholder="Quadra / ginásio" />
               </div>
               <div className="form-group" style={{ marginBottom: 12 }}>
-                <label style={{ fontSize: 12, color: 'var(--text-muted)' }}>Data e hora</label>
+                <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>Data e hora</label>
                 <input type="datetime-local" value={form.data_hora} onChange={(e) => setForm({ ...form, data_hora: e.target.value })} required />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
                 <div>
-                  <label style={{ fontSize: 12, color: 'var(--text-muted)' }}>Vagas</label>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>Vagas</label>
                   <select value={form.max_jogadores} onChange={(e) => setForm({ ...form, max_jogadores: e.target.value })}>
                     {Array.from({ length: 10 }, (_, i) => (i + 1) * 2).map((n) => <option key={n} value={n}>{n}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label style={{ fontSize: 12, color: 'var(--text-muted)' }}>Nível</label>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>Nível</label>
                   <select value={form.nivel} onChange={(e) => setForm({ ...form, nivel: e.target.value })}>
                     {['Todos', 'Iniciante', 'Intermediário', 'Avançado'].map((n) => <option key={n}>{n}</option>)}
                   </select>
@@ -446,7 +446,7 @@ export default function Racoes({ profile, onNavigate }) {
                               disabled={busy || enviandoVoto}
                               onClick={() => abrirAvaliacao(p)}
                             >
-                              {minhasNotas[jid] ? `✓ ${gradePorValor(minhasNotas[jid].nota)}` : 'Avaliar'}
+                              {minhasNotas[jid] ? `${gradePorValor(minhasNotas[jid].nota)}` : 'Avaliar'}
                             </button>
                           ) : (
                             <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>sem perfil de atleta</span>
@@ -459,7 +459,7 @@ export default function Racoes({ profile, onNavigate }) {
             </div>
             {selected.status === 'finalizado' && (
               <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>
-                🔒 Notas <strong>anônimas</strong>: ninguém vê quem avaliou quem. O semáforo mostra só o resultado do grupo.
+                Notas <strong>anônimas</strong>: ninguém vê quem avaliou quem. O semáforo mostra só o resultado do grupo.
               </p>
             )}
             <button className="btn btn-secondary" style={{ width: '100%' }} onClick={() => setSelected(null)}>Fechar</button>

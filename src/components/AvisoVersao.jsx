@@ -97,7 +97,7 @@ export default function AvisoVersao() {
         boxShadow: '0 8px 24px rgba(0,0,0,0.5)'
       }}
     >
-      ⬆ Nova versão disponível — toque para atualizar
+      Nova versão disponível — toque para atualizar
     </button>
   );
 }

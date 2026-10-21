@@ -242,7 +242,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
     setEnviandoDenuncia(true);
     const { error } = await denunciasAPI.criar({ jogador_id: jogador.id, tipo: tipoDenuncia, descricao: descricao.trim() });
     if (error) { showToast(error.message || 'Erro ao registrar denúncia.', 'error'); }
-    else { showToast('✓ Denúncia enviada para análise!', 'success'); setTimeout(() => { setShowDenunciar(false); setDescricao(''); }, 1500); }
+    else { showToast('Denúncia enviada para análise!', 'success'); setTimeout(() => { setShowDenunciar(false); setDescricao(''); }, 1500); }
     setEnviandoDenuncia(false);
   }
 
@@ -268,7 +268,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
     const { data, error } = await votacaoAPI.votar(jogador.id, estrelas);
     if (error || !data?.sucesso) { showToast(data?.erro || error?.message || 'Erro ao registrar avaliação', 'error'); }
     else {
-      showToast(`✓ Avaliação registrada! Média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
+      showToast(`Avaliação registrada! Média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
       setJaAvaliou(true); setShowAvaliar(false);
       const { data: updatedJ } = await supabase.from('jogadores').select('*').eq('id', jogador.id).single();
       if (updatedJ) setLocalJogador(updatedJ);

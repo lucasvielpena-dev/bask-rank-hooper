@@ -16,10 +16,10 @@ const FORMATOS = {
 };
 
 const STATUS_TORNEIO = {
-  inscricoes_abertas: { label: '🟢 Inscrições Abertas', color: 'var(--success-text)', bg: 'var(--success-soft)' },
-  inscricoes_encerradas: { label: '🟡 Aguardando Início', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  em_andamento: { label: '🔵 Em Andamento', color: 'var(--accent)', bg: 'var(--accent-soft)' },
-  finalizado: { label: '🏆 Finalizado', color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' }
+  inscricoes_abertas: { label: 'Inscrições Abertas', color: 'var(--success-text)', bg: 'var(--success-soft)' },
+  inscricoes_encerradas: { label: 'Aguardando Início', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  em_andamento: { label: 'Em Andamento', color: 'var(--accent)', bg: 'var(--accent-soft)' },
+  finalizado: { label: 'Finalizado', color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' }
 };
 
 export default function Torneios({ profile, isNested = false, openCriar = false, onOpenCriarChange }) {
@@ -214,12 +214,12 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440 }}>
         <div className="modal-handle" />
-        <h3 style={{ fontWeight: 900, fontSize: 20, marginBottom: 4 }}>🏆 Novo Torneio</h3>
+        <h3 style={{ fontWeight: 900, fontSize: 20, marginBottom: 4 }}>Novo Torneio</h3>
         <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 10 }}>
           Preencha as informações básicas para iniciar as inscrições na sua cidade.
         </p>
 
-        {erro && <div style={{ color: '#f87171', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: 10, borderRadius: 8, fontSize: 13, marginBottom: 14 }}>⚠️ {erro}</div>}
+        {erro && <div style={{ color: '#f87171', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: 10, borderRadius: 8, fontSize: 13, marginBottom: 14 }}>{erro}</div>}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div>
@@ -689,7 +689,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
         {/* Row 2: Nome e Formato */}
         <div style={{ marginTop: 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '20px' }}>🏆</span>
+            <span style={{ fontSize: '20px' }}></span>
             <h2 style={{ fontWeight: 900, fontSize: '18px', color: '#F8FAFC', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
               {torneio.nome}
             </h2>
@@ -713,7 +713,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
               {torneio.local_quadra}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#94A3B8', fontSize: '11px' }}>
-              <span>📅</span> {new Date(torneio.data_inicio).toLocaleDateString('pt-BR')} • {torneio.horario_inicio.substring(0,5)}
+              <span></span> {new Date(torneio.data_inicio).toLocaleDateString('pt-BR')} • {torneio.horario_inicio.substring(0,5)}
             </div>
           </div>
           <div style={{ color: '#94A3B8', fontSize: '11px' }}>
@@ -872,7 +872,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   fontFamily: 'inherit'
                 }}
               >
-                ➕ Inscrever Equipe
+                Inscrever Equipe
               </button>
             ) : (
               <div className="card" style={{
@@ -885,8 +885,8 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 color: 'var(--text-muted)'
               }}>
                 {torneio.status === 'finalizado'
-                  ? '🏆 Torneio finalizado'
-                  : '🔒 Inscrições encerradas para este torneio'}
+                  ? 'Torneio finalizado'
+                  : 'Inscrições encerradas para este torneio'}
               </div>
             )}
 
@@ -967,7 +967,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       fontFamily: 'inherit'
                     }}
                   >
-                    🛑 Finalizar Torneio
+                    Finalizar Torneio
                   </button>
                 )}
 
@@ -987,7 +987,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     gap: '6px',
                     fontFamily: 'inherit'
                   }}>
-                    ⚙️ Gerenciar Equipes
+                    Gerenciar Equipes
                   </button>
                   <button onClick={() => setAba('jogos')} style={{
                     background: 'var(--bg-card)',
@@ -1021,7 +1021,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     gap: '6px',
                     fontFamily: 'inherit'
                   }}>
-                    📊 Estatísticas
+                    Estatísticas
                   </button>
                   <button onClick={() => setAba('equipes')} style={{
                     background: 'var(--bg-card)',
@@ -1038,7 +1038,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     gap: '6px',
                     fontFamily: 'inherit'
                   }}>
-                    📋 Aprovar Inscrições
+                    Aprovar Inscrições
                   </button>
                 </div>
               </div>
@@ -1066,7 +1066,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   fontFamily: 'inherit'
                 }}
               >
-                🗑️ Encerrar Torneio
+                Encerrar Torneio
               </button>
             )}
           </div>
@@ -1127,7 +1127,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                         </div>
                         <div>
                           {e.aprovado ? (
-                            <span style={{ color: 'var(--success-text)', fontSize: '12px', fontWeight: 800 }}>✓ Confirmada</span>
+                            <span style={{ color: 'var(--success-text)', fontSize: '12px', fontWeight: 800 }}>Confirmada</span>
                           ) : isOrganizador ? (
                             <button 
                               onClick={async () => { await equipesAPI.aprovar(e.id, true); carregarDados(); }}
@@ -1337,7 +1337,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                           fontFamily: 'inherit'
                         }}
                       >
-                        ⚙️ Console do Placar ao Vivo
+                        Console do Placar ao Vivo
                       </button>
                     )}
 
@@ -1358,7 +1358,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                           fontFamily: 'inherit'
                         }}
                       >
-                        ⭐ Avaliar quem jogou
+                        Avaliar quem jogou
                       </button>
                     )}
                   </div>
@@ -1414,7 +1414,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
-                    <div style={{ fontSize: '24px' }}>🤝</div>
+                    <div style={{ fontSize: '24px' }}></div>
                     <div style={{ flex: 1 }}>
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.assistencias.nome}</strong>
                       <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>Líder em Assistências</span>
@@ -1436,7 +1436,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
-                    <div style={{ fontSize: '24px' }}>💪</div>
+                    <div style={{ fontSize: '24px' }}></div>
                     <div style={{ flex: 1 }}>
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.rebotes.nome}</strong>
                       <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
@@ -1460,7 +1460,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
-                    <div style={{ fontSize: '24px' }}>🚫</div>
+                    <div style={{ fontSize: '24px' }}></div>
                     <div style={{ flex: 1 }}>
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 800 }}>{lideres.tocos.nome}</strong>
                       <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
@@ -1537,7 +1537,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                             setNotaComentario(minha?.comentario || '');
                           }}
                         >
-                          {minha ? `✓ ${gradePorValor(minha.nota)}` : 'Avaliar'}
+                          {minha ? `${gradePorValor(minha.nota)}` : 'Avaliar'}
                         </button>
                       )}
                     </div>
@@ -1547,7 +1547,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
             </div>
             {erroNota && <p style={{ fontSize: 12, color: 'var(--text-danger)', marginBottom: 8 }}>{erroNota}</p>}
             <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>
-              🔒 As notas são <strong>anônimas</strong>: ninguém vê quem avaliou quem. O <strong>semáforo</strong> mostra só o resultado do grupo.
+              As notas são <strong>anônimas</strong>: ninguém vê quem avaliou quem. O <strong>semáforo</strong> mostra só o resultado do grupo.
             </p>
             <button className="btn btn-secondary" style={{ width: '100%' }} onClick={() => setNotaJogo(null)}>Fechar</button>
           </div>
@@ -1662,7 +1662,7 @@ function InscricaoEquipeModal({ torneio, profile, onClose, onSuccess }) {
         <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 4 }}>Inscrição de Equipe</h3>
         <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 16 }}>Inscreva seu time. Você será definido automaticamente como o Capitão da equipe.</p>
 
-        {erro && <div style={{ color: '#f87171', background: 'rgba(239,68,68,0.1)', padding: 8, borderRadius: 6, fontSize: 12, marginBottom: 12 }}>⚠️ {erro}</div>}
+        {erro && <div style={{ color: '#f87171', background: 'rgba(239,68,68,0.1)', padding: 8, borderRadius: 6, fontSize: 12, marginBottom: 12 }}>{erro}</div>}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div>
@@ -2686,7 +2686,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
 
         {myRosterRow && !myRosterRow.aprovado && (
           <span style={{ fontSize: 11, color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>
-            ⏳ Aguardando aprovação do Capitão
+            Aguardando aprovação do Capitão
           </span>
         )}
       </div>
