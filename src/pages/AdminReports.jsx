@@ -2,7 +2,6 @@ import MasterNav from '../components/MasterNav';
 import { useState, useEffect } from 'react';
 import { masterAPI } from '../lib/supabase';
 
-const MONTHS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
 function BarChart({ data, labelKey, valueKey, color = 'blue', horizontal = false }) {
   const max = Math.max(...data.map(d => d[valueKey]), 1);

@@ -8,7 +8,7 @@ import {
   resumoAvaliacoes,
 } from '../lib/ranking';
 import { useEsporte } from '../contexts/EsporteContext';
-import { IconBuscar, IconVoltar, IconRanking } from '../components/Icons';
+import { IconBuscar, IconVoltar } from '../components/Icons';
 import CityCrest from '../components/CityCrest';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { lerCache, salvarCache } from '../lib/pageCache';

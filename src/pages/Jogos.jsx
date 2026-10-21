@@ -4,7 +4,7 @@ import { GRADES, GradePicker, gradePorValor, gradeInfo, RendimentoPill, LegendaR
 import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
 import { motion, AnimatePresence } from 'framer-motion';
 import Torneios from './Torneios';
-import { IconJogo, IconMais, IconCalendario } from '../components/Icons';
+import { IconMais } from '../components/Icons';
 import { useEsporte } from '../contexts/EsporteContext';
 import { assinarAviso } from '../lib/realtime';
 import { lerCache, salvarCache, igualLista } from '../lib/pageCache';

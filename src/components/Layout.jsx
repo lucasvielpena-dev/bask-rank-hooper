@@ -4,12 +4,11 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useEsporte } from '../contexts/EsporteContext';
 import Header from './Header';
 import BottomNavigation from './BottomNavigation';
-import { IconSino, IconLocalizacao } from './Icons';
+import { IconLocalizacao } from './Icons';
 import NotificationsPanel from './NotificationsPanel';
 import AvisoVersao from './AvisoVersao';
 import AvisosPlacar from './AvisosPlacar';
 import { authAPI } from '../lib/supabase';
-import { preloadBackgrounds, backgroundsProntos, aoTerminarBackgrounds } from '../lib/backgrounds';
 
 // Qual pacote este celular está rodando AGORA (o nome do arquivo muda a cada
 // publicação). Serve para conferir, sem chute, se o aparelho já pegou a versão
@@ -96,26 +95,6 @@ export default function Layout({ page, onNavigate, children }) {
   // quadro da rolagem (`scale(1.05) translateY(scrollY*0.3)` num elemento de
   // tela cheia com filtro). Isso é o que engasgava a rolagem no celular. Agora
   // o fundo é estático e o navegador rasteriza uma única vez.
-  const [bgLoaded, setBgLoaded] = useState(backgroundsProntos);
-
-  // Preload background images (compartilhado com a tela de login)
-  useEffect(() => {
-    let mounted = true;
-
-    if (backgroundsProntos()) {
-      setBgLoaded(true);
-      return () => { mounted = false; };
-    }
-
-    preloadBackgrounds();
-    const cancelar = aoTerminarBackgrounds(() => {
-      if (mounted) setBgLoaded(true);
-    });
-
-    return () => { mounted = false; cancelar(); };
-  }, []);
-
-  const isHome = page === 'inicio';
 
   // Algumas telas rolam no PRÓPRIO envolvedor de conteúdo (o que tem
   // `overflow-x:hidden` — que por tabela também habilita rolagem vertical).

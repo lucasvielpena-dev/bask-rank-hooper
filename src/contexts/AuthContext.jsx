@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { supabase, authAPI, profilesAPI, notificacoesAPI, masterAPI, PROFILE_SAFE_COLUMNS } from '../lib/supabase';
 import { useEsporte } from './EsporteContext';
-import { preloadBackgrounds } from '../lib/backgrounds';
 import AuthScreen from '../components/AuthScreen';
 import CompleteProfileScreen from '../components/CompleteProfileScreen';
 import LocationGate from '../components/LocationGate';
@@ -169,7 +168,6 @@ export function AuthProvider({ children }) {
         setUser(u);
         setBootOk(true);
         if (u) {
-          preloadBackgrounds();
           loadProfile(u.id);
         } else {
           setProfile(null);
@@ -848,8 +846,7 @@ export function AuthProvider({ children }) {
               onStartAnimation={() => {
                 // Já sabemos que o usuário vem para o app: aproveita a
                 // animação para baixar o fundo e montar o app por baixo.
-                preloadBackgrounds();
-                setEntradaPorLogin(true);
+                      setEntradaPorLogin(true);
                 setArremessoAtivo(true);
               }}
               onFinishAnimation={() => setArremessoAtivo(false)}

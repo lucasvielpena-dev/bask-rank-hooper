@@ -7,7 +7,7 @@ import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from '../components/Icons';
 import PendenciasAvaliacao from '../components/PendenciasAvaliacao';
 import PlayerProfileModal from '../components/PlayerProfileModal';
-import { labelConfianca, nivelConfianca, resumoAvaliacoes, sortByConfianca, scoreConfianca } from '../lib/ranking';
+import { labelConfianca, nivelConfianca, resumoAvaliacoes, sortByConfianca } from '../lib/ranking';
 
 export default function Home({ profile, onNavigate }) {
   const { esporte, cfg } = useEsporte();
