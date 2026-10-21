@@ -6,6 +6,7 @@ import { lerCache, salvarCache } from '../lib/pageCache';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from '../components/Icons';
 import PendenciasAvaliacao from '../components/PendenciasAvaliacao';
+import PlayerProfileModal from '../components/PlayerProfileModal';
 import { labelConfianca, nivelConfianca, resumoAvaliacoes, sortByConfianca, scoreConfianca } from '../lib/ranking';
 
 export default function Home({ profile, onNavigate }) {
@@ -15,6 +16,9 @@ export default function Home({ profile, onNavigate }) {
   const [myPlayerInfo, setMyPlayerInfo] = useState(_cache?.myPlayerInfo || null);
   const [myRank, setMyRank] = useState(_cache?.myRank || '--');
   const [loading, setLoading] = useState(!_cache);
+  // Perfil aberto direto da Home (Destaques da Semana): o modal aparece aqui
+  // mesmo, sem trocar de aba, e ao fechar a Home continua no lugar.
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [heroTransform, setHeroTransform] = useState('rotateX(4deg) rotateY(-4deg) translateZ(0px)');
   const [heroShadow, setHeroShadow] = useState('0 16px 40px rgba(0,0,0,0.4)');
 
@@ -312,7 +316,7 @@ export default function Home({ profile, onNavigate }) {
               <div
                 key={player.id}
                 className={i === 0 ? `premium-card premium-card-border-green stagger-enter stagger-${i + 2}` : `premium-card stagger-enter stagger-${i + 2}`}
-                onClick={() => onNavigate('atletas', { selectedPlayer: { ...player, rank: i + 1 } })}
+                onClick={() => setSelectedPlayer({ ...player, rank: i + 1 })}
                 style={{
                   borderRadius: 14,
                   padding: '12px 14px',
@@ -384,7 +388,18 @@ export default function Home({ profile, onNavigate }) {
           </div>
         </div>
 
-
+        {selectedPlayer && (
+          <PlayerProfileModal
+            jogador={selectedPlayer}
+            rank={selectedPlayer.rank}
+            onClose={() => {
+              setSelectedPlayer(null);
+              // Revalida em silêncio: se o atleta recebeu voto agora, a lista
+              // da Home já volta atualizada.
+              loadData(city, uf, true);
+            }}
+          />
+        )}
 
       </div>
     </div>
