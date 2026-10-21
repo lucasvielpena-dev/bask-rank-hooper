@@ -109,15 +109,11 @@ export default function AdminNotifications({ profile, onNavigate }) {
         {/* Form Card */}
         <form onSubmit={handleEnviar} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div className="card" style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
             borderRadius: 'clamp(12px, 2vw, 16px)',
             padding: 'clamp(16px, 4vw, 24px)',
             display: 'flex',
             flexDirection: 'column',
-            gap: 16,
-            boxShadow: 'var(--shadow)'
-          }}>
+            gap: 16,}}>
             <div>
               <label style={{
                 fontSize: 'clamp(11px, 2.5vw, 13px)',

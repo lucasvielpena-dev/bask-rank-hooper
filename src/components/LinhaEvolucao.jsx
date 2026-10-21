@@ -200,7 +200,7 @@ const LinhaEvolucao = memo(function LinhaEvolucao({ serie = [], loading = false,
   const tendencia = calcularTendencia(serie);
 
   return (
-    <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '14px', padding: '10px 12px', marginBottom: 10 }}>
+    <div className="card" style={{ padding: '10px 12px', marginBottom: 10 }}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
         <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.04em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>
           Evolução
