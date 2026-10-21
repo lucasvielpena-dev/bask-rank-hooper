@@ -224,7 +224,7 @@ export default function Home({ profile, onNavigate }) {
                 src={myPlayerInfo.foto_url}
                 alt={greetingName}
                 style={{
-                  width: '50%', alignSelf: 'stretch', flexShrink: 0,
+                  width: '50%', aspectRatio: '1 / 1', alignSelf: 'center', flexShrink: 0,
                   objectFit: 'cover', objectPosition: 'center 18%',
                   borderRadius: 0, pointerEvents: 'none',
                   WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
@@ -235,7 +235,7 @@ export default function Home({ profile, onNavigate }) {
               />
             ) : (
               <div style={{
-                width: '50%', alignSelf: 'stretch', flexShrink: 0,
+                width: '50%', aspectRatio: '1 / 1', alignSelf: 'center', flexShrink: 0,
                 borderRadius: 0,
                 background: 'var(--accent-soft)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
