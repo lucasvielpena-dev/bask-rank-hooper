@@ -2608,6 +2608,7 @@ body.light-theme .mesa-btn.mesa-btn--muted {
 /* ===== FitPulse glass UI ===== */
 body {
   background-color: var(--bg-primary);
+  background-image: none;
   font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
 }
@@ -3084,4 +3085,65 @@ body.light-theme .premium-card-border-accent,
 body.light-theme .premium-card-border-green {
   border-color: rgba(37, 99, 235, 0.3) !important;
   box-shadow: none !important;
+}
+
+/* ===== DARK TEXT FIX — nunca preto no escuro ===== */
+body:not(.light-theme),
+body:not(.light-theme) .app-shell,
+body:not(.light-theme) .page-content,
+body:not(.light-theme) .home-page {
+  background-color: #07101C !important;
+  background-image: none !important;
+  color: #F5F8FF !important;
+}
+
+body:not(.light-theme) h1,
+body:not(.light-theme) h2,
+body:not(.light-theme) h3,
+body:not(.light-theme) h4,
+body:not(.light-theme) .page-title,
+body:not(.light-theme) .section-title,
+body:not(.light-theme) .premium-name,
+body:not(.light-theme) .home-highlight-name,
+body:not(.light-theme) .highlight-name,
+body:not(.light-theme) .home-greeting-title,
+body:not(.light-theme) .home-greeting-name,
+body:not(.light-theme) .home-greeting-sub {
+  color: #F5F8FF !important;
+}
+
+/* Inline styles que forçavam preto/cinza muito escuro */
+body:not(.light-theme) [style*="color: #000"],
+body:not(.light-theme) [style*="color:#000"],
+body:not(.light-theme) [style*="color: #000000"],
+body:not(.light-theme) [style*="color:#000000"],
+body:not(.light-theme) [style*="color: #111"],
+body:not(.light-theme) [style*="color:#111"],
+body:not(.light-theme) [style*="color: #111111"],
+body:not(.light-theme) [style*="color:#111111"],
+body:not(.light-theme) [style*="color: #0F172A"],
+body:not(.light-theme) [style*="color:#0F172A"],
+body:not(.light-theme) [style*="color: #020617"],
+body:not(.light-theme) [style*="color:#020617"],
+body:not(.light-theme) [style*="color: #1A1A2E"],
+body:not(.light-theme) [style*="color:#1A1A2E"],
+body:not(.light-theme) [style*="color: #0C0C14"],
+body:not(.light-theme) [style*="color:#0C0C14"] {
+  color: #F5F8FF !important;
+}
+
+body:not(.light-theme) .card,
+body:not(.light-theme) .premium-card,
+body:not(.light-theme) .hero-card {
+  color: #F5F8FF !important;
+}
+
+body:not(.light-theme) .text-secondary,
+body:not(.light-theme) [style*="color: var(--text-secondary)"] {
+  color: #B4C7DE !important;
+}
+
+body:not(.light-theme) .text-muted,
+body:not(.light-theme) [style*="color: var(--text-muted)"] {
+  color: #8A9FBA !important;
 }

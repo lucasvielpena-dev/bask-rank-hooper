@@ -125,47 +125,20 @@ export default function Layout({ page, onNavigate, children }) {
   useEffect(() => {
     if (scrollerRef.current) scrollerRef.current.scrollTop = 0;
   }, [page]);
-  // UMA única camada de fundo, sem `filter` e sem segunda imagem.
-  //
-  // Antes eram DUAS imagens de tela cheia empilhadas, cada uma com
-  // `filter: brightness()`. Filtro em elemento de tela cheia + camada extra
-  // obrigavam o celular a redesenhar a tela inteira a cada troca de aba — era
-  // isso que piscava/engasgava. O escurecimento agora é um véu sólido por cima
-  // (resultado visual igual, custo zero).
-  // Mesma imagem em todas as telas + atmosfera azul (estilo FitPulse)
-  const bgUrl = '/images/bg-1.jpg';
-  const bgVeu = themePref === 'light'
-    ? 'rgba(241, 245, 249, 0.94)'
-    : 'linear-gradient(180deg, rgba(8,18,40,0.55) 0%, rgba(6,12,28,0.78) 55%, rgba(4,8,18,0.88) 100%)';
+  // Fundo sólido (sem foto) — legível e limpo nos dois temas
+  const bgSolid = themePref === 'light' ? '#F1F5F9' : '#07101C';
 
   return (
-    <div className="app-shell">
-      {/* Fundo do app (fixo, sem parallax, sem filtro) */}
+    <div className="app-shell" style={{ background: bgSolid }}>
       <div
         style={{
           position: 'fixed',
           inset: 0,
           zIndex: 0,
           pointerEvents: 'none',
-          opacity: bgLoaded ? 1 : 0,
-          transition: 'opacity 0.5s ease-out',
+          background: bgSolid,
         }}
-      >
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url('${bgUrl}')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center bottom',
-          backgroundRepeat: 'no-repeat',
-        }} />
-        {/* Véu de escurecimento (faz o papel do antigo brightness) */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          background: bgVeu,
-        }} />
-      </div>
+      />
       <Header />
 
       {profile && profile.cadastro_completo && !profile.player_id && (
