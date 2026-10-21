@@ -132,10 +132,11 @@ export default function Layout({ page, onNavigate, children }) {
   // obrigavam o celular a redesenhar a tela inteira a cada troca de aba — era
   // isso que piscava/engasgava. O escurecimento agora é um véu sólido por cima
   // (resultado visual igual, custo zero).
-  // Mesma imagem em todas as telas (evita conflito visual entre abas)
+  // Mesma imagem em todas as telas + atmosfera azul (estilo FitPulse)
   const bgUrl = '/images/bg-1.jpg';
-  // Véu mais leve para a quadra/basquete aparecer, sem atrapalhar a leitura
-  const bgVeu = themePref === 'light' ? 'rgba(244, 246, 250, 0.88)' : 'rgba(10, 16, 24, 0.72)';
+  const bgVeu = themePref === 'light'
+    ? 'linear-gradient(180deg, rgba(244,246,250,0.92) 0%, rgba(230,238,250,0.9) 100%)'
+    : 'linear-gradient(180deg, rgba(8,18,40,0.55) 0%, rgba(6,12,28,0.78) 55%, rgba(4,8,18,0.88) 100%)';
 
   return (
     <div className="app-shell">
