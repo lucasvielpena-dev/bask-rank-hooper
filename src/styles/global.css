@@ -315,15 +315,15 @@ input:focus { border-color:var(--accent); }
    GPU. O brilho ficou fixo — animar `text-shadow` repintava o texto a cada
    quadro (tremia/piscava em aparelho mais simples). */
 @keyframes timerPulse { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(1.03); opacity:0.94; } }
-.timer-active-pulse-text { animation:timerPulse 2s infinite ease-in-out; }
+.timer-active-pulse-text { animation:none; }
 
 /* Border pulse */
 @keyframes borderPulse { 0%,100% { border-color:var(--accent-line); transform:scale(1); } 50% { border-color:var(--accent); transform:scale(1.03); } }
-.timer-active-pulse { animation:borderPulse 1s infinite ease-in-out !important; }
+.timer-active-pulse { animation:none !important; }
 
 /* Leader glow */
 @keyframes leaderGlow { 0%,100% { border-color:var(--accent-line); } 50% { border-color:var(--accent); } }
-.leader-active-glow { animation:leaderGlow 3s infinite ease-in-out !important; }
+.leader-active-glow { animation:none !important; }
 
 /* Page transition */
 @keyframes pageEnter { from { opacity:0.9; transform:translateX(10px); } to { opacity:1; transform:none; } }
@@ -3172,3 +3172,13 @@ body:not(.light-theme) [style*="color: var(--text-muted)"] {
 
 /* Lista de atletas: o navegador só pinta os cartões que estão na tela (rolagem mais leve). */
 .atleta-item { content-visibility:auto; contain-intrinsic-size:auto 150px; }
+
+/* Movimento: só feedback útil (carregamento). Demais animações rodam uma vez.
+   Quem ativou "reduzir movimento" no aparelho não vê animação decorativa. */
+@media (prefers-reduced-motion: reduce) {
+  *:not(.spinner):not(.skeleton) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -180,14 +180,14 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
 
         /* IDLE ANIMATIONS (Cubic-bezier gerais) */
         .idle-breathe {
-          animation: breathe 2.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+          animation: breathe 2.5s cubic-bezier(0.45, 0, 0.55, 1) 1 both;
         }
         .idle-sway {
-          animation: sway 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+          animation: sway 3s cubic-bezier(0.45, 0, 0.55, 1) 1 both;
           transform-origin: 200px 450px;
         }
         .idle-bounce {
-          animation: bounce 0.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+          animation: bounce 0.8s cubic-bezier(0.45, 0, 0.55, 1) 1 both;
         }
 
         /* SQUASH & STRETCH BALL (IDLE) */
