@@ -251,11 +251,6 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
   }, []);
 
 
-  function showToast(msg, type = 'success') {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 3500);
-  }
-
   function mesmaCidade(player) {
     const norm = (v) => String(v || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s*-\s*[a-z]{2}$/i, '');
     const c1 = norm(selectedCity);
