@@ -45,7 +45,7 @@
   --nav-height: 64px;
   --header-height: 72px;
   --nav-active-color: var(--accent-text);
-  --nav-inactive-color: #7D8A99;
+  --nav-inactive-color: #B4BFCC;
   --header-bg: rgba(11, 18, 32, 0.90);
   --chart-bg: #161B22;
   --chart-grid: rgba(255,255,255,0.06);
@@ -136,10 +136,10 @@ body {
 /* Bottom Nav */
 .bottom-nav {
   height:64px;
-  background: rgba(11, 18, 32, 0.92);
+  background: rgba(11, 18, 32, 0.97);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--accent-line, rgba(255,255,255,0.14));
   display:flex; align-items:center; z-index:100; flex-shrink:0;
   overflow-x:auto; scrollbar-width:none;
   padding:6px 8px calc(6px + env(safe-area-inset-bottom));
@@ -151,18 +151,22 @@ body {
   justify-content:center; gap:3px; padding:6px 4px; min-height:48px; border-radius:12px;
   cursor:pointer; transition:all 0.2s ease; color:var(--nav-inactive-color);
   border:none; background:none; font-family:inherit; white-space:nowrap; flex-shrink:0;
-  position:relative; opacity:0.7;
+  position:relative; opacity:1;
 }
 .nav-item:active { transform:scale(0.96); }
 .nav-item.active {
   color:var(--accent); opacity:1;
   background:var(--accent-soft);
 }
-.nav-item svg { width:22px; height:22px; transition:transform 0.2s, color 0.2s; color:#6B7280; }
+.nav-item.active::before {
+  content:""; position:absolute; top:-7px; left:22%; right:22%; height:3px;
+  border-radius:0 0 3px 3px; background:var(--accent);
+}
+.nav-item svg { width:22px; height:22px; transition:transform 0.2s, color 0.2s; color:var(--nav-inactive-color); }
 .nav-item.active svg { transform:scale(1.08); color:var(--accent-text); }
 .nav-item span {
-  font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.03em;
-  font-family:var(--font-display); color:#6B7280; opacity:1; height:auto; margin:0;
+  font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.03em;
+  font-family:var(--font-display); color:var(--nav-inactive-color); opacity:1; height:auto; margin:0;
   transition:color 0.2s;
 }
 .nav-item.active span { opacity:1; color:var(--accent-text); font-weight:700; }
@@ -507,7 +511,7 @@ input:focus { border-color:var(--accent); }
   --shadow-elevated: 0 4px 16px rgba(15, 23, 42, 0.06);
   --header-bg: #FFFFFF;
   --nav-active-color: var(--accent-text);
-  --nav-inactive-color: #94A3B8;
+  --nav-inactive-color: #5B6779;
   --chart-bg: #FFFFFF;
   --chart-grid: rgba(15, 23, 42, 0.06);
   --chart-text: #0F172A;
@@ -659,7 +663,7 @@ input:focus { border-color:var(--accent); }
 /* Responsive */
 @media (max-width:480px) { .card { padding:12px 10px; border-radius:10px; } .btn { padding:8px 14px; font-size:12px; } .btn-sm { padding:5px 10px; font-size:11px; } .empty-state { padding:32px 14px; } .empty-state h3 { font-size:13px; } .empty-state p { font-size:11px; } .modal-sheet { padding:12px 10px; border-radius:16px 16px 0 0; } input,select,textarea { font-size:12px; padding:8px 10px; } .section-title { font-size:13px; } .badge { font-size:10px; padding:3px 8px; } }
 @media (min-width:481px) and (max-width:767px) { .card { padding:14px 12px; } .modal-sheet { padding:14px 12px; } }
-@media (max-width:359px) { .card { padding:10px 8px; border-radius:8px; } .btn { padding:8px 10px; font-size:12px; border-radius:40px; } .btn-sm { padding:5px 8px; font-size:10px; } .nav-item span { font-size:7.5px; } .nav-item svg { width:16px; height:16px; } .bottom-nav { height:64px; } .tabs { gap:1px; padding:2px; } .tab { font-size:11px; padding:5px 7px; } }
+@media (max-width:359px) { .card { padding:10px 8px; border-radius:8px; } .btn { padding:8px 10px; font-size:12px; border-radius:40px; } .btn-sm { padding:5px 8px; font-size:10px; } .nav-item span { font-size:9px; } .nav-item svg { width:16px; height:16px; } .bottom-nav { height:64px; } .tabs { gap:1px; padding:2px; } .tab { font-size:11px; padding:5px 7px; } }
 @media (min-width:768px) { .home-container { padding:12px 20px 0; } .acoes-rapidas-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; } .bottom-nav { justify-content:center !important; gap:16px !important; } .nav-item { flex:0 1 120px !important; } .modal-overlay { align-items:center !important; padding:20px !important; } .modal-sheet { border-radius:18px !important; max-height:90vh !important; } }
 @media (min-width:1024px) { .app-shell { border-left:1px solid var(--border); border-right:1px solid var(--border); } .home-container { padding-top:28px; } }
 @media (min-width:1440px) { .home-container { max-width:1200px; } }
