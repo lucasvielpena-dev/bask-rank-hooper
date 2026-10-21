@@ -9,9 +9,9 @@ function BarChart({ data, labelKey, valueKey, color = 'blue', horizontal = false
 
   if (horizontal) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {data.map((item, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{
               width: 100,
               fontSize: 'clamp(11px, 2.5vw, 13px)',
@@ -101,7 +101,7 @@ function SectionCard({ title, icon, children }) {
       borderRadius: 'clamp(12px, 2vw, 16px)',
       padding: 'clamp(14px, 3vw, 20px)'
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
         <div style={{
           width: 34,
           height: 34,
@@ -292,7 +292,7 @@ export default function AdminReports({ profile, onNavigate }) {
                     <div key={i} style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 10,
+                      gap: 8,
                       padding: '10px 12px',
                       background: 'var(--bg-secondary)',
                       borderRadius: 10
@@ -366,7 +366,7 @@ export default function AdminReports({ profile, onNavigate }) {
                   <div key={i} style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 10,
+                    gap: 8,
                     padding: '10px 12px',
                     background: 'var(--bg-secondary)',
                     borderRadius: 10

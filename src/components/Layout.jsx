@@ -299,7 +299,7 @@ export default function Layout({ page, onNavigate, children }) {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
+                <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
                   <button
                     type="button"
                     className="btn btn-secondary"
@@ -320,7 +320,7 @@ export default function Layout({ page, onNavigate, children }) {
                 </div>
               </form>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'var(--bg-elevated)' }}>
                   {profile.foto_perfil ? (
                     <img
@@ -339,7 +339,7 @@ export default function Layout({ page, onNavigate, children }) {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
                   <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
                     <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>APELIDO</div>
                     <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 15 }}>{profile.apelido}</div>
@@ -386,7 +386,7 @@ export default function Layout({ page, onNavigate, children }) {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
+                <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
                   <button
                     className="btn btn-secondary"
                     onClick={() => {
@@ -454,7 +454,7 @@ export default function Layout({ page, onNavigate, children }) {
             <p style={{ color: 'var(--text-secondary)', fontSize: 15, marginBottom: 24, lineHeight: 1.5 }}>
               Podemos usar sua localização para confirmar em qual cidade você está? Assim as avaliações e os rachões ficam na cidade certa. Se você estiver em outra cidade, a gente pergunta antes de mudar.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <button onClick={pedirLocalizacaoAgora} style={{ background: 'var(--accent)', color: '#000', border: 'none', borderRadius: 50, padding: '12px', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>
                 Permitir localização
               </button>
@@ -476,7 +476,7 @@ export default function Layout({ page, onNavigate, children }) {
             <p style={{ color: 'var(--text-secondary)', fontSize: 15, marginBottom: 24, lineHeight: 1.5 }}>
               Detectamos que você está em <strong>{cityPrompt.city} - {cityPrompt.uf}</strong>. Deseja atualizar sua cidade de competição?
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <button
                 onClick={handleConfirmCityUpdate}
                 style={{
@@ -570,7 +570,7 @@ export default function Layout({ page, onNavigate, children }) {
               </div>
             )}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <button
                 type="button"
                 disabled={excluindo || confirmExcluir.trim().toUpperCase() !== 'EXCLUIR'}

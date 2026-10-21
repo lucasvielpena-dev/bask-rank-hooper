@@ -23,7 +23,7 @@ export default memo(function Header() {
         boxShadow: scrolled ? '0 8px 28px rgba(0,0,0,0.35)' : 'none' }}
     >
       {/* Logo + marca (sem menu de três linhas à esquerda) */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
         <div className="header-logo-icon">
           <IconSportDynamic sport={esporte} size={17} color="var(--accent-on)" />
         </div>

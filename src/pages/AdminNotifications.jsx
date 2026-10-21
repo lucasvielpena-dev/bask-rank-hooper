@@ -212,7 +212,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
               padding: 'clamp(14px, 3vw, 20px)',
               display: 'flex',
               alignItems: 'center',
-              gap: 14
+              gap: 16
             }}>
               <div style={{
                 width: 'clamp(40px, 10vw, 48px)',
@@ -270,7 +270,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: 10,
+              gap: 8,
               width: '100%',
               fontFamily: 'inherit',
               letterSpacing: '0.02em'
@@ -302,7 +302,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
           lineHeight: 1.6,
           display: 'flex',
           alignItems: 'flex-start',
-          gap: 10
+          gap: 8
         }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 2 }}>
             <circle cx="12" cy="12" r="10" />

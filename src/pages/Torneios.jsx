@@ -82,7 +82,7 @@ export default function Torneios({ profile, isNested = false, openCriar = false,
           {/* Header */}
           {!isNested ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 34, height: 34, background: 'var(--accent-soft)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <IconCalendario size={20} color="var(--accent)" />
                 </div>
@@ -277,7 +277,7 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
             <textarea rows="2" style={{ resize: 'none' }} placeholder="Detalhes do evento..." value={form.descricao} onChange={e => setForm(p => ({ ...p, descricao: e.target.value }))} />
           </div>
 
-          <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
             <button type="button" className="btn btn-secondary" onClick={onClose} disabled={salvando} style={{ flex: 1 }}>Cancelar</button>
             <button type="submit" className="btn btn-primary" disabled={salvando} style={{ flex: 2 }}>
               {salvando ? <div className="spinner" /> : 'Cadastrar Torneio'}
@@ -808,7 +808,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 12px 40px' }}>
         {/* TAB 1: INFORMAÇÕES */}
         {aba === 'info' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
@@ -950,7 +950,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   </button>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginTop: '2px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '2px' }}>
                   <button onClick={() => setAba('equipes')} style={{
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
@@ -963,7 +963,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '6px',
+                    gap: '8px',
                     fontFamily: 'inherit'
                   }}>
                     Gerenciar Equipes
@@ -980,7 +980,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '6px',
+                    gap: '8px',
                     fontFamily: 'inherit'
                   }}>
                     <IconSportDynamic sport={esporte} size={14} color="var(--text-primary)" /> Gerenciar Jogos
@@ -997,7 +997,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '6px',
+                    gap: '8px',
                     fontFamily: 'inherit'
                   }}>
                     Estatísticas
@@ -1014,7 +1014,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '6px',
+                    gap: '8px',
                     fontFamily: 'inherit'
                   }}>
                     Aprovar Inscrições
@@ -1053,7 +1053,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
 
         {/* TAB 2: EQUIPES */}
         {aba === 'equipes' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)' }}>Equipes Inscritas ({equipes.length})</h3>
               {torneio.status === 'inscricoes_abertas' && (
@@ -1094,7 +1094,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       padding: '16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div style={{ cursor: 'pointer', flex: 1 }} onClick={() => setExpandedTeamId(isExpanded ? null : e.id)}>
-                          <h4 style={{ fontWeight: 800, fontSize: '15px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <h4 style={{ fontWeight: 800, fontSize: '15px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             {e.nome} <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{isExpanded ? '▼' : '▶'}</span>
                           </h4>
                           <small style={{ color: 'var(--text-secondary)' }}>Capitão: {e.capitao?.nome_completo}</small>
@@ -1183,7 +1183,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 {jogos.length === 0 ? (
                   <p style={{ color: 'var(--text-secondary)', fontSize: '13px', textAlign: 'center' }}>A chave será gerada quando o torneio for iniciado.</p>
                 ) : (
-                  <div className="playoff-bracket-container" style={{ gap: '20px' }}>
+                  <div className="playoff-bracket-container" style={{ gap: '16px' }}>
                     {['Quartas de Final', 'Semifinal', 'Final'].map(fase => {
                       const faseMatches = jogos.filter(j => j.fase === fase);
                       if (faseMatches.length === 0) return null;
@@ -1192,7 +1192,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                           <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                             {fase}
                           </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             {faseMatches.map(j => (
                               <div key={j.id} className="card" style={{
                                 display: 'flex',
@@ -1457,7 +1457,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   const minha = notaMinhas[j.jogadorId];
                   const souEu = profile?.player_id === j.jogadorId;
                   return (
-                    <div key={j.id} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
+                    <div key={j.id} style={{ display: 'flex', gap: 8, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
                       <span className="badge" style={{ minWidth: 20, textAlign: 'center' }}>{j.equipe}</span>
                       {j.foto ? (
                         <img src={j.foto} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
@@ -1543,7 +1543,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 disabled={enviandoNota}
                 style={{ marginTop: 4 }}
               />
-              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                 <button type="button" className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setNotaAlvo(null)} disabled={enviandoNota}>
                   Cancelar
                 </button>
@@ -1612,7 +1612,7 @@ function InscricaoEquipeModal({ torneio, profile, onClose, onSuccess }) {
             <input required type="text" placeholder="Ex: Bulls de Altamira" value={nomeEquipe} onChange={e => setNomeEquipe(e.target.value)} />
           </div>
 
-          <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
             <button type="button" className="btn btn-secondary" onClick={onClose} disabled={salvando} style={{ flex: 1 }}>Voltar</button>
             <button type="submit" className="btn btn-primary" disabled={salvando} style={{ flex: 2 }}>Registrar Equipe</button>
           </div>
@@ -1963,7 +1963,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         >
           ← VOLTAR AO TORNEIO
         </button>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)' }}>
             {periodo >= 5 ? 'PRORROGAÇÃO' : `${periodo}º QUARTO`}
           </span>
@@ -1985,7 +1985,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)' }}>Duração do Quarto:</span>
           <div style={{ display: 'flex', gap: 12 }}>
             {[10, 12].map(mins => (
-              <label key={mins} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, color: 'var(--text-primary)' }}>
+              <label key={mins} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: 'var(--text-primary)' }}>
                 <input
                   type="radio"
                   name="duracaoQuartoConsole"
@@ -2262,7 +2262,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
             + Pontuar {(jogo.equipe_a?.nome || 'Time A').substring(0, 6)}
           </span>
-          <div style={{ display: 'flex', gap: 6, width: '100%' }}>
+          <div style={{ display: 'flex', gap: 8, width: '100%' }}>
             <button onClick={() => ajustarPlacar('A', 1)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-a-bg-1)', border: '1px solid var(--time-a-border-1)', color: 'var(--time-a-color-1)', borderRadius: '6px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
             <button onClick={() => ajustarPlacar('A', 2)} style={{ flex: 1.2, padding: '8px 0', background: 'var(--time-a-bg-2)', border: 'var(--time-a-border-2)', color: 'var(--time-a-color-2)', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
             <button onClick={() => ajustarPlacar('A', 3)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-a-bg-3)', border: '1px solid var(--time-a-border-3)', color: 'var(--time-a-color-3)', borderRadius: '6px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
@@ -2287,7 +2287,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
             + Pontuar {(jogo.equipe_b?.nome || 'Time B').substring(0, 6)}
           </span>
-          <div style={{ display: 'flex', gap: 6, width: '100%' }}>
+          <div style={{ display: 'flex', gap: 8, width: '100%' }}>
             <button onClick={() => ajustarPlacar('B', 1)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-b-bg-1)', border: '1px solid var(--time-b-border-1)', color: 'var(--time-b-color-1)', borderRadius: '6px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+1</button>
             <button onClick={() => ajustarPlacar('B', 2)} style={{ flex: 1.2, padding: '8px 0', background: 'var(--time-b-bg-2)', border: 'var(--time-b-border-2)', color: 'var(--time-b-color-2)', borderRadius: '6px', fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>+2</button>
             <button onClick={() => ajustarPlacar('B', 3)} style={{ flex: 1, padding: '6px 0', background: 'var(--time-b-bg-3)', border: '1px solid var(--time-b-border-3)', color: 'var(--time-b-color-3)', borderRadius: '6px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>+3</button>
@@ -2395,7 +2395,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
                     {isTeamA ? (jogo.equipe_a?.nome || 'Time A') : (jogo.equipe_b?.nome || 'Time B')}
                   </span>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: 6 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: 8 }}>
                   {[
                     { label: 'PTS', key: 'pontos' },
                     { label: 'REB', key: 'rebotes' },
@@ -2405,7 +2405,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
                   ].map(stat => (
                     <div key={stat.key} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'var(--bg-secondary)', borderRadius: 6, padding: '4px 0', border: '1px solid var(--border)' }}>
                       <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 800 }}>{stat.label}</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, margin: '2px 0' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '2px 0' }}>
                         <button type="button" onClick={() => incrementarStat(p.jogador_id, stat.key, -1)} style={{ background: 'none', border: 'none', color: '#ef4444', fontWeight: 900, cursor: 'pointer', fontSize: 15, padding: '0 4px', fontFamily: 'inherit' }}>-</button>
                         <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{st[stat.key]}</span>
                         <button type="button" onClick={() => incrementarStat(p.jogador_id, stat.key, 1)} style={{ background: 'none', border: 'none', color: 'var(--success-text)', fontWeight: 900, cursor: 'pointer', fontSize: 15, padding: '0 4px', fontFamily: 'inherit' }}>+</button>
@@ -2465,7 +2465,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 24 }}>
               <button className="btn btn-secondary" onClick={() => setShowFinalizarModal(false)} style={{ flex: 1 }}>Voltar</button>
               <button className="btn btn-primary" onClick={handleFinalizarJogo} disabled={loading} style={{ flex: 2, background: 'var(--success)', border: 'none' }}>
                 {loading ? <><div className="spinner" /> Salvando...</> : 'Confirmar Encerramento'}
@@ -2565,7 +2565,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
       ) : roster.length === 0 ? (
         <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 6 }}>Nenhum jogador no time ainda.</div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
           {roster.map(r => (
             <div key={r.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-secondary)', padding: '6px 10px', borderRadius: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -2587,7 +2587,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
                 )}
               </div>
               
-              <div style={{ display: 'flex', gap: 6 }}>
+              <div style={{ display: 'flex', gap: 8 }}>
                 {!r.aprovado && (isCapitao || isOrganizador) && (
                   <button type="button" className="btn btn-primary btn-sm" onClick={() => handleAprovarJogador(r.id)}>
                     Aprovar
@@ -2640,14 +2640,14 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
               style={{ marginBottom: 10 }}
             />
 
-            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6, minHeight: 200 }}>
+            <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, minHeight: 200 }}>
               {loadingPlayers ? (
                 <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>Carregando atletas...</div>
               ) : filteredPlayers.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>Nenhum atleta encontrado no estado.</div>
               ) : (
                 filteredPlayers.map(p => (
-                  <div key={p.id} onClick={() => handleAdicionarJogador(p.id)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 8, borderRadius: 8, background: 'var(--bg-secondary)', cursor: 'pointer' }}>
+                  <div key={p.id} onClick={() => handleAdicionarJogador(p.id)} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 8, borderRadius: 8, background: 'var(--bg-secondary)', cursor: 'pointer' }}>
                     {p.foto_perfil ? (
                       <img src={p.foto_perfil} alt="Avatar" style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />
                     ) : (

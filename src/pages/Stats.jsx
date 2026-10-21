@@ -327,7 +327,7 @@ export default function Stats({ profile, onNavigate }) {
       <div style={{ padding: '16px 16px 0', position: 'relative', zIndex: 1 }}>
         
         {/* Cabeçalho: voltar à esquerda, compartilhar à direita */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
           <button 
             onClick={() => onNavigate('inicio')} 
             style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', display: 'flex', alignItems: 'center', fontSize: '13px', fontWeight: 700, padding: 0, fontFamily: 'inherit' }}
@@ -434,7 +434,7 @@ export default function Stats({ profile, onNavigate }) {
             existe ranking de quem mais avalia. */}
         {avaliouQtd !== null && (
           <div style={{
-            display: 'flex', alignItems: 'center', gap: 6,
+            display: 'flex', alignItems: 'center', gap: 8,
             fontSize: 13, color: 'var(--text-secondary)',
             fontFamily: "'Inter',sans-serif", marginBottom: 10 }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--accent-text)" stroke="none">
@@ -457,7 +457,7 @@ export default function Stats({ profile, onNavigate }) {
           background: 'var(--bg-secondary)',
           borderRadius: '8px',
           padding: '2px',
-          gap: 2,
+          gap: 4,
           marginBottom: 10
         }}>
           {[
@@ -490,7 +490,7 @@ export default function Stats({ profile, onNavigate }) {
         {/* Conteúdo das Tabs */}
         <div style={{ minHeight: '80px', paddingBottom: 16 }}>
           {aba === 'sobre' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: '13px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: '13px' }}>
               {[
                 { label: 'Cidade', val: `${city} - ${uf}` },
                 { label: 'Idade', val: profile?.idade ? `${profile.idade} anos` : 'A definir' },
@@ -507,11 +507,11 @@ export default function Stats({ profile, onNavigate }) {
           )}
 
           {aba === 'estatisticas' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {/* Avaliações Públicas */}
               <div>
                 <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.04em', marginBottom: 10, fontFamily: "'Inter',sans-serif", textTransform: 'uppercase' }}>AVALIAÇÕES PÚBLICAS DA QUADRA</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {fundamentos.map(f => {
                     const mediaAspecto = myPlayerInfo ? myPlayerInfo[`media_${f.key}`] || 0 : 0;
                     return (
@@ -548,7 +548,7 @@ export default function Stats({ profile, onNavigate }) {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                     
                     {/* Linha Principal de Médias */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, textAlign: 'center' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, textAlign: 'center' }}>
                       <div style={{ background: 'var(--bg-secondary)', padding: '6px 3px', borderRadius: '8px', border: '1px solid var(--border)' }}>
                         <div style={{ fontSize: '17px', fontWeight: 900, color: 'var(--accent)' }}>{mediasPrivadas.pontos}</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>PPJ</div>
@@ -571,7 +571,7 @@ export default function Stats({ profile, onNavigate }) {
                       border: '1px solid var(--border)',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 10
+                      gap: 8
                     }}>
                       {/* Círculo de Aproveitamento Geral */}
                       <div style={{ 
@@ -602,7 +602,7 @@ export default function Stats({ profile, onNavigate }) {
                       </div>
 
                       {/* Aproveitamento Individual por Categoria */}
-                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
                         {[
                           { label: 'Lance Livre', pct: mediasPrivadas.lf_aproveitamento, vol: mediasPrivadas.lf_detalhe },
                           { label: 'Arremesso de 2', pct: mediasPrivadas.dois_aproveitamento, vol: mediasPrivadas.dois_detalhe },
@@ -702,7 +702,7 @@ export default function Stats({ profile, onNavigate }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               
               {/* Seletor de Tipo de Histórico */}
-              <div style={{ display: 'flex', gap: 6, marginBottom: 4 }}>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 4 }}>
                 <button
                   onClick={() => setSubAbaHistorico('pessoal')}
                   style={{
@@ -836,7 +836,7 @@ export default function Stats({ profile, onNavigate }) {
             <h3 style={{ fontWeight: 900, fontSize: 'clamp(17px, 4vw, 20px)', marginBottom: 4 }}>Nova Partida</h3>
             <p style={{ color: '#64748b', fontSize: 'clamp(11px, 2.5vw, 12px)', marginBottom: 10 }}>Grave seus números de forma privada.</p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div>
                 <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome do Evento / Oponente</label>
                 <input
@@ -935,7 +935,7 @@ export default function Stats({ profile, onNavigate }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 6, marginTop: 14 }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
               <button className="btn btn-secondary" onClick={() => setShowRegistrar(false)} style={{ flex: 1 }} disabled={salvando}>Cancelar</button>
               <button className="btn btn-primary" onClick={handleSalvar} disabled={salvando} style={{ flex: 2 }}>
                 {salvando ? 'Salvando...' : 'Salvar Partida'}

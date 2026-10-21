@@ -192,7 +192,7 @@ export default function MasterDashboard({ onNavigate }) {
                 <div className="text-sm" style={{ fontWeight: 800, color: '#fbbf24', marginBottom: 8 }}>
                   Atletas sem cidade
                 </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {insights.semCidade.slice(0, 10).map((p) => (
                     <span
                       key={p.id}

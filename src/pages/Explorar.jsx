@@ -147,7 +147,7 @@ export default function Explorar({ profile, onNavigate }) {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 6,
+              gap: 8,
               background: 'none',
               border: 'none',
               color: 'var(--accent)',
@@ -260,7 +260,7 @@ export default function Explorar({ profile, onNavigate }) {
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: 6,
+            gap: 8,
             background: 'none',
             border: 'none',
             color: 'var(--accent)',
@@ -295,7 +295,7 @@ export default function Explorar({ profile, onNavigate }) {
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
-            gap: 10,
+            gap: 8,
             marginTop: 14,
             marginBottom: 4 }}
         >

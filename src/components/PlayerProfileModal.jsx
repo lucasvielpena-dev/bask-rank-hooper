@@ -319,7 +319,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
                 Notas de <strong style={{ color: 'var(--text-primary)' }}>{nomeAtleta(localJogador)}</strong>
               </p>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {fundamentos.map((f, i) => {
                 const val = estrelas[f.key] || 0;
                 return (
@@ -336,7 +336,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
                 );
               })}
             </div>
-            <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
               <button type="button" onClick={() => setShowAvaliar(false)} disabled={enviandoAvaliacao} style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text-primary)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>Voltar</button>
               <button type="button" onClick={handleConfirmarAvaliacao} disabled={enviandoAvaliacao || fundamentos.some(f => !estrelas[f.key])} style={{ flex: 2, padding: '12px', borderRadius: 12, border: 'none', background: 'var(--accent)', color: 'var(--accent-on)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>{enviandoAvaliacao ? 'Salvando...' : 'Salvar'}</button>
             </div>
@@ -346,7 +346,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
             <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto', overflowX: 'hidden', flex: 1 }}>
 
               {/* Back button */}
-              <div style={{ padding: '12px 16px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{ padding: '12px 16px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#6B7280', fontSize: 15, fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontFamily: "'Inter',sans-serif", padding: 0 }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="m15 18-6-6 6-6"/></svg>
                   Voltar
@@ -400,7 +400,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
               {/* Game Stats */}
               <div style={{ padding: '16px' }}>
                 {!hasAnyGameStats ? (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '20px', color: '#6A6A82' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '20px', color: '#6A6A82' }}>
                     <IconSportDynamic sport={esporte} size={16} color="#6A6A82" />
                     <span>{totalGamesNum > 0 ? 'Partidas sem box score da mesa ainda' : 'Nenhuma partida registrada ainda'}</span>
                   </div>
@@ -482,7 +482,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
                 )}
 
                 {perfilTab === 'estatisticas' && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                     {fundamentos.map(f => {
                       const mediaAspecto = localJogador[`media_${f.key}`] || 0;
                       const hasVotes = localJogador.total_votos >= 1;
@@ -533,7 +533,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
 
             {/* Bottom CTAs */}
             {!isMe && (
-              <div style={{ padding: '12px 16px 20px', borderTop: '1px solid var(--border)', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ padding: '12px 16px 20px', borderTop: '1px solid var(--border)', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {mesmaCidadeQueEu(localJogador || jogador) ? (
                   <button onClick={() => setShowAvaliar(true)} style={{ width: '100%', height: 52, borderRadius: 12, background: 'var(--accent)', border: 'none', color: 'var(--accent-on)', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     {jaAvaliou ? 'Editar Avaliação' : 'Avaliar Este Jogador'}
@@ -574,7 +574,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
                   <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Descrição *</label>
                    <textarea required rows="3" value={descricao} onChange={e => setDescricao(e.target.value)} placeholder="Descreva brevemente..." style={{ resize: 'none', width: '100%', boxSizing: 'border-box', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text-primary)', fontSize: 13 }} />
                 </div>
-                <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
+                <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
                    <button type="button" onClick={() => setShowDenunciar(false)} disabled={enviandoDenuncia} style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text-primary)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>Cancelar</button>
                   <button type="submit" disabled={enviandoDenuncia} style={{ flex: 2, padding: '12px', borderRadius: 12, border: 'none', background: '#EF4444', color: 'var(--text-primary)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>{enviandoDenuncia ? 'Enviando...' : 'Enviar'}</button>
                 </div>

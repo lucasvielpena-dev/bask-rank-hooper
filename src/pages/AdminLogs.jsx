@@ -99,7 +99,7 @@ export default function AdminLogs({ profile, onNavigate }) {
   return (
     <div className="page-content">
       <div style={{ padding: 'clamp(12px, 3vw, 20px) clamp(14px, 3vw, 20px) 0' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
           <button
             onClick={() => onNavigate('master')}
             style={{

@@ -81,7 +81,7 @@ export const RendimentoPill = memo(function RendimentoPill({ media, total, showL
     <span
       title={r.pct === null ? 'Sem avaliações ainda' : `${r.label} · ${r.total} avaliação(ões)`}
       style={{
-        display: 'inline-flex', alignItems: 'center', gap: 6,
+        display: 'inline-flex', alignItems: 'center', gap: 8,
         padding: '3px 9px', borderRadius: 999,
         background: r.soft, border: `1px solid ${r.line}`,
         color: r.cor, fontSize: 11, fontWeight: 800,
@@ -97,7 +97,7 @@ export const RendimentoPill = memo(function RendimentoPill({ media, total, showL
 export const LegendaRendimento = memo(function LegendaRendimento() {
   return (
     <div style={{ marginBottom: 8 }}>
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', fontSize: 11, color: 'var(--text-muted)' }}>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', fontSize: 11, color: 'var(--text-muted)' }}>
         <span><span style={{ color: CORES_RENDIMENTO.bem.cor }}>●</span> Verde = foi bem</span>
         <span><span style={{ color: CORES_RENDIMENTO.media.cor }}>●</span> Amarelo = na média</span>
         <span><span style={{ color: CORES_RENDIMENTO.mal.cor }}>●</span> Vermelho = não foi bem</span>

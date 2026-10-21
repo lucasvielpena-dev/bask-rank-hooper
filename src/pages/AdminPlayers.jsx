@@ -7,7 +7,7 @@ function StarRow({ value }) {
   const v = Number(value) || 0;
   const rounded = Math.round(v);
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 2 }}>
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
       {[1, 2, 3, 4, 5].map((i) => (
         <svg key={i} width="12" height="12" viewBox="0 0 24 24"
           fill={i <= rounded ? 'var(--accent)' : 'none'}

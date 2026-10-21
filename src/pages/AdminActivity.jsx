@@ -155,7 +155,7 @@ export default function AdminActivity({ profile, onNavigate }) {
 
         {/* Filtro cidade */}
         <div style={{ marginBottom: 12, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-          <div style={{ display: 'flex', gap: 6, minWidth: 'min-content' }}>
+          <div style={{ display: 'flex', gap: 8, minWidth: 'min-content' }}>
             {cidades.map((c) => (
               <button
                 key={c}
@@ -507,7 +507,7 @@ function ConfirmacaoTorneio({ confirmacao, executando, onCancelar, onConfirmar }
             ? <>Excluir <strong>{nome}</strong>? Isso apaga equipes, jogos e estatísticas e não pode ser desfeito.</>
             : <>Fechar <strong>{nome}</strong>? Ele será marcado como finalizado.</>}
         </p>
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div style={{ display: 'flex', gap: 8 }}>
           <button type="button" className="btn btn-secondary" style={{ flex: 1 }} disabled={executando} onClick={onCancelar}>
             Cancelar
           </button>

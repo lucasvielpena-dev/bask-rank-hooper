@@ -116,12 +116,12 @@ export default function AdminUsers({ profile, onNavigate }) {
       <div className="page-content" style={{ padding: '20px' }}>
         <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
           <div className="skeleton skeleton-avatar" style={{ width: 40, height: 40 }} />
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
             <div className="skeleton skeleton-bar" style={{ width: '60%', height: 16 }} />
             <div className="skeleton skeleton-bar" style={{ width: '40%', height: 12 }} />
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {[1, 2, 3, 4, 5].map(idx => (
             <div key={idx} className="skeleton" style={{ height: 80, borderRadius: '12px' }} />
           ))}
@@ -207,7 +207,7 @@ export default function AdminUsers({ profile, onNavigate }) {
             <p>Tente buscar com outros termos.</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingBottom: 24 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 24 }}>
             {filtered.map((user, index) => {
               const online = isOnline(user.last_seen);
               const isSuspended = !estaAtivo(user);
@@ -290,7 +290,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <div style={{
                           width: 8,
                           height: 8,
@@ -345,7 +345,7 @@ export default function AdminUsers({ profile, onNavigate }) {
 
                   <div style={{
                     display: 'flex',
-                    gap: 6,
+                    gap: 8,
                     alignItems: 'center',
                     flexWrap: 'wrap',
                     marginBottom: 10,
@@ -367,7 +367,7 @@ export default function AdminUsers({ profile, onNavigate }) {
 
                   <div style={{
                     display: 'flex',
-                    gap: 6,
+                    gap: 8,
                     flexWrap: 'wrap'
                   }}>
                     <button
@@ -476,7 +476,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                 dados pessoais são apagados. O login continua cadastrado — assim ela
                 não consegue criar outra conta com o mesmo e-mail.
               </p>
-              <div style={{ display: 'flex', gap: 10 }}>
+              <div style={{ display: 'flex', gap: 8 }}>
                 <button
                   onClick={() => setConfirmDelete(null)}
                   style={{

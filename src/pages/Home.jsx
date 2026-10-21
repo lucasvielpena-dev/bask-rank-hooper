@@ -125,7 +125,7 @@ export default function Home({ profile, onNavigate }) {
       <div className="home-container" style={{ paddingBottom: 80, position: 'relative', zIndex: 1 }}>
 
         <div className="home-greeting" style={{ marginBottom: 12 }}>
-          <div className="home-greeting-title" style={{ fontSize: 15, color: 'var(--text-muted)', fontFamily: "'Inter', sans-serif", fontWeight: 400, textTransform: 'uppercase', letterSpacing: 0, display: 'flex', alignItems: 'baseline', gap: 6 }}>
+          <div className="home-greeting-title" style={{ fontSize: 15, color: 'var(--text-muted)', fontFamily: "'Inter', sans-serif", fontWeight: 400, textTransform: 'uppercase', letterSpacing: 0, display: 'flex', alignItems: 'baseline', gap: 8 }}>
             {getGreeting()}, <span className="home-greeting-name" style={{ fontSize: 22, color: 'var(--accent-text)', fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 'bold', letterSpacing: '1px' }}>{greetingName}</span>
           </div>
           <div className="home-greeting-sub" style={{ fontSize: 13, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
@@ -149,7 +149,7 @@ export default function Home({ profile, onNavigate }) {
           >
           {/* Top badge */}
           <div className="premium-badge" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
+            display: 'inline-flex', alignItems: 'center', gap: 8,
             padding: '6px 12px', marginBottom: 12,
             transform: 'translateZ(20px)',
             transition: 'transform 0.4s ease'
@@ -163,13 +163,13 @@ export default function Home({ profile, onNavigate }) {
 
           {/* Main row: info + foto. A foto ocupa a parte direita e se
               dissolve no card por todos os lados (máscara), sem borda/vinco. */}
-          <div style={{ display: 'flex', alignItems: 'stretch', gap: 10, marginBottom: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'stretch', gap: 8, marginBottom: 10 }}>
 
             {/* Info */}
             <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '2px 0' }}>
               <div>
                 {/* Rank + Name */}
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, marginBottom: 6 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 6 }}>
                   <span style={{
                     fontSize: 64, fontWeight: 800, color: 'var(--accent-text)',
                     fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 0.86,
@@ -250,7 +250,7 @@ export default function Home({ profile, onNavigate }) {
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             borderTop: '1px solid var(--border)', paddingTop: 8 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round">
                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
               </svg>
@@ -300,7 +300,7 @@ export default function Home({ profile, onNavigate }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {carregandoDestaques
               ? [0, 1, 2, 3, 4].map((i) => (
-                <div key={`destaque-skeleton-${i}`} className="premium-card" style={{ borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 14, minHeight: 64 }}>
+                <div key={`destaque-skeleton-${i}`} className="premium-card" style={{ borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 16, minHeight: 64 }}>
                   <div className="skeleton" style={{ width: 48, height: 48, borderRadius: 12, flexShrink: 0 }} />
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
                     <div className="skeleton" style={{ height: 13, width: '62%', borderRadius: 6 }} />
@@ -319,7 +319,7 @@ export default function Home({ profile, onNavigate }) {
                   padding: '12px 14px',
                   display: 'flex',
                   alignItems: 'flex-start',
-                  gap: 14,
+                  gap: 16,
                   minHeight: 64,
                   cursor: 'pointer' }}
               >
@@ -364,7 +364,7 @@ export default function Home({ profile, onNavigate }) {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 15, fontWeight: 700, color: 'var(--accent)', fontFamily: "'Barlow Condensed',sans-serif" }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 15, fontWeight: 700, color: 'var(--accent)', fontFamily: "'Barlow Condensed',sans-serif" }}>
                     <span>★</span>
                     <span>{Number(player.media_estrelas || 0).toFixed(1)}</span>
                   </div>

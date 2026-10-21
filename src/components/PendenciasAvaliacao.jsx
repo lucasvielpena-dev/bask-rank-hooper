@@ -172,7 +172,7 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
               <div
                 key={p.jogador_id}
                 style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
+                  display: 'flex', alignItems: 'center', gap: 8,
                   background: 'var(--bg-secondary)', border: '1px solid var(--border)',
                   borderRadius: 10, padding: '8px 10px' }}
               >

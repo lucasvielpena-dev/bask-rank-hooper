@@ -116,7 +116,7 @@ export default function Destaques({ profile, onNavigate }) {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 6,
+              gap: 8,
               background: 'none',
               border: 'none',
               color: 'var(--accent)',
@@ -148,7 +148,7 @@ export default function Destaques({ profile, onNavigate }) {
         </div>
 
         {/* Stats em cards iguais ao resto */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, marginBottom: 22 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 22 }}>
           {[
             { label: 'Jogadores', value: stats.jogadores },
             { label: 'Média geral', value: stats.mediaGeral > 0 ? stats.mediaGeral.toFixed(1) : '—' },

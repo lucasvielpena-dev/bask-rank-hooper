@@ -1030,7 +1030,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
         <div className="home-container" style={{ padding: '16px 16px 0', position: 'relative', zIndex: 1 }}>
           {/* Header + tabs na mesma lógica visual */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 10 }}>
               <div style={{ minWidth: 0 }}>
                 <h2 className="page-title" style={{ fontSize: 'var(--fs-lg)' }}>
                   Competições
@@ -1164,7 +1164,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                           <div style={{ flex: 1 }}>
                             <span style={{ fontWeight: venceA ? 800 : 500, color: venceA ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_a}</span>
                           </div>
-                          <div style={{ display: 'flex', gap: 6, padding: '3px 8px', background: 'var(--bg-secondary)', borderRadius: 6, fontWeight: 800, fontSize: 13 }}>
+                          <div style={{ display: 'flex', gap: 8, padding: '3px 8px', background: 'var(--bg-secondary)', borderRadius: 6, fontWeight: 800, fontSize: 13 }}>
                             <span style={{ color: venceA ? 'var(--success-text)' : 'var(--text-primary)' }}>{p.placar_time_a}</span>
                             <span style={{ color: 'var(--text-muted)' }}>x</span>
                             <span style={{ color: venceB ? 'var(--success-text)' : 'var(--text-primary)' }}>{p.placar_time_b}</span>
@@ -1193,7 +1193,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           <h3 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 17, marginBottom: 2 }}>Configurar Partida</h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 12 }}>Configure as equipes e a lista de atletas antes de iniciar o cronômetro.</p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {/* Input nomes dos times */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               <div>
@@ -1217,7 +1217,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             {/* Duração do Quarto */}
             <div>
               <label style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700, display: 'block', marginBottom: 4 }}>Duração do Quarto</label>
-              <div style={{ display: 'flex', gap: 10 }}>
+              <div style={{ display: 'flex', gap: 8 }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 15, color: 'var(--text-primary)' }}>
                   <input
                     type="radio"
@@ -1228,7 +1228,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   />
                   10 minutos
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 15, color: 'var(--text-primary)' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 15, color: 'var(--text-primary)' }}>
                   <input
                     type="radio"
                     name="duracaoQuarto"
@@ -1264,7 +1264,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             ].filter(Boolean).join(' • ')}
                           </div>
                         </div>
-                        <div style={{ display: 'flex', gap: 6 }}>
+                        <div style={{ display: 'flex', gap: 8 }}>
                           <button
                             type="button"
                             onClick={() => togglePlayer(j.id, 'A')}
@@ -1296,7 +1296,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             </div>
 
             {/* Botões do Wizard */}
-            <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
               <button className="btn btn-secondary" onClick={() => setTela('lista')} style={{ flex: 1 }}>Cancelar</button>
               <button className="btn btn-primary" onClick={handleIniciarJogo} disabled={salvando} style={{ flex: 2 }}>
                 {salvando ? <><div className="spinner" /> Salvando...</> : 'Iniciar Partida'}
@@ -1328,7 +1328,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             >
               ← PLACAR AO VIVO
             </button>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 {periodo >= 5 ? 'PRORROGAÇÃO' : `${periodo}º QUARTO`}
               </span>
@@ -1374,7 +1374,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   )}
 
                   {operadoresAprovados.length > 0 && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
                       {operadoresAprovados.map(o => (
                         <button key={o.usuario_id} onClick={() => handleResponderPedido(partidaAtiva.id, o.usuario_id, false)} title="Remover autorização" style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--accent-line)', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
                           {o.nome || 'Um atleta'} ✕
@@ -1810,7 +1810,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 6
+              gap: 8
             }}>
               <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                 + Pontuar {timeANome.substring(0,6)}
@@ -1835,7 +1835,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 6
+              gap: 8
             }}>
               <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                 + Pontuar {timeBNome.substring(0,6)}
@@ -1980,7 +1980,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 24 }}>
               <button className="btn btn-secondary" onClick={() => setShowFinalizarModal(false)} style={{ flex: 1 }}>Voltar</button>
               <button className="btn btn-primary" onClick={handleFinalizarJogo} disabled={salvando} style={{ flex: 2, background: 'var(--success)', border: 'none' }}>
                 {salvando ? <><div className="spinner" /> Salvando...</> : 'Confirmar Encerramento'}
@@ -2057,7 +2057,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   const souEu = profile?.player_id === j.jogador_id;
                   const temBox = (j.pontos || j.assistencias || j.rebotes || j.turnovers || j.faltas);
                   return (
-                    <div key={j.id} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
+                    <div key={j.id} style={{ display: 'flex', gap: 8, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
                       <span className="badge" style={{ minWidth: 20, textAlign: 'center' }}>{j.time}</span>
                       {j.jogador?.foto_url ? (
                         <img src={j.jogador.foto_url} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
@@ -2141,7 +2141,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 disabled={enviandoVoto}
                 style={{ marginTop: 4 }}
               />
-              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                 <button type="button" className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setVotingPlayer(null)} disabled={enviandoVoto}>
                   Cancelar
                 </button>

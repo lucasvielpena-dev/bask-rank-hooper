@@ -89,7 +89,7 @@ function PlayerAvatar({ fotoUrl, nome, size = 48, className = '' }) {
 const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
   const [hover, setHover] = useState(0);
   return (
-    <div style={{ display: 'flex', gap: 6, justifyContent: 'center', margin: '4px 0' }}>
+    <div style={{ display: 'flex', gap: 8, justifyContent: 'center', margin: '4px 0' }}>
       {[1, 2, 3, 4, 5].map(i => (
         <button
           key={i}
@@ -310,7 +310,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
             style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
-              gap: 10,
+              gap: 8,
               marginBottom: 16 }}
           >
             <button
@@ -452,14 +452,14 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                     </div>
                   )}
                   
-                  <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                     <PlayerAvatar fotoUrl={j.foto_url} nome={nomeAtleta(j)} size={40} className={isFirst ? 'avatar-pulse' : ''} />
                     
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ color: 'var(--text-primary)', fontSize: 15, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.2 }}>
                         {nomeAtleta(j)}
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
                         <span style={{ color: 'var(--text-secondary)', fontSize: 13, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.posicao || cfg.posicoes[0]}</span>
                         <span style={{ color: 'var(--text-secondary)', fontSize: 11 }}>•</span>
                         <span style={{ color: 'var(--text-secondary)', fontSize: 13, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.cidade}</span>
@@ -467,7 +467,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 13, fontWeight: 700, color: 'var(--accent)', fontFamily: "'Barlow Condensed',sans-serif", marginTop: 4 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, fontWeight: 700, color: 'var(--accent)', fontFamily: "'Barlow Condensed',sans-serif", marginTop: 4 }}>
                         <span>★</span>
                         <span>{j.total_votos >= 1 ? Number(score).toFixed(1) : '--'}</span>
                       </div>
@@ -530,7 +530,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
               Dê uma nota de 1 a 5 estrelas para cada habilidade:
             </p>
 
-            <form onSubmit={handleSubmitVote} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <form onSubmit={handleSubmitVote} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {fundamentos.map((f, i) => {
                 const val = estrelasVoto[f.key] || 0;
                 return (
@@ -573,7 +573,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 </div>
               )}
 
-              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                 <button type="button" onClick={() => setVotingPlayer(null)} disabled={enviandoVoto} style={{ flex: 1, padding: '12px 0', background: 'transparent', border: '1px solid #3F3F46', color: '#FFF', borderRadius: 12, fontWeight: 600 }}>
                   Cancelar
                 </button>

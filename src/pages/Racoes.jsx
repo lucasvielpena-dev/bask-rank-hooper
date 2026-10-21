@@ -275,7 +275,7 @@ export default function Racoes({ profile, onNavigate }) {
     const isCreator = r.criado_por === profile?.id;
     return (
       <div className="card racao-card" onClick={() => setSelected(r)} style={{ cursor: 'pointer' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
           <div>
             <div style={{ fontWeight: 800, fontSize: 15 }}>{r.titulo}</div>
             <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>
@@ -286,7 +286,7 @@ export default function Racoes({ profile, onNavigate }) {
             {r.status}
           </span>
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 13, color: 'var(--text-secondary)' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, fontSize: 13, color: 'var(--text-secondary)' }}>
           <span className="badge">{formatWhen(r.data_hora)}</span>
           <span className="badge">{n}/{r.max_jogadores} jogadores</span>
           <span className="badge">{r.nivel}</span>
@@ -374,7 +374,7 @@ export default function Racoes({ profile, onNavigate }) {
                 <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>Data e hora</label>
                 <input type="datetime-local" value={form.data_hora} onChange={(e) => setForm({ ...form, data_hora: e.target.value })} required />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
                 <div>
                   <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>Vagas</label>
                   <select value={form.max_jogadores} onChange={(e) => setForm({ ...form, max_jogadores: e.target.value })}>
@@ -423,7 +423,7 @@ export default function Racoes({ profile, onNavigate }) {
                     const souEu = p.usuario_id === profile?.id;
                     const podeAvaliar = selected.status === 'finalizado' && !souEu;
                     return (
-                      <div key={p.id} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
+                      <div key={p.id} style={{ display: 'flex', gap: 8, alignItems: 'center', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
                         {foto ? (
                           <img src={foto} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
                         ) : (
@@ -511,7 +511,7 @@ export default function Racoes({ profile, onNavigate }) {
                 disabled={enviandoVoto}
                 style={{ marginTop: 4 }}
               />
-              <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                 <button
                   type="button"
                   className="btn btn-secondary"
