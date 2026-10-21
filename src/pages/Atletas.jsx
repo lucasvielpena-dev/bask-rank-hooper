@@ -442,18 +442,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
               return (
                 <div
                   key={j.id}
-                  className="card atleta-item"
-                  style={{
-                    background: isFirst ? 'var(--bg-elevated)' : 'var(--bg-card)',
-                    borderColor: isFirst ? 'var(--border-active)' : 'var(--border)',
-                    borderTop: isFirst ? '2px solid var(--accent)' : '1px solid var(--border)',
-                    borderRadius: 12,
-                    padding: '10px 12px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 6,
-                    position: 'relative'
-                  }}
+                  className={`card atleta-item${isFirst ? ' atleta-item--destaque' : ''}`}
                 >
                   {isRankingFilter && (
                     <div style={{

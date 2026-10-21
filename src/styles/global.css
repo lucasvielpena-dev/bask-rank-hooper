@@ -3182,3 +3182,16 @@ body:not(.light-theme) [style*="color: var(--text-muted)"] {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===== Cartão de atleta (Atletas): mesmo padrão do .card, com destaque só para o 1º colocado ===== */
+.card.atleta-item {
+  padding:14px 14px;
+  display:flex; flex-direction:column; gap:8px;
+  position:relative;
+}
+.card.atleta-item--destaque {
+  background:linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 100%), var(--bg-elevated);
+  border-color:var(--border-active);
+  border-top:2px solid var(--accent);
+}
+.light-theme .card.atleta-item--destaque { background:var(--bg-elevated); }
