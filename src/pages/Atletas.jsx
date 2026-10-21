@@ -322,7 +322,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 background: 'var(--accent)',
                 color: 'var(--accent-on)',
                 fontWeight: 800,
-                fontSize: 12,
+                fontSize: 13,
                 letterSpacing: '0.04em',
                 cursor: 'default',
                 fontFamily: "'Inter', sans-serif" }}
@@ -339,7 +339,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 background: 'var(--bg-card)',
                 color: 'var(--text-secondary)',
                 fontWeight: 800,
-                fontSize: 12,
+                fontSize: 13,
                 letterSpacing: '0.04em',
                 cursor: 'pointer',
                 fontFamily: "'Inter', sans-serif" }}
@@ -390,7 +390,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                   flex: '1 0 auto', padding: '8px 6px', borderRadius: 8,
                   border: 'none', background: 'transparent',
                   color: active ? 'var(--text-primary)' : 'var(--text-muted)',
-                  fontWeight: active ? 600 : 500, fontSize: 12, cursor: 'pointer',
+                  fontWeight: active ? 600 : 500, fontSize: 13, cursor: 'pointer',
                   fontFamily: "'Inter',sans-serif", transition: 'color 0.2s',
                   whiteSpace: 'nowrap',
                   zIndex: 1
@@ -421,8 +421,8 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
         ) : filtrados.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px 20px' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.5" style={{ width: 48, height: 48, marginBottom: 16, opacity: 0.5, margin: '0 auto' }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <h3 style={{ color: 'var(--text-primary)', fontSize: 16, marginBottom: 8, fontFamily: "'Inter',sans-serif" }}>Nenhum atleta encontrado</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 14, fontFamily: "'Inter',sans-serif" }}>Tente ajustar os filtros ou a sua busca.</p>
+            <h3 style={{ color: 'var(--text-primary)', fontSize: 17, marginBottom: 8, fontFamily: "'Inter',sans-serif" }}>Nenhum atleta encontrado</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 15, fontFamily: "'Inter',sans-serif" }}>Tente ajustar os filtros ou a sua busca.</p>
           </div>
         ) : (
           <div
@@ -445,7 +445,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                       background: isFirst ? 'var(--accent)' : 'var(--bg-elevated)',
                       color: isFirst ? '#000000' : 'var(--text-primary)',
                       padding: '2px 8px', borderRadius: 999,
-                      fontSize: 12, fontWeight: 800, fontFamily: "'Barlow Condensed',sans-serif",
+                      fontSize: 13, fontWeight: 800, fontFamily: "'Barlow Condensed',sans-serif",
                       boxShadow: '0 2px 4px rgba(0,0,0,0.35)', zIndex: 1
                     }}>
                       {getMedal(i)}
@@ -456,13 +456,13 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                     <PlayerAvatar fotoUrl={j.foto_url} nome={nomeAtleta(j)} size={40} className={isFirst ? 'avatar-pulse' : ''} />
                     
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ color: 'var(--text-primary)', fontSize: 14, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.2 }}>
+                      <div style={{ color: 'var(--text-primary)', fontSize: 15, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.2 }}>
                         {nomeAtleta(j)}
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
-                        <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.posicao || cfg.posicoes[0]}</span>
-                        <span style={{ color: 'var(--text-secondary)', fontSize: 10 }}>•</span>
-                        <span style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.cidade}</span>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: 13, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.posicao || cfg.posicoes[0]}</span>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: 11 }}>•</span>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: 13, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.cidade}</span>
                       </div>
                     </div>
 
@@ -483,7 +483,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                       className={`${!hasVoted && profile?.player_id !== j.id ? 'btn-secondary' : 'btn-primary'} btn-sm`}
                       onClick={() => setSelectedPlayer(j)}
                       style={{
-                        flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 700,
+                        flex: 1, padding: '8px 0', fontSize: 13, fontWeight: 700,
                         minHeight: 34, lineHeight: 1.2, borderRadius: 999 }}
                     >
                       Perfil
@@ -505,7 +505,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                         style={{
                           flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--border)',
                           borderRadius: 999, padding: '8px 0', minHeight: 34, lineHeight: 1.2,
-                          color: 'var(--text-muted)', fontSize: 12, fontWeight: 600,
+                          color: 'var(--text-muted)', fontSize: 13, fontWeight: 600,
                           fontFamily: "'Inter',sans-serif", cursor: 'not-allowed' }}
                       >
                         {profile?.player_id === j.id ? 'Seu perfil' : 'Avaliado'}
@@ -523,10 +523,10 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
         <div className="modal-overlay" onClick={() => { if (!enviandoVoto) setVotingPlayer(null); }}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 400, maxHeight: '90vh', overflowY: 'auto', background: 'var(--bg-elevated)' }}>
             <div className="modal-handle" style={{ background: 'var(--border)' }} />
-            <h3 style={{ color: 'var(--text-primary)', fontWeight: 900, fontSize: 18, marginBottom: 2, textAlign: 'center' }}>
+            <h3 style={{ color: 'var(--text-primary)', fontWeight: 900, fontSize: 17, marginBottom: 2, textAlign: 'center' }}>
               Avaliar {nomeAtleta(votingPlayer)}
             </h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: 12, marginBottom: 12, textAlign: 'center' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 12, textAlign: 'center' }}>
               Dê uma nota de 1 a 5 estrelas para cada habilidade:
             </p>
 
@@ -547,7 +547,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                           display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{i + 1}</span>
                         <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
                       </div>
-                      <span style={{ fontSize: 12, color: val > 0 ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 700 }}>
+                      <span style={{ fontSize: 13, color: val > 0 ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 700 }}>
                         {val > 0 ? `\u2605 ${val}.0` : labelsNota[val] || 'Nota'}
                       </span>
                     </div>

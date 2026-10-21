@@ -125,8 +125,8 @@ export default function Home({ profile, onNavigate }) {
       <div className="home-container" style={{ paddingBottom: 80, position: 'relative', zIndex: 1 }}>
 
         <div className="home-greeting" style={{ marginBottom: 12 }}>
-          <div className="home-greeting-title" style={{ fontSize: 14, color: 'var(--text-muted)', fontFamily: "'Inter', sans-serif", fontWeight: 400, textTransform: 'uppercase', letterSpacing: 0, display: 'flex', alignItems: 'baseline', gap: 6 }}>
-            {getGreeting()}, <span className="home-greeting-name" style={{ fontSize: 24, color: 'var(--accent-text)', fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 'bold', letterSpacing: '1px' }}>{greetingName}</span>
+          <div className="home-greeting-title" style={{ fontSize: 15, color: 'var(--text-muted)', fontFamily: "'Inter', sans-serif", fontWeight: 400, textTransform: 'uppercase', letterSpacing: 0, display: 'flex', alignItems: 'baseline', gap: 6 }}>
+            {getGreeting()}, <span className="home-greeting-name" style={{ fontSize: 22, color: 'var(--accent-text)', fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 'bold', letterSpacing: '1px' }}>{greetingName}</span>
           </div>
           <div className="home-greeting-sub" style={{ fontSize: 13, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
             {cfg.divisionName} — {cfg.divisionSlogan}
@@ -178,13 +178,13 @@ export default function Home({ profile, onNavigate }) {
                   </span>
                 </div>
                 <div className="hero-name" style={{
-                  fontSize: 18, fontWeight: 700, color: 'var(--text-primary)',
+                  fontSize: 17, fontWeight: 700, color: 'var(--text-primary)',
                   fontFamily: "'Inter',sans-serif", lineHeight: 1.2, marginBottom: 1,
                   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {myPlayerInfo?.nome || greetingName}
                 </div>
                 <div className="hero-position" style={{
-                  fontSize: 12, color: getPositionColor(myPlayerInfo?.posicao), fontWeight: 600,
+                  fontSize: 13, color: getPositionColor(myPlayerInfo?.posicao), fontWeight: 600,
                   fontFamily: "'Inter',sans-serif", marginBottom: 8 }}>
                   {myPlayerInfo?.posicao || 'Atleta'}
                 </div>
@@ -254,7 +254,7 @@ export default function Home({ profile, onNavigate }) {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round">
                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
               </svg>
-              <span style={{ fontSize: 12, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif" }}>
+              <span style={{ fontSize: 13, color: 'var(--text-muted)', fontFamily: "'Inter',sans-serif" }}>
                 {city} - {uf}
               </span>
             </div>
@@ -340,7 +340,7 @@ export default function Home({ profile, onNavigate }) {
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     border: '1px solid var(--accent-line)' }}>
                     <span style={{
-                      fontSize: 20, fontWeight: 800, color: 'var(--text-muted)',
+                      fontSize: 17, fontWeight: 800, color: 'var(--text-muted)',
                       fontFamily: "'Barlow Condensed',sans-serif" }}>
                       {nomeAtleta(player) ? nomeAtleta(player).charAt(0).toUpperCase() : '?'}
                     </span>
@@ -349,7 +349,7 @@ export default function Home({ profile, onNavigate }) {
 
                 <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', marginRight: 2 }}>
                   <span className="premium-name" style={{
-                    fontSize: 14, fontWeight: 'bold', color: 'var(--text-primary)',
+                    fontSize: 15, fontWeight: 'bold', color: 'var(--text-primary)',
                     fontFamily: "'Inter',sans-serif", lineHeight: 1.2,
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                     display: 'inline-block'
@@ -357,18 +357,18 @@ export default function Home({ profile, onNavigate }) {
                     {nomeAtleta(player)}
                   </span>
                   <span style={{
-                    fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500,
+                    fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500,
                     fontFamily: "'Inter',sans-serif", marginTop: 2 }}>
                     {player.posicao || cfg.posicoes[0]}
                   </span>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flexShrink: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 14, fontWeight: 700, color: 'var(--accent)', fontFamily: "'Barlow Condensed',sans-serif" }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 15, fontWeight: 700, color: 'var(--accent)', fontFamily: "'Barlow Condensed',sans-serif" }}>
                     <span>★</span>
                     <span>{Number(player.media_estrelas || 0).toFixed(1)}</span>
                   </div>
-                  <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 2 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
                     {resumoAvaliacoes(player, { compacto: true })} · {labelConfianca(player.nivel_confianca || nivelConfianca(player.total_votos))}
                   </div>
                   <div style={{ width: 80, height: 4, background: 'var(--bg-secondary)', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>

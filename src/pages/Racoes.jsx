@@ -278,7 +278,7 @@ export default function Racoes({ profile, onNavigate }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
           <div>
             <div style={{ fontWeight: 800, fontSize: 15 }}>{r.titulo}</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+            <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>
               {r.local || 'Local a definir'} · {r.cidade}
             </div>
           </div>
@@ -286,7 +286,7 @@ export default function Racoes({ profile, onNavigate }) {
             {r.status}
           </span>
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 12, color: 'var(--text-secondary)' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 13, color: 'var(--text-secondary)' }}>
           <span className="badge">{formatWhen(r.data_hora)}</span>
           <span className="badge">{n}/{r.max_jogadores} jogadores</span>
           <span className="badge">{r.nivel}</span>
@@ -302,7 +302,7 @@ export default function Racoes({ profile, onNavigate }) {
             <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => handleFinish(r)}>Finalizar</button>
           )}
           {r.status === 'finalizado' && (
-            <span style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 700 }}>Avaliar quem jogou →</span>
+            <span style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 700 }}>Avaliar quem jogou →</span>
           )}
         </div>
       </div>
@@ -326,7 +326,7 @@ export default function Racoes({ profile, onNavigate }) {
       {erro && (
         <div className="card" style={{ borderColor: 'var(--border-danger)', marginBottom: 12, fontSize: 13, color: 'var(--text-danger)' }}>
           {erro}
-          <div style={{ marginTop: 8, color: 'var(--text-muted)', fontSize: 12 }}>
+          <div style={{ marginTop: 8, color: 'var(--text-muted)', fontSize: 13 }}>
             No Supabase SQL Editor, rode o arquivo <code>migration_racoes.sql</code>.
           </div>
         </div>
@@ -427,7 +427,7 @@ export default function Racoes({ profile, onNavigate }) {
                         {foto ? (
                           <img src={foto} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
                         ) : (
-                          <div className="avatar" style={{ width: 32, height: 32, fontSize: 12 }}>
+                          <div className="avatar" style={{ width: 32, height: 32, fontSize: 13 }}>
                             {nome.toString().slice(0, 2).toUpperCase()}
                           </div>
                         )}
@@ -458,7 +458,7 @@ export default function Racoes({ profile, onNavigate }) {
               )}
             </div>
             {selected.status === 'finalizado' && (
-              <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 12 }}>
                 Notas <strong>anônimas</strong>: ninguém vê quem avaliou quem. O semáforo mostra só o resultado do grupo.
               </p>
             )}
@@ -474,7 +474,7 @@ export default function Racoes({ profile, onNavigate }) {
             <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 2 }}>
               Nota da partida de {votingPlayer.apelido || votingPlayer.nome}
             </h3>
-            <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
               Como ele jogou neste racha?
             </p>
             <form onSubmit={handleSubmitVoto} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -491,13 +491,13 @@ export default function Racoes({ profile, onNavigate }) {
                       {gradeAtual.key}
                     </span>
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 800 }}>{gradeAtual.titulo}</div>
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{gradeAtual.desc}</div>
+                      <div style={{ fontSize: 15, fontWeight: 800 }}>{gradeAtual.titulo}</div>
+                      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>{gradeAtual.desc}</div>
                     </div>
                   </div>
                 </div>
               ) : (
-                <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14, marginBottom: 0 }}>
+                <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14, marginBottom: 0 }}>
                   Toque em uma letra para ver o que ela significa.
                 </p>
               )}
