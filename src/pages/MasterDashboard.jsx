@@ -243,7 +243,7 @@ export default function MasterDashboard({ onNavigate }) {
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 4 }}>
                       <Icon size={16} color="var(--accent)" />
                     </div>
-                    <div className="text-lg" style={{ margin: 0, fontSize: 18 }}>{stats[card.key] ?? '—'}</div>
+                    <div className="text-lg" style={{ margin: 0, fontSize: 17 }}>{stats[card.key] ?? '—'}</div>
                     <div className="text-sm" style={{ color: 'var(--text-muted)', fontWeight: 600, marginTop: 2 }}>
                       {card.label}
                     </div>

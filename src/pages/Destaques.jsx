@@ -196,7 +196,7 @@ export default function Destaques({ profile, onNavigate }) {
             className="premium-card"
             style={{ borderRadius: 14, padding: 24, textAlign: 'center', marginBottom: 20 }}
           >
-            <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0, fontFamily: "'Inter', sans-serif" }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 15, margin: 0, fontFamily: "'Inter', sans-serif" }}>
               Ainda não há ranking com avaliações em {cityLabel}.
             </p>
             <button
@@ -248,7 +248,7 @@ export default function Destaques({ profile, onNavigate }) {
                       justifyContent: 'center',
                       fontWeight: 800,
                       color: 'var(--accent)',
-                      fontSize: 16,
+                      fontSize: 17,
                       overflow: 'hidden',
                       flexShrink: 0,
                       border: '1.5px solid var(--accent-line)' }}
@@ -269,7 +269,7 @@ export default function Destaques({ profile, onNavigate }) {
                     <div
                       style={{
                         fontWeight: 700,
-                        fontSize: 14,
+                        fontSize: 15,
                         color: 'var(--text-primary)',
                         fontFamily: "'Inter', sans-serif" }}
                     >
@@ -277,7 +277,7 @@ export default function Destaques({ profile, onNavigate }) {
                     </div>
                     <div
                       style={{
-                        fontSize: 12,
+                        fontSize: 13,
                         color: 'var(--text-muted)',
                         marginTop: 2,
                         fontFamily: "'Inter', sans-serif" }}
@@ -289,7 +289,7 @@ export default function Destaques({ profile, onNavigate }) {
                   <div
                     className="highlight-score"
                     style={{
-                      fontSize: 18,
+                      fontSize: 17,
                       fontWeight: 900,
                       color: 'var(--accent)',
                       fontFamily: "'Barlow Condensed', sans-serif" }}
@@ -323,7 +323,7 @@ export default function Destaques({ profile, onNavigate }) {
             <div>
               <div
                 style={{
-                  fontSize: 14,
+                  fontSize: 15,
                   fontWeight: 700,
                   color: 'var(--text-primary)',
                   fontFamily: "'Inter', sans-serif" }}
@@ -332,7 +332,7 @@ export default function Destaques({ profile, onNavigate }) {
                   ? `${stats.torneios} torneio(s) na cidade`
                   : 'Nenhum torneio ativo'}
               </div>
-              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+              <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>
                 {stats.torneios > 0 ? 'Participe dos torneios locais' : 'Novos torneios em breve'}
               </div>
             </div>

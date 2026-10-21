@@ -51,7 +51,7 @@ export default class ErrorBoundary extends Component {
               borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
               background: 'var(--accent-soft)', border: '1px solid var(--accent-line)' }}
           >
-            <span style={{ fontSize: 24 }}></span>
+            <span style={{ fontSize: 22 }}></span>
           </div>
 
           <h2
@@ -81,7 +81,7 @@ export default class ErrorBoundary extends Component {
             <button
               onClick={() => window.location.reload()}
               style={{
-                padding: '10px 18px', borderRadius: 12, fontSize: 12, fontWeight: 700,
+                padding: '10px 18px', borderRadius: 12, fontSize: 13, fontWeight: 700,
                 textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer',
                 fontFamily: "'Inter',sans-serif",
                 background: 'transparent', color: 'var(--text-secondary)',
@@ -93,7 +93,7 @@ export default class ErrorBoundary extends Component {
 
           <p
             style={{
-              marginTop: 14, fontSize: 10, color: 'var(--text-muted)',
+              marginTop: 14, fontSize: 11, color: 'var(--text-muted)',
               fontFamily: 'ui-monospace, monospace', wordBreak: 'break-word', opacity: 0.7 }}
           >
             {String(erro?.message || erro)}

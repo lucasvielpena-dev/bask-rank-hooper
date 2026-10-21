@@ -1086,14 +1086,14 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               {/* Pedidos de placar compartilhado que EU (criador) preciso responder */}
               {pedidosCriador.length > 0 && (
                 <div className="card" style={{ padding: '10px 12px', marginBottom: 10, border: '1px solid var(--accent-line)', background: 'var(--accent-soft)' }}>
-                  <div style={{ fontSize: 10.5, fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Pedidos para operar o placar
                   </div>
                   {pedidosCriador.map(p => {
                     const pv = partidas.find(x => x.id === p.partida_id);
                     return (
                       <div key={`${p.partida_id}-${p.usuario_id}`} style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-                        <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <span style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {p.nome || 'Um atleta'}{pv ? ` · ${pv.time_a} x ${pv.time_b}` : ''}
                         </span>
                         <button onClick={() => handleResponderPedido(p.partida_id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
@@ -1109,7 +1109,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               )}
               {partidas.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)' }}>
-                  <h3 style={{ color: 'var(--text-primary)', marginTop: 8, fontFamily: "'Inter',sans-serif", fontSize: 18, fontWeight: 700 }}>Nenhuma partida ativa</h3>
+                  <h3 style={{ color: 'var(--text-primary)', marginTop: 8, fontFamily: "'Inter',sans-serif", fontSize: 17, fontWeight: 700 }}>Nenhuma partida ativa</h3>
                   <p style={{ fontSize: 13, margin: '8px 0 0', fontFamily: "'Inter',sans-serif", color: 'var(--text-muted)' }}>
                     Toque em <strong style={{ color: 'var(--accent)' }}>Novo Jogo</strong> acima para começar
                   </p>
@@ -1124,13 +1124,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                       </div>
                       <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'center', gap: 16, margin: '6px 0' }}>
                         <div style={{ textAlign: 'center', flex: 1 }}>
-                          <div style={{ fontWeight: 800, fontSize: 18 }}>{p.time_a}</div>
-                          <div style={{ fontSize: 26, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_a}</div>
+                          <div style={{ fontWeight: 800, fontSize: 17 }}>{p.time_a}</div>
+                          <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_a}</div>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', fontSize: 20, color: 'var(--text-muted)', fontWeight: 800 }}>x</div>
+                        <div style={{ display: 'flex', alignItems: 'center', fontSize: 17, color: 'var(--text-muted)', fontWeight: 800 }}>x</div>
                         <div style={{ textAlign: 'center', flex: 1 }}>
-                          <div style={{ fontWeight: 800, fontSize: 18 }}>{p.time_b}</div>
-                          <div style={{ fontSize: 26, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_b}</div>
+                          <div style={{ fontWeight: 800, fontSize: 17 }}>{p.time_b}</div>
+                          <div style={{ fontSize: 22, fontWeight: 900, color: 'var(--text-primary)', marginTop: 4 }}>{p.placar_time_b}</div>
                         </div>
                       </div>
                       <button className="btn btn-primary" onClick={() => abrirPartida(p)}>
@@ -1156,7 +1156,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     const venceB = p.placar_time_b > p.placar_time_a;
                     return (
                       <div key={p.id} className="card card-enter" onClick={() => abrirDetalhe(p)} style={{ borderLeft: `4px solid ${venceA ? 'var(--success-text)' : venceB ? '#f87171' : '#64748b'}`, animationDelay: `${i * 30}ms`, cursor: 'pointer' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--text-muted)', marginBottom: 4 }}>
                           <span>{p.cidade} • {p.uf}</span>
                           <span>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span>
                         </div>
@@ -1173,7 +1173,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             <span style={{ fontWeight: venceB ? 800 : 500, color: venceB ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_b}</span>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', marginTop: 4, paddingTop: 6 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', marginTop: 4, paddingTop: 6 }}>
                           <span>Duração: {p.tempo_total} · {p.periodos} períodos</span>
                           <span style={{ color: 'var(--accent)', fontWeight: 700 }}>Avaliar quem jogou →</span>
                         </div>
@@ -1190,14 +1190,14 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       {/* TELA 2: WIZARD / CADASTRO DE TIMES */}
       {tela === 'novo' && (
         <div style={{ padding: '12px' }}>
-          <h3 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 18, marginBottom: 2 }}>Configurar Partida</h3>
+          <h3 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 17, marginBottom: 2 }}>Configurar Partida</h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 12 }}>Configure as equipes e a lista de atletas antes de iniciar o cronômetro.</p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {/* Input nomes dos times */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
               <div>
-                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>Nome Time A *</label>
+                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>Nome Time A *</label>
                 <input
                   value={timeANome}
                   onChange={e => setTimeANome(e.target.value)}
@@ -1205,7 +1205,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 />
               </div>
               <div>
-                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>Nome Time B *</label>
+                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>Nome Time B *</label>
                 <input
                   value={timeBNome}
                   onChange={e => setTimeBNome(e.target.value)}
@@ -1218,7 +1218,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <div>
               <label style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700, display: 'block', marginBottom: 4 }}>Duração do Quarto</label>
               <div style={{ display: 'flex', gap: 10 }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14, color: 'var(--text-primary)' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 15, color: 'var(--text-primary)' }}>
                   <input
                     type="radio"
                     name="duracaoQuarto"
@@ -1228,7 +1228,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   />
                   10 minutos
                 </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 14, color: 'var(--text-primary)' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 15, color: 'var(--text-primary)' }}>
                   <input
                     type="radio"
                     name="duracaoQuarto"
@@ -1244,7 +1244,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             {/* Listagem de jogadores e seleção rápida */}
             <div>
               <label style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700, display: 'block', marginBottom: 2 }}>Escalar Jogadores</label>
-              <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8 }}>Distribua os jogadores entre as duas equipes:</p>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>Distribua os jogadores entre as duas equipes:</p>
               
               <div style={{ maxHeight: '50vh', overflowY: 'auto', background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 10, padding: '0 12px' }}>
                 {jogadores.length === 0 ? (
@@ -1256,7 +1256,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     return (
                       <div key={j.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
                         <div>
-                          <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 14 }}>{nomeAtleta(j)}</div>
+                          <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 15 }}>{nomeAtleta(j)}</div>
                           <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
                             {[
                               nomeCompletoAtleta(j) && nomeCompletoAtleta(j) !== nomeAtleta(j) ? nomeCompletoAtleta(j) : null,
@@ -1290,7 +1290,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             </div>
 
             {/* Contadores da Roster */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--text-secondary)', padding: '0 4px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--text-secondary)', padding: '0 4px' }}>
               <span>{timeANome}: <strong>{timeAJogadores.length} jogadores</strong></span>
               <span>{timeBNome}: <strong>{timeBJogadores.length} jogadores</strong></span>
             </div>
@@ -1320,7 +1320,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 border: 'none',
                 color: 'var(--accent)',
                 cursor: 'pointer',
-                fontSize: '14px',
+                fontSize: '15px',
                 fontWeight: 700,
                 fontFamily: 'inherit',
                 padding: 0
@@ -1329,10 +1329,10 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               ← PLACAR AO VIVO
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 {periodo >= 5 ? 'PRORROGAÇÃO' : `${periodo}º QUARTO`}
               </span>
-              <span style={{ background: '#EF4444', color: '#FFF', padding: '2px 6px', borderRadius: '4px', fontSize: '9px', fontWeight: 800 }}>
+              <span style={{ background: '#EF4444', color: '#FFF', padding: '2px 6px', borderRadius: '4px', fontSize: '11px', fontWeight: 800 }}>
                 AO VIVO
               </span>
             </div>
@@ -1349,13 +1349,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             }}>
               {souCriadorPartida ? (
                 <>
-                  <div style={{ fontSize: 10.5, fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Placar compartilhado · {operadoresAprovados.length > 0 ? `${operadoresAprovados.length} autorizado${operadoresAprovados.length > 1 ? 's' : ''}` : 'só você pontua'}
                   </div>
 
                   {pedidosPendentes.map(p => (
                     <div key={p.usuario_id} style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-                      <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <span style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {p.nome || 'Um atleta'} quer operar o placar
                       </span>
                       <button onClick={() => handleResponderPedido(partidaAtiva.id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
@@ -1368,7 +1368,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   ))}
 
                   {pedidosPendentes.length === 0 && (
-                    <div style={{ fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4 }}>
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
                       Quem quiser ajudar a pontuar pede pelo app e você decide aqui.
                     </div>
                   )}
@@ -1384,16 +1384,16 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   )}
                 </>
               ) : possoOperarPlacar ? (
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--success-text)' }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--success-text)' }}>
                   O criador liberou: você pode pontuar neste placar
                 </div>
               ) : meuPedido ? (
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)' }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)' }}>
                   Pedido enviado — aguardando o criador da partida aceitar
                 </div>
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ flex: 1, fontSize: 11.5, color: 'var(--text-secondary)' }}>
+                  <span style={{ flex: 1, fontSize: 13, color: 'var(--text-secondary)' }}>
                     Só quem criou a partida pontua neste placar.
                   </span>
                   <button onClick={handlePedirOperar} disabled={pedindoOperar} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '5px 12px', fontSize: 11, fontWeight: 800, cursor: pedindoOperar ? 'default' : 'pointer', fontFamily: 'inherit', opacity: pedindoOperar ? 0.6 : 1 }}>
@@ -1488,7 +1488,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             </div>
 
             {/* Center VS */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'var(--text-muted)', fontSize: '12px', fontWeight: 700 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'var(--text-muted)', fontSize: '13px', fontWeight: 700 }}>
               VS
             </div>
 
@@ -1588,7 +1588,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   borderRadius: '8px',
                   textAlign: 'center'
                 }}>
-                  <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
+                  <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
                     Fim do {periodo}º Quarto
                   </h3>
                   <button onClick={comecarProximoPeriodo} style={{
@@ -1614,7 +1614,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   borderRadius: '8px',
                   textAlign: 'center'
                 }}>
-                  <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
+                  <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
                     Jogo Empatado!
                   </h3>
                   <button onClick={comecarProximoPeriodo} style={{
@@ -1656,8 +1656,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           <div className="mesa-panel">
             <div className="mesa-panel-head" style={{ marginBottom: modoMesa ? 4 : 0 }}>
               <div>
-                <div style={{ fontWeight: 800, fontSize: 14, color: 'var(--text-primary)' }}>Modo mesa</div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-primary)' }}>Modo mesa</div>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>
                   Marque por jogador · pontos separados das outras stats
                 </div>
               </div>
@@ -1665,7 +1665,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 type="button"
                 onClick={() => setModoMesa((v) => !v)}
                 style={{
-                  border: 'none', borderRadius: 999, padding: '8px 14px', fontWeight: 800, fontSize: 12,
+                  border: 'none', borderRadius: 999, padding: '8px 14px', fontWeight: 800, fontSize: 13,
                   cursor: 'pointer', fontFamily: 'inherit',
                   background: modoMesa ? 'var(--accent)' : 'var(--bg-secondary)',
                   color: modoMesa ? 'var(--accent-on)' : 'var(--text-primary)' }}
@@ -1677,7 +1677,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             {modoMesa && (
               <>
                 {!possoOperarPlacar && (
-                  <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8 }}>
+                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>
                     Você pode ver o box score. Para anotar, peça para operar o placar.
                   </p>
                 )}
@@ -1702,7 +1702,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     <div key={tm} style={{ marginBottom: 12 }}>
                       <div className="mesa-team-label">{nomeTime}</div>
                       {ids.length === 0 && (
-                        <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Nenhum jogador neste time</p>
+                        <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Nenhum jogador neste time</p>
                       )}
                       {ids.map((jid) => {
                         const j = jogadores.find((x) => x.id === jid);
@@ -1817,7 +1817,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               alignItems: 'center',
               gap: 6
             }}>
-              <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                 + Pontuar {timeANome.substring(0,6)}
               </span>
               <div className="score-btns">
@@ -1842,7 +1842,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               alignItems: 'center',
               gap: 6
             }}>
-              <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                 + Pontuar {timeBNome.substring(0,6)}
               </span>
               <div className="score-btns">
@@ -1880,7 +1880,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 background: 'none',
                 border: 'none',
                 color: 'var(--text-muted)',
-                fontSize: '20px',
+                fontSize: '17px',
                 cursor: 'pointer',
                 fontFamily: 'inherit',
                 display: 'flex',
@@ -1931,7 +1931,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 background: 'none',
                 border: 'none',
                 color: 'var(--text-muted)',
-                fontSize: '20px',
+                fontSize: '17px',
                 cursor: 'pointer',
                 fontFamily: 'inherit',
                 display: 'flex',
@@ -1954,7 +1954,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               border: 'none',
               borderRadius: '12px',
               fontWeight: 800,
-              fontSize: '14px',
+              fontSize: '15px',
               cursor: 'pointer',
               fontFamily: 'inherit',
               boxShadow: '0 4px 12px rgba(239,68,68,0.2)'
@@ -1970,7 +1970,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
         <div className="modal-overlay" onClick={() => setShowFinalizarModal(false)}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()}>
             <div className="modal-handle" />
-            <h3 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Finalizar Jogo</h3>
+            <h3 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 17, marginBottom: 6 }}>Finalizar Jogo</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>Deseja mesmo encerrar a partida? O placar acumulado e estatísticas serão registrados de forma definitiva. Se encerrar por engano, dá para reabrir depois (histórico → Reabrir partida).</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -2002,7 +2002,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <h3 style={{ fontWeight: 900, textAlign: 'center', marginBottom: 2 }}>
               {detalhe.time_a} {detalhe.placar_time_a} <span style={{ color: 'var(--text-muted)' }}>x</span> {detalhe.placar_time_b} {detalhe.time_b}
             </h3>
-            <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
               {new Date(detalhe.created_at).toLocaleDateString('pt-BR')} · {detalhe.cidade}
             </p>
 
@@ -2021,7 +2021,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             {/* Box score da mesa (se houver anotação) */}
             {detalheJogadores.some(j => (j.pontos || j.assistencias || j.rebotes || j.turnovers || j.faltas)) && (
               <div className="card" style={{ marginBottom: 12, padding: 10 }}>
-                <div style={{ fontSize: 12, fontWeight: 800, marginBottom: 8, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 8, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
                   Box score
                 </div>
                 {['A', 'B'].map((tm) => {
@@ -2035,7 +2035,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                         .slice()
                         .sort((a, b) => (b.pontos || 0) - (a.pontos || 0))
                         .map((j) => (
-                          <div key={j.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '3px 0', borderBottom: '1px solid var(--border)' }}>
+                          <div key={j.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '3px 0', borderBottom: '1px solid var(--border)' }}>
                             <span style={{ fontWeight: 600 }}>{nomeAtleta(j.jogador)}</span>
                             <span style={{ fontFamily: 'monospace', color: 'var(--text-muted)' }}>
                               {j.pontos || 0}/{j.assistencias || 0}/{j.rebotes || 0}
@@ -2045,7 +2045,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     </div>
                   );
                 })}
-                <div style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 6 }}>PTS / AST / REB</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6 }}>PTS / AST / REB</div>
               </div>
             )}
 
@@ -2067,7 +2067,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                       {j.jogador?.foto_url ? (
                         <img src={j.jogador.foto_url} alt="" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
                       ) : (
-                        <div className="avatar" style={{ width: 32, height: 32, fontSize: 12 }}>{nome.slice(0, 2).toUpperCase()}</div>
+                        <div className="avatar" style={{ width: 32, height: 32, fontSize: 13 }}>{nome.slice(0, 2).toUpperCase()}</div>
                       )}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nome}</div>
@@ -2094,7 +2094,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 })
               )}
             </div>
-            <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12 }}>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 12 }}>
               As notas são <strong>anônimas</strong>: ninguém vê quem avaliou quem. O <strong>semáforo</strong> mostra só o resultado do grupo.
             </p>
             <button className="btn btn-secondary" style={{ width: '100%' }} onClick={() => setDetalhe(null)}>Fechar</button>
@@ -2109,7 +2109,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 2 }}>
               Nota da partida de {votingPlayer.apelido || votingPlayer.nome}
             </h3>
-            <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
               Como ele jogou? Sua resposta é anônima.
             </p>
             <form onSubmit={handleSubmitNota} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -2126,13 +2126,13 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                       {gradeAtual.key}
                     </span>
                     <div>
-                      <div style={{ fontSize: 14, fontWeight: 800 }}>{gradeAtual.titulo}</div>
-                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{gradeAtual.desc}</div>
+                      <div style={{ fontSize: 15, fontWeight: 800 }}>{gradeAtual.titulo}</div>
+                      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>{gradeAtual.desc}</div>
                     </div>
                   </div>
                 </div>
               ) : (
-                <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14, marginBottom: 0 }}>
+                <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14, marginBottom: 0 }}>
                   Toque em uma letra para ver o que ela significa.
                 </p>
               )}

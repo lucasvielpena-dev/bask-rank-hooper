@@ -57,7 +57,7 @@ function BarChart({ data, labelKey, valueKey, color = 'blue', horizontal = false
       {data.map((item, i) => (
         <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, minWidth: 0 }}>
           <span style={{
-            fontSize: 10,
+            fontSize: 11,
             fontWeight: 800,
             color: 'var(--text-primary)',
             fontFamily: 'monospace'
@@ -76,7 +76,7 @@ function BarChart({ data, labelKey, valueKey, color = 'blue', horizontal = false
             transition: 'height 0.6s ease'
           }} />
           <span style={{
-            fontSize: 9,
+            fontSize: 11,
             fontWeight: 600,
             color: 'var(--text-muted)',
             overflow: 'hidden',
@@ -235,7 +235,7 @@ export default function AdminReports({ profile, onNavigate }) {
             icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
           >
             {usersPerMonth.length === 0 ? (
-              <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
             ) : (
               <BarChart data={usersPerMonth} labelKey="mes" valueKey="total" color="blue" />
             )}
@@ -247,7 +247,7 @@ export default function AdminReports({ profile, onNavigate }) {
             icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>}
           >
             {playersByCity.length === 0 ? (
-              <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
             ) : (
               <BarChart data={playersByCity.slice(0, 10)} labelKey="cidade" valueKey="total" color="gold" horizontal />
             )}
@@ -259,7 +259,7 @@ export default function AdminReports({ profile, onNavigate }) {
             icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 1 0 20"/><path d="M2 12h20"/></svg>}
           >
             {matchesPerMonth.length === 0 ? (
-              <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
             ) : (
               <BarChart data={matchesPerMonth} labelKey="mes" valueKey="total" color="blue" />
             )}
@@ -271,7 +271,7 @@ export default function AdminReports({ profile, onNavigate }) {
             icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>}
           >
             {ratingsPerMonth.length === 0 ? (
-              <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
             ) : (
               <BarChart data={ratingsPerMonth} labelKey="mes" valueKey="total" color="gold" />
             )}
@@ -283,7 +283,7 @@ export default function AdminReports({ profile, onNavigate }) {
             icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>}
           >
             {activeTournaments.length === 0 ? (
-              <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {activeTournaments.map((t, i) => {
@@ -305,7 +305,7 @@ export default function AdminReports({ profile, onNavigate }) {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: 10,
+                        fontSize: 11,
                         fontWeight: 800,
                         color: i === 0 ? 'var(--accent)' : i === 1 ? '#94A3B8' : i === 2 ? '#CD7C2F' : 'var(--text-muted)',
                         flexShrink: 0
@@ -359,7 +359,7 @@ export default function AdminReports({ profile, onNavigate }) {
             icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>}
           >
             {topPlayers.length === 0 ? (
-              <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>Sem dados disponíveis</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {topPlayers.map((p, i) => (
@@ -379,7 +379,7 @@ export default function AdminReports({ profile, onNavigate }) {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: 10,
+                      fontSize: 11,
                       fontWeight: 800,
                       color: i === 0 ? 'var(--accent)' : i === 1 ? '#94A3B8' : i === 2 ? '#CD7C2F' : 'var(--text-muted)',
                       flexShrink: 0

@@ -61,14 +61,14 @@ function calcularTendencia(serie) {
 function BadgeTendencia({ tendencia }) {
   if (!tendencia || tendencia.estado === 'indefinido') {
     return (
-      <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600 }}>
+      <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600 }}>
         Amostra pequena p/ tendência
       </span>
     );
   }
   if (tendencia.estado === 'estavel') {
     return (
-      <span style={{ fontSize: 10, color: '#94A3B8', fontWeight: 700 }}>
+      <span style={{ fontSize: 11, color: '#94A3B8', fontWeight: 700 }}>
         = Estável
       </span>
     );
@@ -76,7 +76,7 @@ function BadgeTendencia({ tendencia }) {
   const subiu = tendencia.estado === 'subiu';
   const cor = subiu ? CORES_RENDIMENTO.bem.cor : CORES_RENDIMENTO.mal.cor;
   return (
-    <span style={{ fontSize: 10, color: cor, fontWeight: 800 }}>
+    <span style={{ fontSize: 11, color: cor, fontWeight: 800 }}>
       {subiu ? '▲' : '▼'} {subiu ? '+' : '−'}{formatarNota(Math.abs(tendencia.delta))} · {subiu ? 'em evolução' : 'em queda'}
     </span>
   );
@@ -202,7 +202,7 @@ const LinhaEvolucao = memo(function LinhaEvolucao({ serie = [], loading = false,
   return (
     <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '14px', padding: '10px 12px', marginBottom: 10 }}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
-        <div style={{ fontSize: '9px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.04em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>
+        <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.04em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>
           Evolução
         </div>
         {!loading && temDados && <BadgeTendencia tendencia={tendencia} />}
@@ -223,18 +223,18 @@ const LinhaEvolucao = memo(function LinhaEvolucao({ serie = [], loading = false,
           <Grafico serie={serie} />
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginTop: 4, flexWrap: 'wrap' }}>
-            <span style={{ fontSize: 10, color: 'var(--text-secondary)' }}>
+            <span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
               Média do período:{' '}
               <strong style={{ color: 'var(--text-primary)' }}>
                 {periodo.media === null ? '--' : `${formatarNota(periodo.media)} / 5`}
               </strong>
             </span>
-            <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>
+            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
               {totalPeriodo} {totalPeriodo === 1 ? 'avaliação' : 'avaliações'}
             </span>
           </div>
 
-          <div style={{ fontSize: 9, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }}>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }}>
             Notas de partida (rachões, competições e torneios) + votos da aba Atletas.
             {' '}Ponto vazado = mês com poucas avaliações. Sem ponto = mês sem avaliação.
           </div>

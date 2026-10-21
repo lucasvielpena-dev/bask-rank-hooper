@@ -254,7 +254,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                       justifyContent: 'center',
                       color: isAdmin ? 'var(--accent-on)' : 'var(--accent)',
                       fontWeight: 800,
-                      fontSize: 16,
+                      fontSize: 17,
                       flexShrink: 0
                     }}>
                       {(user.nome_completo || user.email || '?')[0]?.toUpperCase()}
@@ -299,7 +299,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                           boxShadow: online ? '0 0 6px var(--success-soft)' : 'none'
                         }} />
                         <span style={{
-                          fontSize: 10,
+                          fontSize: 11,
                           fontWeight: 600,
                           color: online ? 'var(--success-text)' : '#ef4444'
                         }}>
@@ -312,7 +312,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                         alignItems: 'center',
                         padding: '2px 8px',
                         borderRadius: 50,
-                        fontSize: 10,
+                        fontSize: 11,
                         fontWeight: 800,
                         textTransform: 'uppercase',
                         letterSpacing: '0.04em',
@@ -329,7 +329,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                           alignItems: 'center',
                           padding: '2px 8px',
                           borderRadius: 50,
-                          fontSize: 10,
+                          fontSize: 11,
                           fontWeight: 800,
                           textTransform: 'uppercase',
                           letterSpacing: '0.04em',
@@ -486,7 +486,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                     border: '1px solid var(--border)',
                     background: 'var(--bg-card)',
                     color: 'var(--text-primary)',
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: 600,
                     cursor: 'pointer',
                     fontFamily: 'inherit'
@@ -504,7 +504,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                     border: 'none',
                     background: '#ef4444',
                     color: '#fff',
-                    fontSize: 14,
+                    fontSize: 15,
                     fontWeight: 700,
                     cursor: actionLoading === confirmDelete ? 'not-allowed' : 'pointer',
                     fontFamily: 'inherit',

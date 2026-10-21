@@ -45,7 +45,7 @@ export default function ContaSuspensa({ onSair }) {
 
         <h2
           style={{
-            fontSize: 19,
+            fontSize: 17,
             fontWeight: 800,
             color: 'var(--text-primary)',
             textTransform: 'uppercase',

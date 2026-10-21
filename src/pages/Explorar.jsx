@@ -186,14 +186,14 @@ export default function Explorar({ profile, onNavigate }) {
                 <CityCrest cidade={selected.cidade} uf={selected.uf} size={44} />
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>Radar da cidade</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4, lineHeight: 1.4 }}>
+                  <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4, lineHeight: 1.4 }}>
                     {selected.player_count} atletas · {selected.total_votos} avaliações · {selected.with_votes} com nota
                   </div>
                 </div>
               </div>
               <span
                 style={{
-                  fontSize: 10,
+                  fontSize: 11,
                   fontWeight: 800,
                   padding: '5px 8px',
                   borderRadius: 8,
@@ -207,7 +207,7 @@ export default function Explorar({ profile, onNavigate }) {
               </span>
             </div>
             {isMinha && (
-              <p style={{ margin: '12px 0 0', fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+              <p style={{ margin: '12px 0 0', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
                 Esta é a sua cidade. Para votar, use a aba <strong>Atletas</strong>.
               </p>
             )}
@@ -221,7 +221,7 @@ export default function Explorar({ profile, onNavigate }) {
             </div>
           ) : topGeral.length === 0 ? (
             <div className="premium-card" style={{ borderRadius: 12, padding: 24, textAlign: 'center' }}>
-              <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0 }}>
+              <p style={{ color: 'var(--text-muted)', fontSize: 15, margin: 0 }}>
                 Ainda não há atletas ativos listados nesta cidade.
               </p>
             </div>
@@ -309,7 +309,7 @@ export default function Explorar({ profile, onNavigate }) {
               background: 'var(--bg-card)',
               color: 'var(--text-secondary)',
               fontWeight: 800,
-              fontSize: 12,
+              fontSize: 13,
               letterSpacing: '0.04em',
               cursor: 'pointer',
               fontFamily: "'Inter', sans-serif" }}
@@ -325,7 +325,7 @@ export default function Explorar({ profile, onNavigate }) {
               background: 'var(--accent)',
               color: 'var(--accent-on)',
               fontWeight: 800,
-              fontSize: 12,
+              fontSize: 13,
               letterSpacing: '0.04em',
               cursor: 'default',
               fontFamily: "'Inter', sans-serif" }}
@@ -366,7 +366,7 @@ export default function Explorar({ profile, onNavigate }) {
           </div>
         ) : filtradas.length === 0 ? (
           <div className="premium-card" style={{ borderRadius: 12, padding: 24, textAlign: 'center' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0 }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: 15, margin: 0 }}>
               {busca.trim()
                 ? 'Nenhuma cidade encontrada.'
                 : 'Ainda não há cidades com atletas cadastrados.'}
@@ -400,14 +400,14 @@ export default function Explorar({ profile, onNavigate }) {
                   <CityCrest cidade={c.cidade} uf={c.uf} size={42} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                      <span style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-primary)' }}>
+                      <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)' }}>
                         {c.cidade}
                         {c.uf ? ` · ${c.uf}` : ''}
                       </span>
                       {isMinha && (
                         <span
                           style={{
-                            fontSize: 10,
+                            fontSize: 11,
                             fontWeight: 800,
                             color: 'var(--accent)',
                             background: 'var(--accent-dim)',
@@ -419,11 +419,11 @@ export default function Explorar({ profile, onNavigate }) {
                         </span>
                       )}
                     </div>
-                    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 3 }}>
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 3 }}>
                       {c.player_count} atleta{c.player_count !== 1 ? 's' : ''} · {c.total_votos} avaliações
                     </div>
                   </div>
-                  <span style={{ fontSize: 10, fontWeight: 800, color: ativ.color, textTransform: 'uppercase' }}>
+                  <span style={{ fontSize: 11, fontWeight: 800, color: ativ.color, textTransform: 'uppercase' }}>
                     {ativ.label}
                   </span>
                 </button>
@@ -482,7 +482,7 @@ function PlayerList({ list, onOpen }) {
                 justifyContent: 'center',
                 fontWeight: 800,
                 color: 'var(--accent)',
-                fontSize: 16,
+                fontSize: 17,
                 overflow: 'hidden',
                 flexShrink: 0,
                 border: '1.5px solid var(--accent-line)' }}
@@ -494,15 +494,15 @@ function PlayerList({ list, onOpen }) {
               )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-primary)' }}>{nome}</div>
-              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+              <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)' }}>{nome}</div>
+              <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>
                 {j.posicao || '—'} · {resumoAvaliacoes(j, { compacto: true })}
               </div>
               <span
                 style={{
                   display: 'inline-block',
                   marginTop: 4,
-                  fontSize: 10,
+                  fontSize: 11,
                   fontWeight: 700,
                   padding: '2px 6px',
                   borderRadius: 6,
@@ -515,7 +515,7 @@ function PlayerList({ list, onOpen }) {
             <div
               style={{
                 fontWeight: 900,
-                fontSize: 18,
+                fontSize: 17,
                 color: 'var(--accent)',
                 fontFamily: "'Barlow Condensed', sans-serif" }}
             >

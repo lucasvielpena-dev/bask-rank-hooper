@@ -119,11 +119,11 @@ export default function LocationGate({ profile, onResolved }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 28 }}
+            fontSize: 22 }}
         >
                   </div>
         <h1 style={{ fontSize: 22, fontWeight: 900, marginBottom: 8 }}>Localização obrigatória</h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.5, marginBottom: 20 }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.5, marginBottom: 20 }}>
           O Rank Hooper mostra só atletas da <strong>sua cidade</strong>. Precisamos da sua
           localização para classificar você no ranking municipal certo.
         </p>
@@ -136,7 +136,7 @@ export default function LocationGate({ profile, onResolved }) {
               background: 'rgba(16,185,129,0.12)',
               border: '1px solid rgba(16,185,129,0.25)',
               marginBottom: 16,
-              fontSize: 14,
+              fontSize: 15,
               color: 'var(--text-primary)' }}
           >
             Identificamos: <strong>{info.cidade} - {info.uf}</strong>

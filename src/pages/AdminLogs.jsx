@@ -120,7 +120,7 @@ export default function AdminLogs({ profile, onNavigate }) {
             </svg>
           </button>
           <div>
-            <h2 style={{ fontWeight: 800, fontSize: 20, margin: 0 }}>Logs de Admin</h2>
+            <h2 style={{ fontWeight: 800, fontSize: 17, margin: 0 }}>Logs de Admin</h2>
             <p className="page-sub" style={{ margin: 0 }}>
               {logs.length} registros
             </p>
@@ -168,7 +168,7 @@ export default function AdminLogs({ profile, onNavigate }) {
                     {ACTION_LABELS[log.action] || log.action}
                   </div>
                   <div style={{
-                    fontSize: 12,
+                    fontSize: 13,
                     color: 'var(--text-secondary)',
                     marginTop: 2,
                     overflow: 'hidden',

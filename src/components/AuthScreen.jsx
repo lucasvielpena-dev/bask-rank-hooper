@@ -450,11 +450,11 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
             backdropFilter: 'blur(10px)' }}>
             <span style={{
               fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800,
-              fontSize: 24, color: 'var(--accent-text)', letterSpacing: '-0.02em' }}>RH</span>
+              fontSize: 22, color: 'var(--accent-text)', letterSpacing: '-0.02em' }}>RH</span>
           </div>
           <h1 style={{
             fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800,
-            fontSize: '28px', color: '#FFFFFF',
+            fontSize: '22px', color: '#FFFFFF',
             letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1, marginBottom: 4 }}>
             Rank Hooper
           </h1>
@@ -467,20 +467,20 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
         <div className={`glass-form ${isShake ? 'shake-animation' : ''}`} style={{ marginTop: 'auto' }}>
           
           {erro && (
-            <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 10, color: '#f87171', padding: '10px', fontSize: 12, marginBottom: 16, textAlign: 'center' }}>
+            <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 10, color: '#f87171', padding: '10px', fontSize: 13, marginBottom: 16, textAlign: 'center' }}>
               {erro}
             </div>
           )}
           {successMsg && (
-            <div style={{ background: 'var(--success-soft)', border: '1px solid var(--success-soft)', borderRadius: 10, color: 'var(--success-text)', padding: '10px', fontSize: 12, marginBottom: 16, textAlign: 'center' }}>
+            <div style={{ background: 'var(--success-soft)', border: '1px solid var(--success-soft)', borderRadius: 10, color: 'var(--success-text)', padding: '10px', fontSize: 13, marginBottom: 16, textAlign: 'center' }}>
               {successMsg}
             </div>
           )}
 
           {tab === 'forgot' ? (
             <div style={{ textAlign: 'center', marginBottom: 16 }}>
-              <h3 style={{ fontWeight: 800, fontSize: 16, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif" }}>Recuperar Senha</h3>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, marginTop: 4, fontFamily: "'Inter',sans-serif" }}>Digite seu e-mail para receber as instruções</p>
+              <h3 style={{ fontWeight: 800, fontSize: 17, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif" }}>Recuperar Senha</h3>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, marginTop: 4, fontFamily: "'Inter',sans-serif" }}>Digite seu e-mail para receber as instruções</p>
             </div>
           ) : (
             <div style={{ display: 'flex', background: 'rgba(0,0,0,0.3)', borderRadius: 10, padding: 4, gap: 4, marginBottom: 16 }}>
@@ -553,7 +553,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
                 
                 {tab === 'login' && (
                   <div style={{ textAlign: 'right' }}>
-                    <button type="button" onClick={() => { setTab('forgot'); setErro(null); setSuccessMsg(null); }} style={{ background: 'none', border: 'none', color: 'var(--accent-text)', cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: 0, fontFamily: "'Inter',sans-serif" }}>
+                    <button type="button" onClick={() => { setTab('forgot'); setErro(null); setSuccessMsg(null); }} style={{ background: 'none', border: 'none', color: 'var(--accent-text)', cursor: 'pointer', fontSize: 13, fontWeight: 600, padding: 0, fontFamily: "'Inter',sans-serif" }}>
                       Esqueci minha senha
                     </button>
                   </div>
@@ -582,7 +582,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
             {tab === 'login' && !isShooting && (
               <button type="button" onClick={handleGoogleLogin} disabled={carregando} style={{
                 width: '100%', height: 50, borderRadius: 12, border: '1px solid rgba(255,255,255,0.15)',
-                background: 'rgba(255,255,255,0.05)', color: '#FFFFFF', fontSize: 14, fontWeight: 600,
+                background: 'rgba(255,255,255,0.05)', color: '#FFFFFF', fontSize: 15, fontWeight: 600,
                 cursor: 'pointer', fontFamily: "'Inter',sans-serif",
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 transition: 'all 0.2s' }}>
@@ -620,7 +620,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
           backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
           animation: 'fadeIn 0.3s ease both' }}>
           <div className="spinner" style={{ width: 13, height: 13 }} />
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 600, fontFamily: "'Inter',sans-serif" }}>
+          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', fontWeight: 600, fontFamily: "'Inter',sans-serif" }}>
             Preparando sua quadra…
           </span>
         </div>

@@ -162,7 +162,7 @@ export default function Layout({ page, onNavigate, children }) {
               border: 'none',
               borderRadius: '20px',
               padding: '6px 16px',
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: 700,
               cursor: 'pointer'
             }}
@@ -192,7 +192,7 @@ export default function Layout({ page, onNavigate, children }) {
         <div className="modal-overlay" onClick={() => { if (!salvandoPerfil) { setShowUserMenu(false); setIsEditingProfile(false); } }}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 400 }}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 800, fontSize: 20, marginBottom: 6, textAlign: 'center' }}>
+            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 6, textAlign: 'center' }}>
               {isEditingProfile ? 'Editar Perfil' : 'Meu Perfil'}
             </h3>
             <p style={{ color: '#64748b', fontSize: 13, marginBottom: 20, textAlign: 'center' }}>
@@ -223,7 +223,7 @@ export default function Layout({ page, onNavigate, children }) {
                     {editFoto ? (
                       <img src={editFoto} alt="Preview" style={{ width: 44, height: 44, borderRadius: '50%', border: '1px solid var(--border)', objectFit: 'cover' }} />
                     ) : (
-                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)', fontWeight: 700, fontSize: 18 }}>
+                      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)', fontWeight: 700, fontSize: 17 }}>
                         {profile.nome_completo?.charAt(0).toUpperCase()}
                       </div>
                     )}
@@ -335,22 +335,22 @@ export default function Layout({ page, onNavigate, children }) {
                   )}
                   <div style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     <div style={{ fontWeight: 700 }}>{profile.nome_completo}</div>
-                    <div style={{ fontSize: 12, color: '#64748b' }}>{user?.email || ''}</div>
+                    <div style={{ fontSize: 13, color: '#64748b' }}>{user?.email || ''}</div>
                   </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
                   <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
                     <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>APELIDO</div>
-                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 14 }}>{profile.apelido}</div>
+                    <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 15 }}>{profile.apelido}</div>
                   </div>
                   <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
                     <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>ALTURA</div>
-                    <div style={{ fontWeight: 800, color: '#60a5fa', fontSize: 14 }}>{Number(profile.altura).toFixed(2)}m</div>
+                    <div style={{ fontWeight: 800, color: '#60a5fa', fontSize: 15 }}>{Number(profile.altura).toFixed(2)}m</div>
                   </div>
                   <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
                     <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>IDADE</div>
-                    <div style={{ fontWeight: 800, color: '#f59e0b', fontSize: 14 }}>{profile.idade} anos</div>
+                    <div style={{ fontWeight: 800, color: '#f59e0b', fontSize: 15 }}>{profile.idade} anos</div>
                   </div>
                 </div>
 
@@ -376,7 +376,7 @@ export default function Layout({ page, onNavigate, children }) {
                           background: themePref === t.key ? 'var(--accent-soft)' : 'none',
                           color: 'var(--text-primary)',
                           cursor: 'pointer',
-                          fontSize: 12,
+                          fontSize: 13,
                           fontWeight: 600
                         }}
                       >
@@ -421,7 +421,7 @@ export default function Layout({ page, onNavigate, children }) {
                     background: 'none',
                     border: 'none',
                     color: '#f87171',
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: 600,
                     cursor: 'pointer',
                     textDecoration: 'underline',
@@ -450,12 +450,12 @@ export default function Layout({ page, onNavigate, children }) {
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
               <IconLocalizacao size={40} color="var(--accent)" />
             </div>
-            <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 10 }}>Confirmar sua cidade</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
+            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 10 }}>Confirmar sua cidade</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 15, marginBottom: 24, lineHeight: 1.5 }}>
               Podemos usar sua localização para confirmar em qual cidade você está? Assim as avaliações e os rachões ficam na cidade certa. Se você estiver em outra cidade, a gente pergunta antes de mudar.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <button onClick={pedirLocalizacaoAgora} style={{ background: 'var(--accent)', color: '#000', border: 'none', borderRadius: 50, padding: '12px', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>
+              <button onClick={pedirLocalizacaoAgora} style={{ background: 'var(--accent)', color: '#000', border: 'none', borderRadius: 50, padding: '12px', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>
                 Permitir localização
               </button>
               <button onClick={dispensarPedidoLocalizacao} style={{ background: 'transparent', color: 'var(--text-secondary)', border: 'none', padding: '10px', fontSize: 13, cursor: 'pointer' }}>
@@ -472,8 +472,8 @@ export default function Layout({ page, onNavigate, children }) {
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
               <IconLocalizacao size={40} color="var(--accent)" />
             </div>
-            <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 10 }}>Mudar cidade de competição?</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 24, lineHeight: 1.5 }}>
+            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 10 }}>Mudar cidade de competição?</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 15, marginBottom: 24, lineHeight: 1.5 }}>
               Detectamos que você está em <strong>{cityPrompt.city} - {cityPrompt.uf}</strong>. Deseja atualizar sua cidade de competição?
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -486,7 +486,7 @@ export default function Layout({ page, onNavigate, children }) {
                   borderRadius: 50,
                   padding: '12px',
                   fontWeight: 600,
-                  fontSize: 14,
+                  fontSize: 15,
                   cursor: 'pointer'
                 }}
               >
@@ -501,7 +501,7 @@ export default function Layout({ page, onNavigate, children }) {
                   borderRadius: 50,
                   padding: '12px',
                   fontWeight: 600,
-                  fontSize: 14,
+                  fontSize: 15,
                   cursor: 'pointer'
                 }}
               >
@@ -515,10 +515,10 @@ export default function Layout({ page, onNavigate, children }) {
       {showExcluirConta && (
         <div className="modal-overlay" style={{ zIndex: 3000 }}>
           <div className="modal-sheet" style={{ maxWidth: 400, padding: 24 }}>
-            <h3 style={{ fontWeight: 800, fontSize: 18, marginBottom: 10, color: '#f87171' }}>
+            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 10, color: '#f87171' }}>
               Excluir minha conta
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.5, marginBottom: 14 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.5, marginBottom: 14 }}>
               Esta acao e <strong>permanente</strong> e nao pode ser desfeita. Vao ser apagados:
             </p>
             <ul style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.7, margin: '0 0 14px 18px' }}>
@@ -582,7 +582,7 @@ export default function Layout({ page, onNavigate, children }) {
                   borderRadius: 50,
                   padding: '12px',
                   fontWeight: 700,
-                  fontSize: 14,
+                  fontSize: 15,
                   cursor: excluindo ? 'wait' : (confirmExcluir.trim().toUpperCase() === 'EXCLUIR' ? 'pointer' : 'not-allowed')
                 }}
               >
@@ -599,7 +599,7 @@ export default function Layout({ page, onNavigate, children }) {
                   borderRadius: 50,
                   padding: '12px',
                   fontWeight: 600,
-                  fontSize: 14,
+                  fontSize: 15,
                   cursor: 'pointer'
                 }}
               >

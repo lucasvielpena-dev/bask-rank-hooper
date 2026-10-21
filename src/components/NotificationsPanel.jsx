@@ -244,10 +244,10 @@ function NotificationsPanel({
                 padding: 16,
                 marginBottom: 14 }}
             >
-              <div style={{ fontSize: 28, marginBottom: 10 }}><IconForTitle titulo={selected.titulo} size={20} /></div>
+              <div style={{ fontSize: 22, marginBottom: 10 }}><IconForTitle titulo={selected.titulo} size={20} /></div>
               <h2
                 style={{
-                  fontSize: 18,
+                  fontSize: 17,
                   fontWeight: 800,
                   color: 'var(--text-primary)',
                   marginBottom: 8,
@@ -257,7 +257,7 @@ function NotificationsPanel({
               </h2>
               <p
                 style={{
-                  fontSize: 14,
+                  fontSize: 15,
                   color: 'var(--text-secondary)',
                   lineHeight: 1.55,
                   whiteSpace: 'pre-wrap',
@@ -281,7 +281,7 @@ function NotificationsPanel({
               <div style={{ marginBottom: 14 }}>
                 <div
                   style={{
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: 800,
                     color: 'var(--text-primary)',
                     marginBottom: 8,

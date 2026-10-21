@@ -405,7 +405,7 @@ export default function Stats({ profile, onNavigate }) {
                   border: '1px solid var(--accent-line)',
                   borderRadius: '6px',
                   padding: '2px 8px',
-                  fontSize: '9px',
+                  fontSize: '11px',
                   fontWeight: 800,
                   letterSpacing: '0.02em'
                 }}>
@@ -417,7 +417,7 @@ export default function Stats({ profile, onNavigate }) {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style={{ fontSize: '18px', fontWeight: 900, color: 'var(--accent)', fontFamily: 'monospace' }}>
+                <span style={{ fontSize: '17px', fontWeight: 900, color: 'var(--accent)', fontFamily: 'monospace' }}>
                   {starsVal > 0 ? Number(starsVal).toFixed(1) : '0.0'}
                 </span>
                 <span style={{ color: 'var(--accent)', fontSize: '15px' }}>★</span>
@@ -435,7 +435,7 @@ export default function Stats({ profile, onNavigate }) {
         {avaliouQtd !== null && (
           <div style={{
             display: 'flex', alignItems: 'center', gap: 6,
-            fontSize: 12, color: 'var(--text-secondary)',
+            fontSize: 13, color: 'var(--text-secondary)',
             fontFamily: "'Inter',sans-serif", marginBottom: 10 }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--accent-text)" stroke="none">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
@@ -538,7 +538,7 @@ export default function Stats({ profile, onNavigate }) {
               <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '12px', padding: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                   <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.04em', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase' }}>ESTATÍSTICAS PRIVADAS</span>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>{historicoPrivado.length} jogos</span>
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>{historicoPrivado.length} jogos</span>
                 </div>
                 <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: 16 }}>
                   Registre seus números de forma privada. Esses dados não afetam os rankings e servem para seu controle pessoal.
@@ -550,16 +550,16 @@ export default function Stats({ profile, onNavigate }) {
                     {/* Linha Principal de Médias */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, textAlign: 'center' }}>
                       <div style={{ background: 'var(--bg-secondary)', padding: '6px 3px', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                        <div style={{ fontSize: '18px', fontWeight: 900, color: 'var(--accent)' }}>{mediasPrivadas.pontos}</div>
-                        <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>PPJ</div>
+                        <div style={{ fontSize: '17px', fontWeight: 900, color: 'var(--accent)' }}>{mediasPrivadas.pontos}</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>PPJ</div>
                       </div>
                       <div style={{ background: 'var(--bg-secondary)', padding: '6px 3px', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                        <div style={{ fontSize: '18px', fontWeight: 900, color: 'var(--text-primary)' }}>{mediasPrivadas.rebotes}</div>
-                        <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>REB</div>
+                        <div style={{ fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)' }}>{mediasPrivadas.rebotes}</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>REB</div>
                       </div>
                       <div style={{ background: 'var(--bg-secondary)', padding: '6px 3px', borderRadius: '8px', border: '1px solid var(--border)' }}>
-                        <div style={{ fontSize: '18px', fontWeight: 900, color: 'var(--text-primary)' }}>{mediasPrivadas.assistencias}</div>
-                        <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>AST</div>
+                        <div style={{ fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)' }}>{mediasPrivadas.assistencias}</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>AST</div>
                       </div>
                     </div>
 
@@ -596,8 +596,8 @@ export default function Stats({ profile, onNavigate }) {
                           alignItems: 'center', 
                           justifyContent: 'center' 
                         }}>
-                          <span style={{ fontSize: '16px', fontWeight: 900, color: 'var(--text-primary)', lineHeight: '1' }}>{mediasPrivadas.aproveitamento}%</span>
-                          <span style={{ fontSize: '8px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>GERAL</span>
+                          <span style={{ fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)', lineHeight: '1' }}>{mediasPrivadas.aproveitamento}%</span>
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>GERAL</span>
                         </div>
                       </div>
 
@@ -609,7 +609,7 @@ export default function Stats({ profile, onNavigate }) {
                           { label: 'Arremesso de 3', pct: mediasPrivadas.tres_aproveitamento, vol: mediasPrivadas.tres_detalhe },
                         ].map(item => (
                           <div key={item.label}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 2 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 2 }}>
                               <span>{item.label}</span>
                               <span style={{ color: 'var(--text-primary)' }}>{item.pct}% <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>({item.vol})</span></span>
                             </div>
@@ -629,7 +629,7 @@ export default function Stats({ profile, onNavigate }) {
                         padding: '10px', 
                         border: '1px solid var(--border)'
                       }}>
-                        <div style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.04em', marginBottom: 8, textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>
+                        <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.04em', marginBottom: 8, textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>
                           Evolução de Pontos (Últimos 5 Jogos)
                         </div>
                         
@@ -664,7 +664,7 @@ export default function Stats({ profile, onNavigate }) {
                                     zIndex: 1
                                   }}>
                                     {/* Pontuação no topo da barra */}
-                                    <span style={{ fontSize: '9px', fontWeight: 900, color: 'var(--text-primary)', marginBottom: 4 }}>
+                                    <span style={{ fontSize: '11px', fontWeight: 900, color: 'var(--text-primary)', marginBottom: 4 }}>
                                       {partida.pontos}
                                     </span>
                                     {/* Barra vertical com gradiente */}
@@ -676,7 +676,7 @@ export default function Stats({ profile, onNavigate }) {
                                       transition: 'height 0.3s ease'
                                     }} />
                                     {/* Data ou número da partida embaixo */}
-                                    <span style={{ fontSize: '7px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 6 }}>
+                                    <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 6 }}>
                                       {new Date(partida.data_partida + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
                                     </span>
                                   </div>
@@ -738,7 +738,7 @@ export default function Stats({ profile, onNavigate }) {
               {subAbaHistorico === 'pessoal' ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {historicoPrivado.length === 0 ? (
-                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
+                    <div style={{ fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
                       Nenhuma partida registrada no seu histórico pessoal privado.
                     </div>
                   ) : (
@@ -754,10 +754,10 @@ export default function Stats({ profile, onNavigate }) {
                         position: 'relative'
                       }}>
                         <div>
-                          <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
                             {h.pontos} pts | {h.rebotes} reb | {h.assistencias} ast
                           </div>
-                          <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: 2 }}>
+                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: 2 }}>
                             {new Date(h.data_partida + 'T00:00:00').toLocaleDateString('pt-BR')}
                             {h.nome_jogador && ` • ${h.nome_jogador}`}
                           </div>
@@ -785,7 +785,7 @@ export default function Stats({ profile, onNavigate }) {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {historicoQuadra.length === 0 ? (
-                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
+                    <div style={{ fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
                       Nenhuma partida finalizada jogada em quadras oficiais.
                     </div>
                   ) : (
@@ -800,15 +800,15 @@ export default function Stats({ profile, onNavigate }) {
                         alignItems: 'center'
                       }}>
                         <div>
-                          <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
                             {h.timeA} {h.placarA} x {h.placarB} {h.timeB}
                           </div>
-                          <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
                             {new Date(h.data).toLocaleDateString('pt-BR')}
                           </span>
                         </div>
                         <span style={{
-                          fontSize: '10px',
+                          fontSize: '11px',
                           fontWeight: 800,
                           color: h.vencedor === 'Ganhou' ? '#10B981' : '#EF4444',
                           background: h.vencedor === 'Ganhou' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
@@ -838,7 +838,7 @@ export default function Stats({ profile, onNavigate }) {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               <div>
-                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome do Evento / Oponente</label>
+                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome do Evento / Oponente</label>
                 <input
                   type="text"
                   value={form.nome_jogador || ''}
@@ -848,7 +848,7 @@ export default function Stats({ profile, onNavigate }) {
               </div>
 
               <div>
-                <label style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Data da Partida</label>
+                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Data da Partida</label>
                 <input
                   type="date"
                   value={form.data_partida}
@@ -890,9 +890,9 @@ export default function Stats({ profile, onNavigate }) {
                       <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{item.l}</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 28, height: 28, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>
-                          <span style={{ fontWeight: 800, fontSize: 14, minWidth: 20, textAlign: 'center' }}>{form[item.k]}</span>
-                          <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 28, height: 28, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>+</button>
+                          <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 28, height: 28, padding: 0, fontSize: 17, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>
+                          <span style={{ fontWeight: 800, fontSize: 15, minWidth: 20, textAlign: 'center' }}>{form[item.k]}</span>
+                          <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 28, height: 28, padding: 0, fontSize: 17, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>+</button>
                         </div>
                       </div>
                     ))}
@@ -905,11 +905,11 @@ export default function Stats({ profile, onNavigate }) {
                       { l: 'Pontos', k: 'pontos' },
                     ].map(item => (
                       <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
-                        <span style={{ fontSize: 14, fontWeight: 600 }}>{item.l}</span>
+                        <span style={{ fontSize: 15, fontWeight: 600 }}>{item.l}</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>
+                          <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 17, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>
                           <span style={{ fontWeight: 800, fontSize: 15, minWidth: 24, textAlign: 'center' }}>{form[item.k]}</span>
-                          <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>+</button>
+                          <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 17, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>+</button>
                         </div>
                       </div>
                     ))}
@@ -924,11 +924,11 @@ export default function Stats({ profile, onNavigate }) {
                   { l: 'Perdas de Bola', k: 'perdas_bola' },
                 ].map(item => (
                   <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
-                    <span style={{ fontSize: 14, fontWeight: 600 }}>{item.l}</span>
+                    <span style={{ fontSize: 15, fontWeight: 600 }}>{item.l}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>
+                      <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 17, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>
                       <span style={{ fontWeight: 800, fontSize: 15, minWidth: 24, textAlign: 'center' }}>{form[item.k]}</span>
-                      <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>+</button>
+                      <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 17, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>+</button>
                     </div>
                   </div>
                 ))}

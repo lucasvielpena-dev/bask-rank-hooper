@@ -125,7 +125,7 @@ export default function AdminPlayers({ profile, onNavigate }) {
       <div className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
         <div style={{ textAlign: 'center', padding: 24 }}>
           <h2 style={{ fontWeight: 800, marginBottom: 8 }}>Acesso negado</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: 14 }}>Você não tem permissão para esta área.</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 15 }}>Você não tem permissão para esta área.</p>
         </div>
       </div>
     );

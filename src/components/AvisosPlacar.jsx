@@ -133,7 +133,7 @@ export default function AvisosPlacar() {
         );
       })}
       {recado && (
-        <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--accent)' }}>{recado}</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)' }}>{recado}</span>
       )}
     </div>
   );

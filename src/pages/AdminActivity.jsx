@@ -36,7 +36,7 @@ function StatusPill({ label, tone = 'muted' }) {
       className="text-sm"
       style={{
         fontWeight: 800,
-        fontSize: 10,
+        fontSize: 11,
         textTransform: 'uppercase',
         letterSpacing: '0.04em',
         padding: '3px 8px',
@@ -403,7 +403,7 @@ function DetalheModal({ detalhe, onClose, onFechar, onExcluir }) {
     <div className="modal-overlay" onClick={onClose} style={{ zIndex: 1200 }}>
       <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 420 }}>
         <div className="modal-handle" />
-        <h3 className="page-title" style={{ fontSize: 18, marginBottom: 8 }}>
+        <h3 className="page-title" style={{ fontSize: 17, marginBottom: 8 }}>
           {tipo === 'partida' ? 'Partida' : tipo === 'racao' ? 'Rachão' : 'Torneio'}
         </h3>
 
@@ -499,7 +499,7 @@ function ConfirmacaoTorneio({ confirmacao, executando, onCancelar, onConfirmar }
     <div className="modal-overlay" onClick={executando ? undefined : onCancelar} style={{ zIndex: 1300 }}>
       <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 400 }}>
         <div className="modal-handle" />
-        <h3 className="page-title" style={{ fontSize: 18, marginBottom: 8, color: excluir ? '#ef4444' : 'var(--text-primary)' }}>
+        <h3 className="page-title" style={{ fontSize: 17, marginBottom: 8, color: excluir ? '#ef4444' : 'var(--text-primary)' }}>
           {excluir ? 'Excluir torneio' : 'Fechar torneio'}
         </h3>
         <p className="text-sm" style={{ color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 18 }}>
