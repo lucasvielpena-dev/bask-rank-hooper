@@ -224,24 +224,24 @@ export default function Home({ profile, onNavigate }) {
                 src={myPlayerInfo.foto_url}
                 alt={greetingName}
                 style={{
-                  width: '60%', aspectRatio: '1 / 1', flexShrink: 0,
+                  width: '50%', alignSelf: 'stretch', flexShrink: 0,
                   objectFit: 'cover', objectPosition: 'center 18%',
                   borderRadius: 0, pointerEvents: 'none',
-                  WebkitMaskImage: 'radial-gradient(circle closest-side at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%)',
+                  WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
                   WebkitMaskComposite: 'source-in',
-                  maskImage: 'radial-gradient(circle closest-side at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%)',
+                  maskImage: 'linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
                   maskComposite: 'intersect',
                 }}
               />
             ) : (
               <div style={{
-                width: '60%', aspectRatio: '1 / 1', flexShrink: 0,
+                width: '50%', alignSelf: 'stretch', flexShrink: 0,
                 borderRadius: 0,
                 background: 'var(--accent-soft)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                WebkitMaskImage: 'radial-gradient(circle closest-side at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%)',
+                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
                 WebkitMaskComposite: 'source-in',
-                maskImage: 'radial-gradient(circle closest-side at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%)',
+                maskImage: 'linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
                 maskComposite: 'intersect',
               }}>
                 <span style={{
