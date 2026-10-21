@@ -741,12 +741,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '8px 4px',
-            borderRadius: '14px',
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            boxShadow: 'var(--shadow)'
-          }}>
+            padding: '8px 4px' }}>
             <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '2px' }}>
               {item.label}
             </span>
@@ -829,10 +824,6 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
               ].map((info, idx) => (
                 <div key={idx} className="card" style={{
                   padding: '10px',
-                  borderRadius: '12px',
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border)',
-                  boxShadow: 'var(--shadow)',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '4px'
@@ -877,9 +868,6 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
             ) : (
               <div className="card" style={{
                 padding: '10px',
-                borderRadius: '12px',
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
                 textAlign: 'center',
                 fontSize: '13px',
                 color: 'var(--text-muted)'
@@ -892,12 +880,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
 
             {torneio.descricao && (
               <div className="card" style={{
-                padding: '10px',
-                borderRadius: '12px',
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                boxShadow: 'var(--shadow)'
-              }}>
+                padding: '10px' }}>
                 <h4 style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '8px' }}>
                   Descrição do Evento
                 </h4>
@@ -911,14 +894,10 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
             {isOrganizador && (
               <div className="card" style={{
                 padding: '14px',
-                borderRadius: '14px',
                 background: 'var(--bg-secondary)',
-                border: '1px solid var(--border)',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '8px',
-                boxShadow: 'var(--shadow)'
-              }}>
+                gap: '8px' }}>
                 <h4 style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '4px' }}>
                   GERENCIAMENTO
                 </h4>
@@ -1112,12 +1091,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '12px',
-                      padding: '16px',
-                      background: 'var(--bg-card)',
-                      border: '1px solid var(--border)',
-                      borderRadius: '16px',
-                      boxShadow: 'var(--shadow)'
-                    }}>
+                      padding: '16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div style={{ cursor: 'pointer', flex: 1 }} onClick={() => setExpandedTeamId(isExpanded ? null : e.id)}>
                           <h4 style={{ fontWeight: 800, fontSize: '15px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -1174,12 +1148,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
             {torneio.formato === 'todos_contra_todos' ? (
               <div className="card" style={{
                 overflowX: 'auto',
-                padding: 0,
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                borderRadius: '16px',
-                boxShadow: 'var(--shadow)'
-              }}>
+                padding: 0 }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', color: 'var(--text-primary)' }}>
                   <thead>
                     <tr style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)' }}>
@@ -1229,12 +1198,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
-                                padding: '12px 16px',
-                                background: 'var(--bg-card)',
-                                border: '1px solid var(--border)',
-                                borderRadius: '16px',
-                                boxShadow: 'var(--shadow)'
-                              }}>
+                                padding: '12px 16px' }}>
                                 <div style={{ flex: 1 }}>
                                   <div style={{ display: 'flex', justifyContent: 'space-between', margin: '2px 0' }}>
                                     <span style={{
@@ -1282,10 +1246,6 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                 const emProgresso = j.status === 'em_andamento';
                 return (
                   <div key={j.id} className="card" style={{
-                    background: 'var(--bg-card)',
-                    border: '1px solid var(--border)',
-                    borderRadius: '16px',
-                    boxShadow: 'var(--shadow)',
                     padding: '16px',
                     borderLeft: emProgresso ? '4px solid var(--accent)' : '1px solid rgba(255, 255, 255, 0.06)'
                   }}>
@@ -1384,10 +1344,6 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
-                    background: 'var(--bg-card)',
-                    border: '1px solid var(--border)',
-                    borderRadius: '16px',
-                    boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28 }}>
@@ -1408,10 +1364,6 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
-                    background: 'var(--bg-card)',
-                    border: '1px solid var(--border)',
-                    borderRadius: '16px',
-                    boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
                     <div style={{ fontSize: '22px' }}></div>
@@ -1430,10 +1382,6 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
-                    background: 'var(--bg-card)',
-                    border: '1px solid var(--border)',
-                    borderRadius: '16px',
-                    boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
                     <div style={{ fontSize: '22px' }}></div>
@@ -1454,10 +1402,6 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
-                    background: 'var(--bg-card)',
-                    border: '1px solid var(--border)',
-                    borderRadius: '16px',
-                    boxShadow: 'var(--shadow)',
                     padding: '16px'
                   }}>
                     <div style={{ fontSize: '22px' }}></div>
@@ -2033,9 +1977,6 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
       {periodo === 1 && tempo === duracaoQuarto * 60 && !timerAtivo && (
         <div className="card" style={{
           padding: '12px 16px',
-          background: 'var(--bg-card)',
-          border: '1px solid var(--border)',
-          borderRadius: '12px',
           marginBottom: 16,
           display: 'flex',
           alignItems: 'center',
@@ -2243,8 +2184,6 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             <div className="card" style={{
               padding: '16px',
               background: 'var(--card-team-a-bg)',
-              border: '1px solid var(--border)',
-              borderRadius: '12px',
               textAlign: 'center'
             }}>
               <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
@@ -2269,8 +2208,6 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             <div className="card" style={{
               padding: '16px',
               background: 'var(--card-team-b-bg)',
-              border: '1px solid var(--border)',
-              borderRadius: '12px',
               textAlign: 'center'
             }}>
               <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
@@ -2296,7 +2233,6 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
               padding: '14px 16px',
               background: 'rgba(239, 68, 68, 0.1)',
               border: '1px solid rgba(239, 68, 68, 0.25)',
-              borderRadius: '12px',
               textAlign: 'center'
             }}>
               <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#EF4444', marginBottom: 2 }}>
@@ -2452,7 +2388,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             const isTeamA = rosterA.some(r => r.jogador_id === p.jogador_id);
             const teamBadgeColor = isTeamA ? 'var(--accent)' : 'var(--accent)';
             return (
-              <div key={p.id} className="card" style={{ padding: '12px 14px', background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <div key={p.id} className="card" style={{ padding: '12px 14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-primary)' }}>{nomeAtleta(p.jogador)}</div>
                   <span style={{ fontSize: 11, color: '#FFF', background: teamBadgeColor, padding: '2px 6px', borderRadius: 4, fontWeight: 700, textTransform: 'uppercase' }}>
