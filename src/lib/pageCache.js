@@ -35,13 +35,21 @@ export function limparCache(chave) {
 // parada. Uso: setLista(prev => (igualLista(prev, novo) ? prev : novo)).
 export function igualLista(a, b) {
   if (a === b) return true;
-  if (!a || !b) return false;
-  if (a.length !== b.length) return false;
-  try {
-    return JSON.stringify(a) === JSON.stringify(b);
-  } catch (_) {
-    return false;
+  if (!a || !b || a.length !== b.length) return false;
+  // Comparação campo a campo (evita JSON.stringify na lista inteira — engasgo na aba Atletas)
+  for (let i = 0; i < a.length; i++) {
+    const x = a[i];
+    const y = b[i];
+    if (x === y) continue;
+    if (!x || !y) return false;
+    if (x.id !== y.id) return false;
+    if (x.media_estrelas !== y.media_estrelas) return false;
+    if (x.total_votos !== y.total_votos) return false;
+    if (x.ja_votou_hoje !== y.ja_votou_hoje) return false;
+    if (x.foto_url !== y.foto_url) return false;
+    if ((x.apelido || x.nome) !== (y.apelido || y.nome)) return false;
   }
+  return true;
 }
 
 const pageCache = { lerCache, salvarCache, limparCache, igualLista };

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, memo } from 'react';
+import { useState, useEffect, useMemo, memo, useRef, useCallback } from 'react';
 import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import { sortByConfianca } from '../lib/ranking';
 import { nomeAtleta } from '../lib/nomes';
@@ -6,7 +6,6 @@ import { criarAtualizador, assinarAviso, topicoRankingCidade } from '../lib/real
 import { lerCache, salvarCache, igualLista } from '../lib/pageCache';
 import { useEsporte } from '../contexts/EsporteContext';
 import PlayerProfileModal from '../components/PlayerProfileModal';
-import { motion, AnimatePresence } from 'framer-motion';
 
 function normalizarCidade(v) {
   return String(v || '')
@@ -44,14 +43,8 @@ const getGradientForName = (name) => {
   return `linear-gradient(135deg, ${colors[Math.abs(hash) % colors.length][0]} 0%, ${colors[Math.abs(hash) % colors.length][1]} 100%)`;
 };
 
-function PlayerAvatar({ fotoUrl, nome, size = 48, className = '' }) {
+const PlayerAvatar = memo(function PlayerAvatar({ fotoUrl, nome, size = 48, className = '' }) {
   const initial = nome ? nome.charAt(0).toUpperCase() : '?';
-
-  const wrapperStyle = {
-    position: 'relative',
-    display: 'inline-block',
-  };
-
   const imgStyle = {
     width: size,
     height: size,
@@ -59,7 +52,6 @@ function PlayerAvatar({ fotoUrl, nome, size = 48, className = '' }) {
     objectFit: 'cover',
     border: '1.5px solid var(--accent-line)',
   };
-
   const initialsStyle = {
     width: size,
     height: size,
@@ -71,20 +63,22 @@ function PlayerAvatar({ fotoUrl, nome, size = 48, className = '' }) {
     color: 'var(--accent-on)',
     fontWeight: 800,
     fontSize: size * 0.4,
-    fontFamily: "'Barlow Condensed',sans-serif",
+    fontFamily: 'var(--font-display), sans-serif',
     border: '1.5px solid var(--accent-line)',
   };
-
-  return (
-    <div style={wrapperStyle}>
-      {fotoUrl ? (
-        <img src={fotoUrl} alt={nome} loading="lazy" decoding="async" style={imgStyle} className={className} />
-      ) : (
-        <div style={initialsStyle} className={className}>{initial}</div>
-      )}
-    </div>
+  return fotoUrl ? (
+    <img
+      src={fotoUrl}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      style={imgStyle}
+      className={className}
+    />
+  ) : (
+    <div style={initialsStyle} className={className}>{initial}</div>
   );
-}
+});
 
 const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
   const [hover, setHover] = useState(0);
@@ -136,6 +130,10 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
   const [enviandoVoto, setEnviandoVoto] = useState(false);
   const [votosStatus, setVotosStatus] = useState(_cache?.votosStatus || null);
   const [toast, setToast] = useState(null);
+  const LIST_PAGE = 24;
+  const [shownCount, setShownCount] = useState(LIST_PAGE);
+  const sentinelRef = useRef(null);
+  const toastTimer = useRef(null);
 
   useEffect(() => {
     // Se já temos dados na memória, revalida em silêncio (sem esqueleto).
@@ -144,7 +142,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
 
   useEffect(() => {
     if (!profile) return;
-    const atualizar = criarAtualizador(() => loadJogadores(true), { debounce: 2000, minimo: 10000 });
+    const atualizar = criarAtualizador(() => loadJogadores(true), { debounce: 3000, minimo: 15000 });
     // Um único assunto cobre o que interessa: o voto já atualiza a média do
     // atleta no banco, então não precisa assinar `avaliacoes` também.
     const channel = assinarAviso(topicoRankingCidade(selectedCity, profile?.uf || 'PA'), atualizar);
@@ -221,6 +219,38 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
     return result;
   }, [busca, jogadores, filtroAtivo]);
 
+  // Progressive render: primeiros cards na hora; o resto sob demanda (evita trava ao abrir a aba)
+  useEffect(() => {
+    setShownCount(LIST_PAGE);
+  }, [busca, filtroAtivo, jogadores]);
+
+  const listaVisivel = useMemo(
+    () => filtrados.slice(0, shownCount),
+    [filtrados, shownCount]
+  );
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || shownCount >= filtrados.length) return undefined;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setShownCount((n) => Math.min(n + LIST_PAGE, filtrados.length));
+        }
+      },
+      { root: null, rootMargin: '240px', threshold: 0 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [shownCount, filtrados.length]);
+
+  const showToast = useCallback((msg, type = 'ok') => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast({ msg, type });
+    toastTimer.current = setTimeout(() => setToast(null), 2800);
+  }, []);
+
+
   function showToast(msg, type = 'success') {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3500);
@@ -274,7 +304,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
       } else {
         showToast(`Avaliação computada! Nova média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
         setVotingPlayer(null);
-        loadJogadores();
+        loadJogadores(true);
       }
     } catch (err) {
       showToast('Erro de conexão ao salvar avaliação.', 'error');
@@ -428,7 +458,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
           >
-            {filtrados.map((j, i) => {
+            {listaVisivel.map((j, i) => {
               const score = j.total_votos >= 1 ? Number(j.media_estrelas) : 0;
               const hasVoted = j.ja_votou_hoje;
               const isRankingFilter = filtroAtivo === 'ranking';
@@ -515,6 +545,11 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 </div>
               );
             })}
+            {shownCount < filtrados.length && (
+              <div ref={sentinelRef} style={{ height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Carregando…</span>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -590,24 +625,15 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
         <PlayerProfileModal
           jogador={selectedPlayer}
           rank={selectedPlayer.rank}
-          onClose={() => { setSelectedPlayer(null); loadJogadores(); }}
+          onClose={() => { setSelectedPlayer(null); loadJogadores(true); }}
         />
       )}
 
-      <AnimatePresence>
-        {toast && (
-          <motion.div 
-            initial={{ opacity: 0, y: 50, scale: 0.9 }} 
-            animate={{ opacity: 1, y: 0, scale: 1 }} 
-            exit={{ opacity: 0, scale: 0.9, y: 20 }} 
-            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            className={`toast ${toast.type}`} 
-            style={{ zIndex: 9999 }}
-          >
-            {toast.msg}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {toast && (
+        <div className={`toast ${toast.type}`} style={{ zIndex: 9999 }}>
+          {toast.msg}
+        </div>
+      )}
     </div>
   );
 }
