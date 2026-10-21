@@ -1,35 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Dark theme — navy glass (premium esportivo) */
-  --bg-primary: #080D16;
-  --bg-secondary: #0C1420;
-  --bg-card: rgba(35, 53, 78, 0.55);
-  --bg-card-hover: rgba(42, 62, 92, 0.72);
-  --bg-elevated: #101C2E;
-  /* Destaque azul-claro (substitui verde-limão) */
-  --accent: #8EB9F5;
-  --accent-text: #8EB9F5;
-  --accent-soft: rgba(142, 185, 245, 0.14);
-  --accent-line: rgba(145, 177, 220, 0.35);
+  /* FitPulse-inspired — deep navy + frosted glass */
+  --bg-primary: #060B14;
+  --bg-secondary: #0A1220;
+  --bg-card: rgba(255, 255, 255, 0.08);
+  --bg-card-hover: rgba(255, 255, 255, 0.12);
+  --bg-elevated: rgba(18, 32, 56, 0.92);
+  /* Accent: soft sky / cyan-blue */
+  --accent: #6EB6FF;
+  --accent-text: #9FCBFF;
+  --accent-soft: rgba(110, 182, 255, 0.16);
+  --accent-line: rgba(159, 203, 255, 0.35);
   --accent-dim: var(--accent-soft);
-  --accent-hover: #A8CBFA;
-  --accent-on: #080D16;                    /* texto sobre botão accent sólido */
-  --success: #3DDC97;
-  --success-text: #3DDC97;
-  --success-soft: rgba(61, 220, 151, 0.14);
-  --text-primary: #F3F6FC;
-  --text-secondary: #A5B9D7;
-  --text-muted: #7A90B0;
-  --border: rgba(145, 177, 220, 0.24);
+  --accent-hover: #8EC8FF;
+  --accent-on: #061018;
+  --success: #4ADE80;
+  --success-text: #4ADE80;
+  --success-soft: rgba(74, 222, 128, 0.14);
+  --text-primary: #F7FAFF;
+  --text-secondary: #B8CAE0;
+  --text-muted: #7F95B3;
+  --border: rgba(255, 255, 255, 0.14);
   --border-active: var(--accent-line);
-  --shadow: 0 8px 28px rgba(0, 8, 24, 0.45);
-  --shadow-elevated: 0 18px 48px rgba(0, 8, 24, 0.55);
-  --border-inset: inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  --radius: 18px;
-  --radius-sm: 12px;
-  --radius-lg: 24px;
-  --glass-blur: 16px;
+  --shadow: 0 12px 40px rgba(0, 10, 30, 0.45);
+  --shadow-elevated: 0 20px 50px rgba(0, 10, 30, 0.55);
+  --border-inset: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --radius-lg: 28px;
+  --glass-blur: 22px;
 
   /* ===== Design system (máx. 3 tamanhos) ===== */
   --fs-sm: 12px;   /* legendas, chips, meta */
@@ -1523,7 +1523,7 @@ input:focus, select:focus, textarea:focus {
 .page-content {
   padding-left: 0;
   padding-right: 0;
-  padding-bottom: calc(88px + env(safe-area-inset-bottom)) !important;
+  padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important;
 }
 
 /* Avatar polish */
@@ -2604,45 +2604,89 @@ body.light-theme .mesa-btn.mesa-btn--muted {
   border-color: rgba(15, 23, 42, 0.16);
 }
 
-/* ===== REDESIGN NAVY GLASS ===== */
+/* ===== FITPULSE-LIKE GLASS UI ===== */
 body {
   background-color: var(--bg-primary);
   background-image:
-    radial-gradient(900px 420px at 50% -12%, rgba(142, 185, 245, 0.08), transparent 55%),
-    radial-gradient(600px 300px at 100% 100%, rgba(16, 28, 46, 0.9), transparent 50%);
+    radial-gradient(ellipse 120% 70% at 70% 0%, rgba(40, 100, 200, 0.35), transparent 55%),
+    radial-gradient(ellipse 80% 50% at 20% 100%, rgba(20, 60, 140, 0.25), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 90% 80%, rgba(80, 140, 255, 0.08), transparent 45%);
+  background-attachment: fixed;
 }
 
 .app-header {
-  background: rgba(8, 13, 22, 0.82) !important;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border) !important;
+  background: rgba(6, 11, 20, 0.55) !important;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.card,
+.premium-card,
+.hero-card {
+  background: rgba(255, 255, 255, 0.09) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: var(--radius) !important;
+  box-shadow:
+    0 12px 40px rgba(0, 10, 30, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.card:active,
+.premium-card:active {
+  transform: scale(0.985);
 }
 
 .btn-primary {
-  background: var(--accent) !important;
+  background: linear-gradient(180deg, #8EC8FF 0%, #6EB6FF 100%) !important;
   color: var(--accent-on) !important;
   border: none !important;
   border-radius: 999px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 6px 20px rgba(110, 182, 255, 0.28) !important;
 }
 
 .btn-primary:hover {
-  background: var(--accent-hover) !important;
+  background: linear-gradient(180deg, #A0D0FF 0%, #7EC0FF 100%) !important;
   filter: none;
 }
 
 .btn-secondary {
-  background: rgba(35, 53, 78, 0.45) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
   color: var(--text-primary) !important;
-  border: 1px solid var(--border) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
   border-radius: 999px !important;
+  backdrop-filter: blur(10px);
+}
+
+.bottom-nav,
+.bottom-nav.premium-nav {
+  height: auto !important;
+  min-height: 64px;
+  margin: 0 10px calc(8px + env(safe-area-inset-bottom));
+  padding: 8px 6px !important;
+  border-radius: 22px !important;
+  background: rgba(12, 22, 40, 0.72) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: 0 10px 40px rgba(0, 8, 24, 0.45) !important;
+}
+
+.nav-item,
+.nav-item.premium-nav-item {
+  border-radius: 16px !important;
+  color: var(--text-muted) !important;
 }
 
 .nav-item.active,
 .nav-item.premium-nav-item.active {
   color: var(--accent-text) !important;
-  background: var(--accent-soft) !important;
-  border-radius: 14px;
+  background: rgba(110, 182, 255, 0.16) !important;
+  box-shadow: 0 0 20px rgba(110, 182, 255, 0.12);
 }
 
 .nav-item.active svg,
@@ -2652,9 +2696,16 @@ body {
 }
 
 .tab.active {
-  background: var(--accent-soft) !important;
+  background: rgba(110, 182, 255, 0.16) !important;
   color: var(--accent-text) !important;
   border: 1px solid var(--accent-line) !important;
+  border-radius: 12px !important;
+}
+
+.tabs {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 14px !important;
 }
 
 .badge-elite,
@@ -2664,24 +2715,52 @@ body {
   border-color: var(--accent-line) !important;
 }
 
-/* Light theme: fundo limpo, accent azul */
+input, select, textarea {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: var(--radius-sm) !important;
+  color: var(--text-primary) !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent-line) !important;
+  box-shadow: 0 0 0 3px rgba(110, 182, 255, 0.15);
+}
+
+.modal-sheet {
+  background: rgba(12, 22, 40, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 24px 24px 0 0 !important;
+}
+
+.page-title,
+.section-title {
+  letter-spacing: 0.02em;
+}
+
+/* Light theme keeps clean white cards */
 body.light-theme {
   background-image: none !important;
 }
 
 body.light-theme .card,
-body.light-theme .premium-card {
+body.light-theme .premium-card,
+body.light-theme .hero-card {
   background: #FFFFFF !important;
   border: 1px solid rgba(15, 23, 42, 0.1) !important;
   backdrop-filter: none !important;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
 }
 
-body.light-theme .bottom-nav {
-  background: rgba(255, 255, 255, 0.92) !important;
-  border-top: 1px solid rgba(15, 23, 42, 0.1) !important;
+body.light-theme .bottom-nav,
+body.light-theme .bottom-nav.premium-nav {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(15, 23, 42, 0.1) !important;
 }
 
 body.light-theme .btn-primary {
   color: #FFFFFF !important;
+  background: linear-gradient(180deg, #60A5FA 0%, #3B82F6 100%) !important;
 }
