@@ -47,7 +47,7 @@ export default function AvisoVersao() {
     }
 
     conferir();
-    const intervalo = setInterval(conferir, 60000);
+    const intervalo = setInterval(() => { if (!document.hidden) conferir(); }, 60000);
     const aoVoltar = () => { if (document.visibilityState === 'visible') conferir(); };
     document.addEventListener('visibilitychange', aoVoltar);
     return () => {

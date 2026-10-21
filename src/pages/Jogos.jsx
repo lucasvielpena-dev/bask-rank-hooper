@@ -303,8 +303,8 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     if (tela !== 'partida' || !partidaAtiva?.id) return;
     finalizandoRef.current = false; // partida nova em tela: libera o marcador
     const id = partidaAtiva.id;
-    const intervaloPlacar = setInterval(() => puxarPlacarDoBanco(id), 2000);
-    const intervaloOperadores = setInterval(() => carregarOperadores(id), 6000);
+    const intervaloPlacar = setInterval(() => { if (!document.hidden) puxarPlacarDoBanco(id); }, 2000);
+    const intervaloOperadores = setInterval(() => { if (!document.hidden) carregarOperadores(id); }, 6000);
     // Voltou para o app: confere na hora, sem esperar o próximo ciclo.
     const aoVoltar = () => {
       if (document.visibilityState === 'visible') {
@@ -343,7 +343,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     // 5s quando existe partida em andamento na lista (é quando o pedido de
     // operador precisa chegar logo e o placar do outro precisa aparecer);
     // 30s quando não há nada em andamento, para não gastar à toa.
-    const intervalo = setInterval(recarregarTudo, partidas.length > 0 ? 5000 : 30000);
+    const intervalo = setInterval(() => { if (!document.hidden) recarregarTudo(); }, partidas.length > 0 ? 5000 : 30000);
     const aoVoltarVisivel = () => { if (document.visibilityState === 'visible') recarregarTudo(); };
     document.addEventListener('visibilitychange', aoVoltarVisivel);
     // Caminho instantâneo para o pedido de operador (se a tabela estiver

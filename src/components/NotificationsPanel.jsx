@@ -102,7 +102,7 @@ function NotificationsPanel({
       }
     };
     carregar();
-    const t = setInterval(carregar, 5000);
+    const t = setInterval(() => { if (!document.hidden) carregar(); }, 5000);
     return () => {
       vivo = false;
       clearInterval(t);

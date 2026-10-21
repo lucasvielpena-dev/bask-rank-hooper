@@ -65,7 +65,7 @@ export default function MasterDashboard({ onNavigate }) {
 
   useEffect(() => {
     loadAll();
-    const interval = setInterval(loadAll, 20000);
+    const interval = setInterval(() => { if (!document.hidden) loadAll(); }, 20000);
     return () => clearInterval(interval);
   }, []);
 
