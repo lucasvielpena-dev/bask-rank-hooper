@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
 import './styles/global.css';
 
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -9,19 +9,19 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 import Home from './pages/Home';
 import Atletas from './pages/Atletas';
-import Explorar from './pages/Explorar';
-import Jogos from './pages/Jogos';
-import Racoes from './pages/Racoes';
-import Stats from './pages/Stats';
-import Destaques from './pages/Destaques';
-import MasterDashboard from './pages/MasterDashboard';
-import AdminUsers from './pages/AdminUsers';
-import AdminCities from './pages/AdminCities';
-import AdminPlayers from './pages/AdminPlayers';
-import AdminNotifications from './pages/AdminNotifications';
-import AdminReports from './pages/AdminReports';
-import AdminLogs from './pages/AdminLogs';
-import AdminActivity from './pages/AdminActivity';
+const Explorar = lazy(() => import('./pages/Explorar'));
+const Jogos = lazy(() => import('./pages/Jogos'));
+const Racoes = lazy(() => import('./pages/Racoes'));
+const Stats = lazy(() => import('./pages/Stats'));
+const Destaques = lazy(() => import('./pages/Destaques'));
+const MasterDashboard = lazy(() => import('./pages/MasterDashboard'));
+const AdminUsers = lazy(() => import('./pages/AdminUsers'));
+const AdminCities = lazy(() => import('./pages/AdminCities'));
+const AdminPlayers = lazy(() => import('./pages/AdminPlayers'));
+const AdminNotifications = lazy(() => import('./pages/AdminNotifications'));
+const AdminReports = lazy(() => import('./pages/AdminReports'));
+const AdminLogs = lazy(() => import('./pages/AdminLogs'));
+const AdminActivity = lazy(() => import('./pages/AdminActivity'));
 
 // ============================================================
 // TROCA DE ABA SEM REMONTAR A TELA
@@ -135,7 +135,7 @@ function AppRoutes() {
         return (
           <div key={t.chave} style={estiloTela(visivel)}>
             {/* Se UMA tela quebrar, o header e o menu continuam de pé. */}
-            <ErrorBoundary compacto>{renderPage(t)}</ErrorBoundary>
+            <ErrorBoundary compacto><Suspense fallback={<div className="loading"><div className="spinner" /></div>}>{renderPage(t)}</Suspense></ErrorBoundary>
           </div>
         );
       })}
@@ -143,7 +143,7 @@ function AppRoutes() {
       {/* Telas fora do menu (admin, explorar, torneios...): montam e desmontam como antes */}
       {!ehAbaFixa && (
         <div key={chave} style={estiloTela(true)}>
-          <ErrorBoundary compacto>{renderPage({ page, props: pageProps })}</ErrorBoundary>
+          <ErrorBoundary compacto><Suspense fallback={<div className="loading"><div className="spinner" /></div>}>{renderPage({ page, props: pageProps })}</Suspense></ErrorBoundary>
         </div>
       )}
     </Layout>

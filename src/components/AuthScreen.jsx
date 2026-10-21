@@ -20,6 +20,22 @@ function traduzErro(msg) {
   return original || 'Algo deu errado. Tente novamente.';
 }
 
+// Vídeo de fundo do login: só monta depois da primeira pintura, para não disputar banda com a tela.
+function VideoFundo() {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setOn(true), 400);
+    return () => clearTimeout(t);
+  }, []);
+  if (!on) return null;
+  return (
+    <video autoPlay loop muted playsInline preload="auto"
+      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.45 }}>
+      <source src="/images/site.mp4" type="video/mp4" />
+    </video>
+  );
+}
+
 export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguardando = false }) {
   const [tab, setTab] = useState('login');
   const [email, setEmail] = useState('');
@@ -333,15 +349,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
           refazer o filtro em TODO quadro — era o que engasgava a tela de login.
           O escurecimento virou um véu escuro fixo por cima do vídeo. */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#0B1220' }}>
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.45 }}
-        >
-          <source src="/images/site.mp4" type="video/mp4" />
-        </video>
+        <VideoFundo />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(11,18,32,0.62)' }} />
       </div>
 
