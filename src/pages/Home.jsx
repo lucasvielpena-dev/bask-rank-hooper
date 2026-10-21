@@ -162,36 +162,39 @@ export default function Home({ profile, onNavigate }) {
             </span>
           </div>
 
-          {/* Main row: info + photo */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 10 }}>
+          {/* Main row: info + foto. A foto ocupa a metade direita e se
+              dissolve no card pela esquerda (máscara), sem borda/vinco. */}
+          <div style={{ display: 'flex', alignItems: 'stretch', gap: 10, marginBottom: 10 }}>
 
             {/* Info */}
-            <div style={{ flex: 1, minWidth: 0 }}>
-              {/* Rank + Name */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-                <span style={{
-                  fontSize: 32, fontWeight: 800, color: 'var(--accent-text)',
-                  fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 1,
+            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '2px 0' }}>
+              <div>
+                {/* Rank + Name */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                  <span style={{
+                    fontSize: 32, fontWeight: 800, color: 'var(--accent-text)',
+                    fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 1,
+                  }}>
+                    {myRank}
+                  </span>
+                </div>
+                <div className="hero-name" style={{
+                  fontSize: 18, fontWeight: 700, color: 'var(--text-primary)',
+                  fontFamily: "'Inter',sans-serif", lineHeight: 1.2, marginBottom: 1,
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 }}>
-                  {myRank}
-                </span>
-              </div>
-              <div className="hero-name" style={{
-                fontSize: 18, fontWeight: 700, color: 'var(--text-primary)',
-                fontFamily: "'Inter',sans-serif", lineHeight: 1.2, marginBottom: 1,
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              }}>
-                {myPlayerInfo?.nome || greetingName}
-              </div>
-              <div className="hero-position" style={{
-                fontSize: 12, color: getPositionColor(myPlayerInfo?.posicao), fontWeight: 600,
-                fontFamily: "'Inter',sans-serif", marginBottom: 8,
-              }}>
-                {myPlayerInfo?.posicao || 'Atleta'}
+                  {myPlayerInfo?.nome || greetingName}
+                </div>
+                <div className="hero-position" style={{
+                  fontSize: 12, color: getPositionColor(myPlayerInfo?.posicao), fontWeight: 600,
+                  fontFamily: "'Inter',sans-serif", marginBottom: 8,
+                }}>
+                  {myPlayerInfo?.posicao || 'Atleta'}
+                </div>
               </div>
 
               {/* Stats row */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--accent-text)" stroke="none">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
@@ -215,28 +218,34 @@ export default function Home({ profile, onNavigate }) {
               </div>
             </div>
 
-            {/* Photo */}
+            {/* Photo: metade direita, fundindo no card */}
             {myPlayerInfo?.foto_url ? (
               <img
                 src={myPlayerInfo.foto_url}
                 alt={greetingName}
-                className="premium-photo"
                 style={{
-                  width: 'clamp(96px, 27vw, 112px)', height: 'clamp(96px, 27vw, 112px)',
-                  borderRadius: 18, objectFit: 'cover',
-                  border: '1px solid rgba(255,255,255,0.06)', flexShrink: 0,
+                  width: '50%', aspectRatio: '1 / 1', flexShrink: 0,
+                  objectFit: 'cover', objectPosition: 'center 18%',
+                  borderRadius: 14, pointerEvents: 'none',
+                  WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 10%, #000 34%), linear-gradient(to bottom, #000 86%, transparent 100%)',
+                  WebkitMaskComposite: 'source-in',
+                  maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 10%, #000 34%), linear-gradient(to bottom, #000 86%, transparent 100%)',
+                  maskComposite: 'intersect',
                 }}
               />
             ) : (
-              <div className="premium-photo" style={{
-                width: 'clamp(96px, 27vw, 112px)', height: 'clamp(96px, 27vw, 112px)',
-                borderRadius: 18, flexShrink: 0,
+              <div style={{
+                width: '50%', aspectRatio: '1 / 1', flexShrink: 0,
+                borderRadius: 14,
                 background: 'var(--accent-soft)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: '1px solid rgba(255,255,255,0.06)',
+                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 10%, #000 34%), linear-gradient(to bottom, #000 86%, transparent 100%)',
+                WebkitMaskComposite: 'source-in',
+                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 10%, #000 34%), linear-gradient(to bottom, #000 86%, transparent 100%)',
+                maskComposite: 'intersect',
               }}>
                 <span style={{
-                  fontSize: 40, fontWeight: 800, color: 'var(--accent)',
+                  fontSize: 56, fontWeight: 800, color: 'var(--accent)',
                   fontFamily: "'Barlow Condensed',sans-serif",
                 }}>
                   {greetingName.charAt(0).toUpperCase()}
