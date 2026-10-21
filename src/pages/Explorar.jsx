@@ -180,7 +180,7 @@ export default function Explorar({ profile, onNavigate }) {
           </p>
 
           {/* Cartão resumo */}
-          <div className="premium-card" style={{ borderRadius: 12, padding: 16, marginTop: 16, marginBottom: 16 }}>
+          <div className="premium-card" style={{ padding: 16, marginTop: 16, marginBottom: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
               <div style={{ display: 'flex', gap: 12 }}>
                 <CityCrest cidade={selected.cidade} uf={selected.uf} size={44} />
@@ -220,7 +220,7 @@ export default function Explorar({ profile, onNavigate }) {
               <div className="spinner" />
             </div>
           ) : topGeral.length === 0 ? (
-            <div className="premium-card" style={{ borderRadius: 12, padding: 24, textAlign: 'center' }}>
+            <div className="premium-card" style={{ padding: 24, textAlign: 'center' }}>
               <p style={{ color: 'var(--text-muted)', fontSize: 15, margin: 0 }}>
                 Ainda não há atletas ativos listados nesta cidade.
               </p>
@@ -365,7 +365,7 @@ export default function Explorar({ profile, onNavigate }) {
             <div className="spinner" />
           </div>
         ) : filtradas.length === 0 ? (
-          <div className="premium-card" style={{ borderRadius: 12, padding: 24, textAlign: 'center' }}>
+          <div className="premium-card" style={{ padding: 24, textAlign: 'center' }}>
             <p style={{ color: 'var(--text-muted)', fontSize: 15, margin: 0 }}>
               {busca.trim()
                 ? 'Nenhuma cidade encontrada.'
@@ -389,8 +389,8 @@ export default function Explorar({ profile, onNavigate }) {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 12,
-                    padding: '8px 12px',
-                    borderRadius: 12,
+                    padding: '12px 12px',
+                    minHeight: 64,
                     textAlign: 'left',
                     cursor: 'pointer',
                     fontFamily: 'inherit',
