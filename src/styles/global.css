@@ -1273,7 +1273,7 @@ body:not(.light-theme) .btn-secondary {
 
 /* Typography scale */
 h1, .page-title {
-  font-family: 'Barlow Condensed', 'Oswald', sans-serif;
+  font-family: 'Barlow Condensed', 'Inter', sans-serif;
   font-weight: 800;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -2032,7 +2032,7 @@ body:not(.light-theme) .premium-card {
   font-size: var(--fs-lg) !important;
   line-height: 1.2;
   font-weight: 800;
-  font-family: 'Barlow Condensed', 'Oswald', sans-serif;
+  font-family: 'Barlow Condensed', 'Inter', sans-serif;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }

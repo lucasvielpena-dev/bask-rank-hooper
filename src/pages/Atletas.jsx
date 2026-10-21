@@ -496,7 +496,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                   <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
                     <button
                       type="button"
-                      className="btn-primary btn-sm"
+                      className={`${!hasVoted && profile?.player_id !== j.id ? 'btn-secondary' : 'btn-primary'} btn-sm`}
                       onClick={() => setSelectedPlayer(j)}
                       style={{
                         flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 700,

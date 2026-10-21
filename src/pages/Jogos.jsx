@@ -1190,7 +1190,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       {/* TELA 2: WIZARD / CADASTRO DE TIMES */}
       {tela === 'novo' && (
         <div style={{ padding: '12px' }}>
-          <h3 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 18, marginBottom: 2 }}>Configurar Partida</h3>
+          <h3 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 18, marginBottom: 2 }}>Configurar Partida</h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 12 }}>Configure as equipes e a lista de atletas antes de iniciar o cronômetro.</p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -1973,7 +1973,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
         <div className="modal-overlay" onClick={() => setShowFinalizarModal(false)}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()}>
             <div className="modal-handle" />
-            <h3 style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Finalizar Jogo</h3>
+            <h3 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 20, marginBottom: 6 }}>Finalizar Jogo</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>Deseja mesmo encerrar a partida? O placar acumulado e estatísticas serão registrados de forma definitiva. Se encerrar por engano, dá para reabrir depois (histórico → Reabrir partida).</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

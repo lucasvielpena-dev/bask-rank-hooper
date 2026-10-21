@@ -512,7 +512,7 @@ export default function Stats({ profile, onNavigate }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {/* Avaliações Públicas */}
               <div>
-                <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.04em', marginBottom: 10, fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase' }}>AVALIAÇÕES PÚBLICAS DA QUADRA</div>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.04em', marginBottom: 10, fontFamily: "'Inter',sans-serif", textTransform: 'uppercase' }}>AVALIAÇÕES PÚBLICAS DA QUADRA</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {fundamentos.map(f => {
                     const mediaAspecto = myPlayerInfo ? myPlayerInfo[`media_${f.key}`] || 0 : 0;
@@ -539,7 +539,7 @@ export default function Stats({ profile, onNavigate }) {
               {/* Registro Privado */}
               <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '12px', padding: '10px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.04em', fontFamily: "'Oswald',sans-serif", textTransform: 'uppercase' }}>ESTATÍSTICAS PRIVADAS</span>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.04em', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase' }}>ESTATÍSTICAS PRIVADAS</span>
                   <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>{historicoPrivado.length} jogos</span>
                 </div>
                 <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: 16 }}>
@@ -631,7 +631,7 @@ export default function Stats({ profile, onNavigate }) {
                         padding: '10px', 
                         border: '1px solid var(--border)'
                       }}>
-                        <div style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.04em', marginBottom: 8, textTransform: 'uppercase', fontFamily: "'Oswald',sans-serif" }}>
+                        <div style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.04em', marginBottom: 8, textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>
                           Evolução de Pontos (Últimos 5 Jogos)
                         </div>
                         
