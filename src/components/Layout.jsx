@@ -135,7 +135,7 @@ export default function Layout({ page, onNavigate, children }) {
   // Mesma imagem em todas as telas + atmosfera azul (estilo FitPulse)
   const bgUrl = '/images/bg-1.jpg';
   const bgVeu = themePref === 'light'
-    ? 'linear-gradient(180deg, rgba(244,246,250,0.92) 0%, rgba(230,238,250,0.9) 100%)'
+    ? 'rgba(241, 245, 249, 0.94)'
     : 'linear-gradient(180deg, rgba(8,18,40,0.55) 0%, rgba(6,12,28,0.78) 55%, rgba(4,8,18,0.88) 100%)';
 
   return (
