@@ -16,7 +16,21 @@ import { supabase } from './supabase';
 //     sozinha com a mesma latência.
 // ============================================================
 
-export const TOPICO_RANKING = 'ranking';
+// Mesmo cálculo do banco (public.slug_cidade): minúsculas, sem acento,
+// qualquer coisa que não seja letra/número vira "_". "Pacajá" e "Pacaja" dão o mesmo.
+export function slugCidade(texto) {
+  return String(texto || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+// Tópico do ranking de UMA cidade: ranking_<cidade>_<uf>.
+export function topicoRankingCidade(cidade, uf) {
+  return `ranking_${slugCidade(cidade)}_${String(uf || '').toLowerCase()}`;
+}
 export const TOPICO_TORNEIOS = 'torneios';
 
 const PADRAO = { debounce: 2500, minimo: 15000 };

@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, memo } from 'react';
 import { supabase, jogadoresAPI, votacaoAPI } from '../lib/supabase';
 import { sortByConfianca } from '../lib/ranking';
 import { nomeAtleta } from '../lib/nomes';
-import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime';
+import { criarAtualizador, assinarAviso, topicoRankingCidade } from '../lib/realtime';
 import { lerCache, salvarCache, igualLista } from '../lib/pageCache';
 import { useEsporte } from '../contexts/EsporteContext';
 import PlayerProfileModal from '../components/PlayerProfileModal';
@@ -147,9 +147,9 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
     const atualizar = criarAtualizador(() => loadJogadores(true), { debounce: 2000, minimo: 10000 });
     // Um único assunto cobre o que interessa: o voto já atualiza a média do
     // atleta no banco, então não precisa assinar `avaliacoes` também.
-    const channel = assinarAviso(TOPICO_RANKING, atualizar);
+    const channel = assinarAviso(topicoRankingCidade(selectedCity, profile?.uf || 'PA'), atualizar);
     return () => { atualizar.parar(); supabase.removeChannel(channel); };
-  }, [profile, esporte]);
+  }, [profile, esporte, selectedCity]);
 
   async function loadJogadores(silencioso = false) {
     if (!silencioso) setLoading(true);

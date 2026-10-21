@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, rankingAPI } from '../lib/supabase';
 import { nomeAtleta } from '../lib/nomes';
-import { criarAtualizador, assinarAviso, TOPICO_RANKING } from '../lib/realtime';
+import { criarAtualizador, assinarAviso, topicoRankingCidade } from '../lib/realtime';
 import { lerCache, salvarCache } from '../lib/pageCache';
 import { useEsporte } from '../contexts/EsporteContext';
 import { IconSportDynamic } from '../components/Icons';
@@ -34,7 +34,7 @@ export default function Home({ profile, onNavigate }) {
     // Aviso curto do banco ("ranking mudou") + consulta agrupada.
     // Nada roda com a aba em segundo plano.
     const atualizar = criarAtualizador(() => loadData(city, uf, true), { debounce: 2000, minimo: 10000 });
-    const channel = assinarAviso(TOPICO_RANKING, atualizar);
+    const channel = assinarAviso(topicoRankingCidade(city, uf), atualizar);
     return () => { atualizar.parar(); supabase.removeChannel(channel); };
   }, [profile, city, uf, esporte]);
 
