@@ -132,8 +132,10 @@ export default function Layout({ page, onNavigate, children }) {
   // obrigavam o celular a redesenhar a tela inteira a cada troca de aba — era
   // isso que piscava/engasgava. O escurecimento agora é um véu sólido por cima
   // (resultado visual igual, custo zero).
-  const bgUrl = isHome ? '/images/bg-1.jpg' : '/images/bg-2.jpg';
-  const bgVeu = themePref === 'light' ? 'rgba(255, 255, 255, 0.97)' : 'rgba(0, 0, 0, 0.65)';
+  // Mesma imagem em todas as telas (evita conflito visual entre abas)
+  const bgUrl = '/images/bg-1.jpg';
+  // Véu mais leve para a quadra/basquete aparecer, sem atrapalhar a leitura
+  const bgVeu = themePref === 'light' ? 'rgba(244, 246, 250, 0.88)' : 'rgba(10, 16, 24, 0.72)';
 
   return (
     <div className="app-shell">
