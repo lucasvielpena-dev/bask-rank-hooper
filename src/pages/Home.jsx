@@ -227,9 +227,9 @@ export default function Home({ profile, onNavigate }) {
                   width: '60%', aspectRatio: '1 / 1', flexShrink: 0,
                   objectFit: 'cover', objectPosition: 'center 18%',
                   borderRadius: 0, pointerEvents: 'none',
-                  WebkitMaskImage: 'radial-gradient(ellipse 60% 62% at 56% 44%, #000 55%, rgba(0,0,0,0.4) 80%, transparent 100%)',
+                  WebkitMaskImage: 'radial-gradient(circle closest-side at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%)',
                   WebkitMaskComposite: 'source-in',
-                  maskImage: 'radial-gradient(ellipse 60% 62% at 56% 44%, #000 55%, rgba(0,0,0,0.4) 80%, transparent 100%)',
+                  maskImage: 'radial-gradient(circle closest-side at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%)',
                   maskComposite: 'intersect',
                 }}
               />
@@ -239,9 +239,9 @@ export default function Home({ profile, onNavigate }) {
                 borderRadius: 0,
                 background: 'var(--accent-soft)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                WebkitMaskImage: 'radial-gradient(ellipse 60% 62% at 56% 44%, #000 55%, rgba(0,0,0,0.4) 80%, transparent 100%)',
+                WebkitMaskImage: 'radial-gradient(circle closest-side at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%)',
                 WebkitMaskComposite: 'source-in',
-                maskImage: 'radial-gradient(ellipse 60% 62% at 56% 44%, #000 55%, rgba(0,0,0,0.4) 80%, transparent 100%)',
+                maskImage: 'radial-gradient(circle closest-side at 50% 50%, #000 52%, rgba(0,0,0,0.55) 78%, transparent 100%)',
                 maskComposite: 'intersect',
               }}>
                 <span style={{
