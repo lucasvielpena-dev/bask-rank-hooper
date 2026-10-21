@@ -1584,8 +1584,6 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 <div className="card" style={{
                   padding: '10px',
                   background: 'var(--card-team-a-bg)',
-                  border: '1px solid var(--border)',
-                  borderRadius: '8px',
                   textAlign: 'center'
                 }}>
                   <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
@@ -1610,8 +1608,6 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 <div className="card" style={{
                   padding: '10px',
                   background: 'var(--card-team-b-bg)',
-                  border: '1px solid var(--border)',
-                  borderRadius: '8px',
                   textAlign: 'center'
                 }}>
                   <h3 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 4 }}>
@@ -1637,7 +1633,6 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   padding: '14px 16px',
                   background: 'rgba(239, 68, 68, 0.1)',
                   border: '1px solid rgba(239, 68, 68, 0.25)',
-                  borderRadius: '8px',
                   textAlign: 'center'
                 }}>
                   <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#EF4444', marginBottom: 2 }}>
