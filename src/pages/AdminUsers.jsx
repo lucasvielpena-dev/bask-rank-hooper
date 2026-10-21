@@ -252,7 +252,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: isAdmin ? '#fff' : 'var(--accent)',
+                      color: isAdmin ? 'var(--accent-on)' : 'var(--accent)',
                       fontWeight: 800,
                       fontSize: 16,
                       flexShrink: 0

@@ -126,7 +126,7 @@ export default function Layout({ page, onNavigate, children }) {
     if (scrollerRef.current) scrollerRef.current.scrollTop = 0;
   }, [page]);
   // Fundo sólido (sem foto) — legível e limpo nos dois temas
-  const bgSolid = themePref === 'light' ? '#F1F5F9' : '#07101C';
+  const bgSolid = themePref === 'light' ? '#F1F5F9' : '#0B1220';
 
   return (
     <div className="app-shell" style={{ background: bgSolid }}>

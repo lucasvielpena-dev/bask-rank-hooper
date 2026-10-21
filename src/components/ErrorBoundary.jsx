@@ -39,7 +39,7 @@ export default class ErrorBoundary extends Component {
           alignItems: 'center',
           justifyContent: 'center',
           padding: compacto ? '32px 16px' : '24px',
-          background: compacto ? 'transparent' : 'var(--bg-primary, #0C0C14)',
+          background: compacto ? 'transparent' : 'var(--bg-primary, #0B1220)',
         }}
       >
         <div

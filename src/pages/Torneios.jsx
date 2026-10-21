@@ -2318,7 +2318,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         <div style={{
           padding: '12px',
           background: 'var(--bg-card)',
-          border: '1px solid rgba(37, 99, 235, 0.2)',
+          border: '1px solid rgba(17, 24, 39, 0.16)',
           borderRadius: '12px',
           display: 'flex',
           flexDirection: 'column',

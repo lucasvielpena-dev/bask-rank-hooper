@@ -330,7 +330,7 @@ export default function Explorar({ profile, onNavigate }) {
               borderRadius: 12,
               border: '1.5px solid var(--accent)',
               background: 'var(--accent)',
-              color: '#0C0C14',
+              color: 'var(--accent-on)',
               fontWeight: 800,
               fontSize: 12,
               letterSpacing: '0.04em',

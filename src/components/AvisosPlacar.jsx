@@ -116,7 +116,7 @@ export default function AvisosPlacar() {
               className="batch-btn"
               disabled={ocupado}
               onClick={() => responder(p, true)}
-              style={{ background: 'var(--accent)', color: '#0C0C14', fontWeight: 800, padding: '7px 14px', borderRadius: 10, border: 'none', fontSize: 13 }}
+              style={{ background: 'var(--accent)', color: 'var(--accent-on)', fontWeight: 800, padding: '7px 14px', borderRadius: 10, border: 'none', fontSize: 13 }}
             >
               {ocupado ? '...' : 'Aceitar'}
             </button>

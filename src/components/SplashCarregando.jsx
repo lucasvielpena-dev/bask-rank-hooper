@@ -13,7 +13,7 @@ export default function SplashCarregando({ mensagem = 'Preparando sua quadra' })
       className="app-shell"
       style={{
         minHeight: '100dvh',
-        background: 'var(--bg-primary, #0C0C14)',
+        background: 'var(--bg-primary, #0B1220)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

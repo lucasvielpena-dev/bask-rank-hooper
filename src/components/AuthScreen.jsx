@@ -173,7 +173,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
   }));
 
   return (
-    <div className={`app-shell auth-screen ${isShooting ? 'is-shooting' : ''}`} style={{ minHeight: '100dvh', background: 'var(--bg-primary, #0C0C14)', position: 'relative', overflow: 'hidden' }}>
+    <div className={`app-shell auth-screen ${isShooting ? 'is-shooting' : ''}`} style={{ minHeight: '100dvh', background: 'var(--bg-primary, #0B1220)', position: 'relative', overflow: 'hidden' }}>
       <style>{`
         /* O fade de saída desta tela é controlado pelo AuthContext (só depois
            que o perfil chegou e o app já está montado por baixo). */
@@ -288,7 +288,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
           /* Sem backdrop-filter: atrás deste formulário há vídeo/animação, e o
              navegador re-borrava o quadro inteiro o tempo todo. Fundo sólido
              escuro dá o mesmo contraste e é instantâneo. */
-          background: rgba(18, 18, 26, 0.78);
+          background: rgba(22, 27, 34, 0.90);
           border: 0.5px solid rgba(255,255,255,0.12);
           border-radius: 20px;
           padding: 1.5rem;
@@ -332,17 +332,17 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
       {/* Sem `filter` no <video>: filtrar vídeo de tela cheia obriga a GPU a
           refazer o filtro em TODO quadro — era o que engasgava a tela de login.
           O escurecimento virou um véu escuro fixo por cima do vídeo. */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#000000' }}>
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#0B1220' }}>
         <video 
           autoPlay 
           loop 
           muted 
           playsInline
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.45 }}
         >
           <source src="/images/site.mp4" type="video/mp4" />
         </video>
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.2)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(11,18,32,0.62)' }} />
       </div>
 
       {/* BACKGROUND SVG LINE ART (Desativado a pedido do vídeo) */}
@@ -497,7 +497,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
                   style={{
                     flex: 1, padding: '8px 4px', borderRadius: 8, border: 'none',
                     background: tab === t.key ? 'var(--accent)' : 'transparent',
-                    color: tab === t.key ? '#0C0C14' : 'rgba(255,255,255,0.5)',
+                    color: tab === t.key ? 'var(--accent-on)' : 'rgba(255,255,255,0.5)',
                     fontSize: 13, fontWeight: 700, cursor: 'pointer',
                     fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
                   }}
@@ -568,7 +568,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
 
             <button type="submit" disabled={carregando || isShooting} style={{
               width: '100%', height: 50, borderRadius: 12, border: 'none',
-              background: 'var(--accent)', color: '#0C0C14', fontSize: 15, fontWeight: 700,
+              background: 'var(--accent)', color: 'var(--accent-on)', fontSize: 15, fontWeight: 700,
               cursor: 'pointer', fontFamily: "'Barlow Condensed',sans-serif",
               textTransform: 'uppercase', letterSpacing: '0.06em',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,

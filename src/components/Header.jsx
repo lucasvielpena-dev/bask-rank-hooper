@@ -26,7 +26,7 @@ export default memo(function Header() {
       {/* Logo + marca (sem menu de três linhas à esquerda) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
         <div className="header-logo-icon">
-          <IconSportDynamic sport={esporte} size={17} color="#0B1208" />
+          <IconSportDynamic sport={esporte} size={17} color="var(--accent-on)" />
         </div>
         <div className="header-brand">
           RANK <span style={{ color: 'var(--accent)' }}>HOOPER</span>

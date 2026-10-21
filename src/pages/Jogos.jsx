@@ -1096,7 +1096,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                         <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {p.nome || 'Um atleta'}{pv ? ` · ${pv.time_a} x ${pv.time_b}` : ''}
                         </span>
-                        <button onClick={() => handleResponderPedido(p.partida_id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: '#0C0C14', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
+                        <button onClick={() => handleResponderPedido(p.partida_id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
                           Aceitar
                         </button>
                         <button onClick={() => handleResponderPedido(p.partida_id, p.usuario_id, false)} style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
@@ -1269,7 +1269,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             type="button"
                             onClick={() => togglePlayer(j.id, 'A')}
                             className={`btn btn-sm ${noA ? 'btn-primary' : 'btn-secondary'}`}
-                            style={{ fontSize: 11, padding: '4px 10px', background: noA ? 'var(--accent)' : 'transparent', color: noA ? '#0C0C14' : 'var(--text-secondary)', border: noA ? '1px solid var(--accent)' : '1px solid var(--border)' }}
+                            style={{ fontSize: 11, padding: '4px 10px', background: noA ? 'var(--accent)' : 'transparent', color: noA ? 'var(--accent-on)' : 'var(--text-secondary)', border: noA ? '1px solid var(--accent)' : '1px solid var(--border)' }}
                           >
                             Time A
                           </button>
@@ -1358,7 +1358,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                       <span style={{ flex: 1, minWidth: 0, fontSize: 12.5, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {p.nome || 'Um atleta'} quer operar o placar
                       </span>
-                      <button onClick={() => handleResponderPedido(partidaAtiva.id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: '#0C0C14', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
+                      <button onClick={() => handleResponderPedido(partidaAtiva.id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
                         Aceitar
                       </button>
                       <button onClick={() => handleResponderPedido(partidaAtiva.id, p.usuario_id, false)} style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
@@ -1396,7 +1396,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <span style={{ flex: 1, fontSize: 11.5, color: 'var(--text-secondary)' }}>
                     Só quem criou a partida pontua neste placar.
                   </span>
-                  <button onClick={handlePedirOperar} disabled={pedindoOperar} style={{ background: 'var(--accent)', color: '#0C0C14', border: 'none', borderRadius: 6, padding: '5px 12px', fontSize: 11, fontWeight: 800, cursor: pedindoOperar ? 'default' : 'pointer', fontFamily: 'inherit', opacity: pedindoOperar ? 0.6 : 1 }}>
+                  <button onClick={handlePedirOperar} disabled={pedindoOperar} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '5px 12px', fontSize: 11, fontWeight: 800, cursor: pedindoOperar ? 'default' : 'pointer', fontFamily: 'inherit', opacity: pedindoOperar ? 0.6 : 1 }}>
                     {pedindoOperar ? 'Enviando...' : 'Pedir para operar'}
                   </button>
                 </div>
@@ -1593,7 +1593,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   </h3>
                   <button onClick={comecarProximoPeriodo} style={{
                     background: 'var(--accent)',
-                    color: '#0C0C14',
+                    color: 'var(--accent-on)',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '6px 14px',
@@ -1619,7 +1619,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   </h3>
                   <button onClick={comecarProximoPeriodo} style={{
                     background: 'var(--accent)',
-                    color: '#0C0C14',
+                    color: 'var(--accent-on)',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '6px 14px',
@@ -1668,7 +1668,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   border: 'none', borderRadius: 999, padding: '8px 14px', fontWeight: 800, fontSize: 12,
                   cursor: 'pointer', fontFamily: 'inherit',
                   background: modoMesa ? 'var(--accent)' : 'var(--bg-secondary)',
-                  color: modoMesa ? '#0C0C14' : 'var(--text-primary)',
+                  color: modoMesa ? 'var(--accent-on)' : 'var(--text-primary)',
                 }}
               >
                 {modoMesa ? 'Mesa ativa' : 'Abrir mesa'}
@@ -1903,7 +1903,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 width: '56px',
                 height: '56px',
                 borderRadius: '50%',
-                color: '#0C0C14',
+                color: 'var(--accent-on)',
                 fontSize: '22px',
                 display: 'flex',
                 alignItems: 'center',
