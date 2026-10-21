@@ -13,7 +13,6 @@ const Explorar = lazy(() => import('./pages/Explorar'));
 const Jogos = lazy(() => import('./pages/Jogos'));
 const Racoes = lazy(() => import('./pages/Racoes'));
 const Stats = lazy(() => import('./pages/Stats'));
-const Destaques = lazy(() => import('./pages/Destaques'));
 const MasterDashboard = lazy(() => import('./pages/MasterDashboard'));
 const AdminUsers = lazy(() => import('./pages/AdminUsers'));
 const AdminCities = lazy(() => import('./pages/AdminCities'));
@@ -97,7 +96,6 @@ function AppRoutes() {
       case 'jogos': return <Jogos profile={profile} initialAba={props.aba || 'jogos'} />;
       case 'racoes': return <Racoes profile={profile} onNavigate={navigate} />;
       case 'perfil': return <Stats profile={profile} onNavigate={navigate} />;
-      case 'destaques': return <Destaques profile={profile} onNavigate={navigate} />;
       case 'master': return <MasterDashboard onNavigate={navigate} />;
       case 'master-users': return <AdminUsers profile={profile} onNavigate={navigate} />;
       case 'master-cities': return <AdminCities profile={profile} onNavigate={navigate} />;

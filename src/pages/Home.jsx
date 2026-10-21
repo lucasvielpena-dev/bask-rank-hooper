@@ -293,7 +293,7 @@ export default function Home({ profile, onNavigate }) {
         <div className="home-highlights-section">
           <div className="home-highlights-header">
             <div className="home-section-label">Destaques da Semana</div>
-            <button onClick={() => onNavigate('destaques')} className="home-section-link">
+            <button onClick={() => onNavigate('atletas', { filtro: 'ranking' })} className="home-section-link">
               Ver todos
             </button>
           </div>
