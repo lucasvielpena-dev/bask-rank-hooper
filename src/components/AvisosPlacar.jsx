@@ -116,7 +116,7 @@ export default function AvisosPlacar() {
               className="batch-btn"
               disabled={ocupado}
               onClick={() => responder(p, true)}
-              style={{ background: 'var(--accent)', color: 'var(--accent-on)', fontWeight: 800, padding: '7px 14px', borderRadius: 10, border: 'none', fontSize: 13 }}
+              style={{ background: 'var(--accent)', color: 'var(--accent-on)', fontWeight: 800, borderRadius: 10, border: 'none' }}
             >
               {ocupado ? '...' : 'Aceitar'}
             </button>
@@ -125,7 +125,7 @@ export default function AvisosPlacar() {
               className="batch-btn"
               disabled={ocupado}
               onClick={() => responder(p, false)}
-              style={{ background: 'transparent', color: 'var(--text-secondary)', fontWeight: 700, padding: '7px 12px', borderRadius: 10, border: '1px solid var(--border)', fontSize: 13 }}
+              style={{ background: 'transparent', color: 'var(--text-secondary)', fontWeight: 700, borderRadius: 10, border: '1px solid var(--border)' }}
             >
               Recusar
             </button>

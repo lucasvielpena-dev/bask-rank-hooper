@@ -223,8 +223,7 @@ function NotificationsPanel({
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  marginRight: 4,
-                }}
+                  marginRight: 4 }}
               >
                 <IconVoltar size={16} color="var(--accent)" />
               </button>
@@ -243,8 +242,7 @@ function NotificationsPanel({
                 border: '1px solid var(--border)',
                 borderRadius: 14,
                 padding: 16,
-                marginBottom: 14,
-              }}
+                marginBottom: 14 }}
             >
               <div style={{ fontSize: 28, marginBottom: 10 }}><IconForTitle titulo={selected.titulo} size={20} /></div>
               <h2
@@ -253,8 +251,7 @@ function NotificationsPanel({
                   fontWeight: 800,
                   color: 'var(--text-primary)',
                   marginBottom: 8,
-                  lineHeight: 1.25,
-                }}
+                  lineHeight: 1.25 }}
               >
                 {selected.titulo}
               </h2>
@@ -264,8 +261,7 @@ function NotificationsPanel({
                   color: 'var(--text-secondary)',
                   lineHeight: 1.55,
                   whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                }}
+                  wordBreak: 'break-word' }}
               >
                 {selected.mensagem || 'Sem mensagem adicional.'}
               </p>
@@ -274,8 +270,7 @@ function NotificationsPanel({
                   marginTop: 12,
                   fontSize: 11,
                   color: 'var(--text-muted)',
-                  fontWeight: 600,
-                }}
+                  fontWeight: 600 }}
               >
                 {selected.lida ? 'Lida' : 'Marcada como lida'} · {timeAgo(selected.created_at)}
               </div>
@@ -291,8 +286,7 @@ function NotificationsPanel({
                     color: 'var(--text-primary)',
                     marginBottom: 8,
                     textTransform: 'uppercase',
-                    letterSpacing: '0.04em',
-                  }}
+                    letterSpacing: '0.04em' }}
                 >
                   Pedidos de placar
                 </div>
@@ -305,8 +299,7 @@ function NotificationsPanel({
                       border: '1px solid var(--accent-line)',
                       fontSize: 13,
                       color: 'var(--text-secondary)',
-                      lineHeight: 1.4,
-                    }}
+                      lineHeight: 1.4 }}
                   >
                     Nenhum pedido pendente agora. Você pode abrir Competições para ver o placar.
                   </div>
@@ -322,8 +315,7 @@ function NotificationsPanel({
                           borderRadius: 12,
                           background: 'var(--bg-card)',
                           border: '1px solid var(--border)',
-                          marginBottom: 8,
-                        }}
+                          marginBottom: 8 }}
                       >
                         <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>
                           {p.nome || 'Alguém'} quer operar o placar
@@ -405,8 +397,7 @@ function NotificationsPanel({
                 color: 'var(--accent)',
                 fontSize: 13,
                 fontWeight: 700,
-                textAlign: 'center',
-              }}
+                textAlign: 'center' }}
             >
               {toast}
             </div>
@@ -486,8 +477,7 @@ function NotificationsPanel({
                   textAlign: 'left',
                   cursor: 'pointer',
                   fontFamily: 'inherit',
-                  border: undefined,
-                }}
+                  border: undefined }}
               >
                 <div className="notif-item-icon"><IconForTitle titulo={n.titulo} size={18} /></div>
                 <div className="notif-item-body">
@@ -509,8 +499,7 @@ function NotificationsPanel({
                         marginTop: 6,
                         fontSize: 11,
                         fontWeight: 700,
-                        color: 'var(--accent)',
-                      }}
+                        color: 'var(--accent)' }}
                     >
                       {pedidos.length} pedido{pedidos.length > 1 ? 's' : ''} para aceitar →
                     </span>
@@ -540,8 +529,7 @@ function NotificationsPanel({
               color: 'var(--accent)',
               fontSize: 13,
               fontWeight: 700,
-              textAlign: 'center',
-            }}
+              textAlign: 'center' }}
           >
             {toast}
           </div>

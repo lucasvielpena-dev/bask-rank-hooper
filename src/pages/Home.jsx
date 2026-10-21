@@ -156,8 +156,7 @@ export default function Home({ profile, onNavigate }) {
           }}>
             <span className="hero-badge-text" style={{
               fontSize: 11, fontWeight: 700,
-              fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.08em',
-            }}>
+              fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               {myRank !== '--' ? 'Melhor da Cidade' : 'Sem Posição'}
             </span>
           </div>
@@ -174,22 +173,19 @@ export default function Home({ profile, onNavigate }) {
                   <span style={{
                     fontSize: 64, fontWeight: 800, color: 'var(--accent-text)',
                     fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 0.86,
-                    letterSpacing: '-0.02em',
-                  }}>
+                    letterSpacing: '-0.02em' }}>
                     {myRank}
                   </span>
                 </div>
                 <div className="hero-name" style={{
                   fontSize: 18, fontWeight: 700, color: 'var(--text-primary)',
                   fontFamily: "'Inter',sans-serif", lineHeight: 1.2, marginBottom: 1,
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {myPlayerInfo?.nome || greetingName}
                 </div>
                 <div className="hero-position" style={{
                   fontSize: 12, color: getPositionColor(myPlayerInfo?.posicao), fontWeight: 600,
-                  fontFamily: "'Inter',sans-serif", marginBottom: 8,
-                }}>
+                  fontFamily: "'Inter',sans-serif", marginBottom: 8 }}>
                   {myPlayerInfo?.posicao || 'Atleta'}
                 </div>
               </div>
@@ -202,8 +198,7 @@ export default function Home({ profile, onNavigate }) {
                   </svg>
                   <span style={{
                     fontSize: 15, fontWeight: 800, color: 'var(--text-primary)',
-                    fontFamily: "'Barlow Condensed',sans-serif",
-                  }}>
+                    fontFamily: "'Barlow Condensed',sans-serif" }}>
                     {myPlayerInfo?.media_estrelas ? Number(myPlayerInfo.media_estrelas).toFixed(1) : '--'}
                   </span>
                 </div>
@@ -211,8 +206,7 @@ export default function Home({ profile, onNavigate }) {
                   <IconSportDynamic sport={esporte} size={13} color="var(--text-secondary)" />
                   <span style={{
                     fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)',
-                    fontFamily: "'Inter',sans-serif",
-                  }}>
+                    fontFamily: "'Inter',sans-serif" }}>
                     {myPlayerInfo ? resumoAvaliacoes(myPlayerInfo, { compacto: true }) : '—'}
                   </span>
                 </div>
@@ -231,8 +225,7 @@ export default function Home({ profile, onNavigate }) {
                   WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
                   WebkitMaskComposite: 'source-in',
                   maskImage: 'linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
-                  maskComposite: 'intersect',
-                }}
+                  maskComposite: 'intersect' }}
               />
             ) : (
               <div style={{
@@ -243,12 +236,10 @@ export default function Home({ profile, onNavigate }) {
                 WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
                 WebkitMaskComposite: 'source-in',
                 maskImage: 'linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)',
-                maskComposite: 'intersect',
-              }}>
+                maskComposite: 'intersect' }}>
                 <span style={{
                   fontSize: 56, fontWeight: 800, color: 'var(--accent)',
-                  fontFamily: "'Barlow Condensed',sans-serif",
-                }}>
+                  fontFamily: "'Barlow Condensed',sans-serif" }}>
                   {greetingName.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -258,8 +249,7 @@ export default function Home({ profile, onNavigate }) {
           {/* Location + Top % */}
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            borderTop: '1px solid var(--border)', paddingTop: 8,
-          }}>
+            borderTop: '1px solid var(--border)', paddingTop: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round">
                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
@@ -270,8 +260,7 @@ export default function Home({ profile, onNavigate }) {
             </div>
             <span style={{
               fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)',
-              fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em',
-            }}>
+              fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Top {myRank !== '--' ? `${Math.max(1, Math.round((parseInt(myRank.replace('#','')) || 1) / (topPlayers.length || 1) * 100))}%` : '--'} da cidade
             </span>
           </div>
@@ -281,13 +270,11 @@ export default function Home({ profile, onNavigate }) {
             className="hero-btn btn-primary"
             onClick={() => onNavigate('atletas')}
             style={{
-              width: '100%', height: 40, borderRadius: 12, marginTop: 10,
-              fontSize: 13, fontWeight: 700,
+              width: '100%', height: 40, borderRadius: 12, marginTop: 10, fontWeight: 700,
               cursor: 'pointer', fontFamily: "'Inter',sans-serif",
               textTransform: 'uppercase', letterSpacing: '0.06em',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              transition: 'transform 0.2s, box-shadow 0.2s',
-            }}
+              transition: 'transform 0.2s, box-shadow 0.2s' }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
@@ -334,8 +321,7 @@ export default function Home({ profile, onNavigate }) {
                   alignItems: 'flex-start',
                   gap: 14,
                   minHeight: 64,
-                  cursor: 'pointer',
-                }}
+                  cursor: 'pointer' }}
               >
                 {player.foto_url ? (
                   <img
@@ -345,20 +331,17 @@ export default function Home({ profile, onNavigate }) {
                     style={{
                       width: 48, height: 48, borderRadius: 12, objectFit: 'cover',
                       border: '1px solid var(--accent-line)',
-                      flexShrink: 0,
-                    }}
+                      flexShrink: 0 }}
                   />
                 ) : (
                   <div className="premium-photo" style={{
                     width: 48, height: 48, borderRadius: 12, flexShrink: 0,
                     background: 'var(--bg-secondary)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    border: '1px solid var(--accent-line)',
-                  }}>
+                    border: '1px solid var(--accent-line)' }}>
                     <span style={{
                       fontSize: 20, fontWeight: 800, color: 'var(--text-muted)',
-                      fontFamily: "'Barlow Condensed',sans-serif",
-                    }}>
+                      fontFamily: "'Barlow Condensed',sans-serif" }}>
                       {nomeAtleta(player) ? nomeAtleta(player).charAt(0).toUpperCase() : '?'}
                     </span>
                   </div>
@@ -375,8 +358,7 @@ export default function Home({ profile, onNavigate }) {
                   </span>
                   <span style={{
                     fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500,
-                    fontFamily: "'Inter',sans-serif", marginTop: 2,
-                  }}>
+                    fontFamily: "'Inter',sans-serif", marginTop: 2 }}>
                     {player.posicao || cfg.posicoes[0]}
                   </span>
                 </div>

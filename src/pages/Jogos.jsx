@@ -1269,7 +1269,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             type="button"
                             onClick={() => togglePlayer(j.id, 'A')}
                             className={`btn btn-sm ${noA ? 'btn-primary' : 'btn-secondary'}`}
-                            style={{ fontSize: 11, padding: '4px 10px', background: noA ? 'var(--accent)' : 'transparent', color: noA ? 'var(--accent-on)' : 'var(--text-secondary)', border: noA ? '1px solid var(--accent)' : '1px solid var(--border)' }}
+                            style={{ background: noA ? 'var(--accent)' : 'transparent', color: noA ? 'var(--accent-on)' : 'var(--text-secondary)', border: noA ? '1px solid var(--accent)' : '1px solid var(--border)' }}
                           >
                             Time A
                           </button>
@@ -1277,7 +1277,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             type="button"
                             onClick={() => togglePlayer(j.id, 'B')}
                             className={`btn btn-sm ${noB ? 'btn-primary' : 'btn-secondary'}`}
-                            style={{ fontSize: 11, padding: '4px 10px', background: noB ? '#ef4444' : 'transparent', color: noB ? '#fff' : 'var(--text-secondary)', border: noB ? '1px solid #ef4444' : '1px solid var(--border)' }}
+                            style={{ background: noB ? '#ef4444' : 'transparent', color: noB ? '#fff' : 'var(--text-secondary)', border: noB ? '1px solid #ef4444' : '1px solid var(--border)' }}
                           >
                             Time B
                           </button>
@@ -1668,8 +1668,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   border: 'none', borderRadius: 999, padding: '8px 14px', fontWeight: 800, fontSize: 12,
                   cursor: 'pointer', fontFamily: 'inherit',
                   background: modoMesa ? 'var(--accent)' : 'var(--bg-secondary)',
-                  color: modoMesa ? 'var(--accent-on)' : 'var(--text-primary)',
-                }}
+                  color: modoMesa ? 'var(--accent-on)' : 'var(--text-primary)' }}
               >
                 {modoMesa ? 'Mesa ativa' : 'Abrir mesa'}
               </button>
@@ -1690,8 +1689,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     style={{
                       marginBottom: 10, width: '100%', padding: '6px 0', borderRadius: 999,
                       border: '1px solid var(--border)', background: 'transparent',
-                      color: 'var(--text-secondary)', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
-                    }}
+                      color: 'var(--text-secondary)', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
                   >
                     Desfazer última anotação
                   </button>
@@ -1733,8 +1731,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                                   width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
                                   background: 'var(--accent-soft)', color: 'var(--accent-text)',
                                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                  fontWeight: 800, fontSize: 15, border: '1px solid var(--accent-line)',
-                                }}>
+                                  fontWeight: 800, fontSize: 15, border: '1px solid var(--accent-line)' }}>
                                   {inicial}
                                 </div>
                               )}
@@ -2015,7 +2012,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 className="btn btn-secondary"
                 onClick={() => handleReabrirPartida(detalhe)}
                 disabled={salvando}
-                style={{ width: '100%', marginBottom: 12, fontSize: 12.5 }}
+                style={{ width: '100%', marginBottom: 12 }}
               >
                 ↺ Reabrir partida (encerrada por engano)
               </button>
@@ -2121,13 +2118,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               {gradeAtual ? (
                 <div style={{
                   marginTop: 12, padding: '12px 14px', borderRadius: 12,
-                  background: 'var(--bg-card)', border: `1px solid ${gradeAtual.line}`,
-                }}>
+                  background: 'var(--bg-card)', border: `1px solid ${gradeAtual.line}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <span style={{
                       fontSize: 36, fontWeight: 900, lineHeight: 1,
-                      fontFamily: "'Barlow Condensed', sans-serif", color: gradeAtual.cor,
-                    }}>
+                      fontFamily: "'Barlow Condensed', sans-serif", color: gradeAtual.cor }}>
                       {gradeAtual.key}
                     </span>
                     <div>

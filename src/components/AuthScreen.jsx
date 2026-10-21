@@ -447,18 +447,15 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
             width: 64, height: 64, background: 'rgba(255,255,255,0.05)', borderRadius: 18,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 12px', border: '1px solid var(--accent-line)',
-            backdropFilter: 'blur(10px)',
-          }}>
+            backdropFilter: 'blur(10px)' }}>
             <span style={{
               fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800,
-              fontSize: 24, color: 'var(--accent-text)', letterSpacing: '-0.02em',
-            }}>RH</span>
+              fontSize: 24, color: 'var(--accent-text)', letterSpacing: '-0.02em' }}>RH</span>
           </div>
           <h1 style={{
             fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800,
             fontSize: '28px', color: '#FFFFFF',
-            letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1, marginBottom: 4,
-          }}>
+            letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1, marginBottom: 4 }}>
             Rank Hooper
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, letterSpacing: '0.5px', fontFamily: "'Inter',sans-serif" }}>
@@ -499,8 +496,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
                     background: tab === t.key ? 'var(--accent)' : 'transparent',
                     color: tab === t.key ? 'var(--accent-on)' : 'rgba(255,255,255,0.5)',
                     fontSize: 13, fontWeight: 700, cursor: 'pointer',
-                    fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
-                  }}
+                    fontFamily: "'Inter',sans-serif", transition: 'all 0.2s' }}
                 >
                   {t.label}
                 </button>
@@ -545,8 +541,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
                   />
                   <button type="button" onClick={() => setShowPassword(p => !p)} style={{
                     position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-                    background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: 'rgba(255,255,255,0.4)',
-                  }}>
+                    background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: 'rgba(255,255,255,0.4)' }}>
                     {showPassword ? (
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
                     ) : (
@@ -590,8 +585,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
                 background: 'rgba(255,255,255,0.05)', color: '#FFFFFF', fontSize: 14, fontWeight: 600,
                 cursor: 'pointer', fontFamily: "'Inter',sans-serif",
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                transition: 'all 0.2s',
-              }}>
+                transition: 'all 0.2s' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -606,8 +600,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
               <button type="button" onClick={() => { setTab('login'); setErro(null); setSuccessMsg(null); }} disabled={carregando} style={{
                 width: '100%', height: 48, borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)',
                 background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: 600,
-                cursor: 'pointer', fontFamily: "'Inter',sans-serif",
-              }}>
+                cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>
                 Voltar ao Login
               </button>
             )}
@@ -625,8 +618,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
           background: 'rgba(12,12,20,0.75)', border: '1px solid var(--accent-line)',
           borderRadius: 999, padding: '9px 16px',
           backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-          animation: 'fadeIn 0.3s ease both',
-        }}>
+          animation: 'fadeIn 0.3s ease both' }}>
           <div className="spinner" style={{ width: 13, height: 13 }} />
           <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 600, fontFamily: "'Inter',sans-serif" }}>
             Preparando sua quadra…

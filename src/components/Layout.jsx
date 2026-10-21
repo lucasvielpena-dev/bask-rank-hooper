@@ -136,8 +136,7 @@ export default function Layout({ page, onNavigate, children }) {
           inset: 0,
           zIndex: 0,
           pointerEvents: 'none',
-          background: bgSolid,
-        }}
+          background: bgSolid }}
       />
       <Header />
 

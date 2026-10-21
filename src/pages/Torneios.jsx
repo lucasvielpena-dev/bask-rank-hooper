@@ -1571,13 +1571,11 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
               {gradeAtualNota ? (
                 <div style={{
                   marginTop: 12, padding: '12px 14px', borderRadius: 12,
-                  background: 'var(--bg-card)', border: `1px solid ${gradeAtualNota.line}`,
-                }}>
+                  background: 'var(--bg-card)', border: `1px solid ${gradeAtualNota.line}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <span style={{
                       fontSize: 36, fontWeight: 900, lineHeight: 1,
-                      fontFamily: "'Barlow Condensed', sans-serif", color: gradeAtualNota.cor,
-                    }}>
+                      fontFamily: "'Barlow Condensed', sans-serif", color: gradeAtualNota.cor }}>
                       {gradeAtualNota.key}
                     </span>
                     <div>
@@ -2655,12 +2653,12 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
               
               <div style={{ display: 'flex', gap: 6 }}>
                 {!r.aprovado && (isCapitao || isOrganizador) && (
-                  <button type="button" className="btn btn-primary btn-xs" onClick={() => handleAprovarJogador(r.id)} style={{ padding: '2px 8px', fontSize: 10 }}>
+                  <button type="button" className="btn btn-primary btn-sm" onClick={() => handleAprovarJogador(r.id)}>
                     Aprovar
                   </button>
                 )}
                 {(isCapitao || isOrganizador || r.jogador_id === profile.id) && (
-                  <button type="button" className="btn btn-secondary btn-xs" onClick={() => handleRemoverJogador(r.jogador_id)} style={{ padding: '2px 8px', fontSize: 10, color: '#ef4444', borderColor: 'rgba(239,68,68,0.2)' }}>
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleRemoverJogador(r.jogador_id)} style={{ color: '#ef4444', borderColor: 'rgba(239,68,68,0.2)' }}>
                     {r.jogador_id === profile.id ? 'Sair' : 'Remover'}
                   </button>
                 )}
@@ -2673,13 +2671,13 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
       {/* Ações de inscrição / convite */}
       <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
         {(isCapitao || isOrganizador) && torneioStatus === 'inscricoes_abertas' && (
-          <button type="button" className="btn btn-secondary btn-xs" onClick={openAddPlayer} style={{ fontSize: 11, padding: '4px 10px' }}>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={openAddPlayer}>
             + Adicionar Jogador
           </button>
         )}
         
         {canRequest && (
-          <button type="button" className="btn btn-primary btn-xs" onClick={handleSolicitarEntrada} style={{ fontSize: 11, padding: '4px 10px' }}>
+          <button type="button" className="btn btn-primary btn-sm" onClick={handleSolicitarEntrada}>
             Solicitar Entrada no Time
           </button>
         )}

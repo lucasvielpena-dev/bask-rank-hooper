@@ -42,8 +42,7 @@ function StatusPill({ label, tone = 'muted' }) {
         padding: '3px 8px',
         borderRadius: 99,
         background: c.bg,
-        color: c.fg,
-      }}
+        color: c.fg }}
     >
       {label}
     </span>
@@ -193,8 +192,7 @@ export default function AdminActivity({ profile, onNavigate }) {
               background: 'rgba(239,68,68,0.1)',
               border: '1px solid rgba(239,68,68,0.3)',
               color: '#f87171',
-              fontSize: 'var(--fs-sm)',
-            }}
+              fontSize: 'var(--fs-sm)' }}
           >
             {erro}
           </div>
@@ -278,8 +276,7 @@ function ListaPartidas({ list, onOpen }) {
               textAlign: 'left',
               cursor: 'pointer',
               fontFamily: 'inherit',
-              width: '100%',
-            }}
+              width: '100%' }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 8 }}>
               <StatusPill {...st} />
@@ -335,8 +332,7 @@ function ListaRacoes({ list, onOpen }) {
               textAlign: 'left',
               cursor: 'pointer',
               fontFamily: 'inherit',
-              width: '100%',
-            }}
+              width: '100%' }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
               <StatusPill {...st} />
@@ -381,8 +377,7 @@ function ListaTorneios({ list, onOpen }) {
               textAlign: 'left',
               cursor: 'pointer',
               fontFamily: 'inherit',
-              width: '100%',
-            }}
+              width: '100%' }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
               <StatusPill {...st} />

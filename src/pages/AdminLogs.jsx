@@ -48,8 +48,7 @@ const LogIcon = ({ action }) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      flexShrink: 0,
-    }}>
+      flexShrink: 0 }}>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         {action === 'delete_user' || action === 'delete_tournament' ? (
           <>
@@ -114,8 +113,7 @@ export default function AdminLogs({ profile, onNavigate }) {
               justifyContent: 'center',
               cursor: 'pointer',
               flexShrink: 0,
-              padding: 0,
-            }}
+              padding: 0 }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5" /><polyline points="12 19 5 12 12 5" />
@@ -156,8 +154,7 @@ export default function AdminLogs({ profile, onNavigate }) {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 12,
-                  animationDelay: `${i * 30}ms`,
-                }}
+                  animationDelay: `${i * 30}ms` }}
               >
                 <LogIcon action={log.action} />
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -167,8 +164,7 @@ export default function AdminLogs({ profile, onNavigate }) {
                     color: 'var(--text-primary)',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}>
+                    whiteSpace: 'nowrap' }}>
                     {ACTION_LABELS[log.action] || log.action}
                   </div>
                   <div style={{
@@ -177,8 +173,7 @@ export default function AdminLogs({ profile, onNavigate }) {
                     marginTop: 2,
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}>
+                    whiteSpace: 'nowrap' }}>
                     {log.admin_email || 'Desconhecido'}
                     {log.target_name && (
                       <> &middot; {log.target_name}</>
@@ -190,8 +185,7 @@ export default function AdminLogs({ profile, onNavigate }) {
                   color: 'var(--text-muted)',
                   flexShrink: 0,
                   textAlign: 'right',
-                  whiteSpace: 'nowrap',
-                }}>
+                  whiteSpace: 'nowrap' }}>
                   {formatDate(log.created_at)}
                 </div>
               </div>

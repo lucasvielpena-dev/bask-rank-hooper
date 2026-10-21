@@ -156,8 +156,7 @@ export default function Explorar({ profile, onNavigate }) {
               fontWeight: 700,
               padding: 0,
               marginBottom: 10,
-              fontFamily: "'Inter', sans-serif",
-            }}
+              fontFamily: "'Inter', sans-serif" }}
           >
             <IconVoltar size={16} color="var(--accent)" />
             Voltar
@@ -171,8 +170,7 @@ export default function Explorar({ profile, onNavigate }) {
               fontFamily: "'Barlow Condensed', sans-serif",
               letterSpacing: '0.02em',
               margin: 0,
-              textTransform: 'uppercase',
-            }}
+              textTransform: 'uppercase' }}
           >
             {selected.cidade}
             {selected.uf ? ` · ${selected.uf}` : ''}
@@ -203,8 +201,7 @@ export default function Explorar({ profile, onNavigate }) {
                   color: ativ.color,
                   whiteSpace: 'nowrap',
                   textTransform: 'uppercase',
-                  letterSpacing: '0.03em',
-                }}
+                  letterSpacing: '0.03em' }}
               >
                 {ativ.label}
               </span>
@@ -272,8 +269,7 @@ export default function Explorar({ profile, onNavigate }) {
             fontWeight: 700,
             padding: 0,
             marginBottom: 10,
-            fontFamily: "'Inter', sans-serif",
-          }}
+            fontFamily: "'Inter', sans-serif" }}
         >
           <IconVoltar size={16} color="var(--accent)" />
           Voltar
@@ -287,8 +283,7 @@ export default function Explorar({ profile, onNavigate }) {
             fontFamily: "'Barlow Condensed', sans-serif",
             letterSpacing: '0.02em',
             margin: 0,
-            textTransform: 'uppercase',
-          }}
+            textTransform: 'uppercase' }}
         >
           Explorar
         </h1>
@@ -302,8 +297,7 @@ export default function Explorar({ profile, onNavigate }) {
             gridTemplateColumns: '1fr 1fr',
             gap: 10,
             marginTop: 14,
-            marginBottom: 4,
-          }}
+            marginBottom: 4 }}
         >
           <button
             type="button"
@@ -318,8 +312,7 @@ export default function Explorar({ profile, onNavigate }) {
               fontSize: 12,
               letterSpacing: '0.04em',
               cursor: 'pointer',
-              fontFamily: "'Inter', sans-serif",
-            }}
+              fontFamily: "'Inter', sans-serif" }}
           >
             MINHA CIDADE
           </button>
@@ -335,8 +328,7 @@ export default function Explorar({ profile, onNavigate }) {
               fontSize: 12,
               letterSpacing: '0.04em',
               cursor: 'default',
-              fontFamily: "'Inter', sans-serif",
-            }}
+              fontFamily: "'Inter', sans-serif" }}
           >
             CIDADES
           </button>
@@ -362,8 +354,7 @@ export default function Explorar({ profile, onNavigate }) {
               fontSize: 15,
               color: 'var(--text-primary)',
               fontFamily: "'Inter', sans-serif",
-              outline: 'none',
-            }}
+              outline: 'none' }}
           />
         </div>
 
@@ -404,8 +395,7 @@ export default function Explorar({ profile, onNavigate }) {
                     cursor: 'pointer',
                     fontFamily: 'inherit',
                     border: isMinha ? '1px solid var(--accent-line)' : undefined,
-                    width: '100%',
-                  }}
+                    width: '100%' }}
                 >
                   <CityCrest cidade={c.cidade} uf={c.uf} size={42} />
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -423,8 +413,7 @@ export default function Explorar({ profile, onNavigate }) {
                             background: 'var(--accent-dim)',
                             padding: '2px 6px',
                             borderRadius: 6,
-                            letterSpacing: '0.04em',
-                          }}
+                            letterSpacing: '0.04em' }}
                         >
                           SUA CIDADE
                         </span>
@@ -470,8 +459,7 @@ function PlayerList({ list, onOpen }) {
               textAlign: 'left',
               cursor: 'pointer',
               fontFamily: 'inherit',
-              width: '100%',
-            }}
+              width: '100%' }}
           >
             <span
               style={{
@@ -479,8 +467,7 @@ function PlayerList({ list, onOpen }) {
                 fontWeight: 900,
                 fontSize: 15,
                 color: i < 3 ? 'var(--accent)' : 'var(--text-muted)',
-                fontFamily: "'Barlow Condensed', sans-serif",
-              }}
+                fontFamily: "'Barlow Condensed', sans-serif" }}
             >
               {i + 1}
             </span>
@@ -498,8 +485,7 @@ function PlayerList({ list, onOpen }) {
                 fontSize: 16,
                 overflow: 'hidden',
                 flexShrink: 0,
-                border: '1.5px solid var(--accent-line)',
-              }}
+                border: '1.5px solid var(--accent-line)' }}
             >
               {j.foto_url ? (
                 <img src={j.foto_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -521,8 +507,7 @@ function PlayerList({ list, onOpen }) {
                   padding: '2px 6px',
                   borderRadius: 6,
                   background: badge.bg,
-                  color: badge.fg,
-                }}
+                  color: badge.fg }}
               >
                 {badge.label}
               </span>
@@ -532,8 +517,7 @@ function PlayerList({ list, onOpen }) {
                 fontWeight: 900,
                 fontSize: 18,
                 color: 'var(--accent)',
-                fontFamily: "'Barlow Condensed', sans-serif",
-              }}
+                fontFamily: "'Barlow Condensed', sans-serif" }}
             >
               {media}
             </div>

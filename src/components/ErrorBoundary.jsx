@@ -39,8 +39,7 @@ export default class ErrorBoundary extends Component {
           alignItems: 'center',
           justifyContent: 'center',
           padding: compacto ? '32px 16px' : '24px',
-          background: compacto ? 'transparent' : 'var(--bg-primary, #0B1220)',
-        }}
+          background: compacto ? 'transparent' : 'var(--bg-primary, #0B1220)' }}
       >
         <div
           className="premium-card"
@@ -50,8 +49,7 @@ export default class ErrorBoundary extends Component {
             style={{
               width: 52, height: 52, margin: '0 auto 14px',
               borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'var(--accent-soft)', border: '1px solid var(--accent-line)',
-            }}
+              background: 'var(--accent-soft)', border: '1px solid var(--accent-line)' }}
           >
             <span style={{ fontSize: 24 }}></span>
           </div>
@@ -60,8 +58,7 @@ export default class ErrorBoundary extends Component {
             style={{
               fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 22,
               color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em',
-              marginBottom: 6,
-            }}
+              marginBottom: 6 }}
           >
             A bola escapou
           </h2>
@@ -75,11 +72,9 @@ export default class ErrorBoundary extends Component {
             <button
               className="btn-primary"
               onClick={() => this.setState({ erro: null })}
-              style={{
-                padding: '10px 18px', borderRadius: 12, fontSize: 12, fontWeight: 700,
+              style={{ borderRadius: 12, fontWeight: 700,
                 textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer',
-                fontFamily: "'Inter',sans-serif",
-              }}
+                fontFamily: "'Inter',sans-serif" }}
             >
               Tentar de novo
             </button>
@@ -90,8 +85,7 @@ export default class ErrorBoundary extends Component {
                 textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer',
                 fontFamily: "'Inter',sans-serif",
                 background: 'transparent', color: 'var(--text-secondary)',
-                border: '1px solid var(--border)',
-              }}
+                border: '1px solid var(--border)' }}
             >
               Recarregar
             </button>
@@ -100,8 +94,7 @@ export default class ErrorBoundary extends Component {
           <p
             style={{
               marginTop: 14, fontSize: 10, color: 'var(--text-muted)',
-              fontFamily: 'ui-monospace, monospace', wordBreak: 'break-word', opacity: 0.7,
-            }}
+              fontFamily: 'ui-monospace, monospace', wordBreak: 'break-word', opacity: 0.7 }}
           >
             {String(erro?.message || erro)}
           </p>

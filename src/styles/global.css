@@ -3203,3 +3203,11 @@ body:not(.light-theme) [style*="color: var(--text-muted)"] {
 .home-highlight-card.silver { border-left:3px solid #C0C7D4; }
 .home-highlight-card.bronze { border-left:3px solid #CD7F32; }
 .home-quick-action-primary { background:var(--accent); border:none; box-shadow:0 12px 32px rgba(0,0,0,0.25); }
+
+
+/* ===== Escala de botões (única) =====
+   .btn      : ação principal ou secundária de tela — altura mínima 44px, texto 14px
+   .btn-sm   : ação dentro de cartão ou lista — altura 36px, texto 13px
+   Não usar padding/fontSize em linha nos botões. */
+.btn { min-height:44px; padding:12px 20px; font-size:14px; line-height:1.2; }
+.btn-sm { min-height:36px; padding:8px 14px; font-size:13px; line-height:1.2; }

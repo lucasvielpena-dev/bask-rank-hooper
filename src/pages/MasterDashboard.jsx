@@ -122,8 +122,7 @@ export default function MasterDashboard({ onNavigate }) {
               padding: '12px 14px',
               color: '#f87171',
               fontSize: 'var(--fs-sm)',
-              marginBottom: 14,
-            }}
+              marginBottom: 14 }}
           >
             {error}
           </div>
@@ -148,8 +147,7 @@ export default function MasterDashboard({ onNavigate }) {
                   textAlign: 'left',
                   cursor: 'pointer',
                   border: insights.semCidade.length ? '1px solid rgba(245,158,11,0.35)' : undefined,
-                  fontFamily: 'inherit',
-                }}
+                  fontFamily: 'inherit' }}
               >
                 <div className="text-lg" style={{ color: insights.semCidade.length ? '#fbbf24' : 'var(--accent)', margin: 0 }}>
                   {insights.semCidade.length}
@@ -205,8 +203,7 @@ export default function MasterDashboard({ onNavigate }) {
                         background: 'var(--bg-secondary)',
                         border: '1px solid var(--border)',
                         color: 'var(--text-primary)',
-                        fontWeight: 600,
-                      }}
+                        fontWeight: 600 }}
                     >
                       {p.apelido || p.nome || 'Atleta'}
                     </span>
@@ -228,8 +225,7 @@ export default function MasterDashboard({ onNavigate }) {
                 fontFamily: 'inherit',
                 width: '100%',
                 marginBottom: 18,
-                border: '1px solid var(--accent-line)',
-              }}
+                border: '1px solid var(--accent-line)' }}
             >
               <div className="text-md" style={{ fontWeight: 800, color: 'var(--text-primary)' }}>Atividade global</div>
               <div className="text-sm" style={{ color: 'var(--text-muted)', marginTop: 4 }}>
@@ -290,8 +286,7 @@ export default function MasterDashboard({ onNavigate }) {
                         textAlign: 'left',
                         cursor: 'pointer',
                         fontFamily: 'inherit',
-                        width: '100%',
-                      }}
+                        width: '100%' }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                         <span className="text-md" style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{c.cidade}</span>

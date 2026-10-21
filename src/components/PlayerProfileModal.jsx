@@ -26,8 +26,7 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
             background: 'none', border: 'none',
             cursor: disabled ? 'default' : 'pointer', padding: '4px',
             transition: 'transform 0.1s',
-            transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
-          }}
+            transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)' }}
         >
           <svg width="28" height="28" viewBox="0 0 24 24" fill={(hover || value) >= i ? 'var(--accent-text)' : 'none'} stroke={(hover || value) >= i ? 'var(--accent-text)' : '#64748B'} strokeWidth="2">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
@@ -438,8 +437,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
                         color: active ? 'var(--accent-text)' : '#6A6A82',
                         fontSize: active ? 14 : 12, fontWeight: active ? 700 : 400, cursor: 'pointer',
                         fontFamily: active ? "'Barlow Condensed',sans-serif" : "'Inter',sans-serif",
-                        transition: 'color 0.2s, font-size 0.2s',
-                      }}
+                        transition: 'color 0.2s, font-size 0.2s' }}
                     >
                       {t.label}
                       {active && (
@@ -545,8 +543,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
                     width: '100%', padding: '12px 14px', borderRadius: 12,
                     background: 'rgba(148,163,184,0.1)', border: '1px solid var(--border)',
                     fontSize: 13, color: 'var(--text-secondary)', textAlign: 'center',
-                    fontFamily: "'Inter',sans-serif", lineHeight: 1.4,
-                  }}>
+                    fontFamily: "'Inter',sans-serif", lineHeight: 1.4 }}>
                     Só é possível avaliar atletas da sua cidade. Aqui você consulta o perfil e as estatísticas.
                   </div>
                 )}

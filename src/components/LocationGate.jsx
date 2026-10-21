@@ -119,8 +119,7 @@ export default function LocationGate({ profile, onResolved }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 28,
-          }}
+            fontSize: 28 }}
         >
                   </div>
         <h1 style={{ fontSize: 22, fontWeight: 900, marginBottom: 8 }}>Localização obrigatória</h1>
@@ -138,8 +137,7 @@ export default function LocationGate({ profile, onResolved }) {
               border: '1px solid rgba(16,185,129,0.25)',
               marginBottom: 16,
               fontSize: 14,
-              color: 'var(--text-primary)',
-            }}
+              color: 'var(--text-primary)' }}
           >
             Identificamos: <strong>{info.cidade} - {info.uf}</strong>
           </div>
@@ -155,8 +153,7 @@ export default function LocationGate({ profile, onResolved }) {
               marginBottom: 16,
               fontSize: 13,
               color: '#fca5a5',
-              textAlign: 'left',
-            }}
+              textAlign: 'left' }}
           >
             {erro}
           </div>

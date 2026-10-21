@@ -840,8 +840,7 @@ export function AuthProvider({ children }) {
             pointerEvents: capaSaindo ? 'none' : 'auto',
             // Fade só com opacity: é o que roda na GPU, sem repintar a tela.
             opacity: capaSaindo ? 0 : 1,
-            transition: capaSaindo ? 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
-          }}
+            transition: capaSaindo ? 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)' : 'none' }}
         >
           {capaModo === 'auth' ? (
             <AuthScreen

@@ -345,8 +345,7 @@ export default function Stats({ profile, onNavigate }) {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               background: 'transparent', border: 'none', padding: 0,
               marginRight: -8, marginTop: -6, marginBottom: -6,
-              color: 'var(--accent-text)', cursor: 'pointer',
-            }}
+              color: 'var(--accent-text)', cursor: 'pointer' }}
           >
             <svg
               width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -437,8 +436,7 @@ export default function Stats({ profile, onNavigate }) {
           <div style={{
             display: 'flex', alignItems: 'center', gap: 6,
             fontSize: 12, color: 'var(--text-secondary)',
-            fontFamily: "'Inter',sans-serif", marginBottom: 10,
-          }}>
+            fontFamily: "'Inter',sans-serif", marginBottom: 10 }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--accent-text)" stroke="none">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
@@ -873,7 +871,7 @@ export default function Stats({ profile, onNavigate }) {
                     tres_pontos_convertidos: 0,
                   }));
                 }}
-                style={{ alignSelf: 'flex-start', margin: '4px 0', fontSize: 11 }}
+                style={{ alignSelf: 'flex-start', margin: '4px 0' }}
               >
                 {showAvancado ? '← Ocultar Avançados' : 'Mostrar Avançados'}
               </button>
@@ -892,9 +890,9 @@ export default function Stats({ profile, onNavigate }) {
                       <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{item.l}</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 28, height: 28, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, fontSize: 16 }}>-</button>
+                          <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 28, height: 28, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>
                           <span style={{ fontWeight: 800, fontSize: 14, minWidth: 20, textAlign: 'center' }}>{form[item.k]}</span>
-                          <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 28, height: 28, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, fontSize: 16 }}>+</button>
+                          <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 28, height: 28, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>+</button>
                         </div>
                       </div>
                     ))}
@@ -909,9 +907,9 @@ export default function Stats({ profile, onNavigate }) {
                       <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
                         <span style={{ fontSize: 14, fontWeight: 600 }}>{item.l}</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                          <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, fontSize: 18 }}>-</button>
+                          <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>
                           <span style={{ fontWeight: 800, fontSize: 15, minWidth: 24, textAlign: 'center' }}>{form[item.k]}</span>
-                          <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, fontSize: 18 }}>+</button>
+                          <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>+</button>
                         </div>
                       </div>
                     ))}
@@ -928,9 +926,9 @@ export default function Stats({ profile, onNavigate }) {
                   <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
                     <span style={{ fontSize: 14, fontWeight: 600 }}>{item.l}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, fontSize: 18 }}>-</button>
+                      <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>
                       <span style={{ fontWeight: 800, fontSize: 15, minWidth: 24, textAlign: 'center' }}>{form[item.k]}</span>
-                      <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6, fontSize: 18 }}>+</button>
+                      <button type="button" onClick={() => ajustarCampo(item.k, 1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>+</button>
                     </div>
                   </div>
                 ))}

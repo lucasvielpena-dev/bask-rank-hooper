@@ -44,8 +44,7 @@ export const GradePicker = memo(function GradePicker({ value, onChange, disabled
               fontWeight: 900, fontSize: g.key.length > 1 ? 15 : 17,
               fontFamily: "'Barlow Condensed', sans-serif",
               cursor: disabled ? 'default' : 'pointer',
-              transition: 'all 0.12s',
-            }}
+              transition: 'all 0.12s' }}
           >
             {g.key}
           </button>
@@ -86,8 +85,7 @@ export const RendimentoPill = memo(function RendimentoPill({ media, total, showL
         padding: '3px 9px', borderRadius: 999,
         background: r.soft, border: `1px solid ${r.line}`,
         color: r.cor, fontSize: 11, fontWeight: 800,
-        fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap',
-      }}
+        fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap' }}
     >
       <span style={{ width: 7, height: 7, borderRadius: '50%', background: r.cor, display: 'inline-block' }} />
       {r.pct === null ? '—' : `${r.pct}%`}

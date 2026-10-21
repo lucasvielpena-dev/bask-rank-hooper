@@ -14,8 +14,7 @@ export default function ContaSuspensa({ onSair }) {
         alignItems: 'center',
         justifyContent: 'center',
         padding: 24,
-        background: 'var(--bg-primary)',
-      }}
+        background: 'var(--bg-primary)' }}
     >
       <div
         className="premium-card"
@@ -24,8 +23,7 @@ export default function ContaSuspensa({ onSair }) {
           maxWidth: 380,
           borderRadius: 18,
           padding: '28px 22px',
-          textAlign: 'center',
-        }}
+          textAlign: 'center' }}
       >
         <div
           style={{
@@ -37,8 +35,7 @@ export default function ContaSuspensa({ onSair }) {
             alignItems: 'center',
             justifyContent: 'center',
             background: 'rgba(239,68,68,0.12)',
-            border: '1px solid rgba(239,68,68,0.3)',
-          }}
+            border: '1px solid rgba(239,68,68,0.3)' }}
         >
           <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#f87171" strokeWidth="2" strokeLinecap="round">
             <circle cx="12" cy="12" r="9" />
@@ -53,8 +50,7 @@ export default function ContaSuspensa({ onSair }) {
             color: 'var(--text-primary)',
             textTransform: 'uppercase',
             letterSpacing: '0.04em',
-            marginBottom: 8,
-          }}
+            marginBottom: 8 }}
         >
           Conta suspensa
         </h2>
@@ -68,7 +64,7 @@ export default function ContaSuspensa({ onSair }) {
           type="button"
           onClick={onSair}
           className="btn btn-secondary"
-          style={{ width: '100%', padding: '12px 0', fontWeight: 700 }}
+          style={{ width: '100%', fontWeight: 700 }}
         >
           Sair da conta
         </button>

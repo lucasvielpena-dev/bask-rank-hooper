@@ -102,8 +102,7 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
             background: 'none', border: 'none',
             cursor: disabled ? 'default' : 'pointer', padding: '2px',
             transition: 'transform 0.1s',
-            transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)',
-          }}
+            transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)' }}
         >
           <svg width="26" height="26" viewBox="0 0 24 24" fill={(hover || value) >= i ? '#FFB800' : 'none'} stroke={(hover || value) >= i ? '#FFB800' : '#A1A1AA'} strokeWidth="2">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
@@ -312,8 +311,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
               gap: 10,
-              marginBottom: 16,
-            }}
+              marginBottom: 16 }}
           >
             <button
               type="button"
@@ -327,8 +325,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 fontSize: 12,
                 letterSpacing: '0.04em',
                 cursor: 'default',
-                fontFamily: "'Inter', sans-serif",
-              }}
+                fontFamily: "'Inter', sans-serif" }}
             >
               MINHA CIDADE
             </button>
@@ -345,8 +342,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 fontSize: 12,
                 letterSpacing: '0.04em',
                 cursor: 'pointer',
-                fontFamily: "'Inter', sans-serif",
-              }}
+                fontFamily: "'Inter', sans-serif" }}
             >
               CIDADES
             </button>
@@ -370,8 +366,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
               background: 'var(--bg-card)', border: '1px solid var(--border)',
               borderRadius: 12, padding: '12px 12px 12px 42px',
               fontSize: 15, color: 'var(--text-primary)', fontFamily: "'Inter',sans-serif",
-              outline: 'none', transition: 'border-color 0.2s',
-            }}
+              outline: 'none', transition: 'border-color 0.2s' }}
             onFocus={e => e.target.style.borderColor = 'var(--accent)'}
             onBlur={e => e.target.style.borderColor = 'var(--border)'}
           />
@@ -489,8 +484,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                       onClick={() => setSelectedPlayer(j)}
                       style={{
                         flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 700,
-                        minHeight: 34, lineHeight: 1.2, borderRadius: 999,
-                      }}
+                        minHeight: 34, lineHeight: 1.2, borderRadius: 999 }}
                     >
                       Perfil
                     </button>
@@ -500,9 +494,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                         className="btn-secondary btn-sm"
                         onClick={(e) => handleOpenVote(j, e)}
                         style={{
-                          flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 700,
-                          minHeight: 34, lineHeight: 1.2, borderRadius: 999,
-                        }}
+                          flex: 1, fontWeight: 700, borderRadius: 999 }}
                       >
                         Avaliar
                       </button>
@@ -514,8 +506,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                           flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--border)',
                           borderRadius: 999, padding: '8px 0', minHeight: 34, lineHeight: 1.2,
                           color: 'var(--text-muted)', fontSize: 12, fontWeight: 600,
-                          fontFamily: "'Inter',sans-serif", cursor: 'not-allowed',
-                        }}
+                          fontFamily: "'Inter',sans-serif", cursor: 'not-allowed' }}
                       >
                         {profile?.player_id === j.id ? 'Seu perfil' : 'Avaliado'}
                       </button>
@@ -546,16 +537,14 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                   <div key={f.key} style={{
                     background: val > 0 ? 'rgba(255,184,0,0.1)' : 'var(--bg-card)',
                     padding: '8px 12px', borderRadius: 12,
-                    border: val > 0 ? '1px solid rgba(255,184,0,0.3)' : '1px solid var(--border)',
-                  }}>
+                    border: val > 0 ? '1px solid rgba(255,184,0,0.3)' : '1px solid var(--border)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{
                           width: 20, height: 20, borderRadius: 6,
                           background: val > 0 ? 'var(--accent)' : 'var(--bg-secondary)',
                           color: val > 0 ? '#000' : 'var(--text-muted)', fontSize: 11, fontWeight: 800,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}>{i + 1}</span>
+                          display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{i + 1}</span>
                         <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{f.label}</span>
                       </div>
                       <span style={{ fontSize: 12, color: val > 0 ? 'var(--accent)' : 'var(--text-muted)', fontWeight: 700 }}>

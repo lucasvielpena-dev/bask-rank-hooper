@@ -483,13 +483,11 @@ export default function Racoes({ profile, onNavigate }) {
               {gradeAtual ? (
                 <div style={{
                   marginTop: 12, padding: '12px 14px', borderRadius: 12,
-                  background: 'var(--bg-card)', border: `1px solid ${gradeAtual.line}`,
-                }}>
+                  background: 'var(--bg-card)', border: `1px solid ${gradeAtual.line}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <span style={{
                       fontSize: 36, fontWeight: 900, lineHeight: 1,
-                      fontFamily: "'Barlow Condensed', sans-serif", color: gradeAtual.cor,
-                    }}>
+                      fontFamily: "'Barlow Condensed', sans-serif", color: gradeAtual.cor }}>
                       {gradeAtual.key}
                     </span>
                     <div>

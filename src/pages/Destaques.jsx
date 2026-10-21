@@ -125,8 +125,7 @@ export default function Destaques({ profile, onNavigate }) {
               fontWeight: 700,
               padding: 0,
               marginBottom: 10,
-              fontFamily: "'Inter', sans-serif",
-            }}
+              fontFamily: "'Inter', sans-serif" }}
           >
             <IconVoltar size={16} color="var(--accent)" />
             Voltar
@@ -139,8 +138,7 @@ export default function Destaques({ profile, onNavigate }) {
               fontFamily: "'Barlow Condensed', sans-serif",
               letterSpacing: '0.02em',
               margin: 0,
-              textTransform: 'uppercase',
-            }}
+              textTransform: 'uppercase' }}
           >
             Destaques
           </h1>
@@ -168,8 +166,7 @@ export default function Destaques({ profile, onNavigate }) {
                   fontWeight: 900,
                   color: 'var(--text-primary)',
                   fontFamily: "'Barlow Condensed', sans-serif",
-                  lineHeight: 1,
-                }}
+                  lineHeight: 1 }}
               >
                 {s.value}
               </div>
@@ -181,8 +178,7 @@ export default function Destaques({ profile, onNavigate }) {
                   marginTop: 6,
                   textTransform: 'uppercase',
                   letterSpacing: '0.04em',
-                  fontFamily: "'Inter', sans-serif",
-                }}
+                  fontFamily: "'Inter', sans-serif" }}
               >
                 {s.label}
               </div>
@@ -229,8 +225,7 @@ export default function Destaques({ profile, onNavigate }) {
                     padding: '12px 14px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 12,
-                  }}
+                    gap: 12 }}
                 >
                   <span
                     style={{
@@ -238,8 +233,7 @@ export default function Destaques({ profile, onNavigate }) {
                       fontWeight: 900,
                       fontSize: 15,
                       color: i < 3 ? 'var(--accent)' : 'var(--text-muted)',
-                      fontFamily: "'Barlow Condensed', sans-serif",
-                    }}
+                      fontFamily: "'Barlow Condensed', sans-serif" }}
                   >
                     {i + 1}
                   </span>
@@ -257,8 +251,7 @@ export default function Destaques({ profile, onNavigate }) {
                       fontSize: 16,
                       overflow: 'hidden',
                       flexShrink: 0,
-                      border: '1.5px solid var(--accent-line)',
-                    }}
+                      border: '1.5px solid var(--accent-line)' }}
                   >
                     {jogador.foto_url ? (
                       <img
@@ -278,8 +271,7 @@ export default function Destaques({ profile, onNavigate }) {
                         fontWeight: 700,
                         fontSize: 14,
                         color: 'var(--text-primary)',
-                        fontFamily: "'Inter', sans-serif",
-                      }}
+                        fontFamily: "'Inter', sans-serif" }}
                     >
                       {nome}
                     </div>
@@ -288,8 +280,7 @@ export default function Destaques({ profile, onNavigate }) {
                         fontSize: 12,
                         color: 'var(--text-muted)',
                         marginTop: 2,
-                        fontFamily: "'Inter', sans-serif",
-                      }}
+                        fontFamily: "'Inter', sans-serif" }}
                     >
                       {jogador.posicao || cfg?.posicoes?.[0] || '—'} · {jogador.total_votos || 0}{' '}
                       {(jogador.total_votos || 0) === 1 ? 'avaliação' : 'avaliações'}
@@ -301,8 +292,7 @@ export default function Destaques({ profile, onNavigate }) {
                       fontSize: 18,
                       fontWeight: 900,
                       color: 'var(--accent)',
-                      fontFamily: "'Barlow Condensed', sans-serif",
-                    }}
+                      fontFamily: "'Barlow Condensed', sans-serif" }}
                   >
                     {media}
                   </div>
@@ -326,8 +316,7 @@ export default function Destaques({ profile, onNavigate }) {
                 background: 'var(--accent-dim)',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-              }}
+                justifyContent: 'center' }}
             >
               <IconCalendario size={18} color="var(--accent)" />
             </div>
@@ -337,8 +326,7 @@ export default function Destaques({ profile, onNavigate }) {
                   fontSize: 14,
                   fontWeight: 700,
                   color: 'var(--text-primary)',
-                  fontFamily: "'Inter', sans-serif",
-                }}
+                  fontFamily: "'Inter', sans-serif" }}
               >
                 {stats.torneios > 0
                   ? `${stats.torneios} torneio(s) na cidade`

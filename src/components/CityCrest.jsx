@@ -112,8 +112,7 @@ export default function CityCrest({ cidade, uf, size = 42 }) {
           fontFamily: "'Barlow Condensed', sans-serif",
           fontWeight: 900,
           fontSize: Math.max(10, Math.round(size * 0.28)),
-          color: 'var(--text-secondary)',
-        }}
+          color: 'var(--text-secondary)' }}
         title={cidade}
       >
         {label}
@@ -136,8 +135,7 @@ export default function CityCrest({ cidade, uf, size = 42 }) {
         overflow: 'hidden',
         flexShrink: 0,
         border: '1px solid var(--border)',
-        background: 'var(--bg-secondary)',
-      }}
+        background: 'var(--bg-secondary)' }}
     >
       <img
         key={src}
@@ -151,8 +149,7 @@ export default function CityCrest({ cidade, uf, size = 42 }) {
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          display: 'block',
-        }}
+          display: 'block' }}
       />
     </div>
   );

@@ -20,8 +20,7 @@ export default memo(function Header() {
     <header
       className="app-header"
       style={{
-        boxShadow: scrolled ? '0 8px 28px rgba(0,0,0,0.35)' : 'none',
-      }}
+        boxShadow: scrolled ? '0 8px 28px rgba(0,0,0,0.35)' : 'none' }}
     >
       {/* Logo + marca (sem menu de três linhas à esquerda) */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
@@ -65,8 +64,7 @@ export default memo(function Header() {
                 background: 'var(--accent-dim)',
                 color: 'var(--accent)',
                 fontWeight: 800,
-                fontSize: 13,
-              }}
+                fontSize: 13 }}
             >
               {(profile?.nome_completo || profile?.apelido || '?').charAt(0).toUpperCase()}
             </div>

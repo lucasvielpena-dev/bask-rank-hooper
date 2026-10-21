@@ -17,8 +17,7 @@ export default function SplashCarregando({ mensagem = 'Preparando sua quadra' })
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        overflow: 'hidden',
-      }}
+        overflow: 'hidden' }}
     >
       <style>{`
         @keyframes splashEntra {
@@ -42,8 +41,7 @@ export default function SplashCarregando({ mensagem = 'Preparando sua quadra' })
             alignItems: 'center',
             justifyContent: 'center',
             margin: '0 auto 12px',
-            border: '1px solid var(--accent-line)',
-          }}
+            border: '1px solid var(--accent-line)' }}
         >
           <IconBasquete size={28} color="var(--accent-text)" />
         </div>
@@ -57,8 +55,7 @@ export default function SplashCarregando({ mensagem = 'Preparando sua quadra' })
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
             lineHeight: 1,
-            marginBottom: 18,
-          }}
+            marginBottom: 18 }}
         >
           Rank Hooper
         </h1>
@@ -73,8 +70,7 @@ export default function SplashCarregando({ mensagem = 'Preparando sua quadra' })
             textTransform: 'uppercase',
             fontWeight: 600,
             fontFamily: "'Inter',sans-serif",
-            animation: 'splashRespira 1.8s ease-in-out infinite',
-          }}
+            animation: 'splashRespira 1.8s ease-in-out infinite' }}
         >
           {mensagem}…
         </p>
