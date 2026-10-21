@@ -162,8 +162,8 @@ export default function Home({ profile, onNavigate }) {
             </span>
           </div>
 
-          {/* Main row: info + foto. A foto ocupa a metade direita e se
-              dissolve no card pela esquerda (máscara), sem borda/vinco. */}
+          {/* Main row: info + foto. A foto ocupa a parte direita e se
+              dissolve no card por todos os lados (máscara), sem borda/vinco. */}
           <div style={{ display: 'flex', alignItems: 'stretch', gap: 10, marginBottom: 10 }}>
 
             {/* Info */}
@@ -218,30 +218,30 @@ export default function Home({ profile, onNavigate }) {
               </div>
             </div>
 
-            {/* Photo: metade direita, fundindo no card */}
+            {/* Photo: maior, com máscara circular que dissolve as quatro bordas no card */}
             {myPlayerInfo?.foto_url ? (
               <img
                 src={myPlayerInfo.foto_url}
                 alt={greetingName}
                 style={{
-                  width: '50%', aspectRatio: '1 / 1', flexShrink: 0,
+                  width: '60%', aspectRatio: '1 / 1', flexShrink: 0,
                   objectFit: 'cover', objectPosition: 'center 18%',
-                  borderRadius: 14, pointerEvents: 'none',
-                  WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 10%, #000 34%), linear-gradient(to bottom, #000 86%, transparent 100%)',
+                  borderRadius: 0, pointerEvents: 'none',
+                  WebkitMaskImage: 'radial-gradient(ellipse 60% 62% at 56% 44%, #000 55%, rgba(0,0,0,0.4) 80%, transparent 100%)',
                   WebkitMaskComposite: 'source-in',
-                  maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 10%, #000 34%), linear-gradient(to bottom, #000 86%, transparent 100%)',
+                  maskImage: 'radial-gradient(ellipse 60% 62% at 56% 44%, #000 55%, rgba(0,0,0,0.4) 80%, transparent 100%)',
                   maskComposite: 'intersect',
                 }}
               />
             ) : (
               <div style={{
-                width: '50%', aspectRatio: '1 / 1', flexShrink: 0,
-                borderRadius: 14,
+                width: '60%', aspectRatio: '1 / 1', flexShrink: 0,
+                borderRadius: 0,
                 background: 'var(--accent-soft)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 10%, #000 34%), linear-gradient(to bottom, #000 86%, transparent 100%)',
+                WebkitMaskImage: 'radial-gradient(ellipse 60% 62% at 56% 44%, #000 55%, rgba(0,0,0,0.4) 80%, transparent 100%)',
                 WebkitMaskComposite: 'source-in',
-                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.5) 10%, #000 34%), linear-gradient(to bottom, #000 86%, transparent 100%)',
+                maskImage: 'radial-gradient(ellipse 60% 62% at 56% 44%, #000 55%, rgba(0,0,0,0.4) 80%, transparent 100%)',
                 maskComposite: 'intersect',
               }}>
                 <span style={{
