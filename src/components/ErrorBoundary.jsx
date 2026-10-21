@@ -58,7 +58,7 @@ export default class ErrorBoundary extends Component {
             style={{
               fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800, fontSize: 22,
               color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.04em',
-              marginBottom: 6 }}
+              marginBottom: 8 }}
           >
             A bola escapou
           </h2>
@@ -93,7 +93,7 @@ export default class ErrorBoundary extends Component {
 
           <p
             style={{
-              marginTop: 14, fontSize: 11, color: 'var(--text-muted)',
+              marginTop: 12, fontSize: 11, color: 'var(--text-muted)',
               fontFamily: 'ui-monospace, monospace', wordBreak: 'break-word', opacity: 0.7 }}
           >
             {String(erro?.message || erro)}

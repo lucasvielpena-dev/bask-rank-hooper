@@ -192,10 +192,10 @@ export default function Layout({ page, onNavigate, children }) {
         <div className="modal-overlay" onClick={() => { if (!salvandoPerfil) { setShowUserMenu(false); setIsEditingProfile(false); } }}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 400 }}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 6, textAlign: 'center' }}>
+            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 8, textAlign: 'center' }}>
               {isEditingProfile ? 'Editar Perfil' : 'Meu Perfil'}
             </h3>
-            <p style={{ color: '#64748b', fontSize: 13, marginBottom: 20, textAlign: 'center' }}>
+            <p style={{ color: '#64748b', fontSize: 13, marginBottom: 16, textAlign: 'center' }}>
               {isEditingProfile ? 'Atualize suas informações pessoais' : 'Informações do seu perfil de atleta'}
             </p>
 
@@ -216,7 +216,7 @@ export default function Layout({ page, onNavigate, children }) {
             {isEditingProfile ? (
               <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <div>
-                  <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                  <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
                     Foto de Perfil
                   </label>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -242,7 +242,7 @@ export default function Layout({ page, onNavigate, children }) {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                  <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
                     Apelido *
                   </label>
                   <input
@@ -255,7 +255,7 @@ export default function Layout({ page, onNavigate, children }) {
                 </div>
 
                 <div>
-                  <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                  <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
                     Posição de Jogo *
                   </label>
                   <select
@@ -271,7 +271,7 @@ export default function Layout({ page, onNavigate, children }) {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                   <div>
-                    <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                    <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
                       Altura (m) *
                     </label>
                     <input
@@ -284,7 +284,7 @@ export default function Layout({ page, onNavigate, children }) {
                     />
                   </div>
                   <div>
-                    <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                    <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
                       Idade *
                     </label>
                     <input
@@ -299,7 +299,7 @@ export default function Layout({ page, onNavigate, children }) {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
+                <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
                   <button
                     type="button"
                     className="btn btn-secondary"
@@ -354,7 +354,7 @@ export default function Layout({ page, onNavigate, children }) {
                   </div>
                 </div>
 
-                <div style={{ marginTop: 8, marginBottom: 14, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
+                <div style={{ marginTop: 8, marginBottom: 12, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
                   <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8, textAlign: 'center' }}>
                     Tema do Aplicativo
                   </label>
@@ -386,7 +386,7 @@ export default function Layout({ page, onNavigate, children }) {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
                   <button
                     className="btn btn-secondary"
                     onClick={() => {
@@ -416,7 +416,7 @@ export default function Layout({ page, onNavigate, children }) {
                     setShowExcluirConta(true);
                   }}
                   style={{
-                    marginTop: 14,
+                    marginTop: 12,
                     width: '100%',
                     background: 'none',
                     border: 'none',
@@ -431,7 +431,7 @@ export default function Layout({ page, onNavigate, children }) {
                   Excluir minha conta
                 </button>
 
-                <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-secondary)', opacity: 0.7, marginBottom: 10 }}>
+                <div style={{ textAlign: 'center', fontSize: 11, color: 'var(--text-secondary)', opacity: 0.7, marginBottom: 12 }}>
                   Versão do app: {versaoApp()}
                 </div>
 
@@ -450,7 +450,7 @@ export default function Layout({ page, onNavigate, children }) {
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
               <IconLocalizacao size={40} color="var(--accent)" />
             </div>
-            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 10 }}>Confirmar sua cidade</h3>
+            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 12 }}>Confirmar sua cidade</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 15, marginBottom: 24, lineHeight: 1.5 }}>
               Podemos usar sua localização para confirmar em qual cidade você está? Assim as avaliações e os rachões ficam na cidade certa. Se você estiver em outra cidade, a gente pergunta antes de mudar.
             </p>
@@ -472,7 +472,7 @@ export default function Layout({ page, onNavigate, children }) {
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
               <IconLocalizacao size={40} color="var(--accent)" />
             </div>
-            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 10 }}>Mudar cidade de competição?</h3>
+            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 12 }}>Mudar cidade de competição?</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 15, marginBottom: 24, lineHeight: 1.5 }}>
               Detectamos que você está em <strong>{cityPrompt.city} - {cityPrompt.uf}</strong>. Deseja atualizar sua cidade de competição?
             </p>
@@ -515,10 +515,10 @@ export default function Layout({ page, onNavigate, children }) {
       {showExcluirConta && (
         <div className="modal-overlay" style={{ zIndex: 3000 }}>
           <div className="modal-sheet" style={{ maxWidth: 400, padding: 24 }}>
-            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 10, color: '#f87171' }}>
+            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 12, color: '#f87171' }}>
               Excluir minha conta
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.5, marginBottom: 14 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.5, marginBottom: 12 }}>
               Esta acao e <strong>permanente</strong> e nao pode ser desfeita. Vao ser apagados:
             </p>
             <ul style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.7, margin: '0 0 14px 18px' }}>
@@ -527,7 +527,7 @@ export default function Layout({ page, onNavigate, children }) {
               <li>Suas votacoes e avaliacoes de partidas</li>
               <li>Suas participacoes em rachoes e torneios</li>
             </ul>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.5, marginBottom: 18 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.5, marginBottom: 16 }}>
               As partidas, atletas e rankings da comunidade <strong>continuam no ar</strong> — apenas sem
               o seu vinculo com eles.
             </p>
@@ -549,7 +549,7 @@ export default function Layout({ page, onNavigate, children }) {
                 background: 'var(--bg-elevated)',
                 color: 'var(--text-primary)',
                 fontSize: 15,
-                marginBottom: 14,
+                marginBottom: 12,
                 textAlign: 'center',
                 letterSpacing: 2,
                 fontWeight: 700
@@ -564,7 +564,7 @@ export default function Layout({ page, onNavigate, children }) {
                 borderRadius: 10,
                 padding: '8px 12px',
                 fontSize: 13,
-                marginBottom: 14
+                marginBottom: 12
               }}>
                 {erroExcluir}
               </div>

@@ -155,7 +155,7 @@ export default function Explorar({ profile, onNavigate }) {
               fontSize: 13,
               fontWeight: 700,
               padding: 0,
-              marginBottom: 10,
+              marginBottom: 12,
               fontFamily: "'Inter', sans-serif" }}
           >
             <IconVoltar size={16} color="var(--accent)" />
@@ -180,7 +180,7 @@ export default function Explorar({ profile, onNavigate }) {
           </p>
 
           {/* Cartão resumo */}
-          <div className="premium-card" style={{ borderRadius: 12, padding: 16, marginTop: 16, marginBottom: 20 }}>
+          <div className="premium-card" style={{ borderRadius: 12, padding: 16, marginTop: 16, marginBottom: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
               <div style={{ display: 'flex', gap: 12 }}>
                 <CityCrest cidade={selected.cidade} uf={selected.uf} size={44} />
@@ -229,7 +229,7 @@ export default function Explorar({ profile, onNavigate }) {
             <>
               {topConsolidado.length > 0 && (
                 <>
-                  <div className="home-section-label" style={{ marginBottom: 10 }}>
+                  <div className="home-section-label" style={{ marginBottom: 12 }}>
                     Top consolidado
                   </div>
                   <PlayerList list={topConsolidado} onOpen={setPlayerModal} />
@@ -268,7 +268,7 @@ export default function Explorar({ profile, onNavigate }) {
             fontSize: 13,
             fontWeight: 700,
             padding: 0,
-            marginBottom: 10,
+            marginBottom: 12,
             fontFamily: "'Inter', sans-serif" }}
         >
           <IconVoltar size={16} color="var(--accent)" />
@@ -296,7 +296,7 @@ export default function Explorar({ profile, onNavigate }) {
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             gap: 8,
-            marginTop: 14,
+            marginTop: 12,
             marginBottom: 4 }}
         >
           <button
@@ -419,7 +419,7 @@ export default function Explorar({ profile, onNavigate }) {
                         </span>
                       )}
                     </div>
-                    <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 3 }}>
+                    <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
                       {c.player_count} atleta{c.player_count !== 1 ? 's' : ''} · {c.total_votos} avaliações
                     </div>
                   </div>
@@ -495,7 +495,7 @@ function PlayerList({ list, onOpen }) {
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)' }}>{nome}</div>
-              <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>
+              <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
                 {j.posicao || '—'} · {resumoAvaliacoes(j, { compacto: true })}
               </div>
               <span

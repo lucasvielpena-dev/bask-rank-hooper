@@ -278,7 +278,7 @@ export default function Racoes({ profile, onNavigate }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
           <div>
             <div style={{ fontWeight: 800, fontSize: 15 }}>{r.titulo}</div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>
+            <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
               {r.local || 'Local a definir'} · {r.cidade}
             </div>
           </div>
@@ -360,7 +360,7 @@ export default function Racoes({ profile, onNavigate }) {
         <div className="modal-overlay" onClick={() => setShowCreate(false)}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="modal-handle" />
-            <h3 style={{ marginBottom: 14, fontWeight: 800 }}>Novo rachão</h3>
+            <h3 style={{ marginBottom: 12, fontWeight: 800 }}>Novo rachão</h3>
             <form onSubmit={handleCreate}>
               <div className="form-group" style={{ marginBottom: 12 }}>
                 <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>Título</label>
@@ -400,7 +400,7 @@ export default function Racoes({ profile, onNavigate }) {
         <div className="modal-overlay" onClick={() => setSelected(null)}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 800, marginBottom: 6 }}>{selected.titulo}</h3>
+            <h3 style={{ fontWeight: 800, marginBottom: 8 }}>{selected.titulo}</h3>
             <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 12 }}>
               {selected.local || 'Local a definir'} · {formatWhen(selected.data_hora)}
             </p>
@@ -434,7 +434,7 @@ export default function Racoes({ profile, onNavigate }) {
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 13, fontWeight: 600 }}>{nome}</div>
                           {selected.status === 'finalizado' && jid && (
-                            <div style={{ marginTop: 2 }}>
+                            <div style={{ marginTop: 4 }}>
                               <RendimentoPill media={resumos[jid]?.media} total={resumos[jid]?.total} showLabel />
                             </div>
                           )}
@@ -471,7 +471,7 @@ export default function Racoes({ profile, onNavigate }) {
         <div className="modal-overlay" onClick={() => { if (!enviandoVoto) setVotingPlayer(null); }}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 2 }}>
+            <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 4 }}>
               Nota da partida de {votingPlayer.apelido || votingPlayer.nome}
             </h3>
             <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
@@ -492,12 +492,12 @@ export default function Racoes({ profile, onNavigate }) {
                     </span>
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 800 }}>{gradeAtual.titulo}</div>
-                      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>{gradeAtual.desc}</div>
+                      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>{gradeAtual.desc}</div>
                     </div>
                   </div>
                 </div>
               ) : (
-                <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14, marginBottom: 0 }}>
+                <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginTop: 12, marginBottom: 0 }}>
                   Toque em uma letra para ver o que ela significa.
                 </p>
               )}

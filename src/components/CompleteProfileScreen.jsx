@@ -387,7 +387,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               )}
             </label>
           </div>
-          <h2 style={{ fontWeight: 800, fontSize: 'clamp(20px, 5vw, 24px)', marginBottom: 6 }}>Complete seu perfil</h2>
+          <h2 style={{ fontWeight: 800, fontSize: 'clamp(20px, 5vw, 24px)', marginBottom: 8 }}>Complete seu perfil</h2>
           <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.5 }}>
             Falta pouco! Preencha as informações obrigatórias para ter acesso completo ao Rank Hooper.
           </p>
@@ -409,7 +409,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div>
-            <label style={{ fontSize: 13, color: '#64748b', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+            <label style={{ fontSize: 13, color: '#64748b', fontWeight: 600, display: 'block', marginBottom: 8 }}>
               Nome completo
             </label>
             <input
@@ -421,7 +421,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           </div>
 
           <div>
-            <label style={{ fontSize: 13, color: '#64748b', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+            <label style={{ fontSize: 13, color: '#64748b', fontWeight: 600, display: 'block', marginBottom: 8 }}>
               E-mail
             </label>
             <input
@@ -433,7 +433,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           </div>
 
           <div>
-            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
               Apelido *
             </label>
             <input
@@ -446,7 +446,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           </div>
 
           <div>
-            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
               Posição de Jogo *
             </label>
             <select
@@ -498,7 +498,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
                 Altura (m) *
               </label>
               <input
@@ -511,7 +511,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               />
             </div>
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
                 Idade *
               </label>
               <input
@@ -529,7 +529,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           <button
             type="submit"
             className="btn btn-primary"
-            style={{ marginTop: 14 }}
+            style={{ marginTop: 12 }}
             disabled={carregando || locationStatus !== 'success'}
           >
             {carregando ? (

@@ -52,7 +52,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
           </div>
-          <h2 style={{ fontSize: 'clamp(16px, 4vw, 20px)', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6 }}>
+          <h2 style={{ fontSize: 'clamp(16px, 4vw, 20px)', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8 }}>
             Acesso negado
           </h2>
           <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
@@ -292,7 +292,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
 
         {/* Info */}
         <div style={{
-          marginTop: 20,
+          marginTop: 16,
           padding: 'clamp(12px, 3vw, 16px)',
           background: 'var(--bg-card)',
           border: '1px solid var(--border)',
@@ -304,7 +304,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
           alignItems: 'flex-start',
           gap: 8
         }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 2 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 4 }}>
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="16" x2="12" y2="12" />
             <line x1="12" y1="8" x2="12.01" y2="8" />

@@ -123,7 +123,7 @@ export default function LocationGate({ profile, onResolved }) {
         >
                   </div>
         <h1 style={{ fontSize: 22, fontWeight: 900, marginBottom: 8 }}>Localização obrigatória</h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.5, marginBottom: 20 }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.5, marginBottom: 16 }}>
           O Rank Hooper mostra só atletas da <strong>sua cidade</strong>. Precisamos da sua
           localização para classificar você no ranking municipal certo.
         </p>
@@ -185,7 +185,7 @@ export default function LocationGate({ profile, onResolved }) {
           <button
             type="button"
             className="btn btn-secondary"
-            style={{ width: '100%', marginTop: 10 }}
+            style={{ width: '100%', marginTop: 12 }}
             onClick={pedirLocalizacao}
             disabled={salvando}
           >

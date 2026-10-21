@@ -55,7 +55,7 @@ export default function ContaSuspensa({ onSair }) {
           Conta suspensa
         </h2>
 
-        <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text-secondary)', marginBottom: 20 }}>
+        <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text-secondary)', marginBottom: 16 }}>
           Seu acesso ao Ranking está bloqueado pelo organizador. Se você acha que
           foi um engano, fale com quem administra o app para liberar de novo.
         </p>

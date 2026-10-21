@@ -133,7 +133,7 @@ export default function Home({ profile, onNavigate }) {
           </div>
         </div>
 
-        <div style={{ perspective: '1200px', marginBottom: 20 }}>
+        <div style={{ perspective: '1200px', marginBottom: 16 }}>
           <div 
             className="premium-card premium-card-border-green stagger-enter stagger-1" 
             onMouseMove={handleHeroMove}
@@ -163,13 +163,13 @@ export default function Home({ profile, onNavigate }) {
 
           {/* Main row: info + foto. A foto ocupa a parte direita e se
               dissolve no card por todos os lados (máscara), sem borda/vinco. */}
-          <div style={{ display: 'flex', alignItems: 'stretch', gap: 8, marginBottom: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'stretch', gap: 8, marginBottom: 12 }}>
 
             {/* Info */}
             <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '4px 0' }}>
               <div>
                 {/* Rank + Name */}
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 6 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 8 }}>
                   <span style={{
                     fontSize: 64, fontWeight: 800, color: 'var(--accent-text)',
                     fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 0.86,
@@ -270,7 +270,7 @@ export default function Home({ profile, onNavigate }) {
             className="hero-btn btn-primary"
             onClick={() => onNavigate('atletas')}
             style={{
-              width: '100%', height: 40, borderRadius: 12, marginTop: 10, fontWeight: 700,
+              width: '100%', height: 40, borderRadius: 12, marginTop: 12, fontWeight: 700,
               cursor: 'pointer', fontFamily: "'Inter',sans-serif",
               textTransform: 'uppercase', letterSpacing: '0.06em',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -358,7 +358,7 @@ export default function Home({ profile, onNavigate }) {
                   </span>
                   <span style={{
                     fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500,
-                    fontFamily: "'Inter',sans-serif", marginTop: 2 }}>
+                    fontFamily: "'Inter',sans-serif", marginTop: 4 }}>
                     {player.posicao || cfg.posicoes[0]}
                   </span>
                 </div>
@@ -368,7 +368,7 @@ export default function Home({ profile, onNavigate }) {
                     <span>★</span>
                     <span>{Number(player.media_estrelas || 0).toFixed(1)}</span>
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>
                     {resumoAvaliacoes(player, { compacto: true })} · {labelConfianca(player.nivel_confianca || nivelConfianca(player.total_votos))}
                   </div>
                   <div style={{ width: 80, height: 4, background: 'var(--bg-secondary)', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>

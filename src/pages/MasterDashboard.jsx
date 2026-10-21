@@ -122,7 +122,7 @@ export default function MasterDashboard({ onNavigate }) {
               padding: '12px 12px',
               color: '#f87171',
               fontSize: 'var(--fs-sm)',
-              marginBottom: 14 }}
+              marginBottom: 12 }}
           >
             {error}
           </div>
@@ -135,8 +135,8 @@ export default function MasterDashboard({ onNavigate }) {
         ) : (
           <>
             {/* Alertas — estilo Home highlights */}
-            <div className="home-section-label" style={{ marginBottom: 10 }}>Precisa de atenção</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 18 }}>
+            <div className="home-section-label" style={{ marginBottom: 12 }}>Precisa de atenção</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 16 }}>
               <button
                 type="button"
                 className="premium-card"
@@ -153,7 +153,7 @@ export default function MasterDashboard({ onNavigate }) {
                   {insights.semCidade.length}
                 </div>
                 <div className="text-sm" style={{ fontWeight: 700, color: 'var(--text-primary)', marginTop: 4 }}>Sem cidade</div>
-                <div className="text-sm" style={{ color: 'var(--text-muted)', marginTop: 2 }}>Ver em Jogadores</div>
+                <div className="text-sm" style={{ color: 'var(--text-muted)', marginTop: 4 }}>Ver em Jogadores</div>
               </button>
               <button
                 type="button"
@@ -163,7 +163,7 @@ export default function MasterDashboard({ onNavigate }) {
               >
                 <div className="text-lg" style={{ color: 'var(--text-secondary)', margin: 0 }}>{insights.suspensos.length}</div>
                 <div className="text-sm" style={{ fontWeight: 700, color: 'var(--text-primary)', marginTop: 4 }}>Suspensos</div>
-                <div className="text-sm" style={{ color: 'var(--text-muted)', marginTop: 2 }}>Ativar / suspender</div>
+                <div className="text-sm" style={{ color: 'var(--text-muted)', marginTop: 4 }}>Ativar / suspender</div>
               </button>
               <button
                 type="button"
@@ -173,7 +173,7 @@ export default function MasterDashboard({ onNavigate }) {
               >
                 <div className="text-lg" style={{ color: '#93c5fd', margin: 0 }}>{insights.semVotos.length}</div>
                 <div className="text-sm" style={{ fontWeight: 700, color: 'var(--text-primary)', marginTop: 4 }}>Sem votos</div>
-                <div className="text-sm" style={{ color: 'var(--text-muted)', marginTop: 2 }}>Ainda sem avaliação</div>
+                <div className="text-sm" style={{ color: 'var(--text-muted)', marginTop: 4 }}>Ainda sem avaliação</div>
               </button>
               <button
                 type="button"
@@ -183,12 +183,12 @@ export default function MasterDashboard({ onNavigate }) {
               >
                 <div className="text-lg" style={{ color: 'var(--accent)', margin: 0 }}>→</div>
                 <div className="text-sm" style={{ fontWeight: 700, color: 'var(--text-primary)', marginTop: 4 }}>Relatórios</div>
-                <div className="text-sm" style={{ color: 'var(--text-muted)', marginTop: 2 }}>Gráficos do sistema</div>
+                <div className="text-sm" style={{ color: 'var(--text-muted)', marginTop: 4 }}>Gráficos do sistema</div>
               </button>
             </div>
 
             {insights.semCidade.length > 0 && (
-              <div className="premium-card" style={{ borderRadius: 14, padding: 12, marginBottom: 18 }}>
+              <div className="premium-card" style={{ borderRadius: 14, padding: 12, marginBottom: 16 }}>
                 <div className="text-sm" style={{ fontWeight: 800, color: '#fbbf24', marginBottom: 8 }}>
                   Atletas sem cidade
                 </div>
@@ -224,7 +224,7 @@ export default function MasterDashboard({ onNavigate }) {
                 cursor: 'pointer',
                 fontFamily: 'inherit',
                 width: '100%',
-                marginBottom: 18,
+                marginBottom: 16,
                 border: '1px solid var(--accent-line)' }}
             >
               <div className="text-md" style={{ fontWeight: 800, color: 'var(--text-primary)' }}>Atividade global</div>
@@ -234,8 +234,8 @@ export default function MasterDashboard({ onNavigate }) {
             </button>
 
             {/* Números */}
-            <div className="home-section-label" style={{ marginBottom: 10 }}>Números</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 18 }}>
+            <div className="home-section-label" style={{ marginBottom: 12 }}>Números</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8, marginBottom: 16 }}>
               {STAT_CARDS.map((card) => {
                 const Icon = card.icon;
                 return (
@@ -244,7 +244,7 @@ export default function MasterDashboard({ onNavigate }) {
                       <Icon size={16} color="var(--accent)" />
                     </div>
                     <div className="text-lg" style={{ margin: 0, fontSize: 17 }}>{stats[card.key] ?? '—'}</div>
-                    <div className="text-sm" style={{ color: 'var(--text-muted)', fontWeight: 600, marginTop: 2 }}>
+                    <div className="text-sm" style={{ color: 'var(--text-muted)', fontWeight: 600, marginTop: 4 }}>
                       {card.label}
                     </div>
                   </div>
@@ -253,7 +253,7 @@ export default function MasterDashboard({ onNavigate }) {
             </div>
 
             {/* Cidades */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
               <div className="home-section-label" style={{ margin: 0 }}>Por cidade</div>
               <button
                 type="button"
@@ -266,7 +266,7 @@ export default function MasterDashboard({ onNavigate }) {
             </div>
 
             {cities.length === 0 ? (
-              <div className="premium-card" style={{ borderRadius: 14, padding: 16, textAlign: 'center', marginBottom: 18 }}>
+              <div className="premium-card" style={{ borderRadius: 14, padding: 16, textAlign: 'center', marginBottom: 16 }}>
                 <p className="page-sub" style={{ margin: 0 }}>Nenhuma cidade com cadastro ainda.</p>
               </div>
             ) : (
@@ -288,7 +288,7 @@ export default function MasterDashboard({ onNavigate }) {
                         fontFamily: 'inherit',
                         width: '100%' }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                         <span className="text-md" style={{ fontWeight: 800, color: 'var(--text-primary)' }}>{c.cidade}</span>
                         <span className="text-sm" style={{ color: 'var(--text-muted)', fontWeight: 600 }}>
                           {c.user_count} · {c.player_count} atletas

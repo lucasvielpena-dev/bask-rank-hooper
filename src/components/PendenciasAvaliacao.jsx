@@ -150,7 +150,7 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
   return (
     <>
       {mostrarCartao && (
-        <div className="premium-card" style={{ marginBottom: 20 }}>
+        <div className="premium-card" style={{ marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{
@@ -159,7 +159,7 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
                 textTransform: 'uppercase', letterSpacing: '0.04em', lineHeight: 1.1 }}>
                 Quem jogou com você
               </div>
-              <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 3, fontFamily: "'Inter',sans-serif" }}>
+              <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4, fontFamily: "'Inter',sans-serif" }}>
                 {partida.time_a} {partida.placar_time_a ?? 0} x {partida.placar_time_b ?? 0} {partida.time_b}
                 {dataCurta(partida) ? ` · ${dataCurta(partida)}` : ''}
               </div>
@@ -215,7 +215,7 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
         <div style={{
           display: 'flex', alignItems: 'center', gap: 8,
           background: 'var(--bg-card)', border: '1px solid var(--border)',
-          borderRadius: 12, padding: '8px 12px', marginBottom: 20 }}>
+          borderRadius: 12, padding: '8px 12px', marginBottom: 16 }}>
           <div style={{
             flex: 1, fontSize: 13, color: 'var(--text-secondary)',
             fontFamily: "'Inter',sans-serif", lineHeight: 1.45 }}>

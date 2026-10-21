@@ -12,7 +12,7 @@ const ITEMS = [
 
 export default function MasterNav({ current, onNavigate }) {
   return (
-    <div className="tabs-row" style={{ marginBottom: 14, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+    <div className="tabs-row" style={{ marginBottom: 12, overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
       {ITEMS.map((item) => (
         <button
           key={item.id}

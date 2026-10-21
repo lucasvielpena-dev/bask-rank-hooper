@@ -55,7 +55,7 @@ export default function SplashCarregando({ mensagem = 'Preparando sua quadra' })
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
             lineHeight: 1,
-            marginBottom: 18 }}
+            marginBottom: 16 }}
         >
           Rank Hooper
         </h1>

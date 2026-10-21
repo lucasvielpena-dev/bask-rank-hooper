@@ -373,7 +373,7 @@ export default function Stats({ profile, onNavigate }) {
           alignItems: 'flex-end',
           background: 'var(--bg-secondary)',
           border: '1px solid var(--border)',
-          marginBottom: 10
+          marginBottom: 12
         }}>
           {profile.foto_perfil ? (
             <img 
@@ -396,7 +396,7 @@ export default function Stats({ profile, onNavigate }) {
           }} />
 
           <div style={{ zIndex: 2, padding: '16px', width: '100%' }}>
-            <h3 style={{ fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)', marginBottom: 2 }} >{profile.nome_completo}</h3>
+            <h3 style={{ fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)', marginBottom: 4 }} >{profile.nome_completo}</h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4 }}>
               {badgeText && (
                 <span style={{
@@ -436,7 +436,7 @@ export default function Stats({ profile, onNavigate }) {
           <div style={{
             display: 'flex', alignItems: 'center', gap: 8,
             fontSize: 13, color: 'var(--text-secondary)',
-            fontFamily: "'Inter',sans-serif", marginBottom: 10 }}>
+            fontFamily: "'Inter',sans-serif", marginBottom: 12 }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="var(--accent-text)" stroke="none">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
@@ -458,7 +458,7 @@ export default function Stats({ profile, onNavigate }) {
           borderRadius: '8px',
           padding: '4px',
           gap: 4,
-          marginBottom: 10
+          marginBottom: 12
         }}>
           {[
             { key: 'sobre', label: 'SOBRE' },
@@ -510,7 +510,7 @@ export default function Stats({ profile, onNavigate }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {/* Avaliações Públicas */}
               <div>
-                <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.04em', marginBottom: 10, fontFamily: "'Inter',sans-serif", textTransform: 'uppercase' }}>AVALIAÇÕES PÚBLICAS DA QUADRA</div>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.04em', marginBottom: 12, fontFamily: "'Inter',sans-serif", textTransform: 'uppercase' }}>AVALIAÇÕES PÚBLICAS DA QUADRA</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {fundamentos.map(f => {
                     const mediaAspecto = myPlayerInfo ? myPlayerInfo[`media_${f.key}`] || 0 : 0;
@@ -551,15 +551,15 @@ export default function Stats({ profile, onNavigate }) {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, textAlign: 'center' }}>
                       <div style={{ background: 'var(--bg-secondary)', padding: '8px 4px', borderRadius: '8px', border: '1px solid var(--border)' }}>
                         <div style={{ fontSize: '17px', fontWeight: 900, color: 'var(--accent)' }}>{mediasPrivadas.pontos}</div>
-                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>PPJ</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 4 }}>PPJ</div>
                       </div>
                       <div style={{ background: 'var(--bg-secondary)', padding: '8px 4px', borderRadius: '8px', border: '1px solid var(--border)' }}>
                         <div style={{ fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)' }}>{mediasPrivadas.rebotes}</div>
-                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>REB</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 4 }}>REB</div>
                       </div>
                       <div style={{ background: 'var(--bg-secondary)', padding: '8px 4px', borderRadius: '8px', border: '1px solid var(--border)' }}>
                         <div style={{ fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)' }}>{mediasPrivadas.assistencias}</div>
-                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>AST</div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 4 }}>AST</div>
                       </div>
                     </div>
 
@@ -597,7 +597,7 @@ export default function Stats({ profile, onNavigate }) {
                           justifyContent: 'center' 
                         }}>
                           <span style={{ fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)', lineHeight: '1' }}>{mediasPrivadas.aproveitamento}%</span>
-                          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>GERAL</span>
+                          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 4 }}>GERAL</span>
                         </div>
                       </div>
 
@@ -609,7 +609,7 @@ export default function Stats({ profile, onNavigate }) {
                           { label: 'Arremesso de 3', pct: mediasPrivadas.tres_aproveitamento, vol: mediasPrivadas.tres_detalhe },
                         ].map(item => (
                           <div key={item.label}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 2 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4 }}>
                               <span>{item.label}</span>
                               <span style={{ color: 'var(--text-primary)' }}>{item.pct}% <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>({item.vol})</span></span>
                             </div>
@@ -638,7 +638,7 @@ export default function Stats({ profile, onNavigate }) {
                           const maxPontos = Math.max(...ultimasPartidasParaGrafico.map(p => p.pontos || 0), 10);
                           
                           return (
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '60px', padding: '0 8px', marginTop: 10, position: 'relative' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '60px', padding: '0 8px', marginTop: 12, position: 'relative' }}>
                               {/* Linha auxiliar horizontal a 50% de altura */}
                               <div style={{
                                 position: 'absolute',
@@ -676,7 +676,7 @@ export default function Stats({ profile, onNavigate }) {
                                       transition: 'height 0.3s ease'
                                     }} />
                                     {/* Data ou número da partida embaixo */}
-                                    <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 6 }}>
+                                    <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 8 }}>
                                       {new Date(partida.data_partida + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
                                     </span>
                                   </div>
@@ -757,7 +757,7 @@ export default function Stats({ profile, onNavigate }) {
                           <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
                             {h.pontos} pts | {h.rebotes} reb | {h.assistencias} ast
                           </div>
-                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: 2 }}>
+                          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: 4 }}>
                             {new Date(h.data_partida + 'T00:00:00').toLocaleDateString('pt-BR')}
                             {h.nome_jogador && ` • ${h.nome_jogador}`}
                           </div>
@@ -834,11 +834,11 @@ export default function Stats({ profile, onNavigate }) {
           <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440, maxHeight: '85vh', overflowY: 'auto' }}>
             <div className="modal-handle" />
             <h3 style={{ fontWeight: 900, fontSize: 'clamp(17px, 4vw, 20px)', marginBottom: 4 }}>Nova Partida</h3>
-            <p style={{ color: '#64748b', fontSize: 'clamp(11px, 2.5vw, 12px)', marginBottom: 10 }}>Grave seus números de forma privada.</p>
+            <p style={{ color: '#64748b', fontSize: 'clamp(11px, 2.5vw, 12px)', marginBottom: 12 }}>Grave seus números de forma privada.</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <div>
-                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome do Evento / Oponente</label>
+                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Nome do Evento / Oponente</label>
                 <input
                   type="text"
                   value={form.nome_jogador || ''}
@@ -848,7 +848,7 @@ export default function Stats({ profile, onNavigate }) {
               </div>
 
               <div>
-                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Data da Partida</label>
+                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Data da Partida</label>
                 <input
                   type="date"
                   value={form.data_partida}
@@ -935,7 +935,7 @@ export default function Stats({ profile, onNavigate }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
               <button className="btn btn-secondary" onClick={() => setShowRegistrar(false)} style={{ flex: 1 }} disabled={salvando}>Cancelar</button>
               <button className="btn btn-primary" onClick={handleSalvar} disabled={salvando} style={{ flex: 2 }}>
                 {salvando ? 'Salvando...' : 'Salvar Partida'}

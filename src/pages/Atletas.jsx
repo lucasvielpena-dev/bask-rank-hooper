@@ -299,7 +299,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
           <h1 style={{ color: 'var(--text-primary)', fontSize: 'var(--fs-lg)', fontWeight: 900, fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '0.02em', margin: 0 }}>
             ATLETAS
           </h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: "'Inter', sans-serif", marginTop: 2 }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, fontFamily: "'Inter', sans-serif", marginTop: 4 }}>
             {selectedCity || 'Sua cidade'} • {jogadores.length} atletas
           </p>
         </div>
@@ -375,7 +375,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
         {/* Segmented Control — 5 filtros não cabem espremidos em tela estreita,
             então a barra rola na horizontal em vez de cortar os nomes. */}
         <div className="tabs" style={{
-          display: 'flex', background: 'var(--bg-card)', borderRadius: 12, padding: 4, marginBottom: 20, border: '1px solid var(--border)',
+          display: 'flex', background: 'var(--bg-card)', borderRadius: 12, padding: 4, marginBottom: 16, border: '1px solid var(--border)',
           overflowX: 'auto', overflowY: 'hidden', scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch'
         }}>
           {FILTROS.map(f => {
@@ -459,7 +459,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                       <div style={{ color: 'var(--text-primary)', fontSize: 15, fontWeight: 700, fontFamily: "'Inter',sans-serif", whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.2 }}>
                         {nomeAtleta(j)}
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
                         <span style={{ color: 'var(--text-secondary)', fontSize: 13, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.posicao || cfg.posicoes[0]}</span>
                         <span style={{ color: 'var(--text-secondary)', fontSize: 11 }}>•</span>
                         <span style={{ color: 'var(--text-secondary)', fontSize: 13, fontWeight: 400, fontFamily: "'Inter',sans-serif" }}>{j.cidade}</span>
@@ -523,7 +523,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
         <div className="modal-overlay" onClick={() => { if (!enviandoVoto) setVotingPlayer(null); }}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 400, maxHeight: '90vh', overflowY: 'auto', background: 'var(--bg-elevated)' }}>
             <div className="modal-handle" style={{ background: 'var(--border)' }} />
-            <h3 style={{ color: 'var(--text-primary)', fontWeight: 900, fontSize: 17, marginBottom: 2, textAlign: 'center' }}>
+            <h3 style={{ color: 'var(--text-primary)', fontWeight: 900, fontSize: 17, marginBottom: 4, textAlign: 'center' }}>
               Avaliar {nomeAtleta(votingPlayer)}
             </h3>
             <p style={{ color: 'var(--text-muted)', fontSize: 13, marginBottom: 12, textAlign: 'center' }}>
@@ -538,7 +538,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                     background: val > 0 ? 'rgba(255,184,0,0.1)' : 'var(--bg-card)',
                     padding: '8px 12px', borderRadius: 12,
                     border: val > 0 ? '1px solid rgba(255,184,0,0.3)' : '1px solid var(--border)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span style={{
                           width: 20, height: 20, borderRadius: 6,
@@ -556,7 +556,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 );
               })}
 
-              <div style={{ marginTop: 6 }}>
+              <div style={{ marginTop: 8 }}>
                 <input
                   type="text" maxLength="200"
                   value={comentarioVoto}

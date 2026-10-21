@@ -114,7 +114,7 @@ export default function AdminUsers({ profile, onNavigate }) {
   if (loading) {
     return (
       <div className="page-content" style={{ padding: '16px' }}>
-        <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+        <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
           <div className="skeleton skeleton-avatar" style={{ width: 40, height: 40 }} />
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
             <div className="skeleton skeleton-bar" style={{ width: '60%', height: 16 }} />
@@ -134,7 +134,7 @@ export default function AdminUsers({ profile, onNavigate }) {
     <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
       <div style={{ padding: '16px 16px 0' }}>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
           <button
             onClick={() => onNavigate('master')}
             style={{
@@ -241,7 +241,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                     </div>
                   )}
 
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 12 }}>
                     <div style={{
                       width: 42,
                       height: 42,
@@ -283,7 +283,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                       <div style={{
                         fontSize: 'clamp(10px, 2vw, 11px)',
                         color: 'var(--text-muted)',
-                        marginTop: 2
+                        marginTop: 4
                       }}>
                         {user.cidade || '--'} {user.uf ? `- ${user.uf}` : ''}
                       </div>
@@ -348,7 +348,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                     gap: 8,
                     alignItems: 'center',
                     flexWrap: 'wrap',
-                    marginBottom: 10,
+                    marginBottom: 12,
                     fontSize: 11,
                     color: 'var(--text-muted)'
                   }}>
@@ -462,7 +462,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                 fontSize: 17,
                 fontWeight: 700,
                 color: 'var(--text-primary)',
-                marginBottom: 6
+                marginBottom: 8
               }}>
                 Remover usuário?
               </h3>
@@ -470,7 +470,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                 fontSize: 13,
                 color: 'var(--text-secondary)',
                 lineHeight: 1.5,
-                marginBottom: 20
+                marginBottom: 16
               }}>
                 A conta fica bloqueada (a pessoa cai na tela "Conta suspensa") e os
                 dados pessoais são apagados. O login continua cadastrado — assim ela

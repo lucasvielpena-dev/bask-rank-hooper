@@ -98,7 +98,7 @@ export default function Torneios({ profile, isNested = false, openCriar = false,
               </button>
             </div>
           ) : (
-            <div style={{ marginBottom: 10 }}>
+            <div style={{ marginBottom: 12 }}>
               <h3 style={{ fontWeight: 800, fontSize: 17, margin: 0 }}>Torneios da região</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '2px 0 0' }}>Competições e campeonatos ativos</p>
             </div>
@@ -142,7 +142,7 @@ export default function Torneios({ profile, isNested = false, openCriar = false,
                     <p style={{ fontSize: 13, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 4 }}>
                       {t.local_quadra} {t.cidade && `(${t.cidade})`}
                     </p>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 13, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 13, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: 8 }}>
                       <span>Formato: {t.formato === 'eliminatoria_simples' ? 'Mata-Mata' : 'Pontos Corridos'}</span>
                       <span>Organizador: {t.organizador?.nome_completo?.split(' ')[0]}</span>
                     </div>
@@ -215,37 +215,37 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
       <div className="modal-sheet" onClick={e => e.stopPropagation()} style={{ maxWidth: 440 }}>
         <div className="modal-handle" />
         <h3 style={{ fontWeight: 900, fontSize: 17, marginBottom: 4 }}>Novo Torneio</h3>
-        <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 10 }}>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 12 }}>
           Preencha as informações básicas para iniciar as inscrições na sua cidade.
         </p>
 
-        {erro && <div style={{ color: '#f87171', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: 8, borderRadius: 8, fontSize: 13, marginBottom: 14 }}>{erro}</div>}
+        {erro && <div style={{ color: '#f87171', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: 8, borderRadius: 8, fontSize: 13, marginBottom: 12 }}>{erro}</div>}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div>
-            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome do Torneio *</label>
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Nome do Torneio *</label>
             <input required type="text" placeholder="Ex: Copa Altamira 2026" value={form.nome} onChange={e => setForm(p => ({ ...p, nome: e.target.value }))} />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Data de Início *</label>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Data de Início *</label>
               <input required type="date" value={form.data_inicio} onChange={e => setForm(p => ({ ...p, data_inicio: e.target.value }))} />
             </div>
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Horário de Início *</label>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Horário de Início *</label>
               <input required type="time" value={form.horario_inicio} onChange={e => setForm(p => ({ ...p, horario_inicio: e.target.value }))} />
             </div>
           </div>
 
           <div>
-            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Local / Quadra *</label>
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Local / Quadra *</label>
             <input required type="text" placeholder="Ex: Ginásio Municipal" value={form.local_quadra} onChange={e => setForm(p => ({ ...p, local_quadra: e.target.value }))} />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Máx. Equipes</label>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Máx. Equipes</label>
               <select value={form.max_equipes} onChange={e => setForm(p => ({ ...p, max_equipes: parseInt(e.target.value) }))}>
                 <option value="4">4 Equipes</option>
                 <option value="8">8 Equipes</option>
@@ -253,7 +253,7 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
               </select>
             </div>
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Formato</label>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Formato</label>
               <select value={form.formato} onChange={e => setForm(p => ({ ...p, formato: e.target.value }))}>
                 <option value="eliminatoria_simples">Mata-Mata Direto</option>
                 <option value="todos_contra_todos">Pontos Corridos</option>
@@ -263,17 +263,17 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Taxa (R$)</label>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Taxa (R$)</label>
               <input type="number" min="0" value={form.taxa_inscricao} onChange={e => setForm(p => ({ ...p, taxa_inscricao: parseFloat(e.target.value) || 0 }))} />
             </div>
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Premiação</label>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Premiação</label>
               <input type="text" placeholder="Ex: R$ 500 + Troféu" value={form.premiacao} onChange={e => setForm(p => ({ ...p, premiacao: e.target.value }))} />
             </div>
           </div>
 
           <div>
-            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Descrição</label>
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Descrição</label>
             <textarea rows="2" style={{ resize: 'none' }} placeholder="Detalhes do evento..." value={form.descricao} onChange={e => setForm(p => ({ ...p, descricao: e.target.value }))} />
           </div>
 
@@ -654,7 +654,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
         flexShrink: 0
       }}>
         {/* Row 1: Botão Voltar & Status Badge */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '2px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px' }}>
           <button onClick={onBack} style={{
             background: 'rgba(255, 255, 255, 0.08)',
             border: 'none',
@@ -742,7 +742,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
             alignItems: 'center',
             justifyContent: 'center',
             padding: '8px 4px' }}>
-            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '2px' }}>
+            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em', marginBottom: '4px' }}>
               {item.label}
             </span>
             <span style={{
@@ -769,7 +769,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
         gap: '12px',
-        marginTop: '6px',
+        marginTop: '8px',
         flexShrink: 0
       }}>
         {[
@@ -950,7 +950,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   </button>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '2px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '4px' }}>
                   <button onClick={() => setAba('equipes')} style={{
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
@@ -1037,7 +1037,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                   fontWeight: 700,
                   cursor: 'pointer',
                   width: '100%',
-                  marginTop: '10px',
+                  marginTop: '12px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -1437,7 +1437,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
         <div className="modal-overlay" onClick={() => setNotaJogo(null)}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 900, textAlign: 'center', marginBottom: 2 }}>
+            <h3 style={{ fontWeight: 900, textAlign: 'center', marginBottom: 4 }}>
               {notaJogo.equipe_a?.nome} {notaJogo.placar_a} <span style={{ color: 'var(--text-muted)' }}>x</span> {notaJogo.placar_b} {notaJogo.equipe_b?.nome}
             </h3>
             <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
@@ -1466,7 +1466,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                       )}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{j.nome}</div>
-                        <div style={{ marginTop: 2 }}>
+                        <div style={{ marginTop: 4 }}>
                           <RendimentoPill media={r?.media} total={r?.total} showLabel />
                         </div>
                       </div>
@@ -1503,7 +1503,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
         <div className="modal-overlay" onClick={() => { if (!enviandoNota) setNotaAlvo(null); }}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 2 }}>
+            <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 4 }}>
               Nota da partida de {notaAlvo.nome}
             </h3>
             <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
@@ -1524,12 +1524,12 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     </span>
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 800 }}>{gradeAtualNota.titulo}</div>
-                      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>{gradeAtualNota.desc}</div>
+                      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>{gradeAtualNota.desc}</div>
                     </div>
                   </div>
                 </div>
               ) : (
-                <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14, marginBottom: 0 }}>
+                <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginTop: 12, marginBottom: 0 }}>
                   Toque em uma letra para ver o que ela significa.
                 </p>
               )}
@@ -1608,7 +1608,7 @@ function InscricaoEquipeModal({ torneio, profile, onClose, onSuccess }) {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div>
-            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Nome da Equipe *</label>
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Nome da Equipe *</label>
             <input required type="text" placeholder="Ex: Bulls de Altamira" value={nomeEquipe} onChange={e => setNomeEquipe(e.target.value)} />
           </div>
 
@@ -1945,7 +1945,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
   return (
     <div style={{ padding: '16px 16px 24px', height: '100%', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)' }}>
       {/* Header Placar Ao Vivo */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <button 
           onClick={onBack} 
           style={{
@@ -2064,7 +2064,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginBottom: 6
+            marginBottom: 8
           }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2">
               <circle cx="12" cy="12" r="10" />
@@ -2103,7 +2103,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginBottom: 6
+            marginBottom: 8
           }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2">
               <circle cx="12" cy="12" r="10" />
@@ -2133,7 +2133,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         border: '1px solid var(--border)',
         borderRadius: '12px',
         padding: '12px 12px',
-        marginBottom: 20,
+        marginBottom: 16,
         overflowX: 'auto'
       }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'center' }}>
@@ -2179,7 +2179,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
 
       {/* Seção de Transição de Período Dinâmica */}
       {tempo === 0 && (
-        <div style={{ marginBottom: 20 }}>
+        <div style={{ marginBottom: 16 }}>
           {periodo < 4 ? (
             <div className="card" style={{
               padding: '16px',
@@ -2235,7 +2235,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
               border: '1px solid rgba(239, 68, 68, 0.25)',
               textAlign: 'center'
             }}>
-              <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#EF4444', marginBottom: 2 }}>
+              <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#EF4444', marginBottom: 4 }}>
                 Partida Encerrada
               </h3>
               <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
@@ -2308,7 +2308,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         border: '1px solid var(--border)',
         borderRadius: '16px',
         padding: '12px 16px',
-        marginBottom: 20
+        marginBottom: 16
       }}>
         {/* Prev/Reset Button */}
         <button 
@@ -2380,9 +2380,9 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
       </div>
 
       {/* Formulário de Estatísticas Individuais */}
-      <div style={{ flex: 1, overflowY: 'auto', marginBottom: 20 }}>
-        <h4 style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>Estatísticas Individuais</h4>
-        <div className="responsive-card-grid" style={{ marginBottom: 10 }}>
+      <div style={{ flex: 1, overflowY: 'auto', marginBottom: 16 }}>
+        <h4 style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12 }}>Estatísticas Individuais</h4>
+        <div className="responsive-card-grid" style={{ marginBottom: 12 }}>
           {allPlayers.map(p => {
             const st = statsJogo[p.jogador_id] || { pontos: 0, rebotes: 0, assistencias: 0, tocos: 0, roubos: 0 };
             const isTeamA = rosterA.some(r => r.jogador_id === p.jogador_id);
@@ -2444,12 +2444,12 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
         <div className="modal-overlay" onClick={() => setShowFinalizarModal(false)}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 6 }}>Finalizar Partida</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>Deseja mesmo encerrar a partida? O placar acumulado e estatísticas serão registrados de forma definitiva no torneio.</p>
+            <h3 style={{ fontWeight: 800, fontSize: 17, marginBottom: 8 }}>Finalizar Partida</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 16 }}>Deseja mesmo encerrar a partida? O placar acumulado e estatísticas serão registrados de forma definitiva no torneio.</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
-                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Eleger MVP da Partida (Opcional)</label>
+                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Eleger MVP da Partida (Opcional)</label>
                 <select value={mvpId} onChange={e => setMvpId(e.target.value)} style={{ color: mvpId ? 'var(--text-primary)' : 'var(--text-muted)' }}>
                   <option value="">Selecione o MVP...</option>
                   {allPlayers.map(p => {
@@ -2563,7 +2563,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
       {loading ? (
         <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Carregando atletas...</div>
       ) : roster.length === 0 ? (
-        <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 6 }}>Nenhum jogador no time ainda.</div>
+        <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8 }}>Nenhum jogador no time ainda.</div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
           {roster.map(r => (
@@ -2637,7 +2637,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
               placeholder="Buscar atleta pelo nome..." 
               value={searchQuery} 
               onChange={e => setSearchQuery(e.target.value)} 
-              style={{ marginBottom: 10 }}
+              style={{ marginBottom: 12 }}
             />
 
             <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, minHeight: 200 }}>

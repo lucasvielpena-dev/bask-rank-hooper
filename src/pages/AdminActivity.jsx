@@ -170,7 +170,7 @@ export default function AdminActivity({ profile, onNavigate }) {
         </div>
 
         {/* Abas */}
-        <div className="tabs-row" style={{ marginBottom: 14 }}>
+        <div className="tabs-row" style={{ marginBottom: 12 }}>
           {ABAS.map((a) => (
             <button
               key={a.id}
@@ -334,7 +334,7 @@ function ListaRacoes({ list, onOpen }) {
               fontFamily: 'inherit',
               width: '100%' }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <StatusPill {...st} />
               <span className="text-sm" style={{ color: 'var(--text-muted)' }}>
                 {r.cidade || '—'}{r.uf ? ` · ${r.uf}` : ''}
@@ -379,7 +379,7 @@ function ListaTorneios({ list, onOpen }) {
               fontFamily: 'inherit',
               width: '100%' }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <StatusPill {...st} />
               <span className="text-sm" style={{ color: 'var(--text-muted)' }}>
                 {t.cidade || '—'}{t.uf ? ` · ${t.uf}` : ''}
@@ -437,8 +437,8 @@ function DetalheModal({ detalhe, onClose, onFechar, onExcluir }) {
 
         {tipo === 'racao' && (
           <>
-            <div className="text-md" style={{ fontWeight: 800, marginBottom: 6 }}>{item.titulo || item.local || 'Rachão'}</div>
-            <div className="text-sm" style={{ color: 'var(--text-muted)', marginBottom: 10 }}>
+            <div className="text-md" style={{ fontWeight: 800, marginBottom: 8 }}>{item.titulo || item.local || 'Rachão'}</div>
+            <div className="text-sm" style={{ color: 'var(--text-muted)', marginBottom: 12 }}>
               {item.cidade || '—'} · {fmtData(item.data_hora || item.created_at)}
             </div>
             <StatusPill {...statusRacao(item.status)} />
@@ -456,8 +456,8 @@ function DetalheModal({ detalhe, onClose, onFechar, onExcluir }) {
 
         {tipo === 'torneio' && (
           <>
-            <div className="text-md" style={{ fontWeight: 800, marginBottom: 6 }}>{item.nome}</div>
-            <div className="text-sm" style={{ color: 'var(--text-muted)', marginBottom: 10 }}>
+            <div className="text-md" style={{ fontWeight: 800, marginBottom: 8 }}>{item.nome}</div>
+            <div className="text-sm" style={{ color: 'var(--text-muted)', marginBottom: 12 }}>
               {item.cidade || '—'} · {item.local_quadra || 'Local —'}
             </div>
             <StatusPill {...statusTorneio(item.status)} />
@@ -502,7 +502,7 @@ function ConfirmacaoTorneio({ confirmacao, executando, onCancelar, onConfirmar }
         <h3 className="page-title" style={{ fontSize: 17, marginBottom: 8, color: excluir ? '#ef4444' : 'var(--text-primary)' }}>
           {excluir ? 'Excluir torneio' : 'Fechar torneio'}
         </h3>
-        <p className="text-sm" style={{ color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 18 }}>
+        <p className="text-sm" style={{ color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: 16 }}>
           {excluir
             ? <>Excluir <strong>{nome}</strong>? Isso apaga equipes, jogos e estatísticas e não pode ser desfeito.</>
             : <>Fechar <strong>{nome}</strong>? Ele será marcado como finalizado.</>}

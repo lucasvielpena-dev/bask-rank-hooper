@@ -200,7 +200,7 @@ const LinhaEvolucao = memo(function LinhaEvolucao({ serie = [], loading = false,
   const tendencia = calcularTendencia(serie);
 
   return (
-    <div className="card" style={{ padding: '8px 12px', marginBottom: 10 }}>
+    <div className="card" style={{ padding: '8px 12px', marginBottom: 12 }}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
         <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.04em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>
           Evolução
@@ -234,7 +234,7 @@ const LinhaEvolucao = memo(function LinhaEvolucao({ serie = [], loading = false,
             </span>
           </div>
 
-          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }}>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.5 }}>
             Notas de partida (rachões, competições e torneios) + votos da aba Atletas.
             {' '}Ponto vazado = mês com poucas avaliações. Sem ponto = mês sem avaliação.
           </div>

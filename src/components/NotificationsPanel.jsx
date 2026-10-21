@@ -242,9 +242,9 @@ function NotificationsPanel({
                 border: '1px solid var(--border)',
                 borderRadius: 14,
                 padding: 16,
-                marginBottom: 14 }}
+                marginBottom: 12 }}
             >
-              <div style={{ fontSize: 22, marginBottom: 10 }}><IconForTitle titulo={selected.titulo} size={20} /></div>
+              <div style={{ fontSize: 22, marginBottom: 12 }}><IconForTitle titulo={selected.titulo} size={20} /></div>
               <h2
                 style={{
                   fontSize: 17,
@@ -278,7 +278,7 @@ function NotificationsPanel({
 
             {/* Aceitar / recusar operador de placar */}
             {placar && (
-              <div style={{ marginBottom: 14 }}>
+              <div style={{ marginBottom: 12 }}>
                 <div
                   style={{
                     fontSize: 13,
@@ -317,7 +317,7 @@ function NotificationsPanel({
                           border: '1px solid var(--border)',
                           marginBottom: 8 }}
                       >
-                        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 12 }}>
                           {p.nome || 'Alguém'} quer operar o placar
                         </div>
                         <div style={{ display: 'flex', gap: 8 }}>
@@ -496,7 +496,7 @@ function NotificationsPanel({
                     <span
                       style={{
                         display: 'inline-block',
-                        marginTop: 6,
+                        marginTop: 8,
                         fontSize: 11,
                         fontWeight: 700,
                         color: 'var(--accent)' }}

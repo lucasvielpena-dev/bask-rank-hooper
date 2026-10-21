@@ -1030,7 +1030,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
         <div className="home-container" style={{ padding: '16px 16px 0', position: 'relative', zIndex: 1 }}>
           {/* Header + tabs na mesma lógica visual */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 12 }}>
               <div style={{ minWidth: 0 }}>
                 <h2 className="page-title" style={{ fontSize: 'var(--fs-lg)' }}>
                   Competições
@@ -1085,7 +1085,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <>
               {/* Pedidos de placar compartilhado que EU (criador) preciso responder */}
               {pedidosCriador.length > 0 && (
-                <div className="card" style={{ padding: '8px 12px', marginBottom: 10, border: '1px solid var(--accent-line)', background: 'var(--accent-soft)' }}>
+                <div className="card" style={{ padding: '8px 12px', marginBottom: 12, border: '1px solid var(--accent-line)', background: 'var(--accent-soft)' }}>
                   <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Pedidos para operar o placar
                   </div>
@@ -1190,7 +1190,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       {/* TELA 2: WIZARD / CADASTRO DE TIMES */}
       {tela === 'novo' && (
         <div style={{ padding: '12px' }}>
-          <h3 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 17, marginBottom: 2 }}>Configurar Partida</h3>
+          <h3 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 17, marginBottom: 4 }}>Configurar Partida</h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 12 }}>Configure as equipes e a lista de atletas antes de iniciar o cronômetro.</p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -1243,7 +1243,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
             {/* Listagem de jogadores e seleção rápida */}
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700, display: 'block', marginBottom: 2 }}>Escalar Jogadores</label>
+              <label style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 700, display: 'block', marginBottom: 4 }}>Escalar Jogadores</label>
               <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>Distribua os jogadores entre as duas equipes:</p>
               
               <div style={{ maxHeight: '50vh', overflowY: 'auto', background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 10, padding: '0 12px' }}>
@@ -1296,7 +1296,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             </div>
 
             {/* Botões do Wizard */}
-            <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
+            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
               <button className="btn btn-secondary" onClick={() => setTela('lista')} style={{ flex: 1 }}>Cancelar</button>
               <button className="btn btn-primary" onClick={handleIniciarJogo} disabled={salvando} style={{ flex: 2 }}>
                 {salvando ? <><div className="spinner" /> Salvando...</> : 'Iniciar Partida'}
@@ -1342,7 +1342,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           {partidaAtiva.status === 'ativo' && (
             <div className="card" style={{
               padding: '8px 12px',
-              marginBottom: 10,
+              marginBottom: 12,
               background: possoOperarPlacar ? 'var(--bg-card)' : 'rgba(239,68,68,0.08)',
               border: `1px solid ${possoOperarPlacar ? 'var(--border)' : 'rgba(239,68,68,0.35)'}`,
               borderRadius: 10
@@ -1409,7 +1409,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            marginBottom: 10
+            marginBottom: 12
           }}>
             <span className={timerAtivo ? 'timer-active-pulse-text' : ''} style={{
               fontSize: 'clamp(44px, 12vw, 72px)',
@@ -1464,7 +1464,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: 6
+                marginBottom: 8
               }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
@@ -1503,7 +1503,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: 6
+                marginBottom: 8
               }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--counter-btn-b-color)" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
@@ -1635,7 +1635,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   border: '1px solid rgba(239, 68, 68, 0.25)',
                   textAlign: 'center'
                 }}>
-                  <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#EF4444', marginBottom: 2 }}>
+                  <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#EF4444', marginBottom: 4 }}>
                     Partida Encerrada
                   </h3>
                   <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
@@ -1652,7 +1652,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <div className="mesa-panel-head" style={{ marginBottom: modoMesa ? 4 : 0 }}>
               <div>
                 <div style={{ fontWeight: 800, fontSize: 15, color: 'var(--text-primary)' }}>Modo mesa</div>
-                <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>
+                <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
                   Marque por jogador · pontos separados das outras stats
                 </div>
               </div>
@@ -1682,7 +1682,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     onClick={desfazerUltimaStatMesa}
                     disabled={mesaBusy}
                     style={{
-                      marginBottom: 10, width: '100%', padding: '8px 0', borderRadius: 999,
+                      marginBottom: 12, width: '100%', padding: '8px 0', borderRadius: 999,
                       border: '1px solid var(--border)', background: 'transparent',
                       color: 'var(--text-secondary)', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
                   >
@@ -1861,7 +1861,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             border: '1px solid var(--border)',
             borderRadius: '16px',
             padding: '12px 16px',
-            marginBottom: 20
+            marginBottom: 16
           }}>
             {/* Prev/Reset Button */}
             <button 
@@ -1965,12 +1965,12 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
         <div className="modal-overlay" onClick={() => setShowFinalizarModal(false)}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()}>
             <div className="modal-handle" />
-            <h3 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 17, marginBottom: 6 }}>Finalizar Jogo</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 20 }}>Deseja mesmo encerrar a partida? O placar acumulado e estatísticas serão registrados de forma definitiva. Se encerrar por engano, dá para reabrir depois (histórico → Reabrir partida).</p>
+            <h3 style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 17, marginBottom: 8 }}>Finalizar Jogo</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 16 }}>Deseja mesmo encerrar a partida? O placar acumulado e estatísticas serão registrados de forma definitiva. Se encerrar por engano, dá para reabrir depois (histórico → Reabrir partida).</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
-                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Eleger MVP da Partida (Opcional)</label>
+                <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Eleger MVP da Partida (Opcional)</label>
                 <select value={mvpId} onChange={e => setMvpId(e.target.value)} style={{ color: mvpId ? 'var(--text-primary)' : 'var(--text-muted)' }}>
                   <option value="">Selecione o MVP...</option>
                   {getEscalados().map(j => (
@@ -1994,7 +1994,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
         <div className="modal-overlay" onClick={() => setDetalhe(null)}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 900, textAlign: 'center', marginBottom: 2 }}>
+            <h3 style={{ fontWeight: 900, textAlign: 'center', marginBottom: 4 }}>
               {detalhe.time_a} {detalhe.placar_time_a} <span style={{ color: 'var(--text-muted)' }}>x</span> {detalhe.placar_time_b} {detalhe.time_b}
             </h3>
             <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
@@ -2040,7 +2040,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     </div>
                   );
                 })}
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6 }}>PTS / AST / REB</div>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8 }}>PTS / AST / REB</div>
               </div>
             )}
 
@@ -2067,11 +2067,11 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nome}</div>
                         {temBox ? (
-                          <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace', marginTop: 2 }}>
+                          <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace', marginTop: 4 }}>
                             {j.pontos || 0} PTS · {j.assistencias || 0} AST · {j.rebotes || 0} REB · {j.turnovers || 0} TO · {j.faltas || 0} F
                           </div>
                         ) : null}
-                        <div style={{ marginTop: 2 }}>
+                        <div style={{ marginTop: 4 }}>
                           <RendimentoPill media={resumo?.media} total={resumo?.total} showLabel />
                         </div>
                       </div>
@@ -2101,7 +2101,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
         <div className="modal-overlay" onClick={() => { if (!enviandoVoto) setVotingPlayer(null); }}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="modal-handle" />
-            <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 2 }}>
+            <h3 style={{ fontWeight: 800, textAlign: 'center', marginBottom: 4 }}>
               Nota da partida de {votingPlayer.apelido || votingPlayer.nome}
             </h3>
             <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginBottom: 12 }}>
@@ -2122,12 +2122,12 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     </span>
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 800 }}>{gradeAtual.titulo}</div>
-                      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>{gradeAtual.desc}</div>
+                      <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>{gradeAtual.desc}</div>
                     </div>
                   </div>
                 </div>
               ) : (
-                <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14, marginBottom: 0 }}>
+                <p style={{ fontSize: 13, color: 'var(--text-muted)', textAlign: 'center', marginTop: 12, marginBottom: 0 }}>
                   Toque em uma letra para ver o que ela significa.
                 </p>
               )}

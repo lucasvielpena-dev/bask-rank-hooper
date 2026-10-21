@@ -109,7 +109,7 @@ export default function Destaques({ profile, onNavigate }) {
       <div style={{ padding: '16px 16px 28px', position: 'relative', zIndex: 1, maxWidth: 560, margin: '0 auto' }}>
 
         {/* Header — mesmo padrão Atletas */}
-        <div style={{ marginBottom: 20 }}>
+        <div style={{ marginBottom: 16 }}>
           <button
             type="button"
             onClick={() => onNavigate?.('inicio')}
@@ -124,7 +124,7 @@ export default function Destaques({ profile, onNavigate }) {
               fontSize: 13,
               fontWeight: 700,
               padding: 0,
-              marginBottom: 10,
+              marginBottom: 12,
               fontFamily: "'Inter', sans-serif" }}
           >
             <IconVoltar size={16} color="var(--accent)" />
@@ -148,7 +148,7 @@ export default function Destaques({ profile, onNavigate }) {
         </div>
 
         {/* Stats em cards iguais ao resto */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 22 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginBottom: 24 }}>
           {[
             { label: 'Jogadores', value: stats.jogadores },
             { label: 'Média geral', value: stats.mediaGeral > 0 ? stats.mediaGeral.toFixed(1) : '—' },
@@ -175,7 +175,7 @@ export default function Destaques({ profile, onNavigate }) {
                   fontSize: 11,
                   color: 'var(--text-muted)',
                   fontWeight: 600,
-                  marginTop: 6,
+                  marginTop: 8,
                   textTransform: 'uppercase',
                   letterSpacing: '0.04em',
                   fontFamily: "'Inter', sans-serif" }}
@@ -187,14 +187,14 @@ export default function Destaques({ profile, onNavigate }) {
         </div>
 
         {/* Top ranking */}
-        <div className="home-section-label" style={{ marginBottom: 10 }}>
+        <div className="home-section-label" style={{ marginBottom: 12 }}>
           Top da cidade
         </div>
 
         {topJogadores.length === 0 ? (
           <div
             className="premium-card"
-            style={{ borderRadius: 14, padding: 24, textAlign: 'center', marginBottom: 20 }}
+            style={{ borderRadius: 14, padding: 24, textAlign: 'center', marginBottom: 16 }}
           >
             <p style={{ color: 'var(--text-muted)', fontSize: 15, margin: 0, fontFamily: "'Inter', sans-serif" }}>
               Ainda não há ranking com avaliações em {cityLabel}.
@@ -202,14 +202,14 @@ export default function Destaques({ profile, onNavigate }) {
             <button
               type="button"
               className="btn btn-primary"
-              style={{ marginTop: 14, width: '100%' }}
+              style={{ marginTop: 12, width: '100%' }}
               onClick={() => onNavigate?.('atletas')}
             >
               Ir para Atletas
             </button>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 22 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24 }}>
             {topJogadores.map((jogador, i) => {
               const nome = nomeAtleta(jogador);
               const media =
@@ -279,7 +279,7 @@ export default function Destaques({ profile, onNavigate }) {
                       style={{
                         fontSize: 13,
                         color: 'var(--text-muted)',
-                        marginTop: 2,
+                        marginTop: 4,
                         fontFamily: "'Inter', sans-serif" }}
                     >
                       {jogador.posicao || cfg?.posicoes?.[0] || '—'} · {jogador.total_votos || 0}{' '}
@@ -303,7 +303,7 @@ export default function Destaques({ profile, onNavigate }) {
         )}
 
         {/* Torneios */}
-        <div className="home-section-label" style={{ marginBottom: 10 }}>
+        <div className="home-section-label" style={{ marginBottom: 12 }}>
           Torneios
         </div>
         <div className="premium-card" style={{ borderRadius: 14, padding: 16, marginBottom: 12 }}>
@@ -332,7 +332,7 @@ export default function Destaques({ profile, onNavigate }) {
                   ? `${stats.torneios} torneio(s) na cidade`
                   : 'Nenhum torneio ativo'}
               </div>
-              <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>
+              <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
                 {stats.torneios > 0 ? 'Participe dos torneios locais' : 'Novos torneios em breve'}
               </div>
             </div>

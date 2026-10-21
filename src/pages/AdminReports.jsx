@@ -158,7 +158,7 @@ export default function AdminReports({ profile, onNavigate }) {
             <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
-          <h2 style={{ fontSize: 'clamp(16px, 4vw, 20px)', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 6 }}>
+          <h2 style={{ fontSize: 'clamp(16px, 4vw, 20px)', fontWeight: 800, color: 'var(--text-primary)', marginBottom: 8 }}>
             Acesso negado
           </h2>
           <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
@@ -326,7 +326,7 @@ export default function AdminReports({ profile, onNavigate }) {
                         <div style={{
                           fontSize: 11,
                           color: 'var(--text-muted)',
-                          marginTop: 2
+                          marginTop: 4
                         }}>
                           {t.total_equipes || 0} equipes
                         </div>
@@ -400,7 +400,7 @@ export default function AdminReports({ profile, onNavigate }) {
                       <div style={{
                         display: 'flex',
                         gap: 12,
-                        marginTop: 2
+                        marginTop: 4
                       }}>
                         <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                           <span style={{ fontWeight: 700, color: 'var(--text-secondary)' }}>{p.total_votos || 0}</span> votos

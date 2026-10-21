@@ -102,7 +102,7 @@ export const LegendaRendimento = memo(function LegendaRendimento() {
         <span><span style={{ color: CORES_RENDIMENTO.media.cor }}>●</span> Amarelo = na média</span>
         <span><span style={{ color: CORES_RENDIMENTO.mal.cor }}>●</span> Vermelho = não foi bem</span>
       </div>
-      <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }}>
+      <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8, lineHeight: 1.5 }}>
         Anônimo: o atleta vê o resultado, mas nunca quem avaliou. Cada nota entra na{' '}
         <strong style={{ color: 'var(--text-secondary)' }}>média do atleta</strong>, junto com os votos de estrela.
       </div>
