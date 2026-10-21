@@ -2,34 +2,34 @@
 
 :root {
   /* FitPulse-inspired — deep navy + frosted glass */
-  --bg-primary: #060B14;
-  --bg-secondary: #0A1220;
-  --bg-card: rgba(255, 255, 255, 0.08);
-  --bg-card-hover: rgba(255, 255, 255, 0.12);
-  --bg-elevated: rgba(18, 32, 56, 0.92);
+  --bg-primary: #040810;
+  --bg-secondary: #08101C;
+  --bg-card: rgba(255, 255, 255, 0.10);
+  --bg-card-hover: rgba(255, 255, 255, 0.15);
+  --bg-elevated: rgba(16, 28, 48, 0.88);
   /* Accent: soft sky / cyan-blue */
   --accent: #6EB6FF;
-  --accent-text: #9FCBFF;
-  --accent-soft: rgba(110, 182, 255, 0.16);
-  --accent-line: rgba(159, 203, 255, 0.35);
+  --accent-text: #B3D9FF;
+  --accent-soft: rgba(110, 182, 255, 0.18);
+  --accent-line: rgba(179, 217, 255, 0.4);
   --accent-dim: var(--accent-soft);
   --accent-hover: #8EC8FF;
-  --accent-on: #061018;
+  --accent-on: #041018;
   --success: #4ADE80;
   --success-text: #4ADE80;
   --success-soft: rgba(74, 222, 128, 0.14);
   --text-primary: #F7FAFF;
-  --text-secondary: #B8CAE0;
-  --text-muted: #7F95B3;
-  --border: rgba(255, 255, 255, 0.14);
+  --text-secondary: #C2D4EA;
+  --text-muted: #8A9FBA;
+  --border: rgba(255, 255, 255, 0.16);
   --border-active: var(--accent-line);
-  --shadow: 0 12px 40px rgba(0, 10, 30, 0.45);
-  --shadow-elevated: 0 20px 50px rgba(0, 10, 30, 0.55);
-  --border-inset: inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  --radius: 20px;
-  --radius-sm: 14px;
-  --radius-lg: 28px;
-  --glass-blur: 22px;
+  --shadow: 0 16px 48px rgba(0, 6, 24, 0.55), 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-elevated: 0 24px 64px rgba(0, 6, 24, 0.6), 0 8px 20px rgba(40, 120, 255, 0.08);
+  --border-inset: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  --radius: 24px;
+  --radius-sm: 16px;
+  --radius-lg: 32px;
+  --glass-blur: 28px;
 
   /* ===== Design system (máx. 3 tamanhos) ===== */
   --fs-sm: 12px;   /* legendas, chips, meta */
@@ -2604,89 +2604,168 @@ body.light-theme .mesa-btn.mesa-btn--muted {
   border-color: rgba(15, 23, 42, 0.16);
 }
 
-/* ===== FITPULSE-LIKE GLASS UI ===== */
+/* ===== FITPULSE DEPTH + ROUND ===== */
 body {
   background-color: var(--bg-primary);
   background-image:
-    radial-gradient(ellipse 120% 70% at 70% 0%, rgba(40, 100, 200, 0.35), transparent 55%),
-    radial-gradient(ellipse 80% 50% at 20% 100%, rgba(20, 60, 140, 0.25), transparent 50%),
-    radial-gradient(ellipse 60% 40% at 90% 80%, rgba(80, 140, 255, 0.08), transparent 45%);
+    radial-gradient(ellipse 100% 80% at 75% -5%, rgba(50, 120, 255, 0.45), transparent 52%),
+    radial-gradient(ellipse 70% 50% at 15% 100%, rgba(30, 80, 180, 0.35), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 90% 70%, rgba(100, 160, 255, 0.12), transparent 45%),
+    linear-gradient(180deg, #060D1A 0%, #040810 100%);
   background-attachment: fixed;
 }
 
+.app-shell {
+  background: transparent;
+}
+
 .app-header {
-  background: rgba(6, 11, 20, 0.55) !important;
+  background: rgba(4, 8, 16, 0.45) !important;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 }
 
+/* Cards = floating glass panels */
 .card,
 .premium-card,
-.hero-card {
-  background: rgba(255, 255, 255, 0.09) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+.hero-card,
+.mesa-panel,
+.mesa-player {
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
   border-radius: var(--radius) !important;
   box-shadow:
-    0 12px 40px rgba(0, 10, 30, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    0 20px 50px rgba(0, 6, 24, 0.5),
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12) !important;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .card:active,
 .premium-card:active {
-  transform: scale(0.985);
+  transform: scale(0.98);
+}
+
+/* Extra depth for hero / elevated blocks */
+.hero-card,
+.premium-card-border-green {
+  box-shadow:
+    0 24px 60px rgba(0, 6, 24, 0.55),
+    0 0 40px rgba(80, 140, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  border-color: rgba(159, 203, 255, 0.28) !important;
+}
+
+/* Buttons — well rounded pills */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-sm,
+.btn-xs,
+button.btn {
+  border-radius: 999px !important;
 }
 
 .btn-primary {
-  background: linear-gradient(180deg, #8EC8FF 0%, #6EB6FF 100%) !important;
+  background: linear-gradient(180deg, #A8D4FF 0%, #6EB6FF 55%, #5AA8F5 100%) !important;
   color: var(--accent-on) !important;
   border: none !important;
-  border-radius: 999px !important;
-  font-weight: 700 !important;
-  box-shadow: 0 6px 20px rgba(110, 182, 255, 0.28) !important;
+  font-weight: 800 !important;
+  box-shadow:
+    0 8px 24px rgba(110, 182, 255, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(180deg, #A0D0FF 0%, #7EC0FF 100%) !important;
+  background: linear-gradient(180deg, #B8DCFF 0%, #7EC0FF 100%) !important;
   filter: none;
 }
 
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: var(--text-primary) !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
-  border-radius: 999px !important;
-  backdrop-filter: blur(10px);
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 4px 12px rgba(110, 182, 255, 0.25) !important;
 }
 
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.10) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Inputs / selects — rounded glass */
+input, select, textarea,
+.tabs {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent-line) !important;
+  box-shadow: 0 0 0 3px rgba(110, 182, 255, 0.2), inset 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.tabs {
+  border-radius: 18px !important;
+  padding: 4px !important;
+}
+
+.tab {
+  border-radius: 14px !important;
+}
+
+.tab.active {
+  background: rgba(110, 182, 255, 0.2) !important;
+  color: var(--accent-text) !important;
+  border: 1px solid var(--accent-line) !important;
+  box-shadow: 0 4px 16px rgba(110, 182, 255, 0.15);
+}
+
+/* Floating bottom nav — capsule */
 .bottom-nav,
 .bottom-nav.premium-nav {
   height: auto !important;
-  min-height: 64px;
-  margin: 0 10px calc(8px + env(safe-area-inset-bottom));
-  padding: 8px 6px !important;
-  border-radius: 22px !important;
-  background: rgba(12, 22, 40, 0.72) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  min-height: 62px;
+  margin: 0 12px calc(10px + env(safe-area-inset-bottom)) !important;
+  padding: 8px 8px !important;
+  border-radius: 28px !important;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 36, 60, 0.75) 0%,
+    rgba(10, 18, 34, 0.85) 100%
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  box-shadow: 0 10px 40px rgba(0, 8, 24, 0.45) !important;
+  box-shadow:
+    0 16px 48px rgba(0, 4, 20, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
 }
 
 .nav-item,
 .nav-item.premium-nav-item {
-  border-radius: 16px !important;
+  border-radius: 18px !important;
   color: var(--text-muted) !important;
 }
 
 .nav-item.active,
 .nav-item.premium-nav-item.active {
   color: var(--accent-text) !important;
-  background: rgba(110, 182, 255, 0.16) !important;
-  box-shadow: 0 0 20px rgba(110, 182, 255, 0.12);
+  background: rgba(110, 182, 255, 0.2) !important;
+  box-shadow:
+    0 0 24px rgba(110, 182, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .nav-item.active svg,
@@ -2695,52 +2774,30 @@ body {
   stroke: var(--accent-text) !important;
 }
 
-.tab.active {
-  background: rgba(110, 182, 255, 0.16) !important;
-  color: var(--accent-text) !important;
-  border: 1px solid var(--accent-line) !important;
-  border-radius: 12px !important;
+.modal-sheet {
+  background: linear-gradient(180deg, rgba(18, 32, 56, 0.95), rgba(8, 14, 28, 0.98)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border-radius: 28px 28px 0 0 !important;
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5);
 }
 
-.tabs {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+.mesa-btn {
   border-radius: 14px !important;
 }
 
-.badge-elite,
-.badge-destaque {
-  background: var(--accent-soft) !important;
-  color: var(--accent-text) !important;
-  border-color: var(--accent-line) !important;
-}
-
-input, select, textarea {
-  background: rgba(255, 255, 255, 0.06) !important;
+.mesa-chip {
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: var(--radius-sm) !important;
-  color: var(--text-primary) !important;
 }
 
-input:focus, select:focus, textarea:focus {
-  border-color: var(--accent-line) !important;
-  box-shadow: 0 0 0 3px rgba(110, 182, 255, 0.15);
+.badge, .badge-elite, .badge-destaque {
+  border-radius: 999px !important;
 }
 
-.modal-sheet {
-  background: rgba(12, 22, 40, 0.92) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-radius: 24px 24px 0 0 !important;
-}
-
-.page-title,
-.section-title {
-  letter-spacing: 0.02em;
-}
-
-/* Light theme keeps clean white cards */
+/* Light theme */
 body.light-theme {
   background-image: none !important;
 }
@@ -2749,14 +2806,14 @@ body.light-theme .card,
 body.light-theme .premium-card,
 body.light-theme .hero-card {
   background: #FFFFFF !important;
-  border: 1px solid rgba(15, 23, 42, 0.1) !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
   backdrop-filter: none !important;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08) !important;
 }
 
 body.light-theme .bottom-nav,
 body.light-theme .bottom-nav.premium-nav {
-  background: rgba(255, 255, 255, 0.94) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
   border: 1px solid rgba(15, 23, 42, 0.1) !important;
 }
 
