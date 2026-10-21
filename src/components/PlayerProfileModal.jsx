@@ -535,7 +535,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
             {!isMe && (
               <div style={{ padding: '12px 16px 16px', borderTop: '1px solid var(--border)', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {mesmaCidadeQueEu(localJogador || jogador) ? (
-                  <button onClick={() => setShowAvaliar(true)} style={{ width: '100%', height: 52, borderRadius: 12, background: 'var(--accent)', border: 'none', color: 'var(--accent-on)', fontSize: 15, fontWeight: 700, cursor: 'pointer', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <button onClick={() => setShowAvaliar(true)} className="btn btn-primary" style={{ width: '100%' }}>
                     {jaAvaliou ? 'Editar Avaliação' : 'Avaliar Este Jogador'}
                   </button>
                 ) : (
@@ -547,7 +547,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
                     Só é possível avaliar atletas da sua cidade. Aqui você consulta o perfil e as estatísticas.
                   </div>
                 )}
-                <button onClick={() => setShowDenunciar(true)} style={{ width: '100%', height: 44, borderRadius: 12, background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-secondary)', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>
+                <button onClick={() => setShowDenunciar(true)} className="btn btn-secondary" style={{ width: '100%' }}>
                   Denunciar Perfil
                 </button>
               </div>
