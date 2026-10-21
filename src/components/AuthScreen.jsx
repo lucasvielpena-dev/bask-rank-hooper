@@ -302,7 +302,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
           border: 0.5px solid rgba(255,255,255,0.15);
           border-radius: 12px;
           color: #FFFFFF;
-          padding: 14px 16px 14px 40px;
+          padding: 12px 16px 14px 40px;
           width: 100%;
           box-sizing: border-box;
           font-family: 'Inter', sans-serif;
@@ -439,7 +439,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
       </div>
 
       {/* CONTENT LAYER */}
-      <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', padding: '10vh 20px 5vh' }}>
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', padding: '10vh 16px 5vh' }}>
         
         {/* LOGO */}
         <div style={{ textAlign: 'center' }}>
@@ -467,12 +467,12 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
         <div className={`glass-form ${isShake ? 'shake-animation' : ''}`} style={{ marginTop: 'auto' }}>
           
           {erro && (
-            <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 10, color: '#f87171', padding: '10px', fontSize: 13, marginBottom: 16, textAlign: 'center' }}>
+            <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 10, color: '#f87171', padding: '8px', fontSize: 13, marginBottom: 16, textAlign: 'center' }}>
               {erro}
             </div>
           )}
           {successMsg && (
-            <div style={{ background: 'var(--success-soft)', border: '1px solid var(--success-soft)', borderRadius: 10, color: 'var(--success-text)', padding: '10px', fontSize: 13, marginBottom: 16, textAlign: 'center' }}>
+            <div style={{ background: 'var(--success-soft)', border: '1px solid var(--success-soft)', borderRadius: 10, color: 'var(--success-text)', padding: '8px', fontSize: 13, marginBottom: 16, textAlign: 'center' }}>
               {successMsg}
             </div>
           )}

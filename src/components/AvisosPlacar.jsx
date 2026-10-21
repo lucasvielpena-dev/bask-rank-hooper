@@ -93,7 +93,7 @@ export default function AvisosPlacar() {
 
   return (
     <div style={{
-      padding: '10px 14px',
+      padding: '8px 12px',
       background: 'var(--accent-soft)',
       borderTop: '1px solid var(--accent-line)',
       borderBottom: '1px solid var(--accent-line)',

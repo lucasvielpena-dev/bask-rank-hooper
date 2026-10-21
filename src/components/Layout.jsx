@@ -144,7 +144,7 @@ export default function Layout({ page, onNavigate, children }) {
         <div style={{
           background: 'rgba(245,158,11,0.12)',
           borderBottom: '1px solid rgba(245,158,11,0.2)',
-          padding: '12px 20px',
+          padding: '12px 16px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -161,7 +161,7 @@ export default function Layout({ page, onNavigate, children }) {
               color: '#000',
               border: 'none',
               borderRadius: '20px',
-              padding: '6px 16px',
+              padding: '8px 16px',
               fontSize: 13,
               fontWeight: 700,
               cursor: 'pointer'
@@ -205,7 +205,7 @@ export default function Layout({ page, onNavigate, children }) {
                 border: '1px solid rgba(239,68,68,0.3)',
                 borderRadius: 8,
                 color: '#f87171',
-                padding: '10px 14px',
+                padding: '8px 12px',
                 fontSize: 13,
                 marginBottom: 16
               }}>
@@ -340,21 +340,21 @@ export default function Layout({ page, onNavigate, children }) {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-                  <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
+                  <div className="card" style={{ textAlign: 'center', padding: '8px 8px', background: 'var(--bg-elevated)' }}>
                     <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>APELIDO</div>
                     <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 15 }}>{profile.apelido}</div>
                   </div>
-                  <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
+                  <div className="card" style={{ textAlign: 'center', padding: '8px 8px', background: 'var(--bg-elevated)' }}>
                     <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>ALTURA</div>
                     <div style={{ fontWeight: 800, color: '#60a5fa', fontSize: 15 }}>{Number(profile.altura).toFixed(2)}m</div>
                   </div>
-                  <div className="card" style={{ textAlign: 'center', padding: '10px 6px', background: 'var(--bg-elevated)' }}>
+                  <div className="card" style={{ textAlign: 'center', padding: '8px 8px', background: 'var(--bg-elevated)' }}>
                     <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, marginBottom: 4 }}>IDADE</div>
                     <div style={{ fontWeight: 800, color: '#f59e0b', fontSize: 15 }}>{profile.idade} anos</div>
                   </div>
                 </div>
 
-                <div style={{ marginTop: 8, marginBottom: 14, borderTop: '1px solid var(--border)', paddingTop: 14 }}>
+                <div style={{ marginTop: 8, marginBottom: 14, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
                   <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8, textAlign: 'center' }}>
                     Tema do Aplicativo
                   </label>
@@ -458,7 +458,7 @@ export default function Layout({ page, onNavigate, children }) {
               <button onClick={pedirLocalizacaoAgora} style={{ background: 'var(--accent)', color: '#000', border: 'none', borderRadius: 50, padding: '12px', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>
                 Permitir localização
               </button>
-              <button onClick={dispensarPedidoLocalizacao} style={{ background: 'transparent', color: 'var(--text-secondary)', border: 'none', padding: '10px', fontSize: 13, cursor: 'pointer' }}>
+              <button onClick={dispensarPedidoLocalizacao} style={{ background: 'transparent', color: 'var(--text-secondary)', border: 'none', padding: '8px', fontSize: 13, cursor: 'pointer' }}>
                 Agora não
               </button>
             </div>
@@ -562,7 +562,7 @@ export default function Layout({ page, onNavigate, children }) {
                 border: '1px solid rgba(239,68,68,0.3)',
                 color: '#f87171',
                 borderRadius: 10,
-                padding: '10px 12px',
+                padding: '8px 12px',
                 fontSize: 13,
                 marginBottom: 14
               }}>

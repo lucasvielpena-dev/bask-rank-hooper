@@ -1085,7 +1085,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <>
               {/* Pedidos de placar compartilhado que EU (criador) preciso responder */}
               {pedidosCriador.length > 0 && (
-                <div className="card" style={{ padding: '10px 12px', marginBottom: 10, border: '1px solid var(--accent-line)', background: 'var(--accent-soft)' }}>
+                <div className="card" style={{ padding: '8px 12px', marginBottom: 10, border: '1px solid var(--accent-line)', background: 'var(--accent-soft)' }}>
                   <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Pedidos para operar o placar
                   </div>
@@ -1096,10 +1096,10 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                         <span style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {p.nome || 'Um atleta'}{pv ? ` · ${pv.time_a} x ${pv.time_b}` : ''}
                         </span>
-                        <button onClick={() => handleResponderPedido(p.partida_id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
+                        <button onClick={() => handleResponderPedido(p.partida_id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '4px 8px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
                           Aceitar
                         </button>
-                        <button onClick={() => handleResponderPedido(p.partida_id, p.usuario_id, false)} style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                        <button onClick={() => handleResponderPedido(p.partida_id, p.usuario_id, false)} style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 8px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
                           Recusar
                         </button>
                       </div>
@@ -1108,7 +1108,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 </div>
               )}
               {partidas.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)' }}>
+                <div style={{ textAlign: 'center', padding: '60px 16px', color: 'var(--text-secondary)' }}>
                   <h3 style={{ color: 'var(--text-primary)', marginTop: 8, fontFamily: "'Inter',sans-serif", fontSize: 17, fontWeight: 700 }}>Nenhuma partida ativa</h3>
                   <p style={{ fontSize: 13, margin: '8px 0 0', fontFamily: "'Inter',sans-serif", color: 'var(--text-muted)' }}>
                     Toque em <strong style={{ color: 'var(--accent)' }}>Novo Jogo</strong> acima para começar
@@ -1119,7 +1119,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   {partidas.map((p, i) => (
                     <div key={p.id} className="card card-enter" style={{ display: 'flex', flexDirection: 'column', gap: 8, animationDelay: `${i * 30}ms` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ background: 'var(--success-soft)', color: 'var(--success-text)', padding: '3px 10px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>EM ANDAMENTO</span>
+                        <span style={{ background: 'var(--success-soft)', color: 'var(--success-text)', padding: '4px 8px', borderRadius: 50, fontSize: 11, fontWeight: 700 }}>EM ANDAMENTO</span>
                         <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span>
                       </div>
                       <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'center', gap: 16, margin: '6px 0' }}>
@@ -1164,7 +1164,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                           <div style={{ flex: 1 }}>
                             <span style={{ fontWeight: venceA ? 800 : 500, color: venceA ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_a}</span>
                           </div>
-                          <div style={{ display: 'flex', gap: 8, padding: '3px 8px', background: 'var(--bg-secondary)', borderRadius: 6, fontWeight: 800, fontSize: 13 }}>
+                          <div style={{ display: 'flex', gap: 8, padding: '4px 8px', background: 'var(--bg-secondary)', borderRadius: 6, fontWeight: 800, fontSize: 13 }}>
                             <span style={{ color: venceA ? 'var(--success-text)' : 'var(--text-primary)' }}>{p.placar_time_a}</span>
                             <span style={{ color: 'var(--text-muted)' }}>x</span>
                             <span style={{ color: venceB ? 'var(--success-text)' : 'var(--text-primary)' }}>{p.placar_time_b}</span>
@@ -1173,7 +1173,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                             <span style={{ fontWeight: venceB ? 800 : 500, color: venceB ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{p.time_b}</span>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', marginTop: 4, paddingTop: 6 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, color: 'var(--text-muted)', borderTop: '1px solid var(--border)', marginTop: 4, paddingTop: 8 }}>
                           <span>Duração: {p.tempo_total} · {p.periodos} períodos</span>
                           <span style={{ color: 'var(--accent)', fontWeight: 700 }}>Avaliar quem jogou →</span>
                         </div>
@@ -1248,7 +1248,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               
               <div style={{ maxHeight: '50vh', overflowY: 'auto', background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 10, padding: '0 12px' }}>
                 {jogadores.length === 0 ? (
-                  <p style={{ textAlign: 'center', padding: '20px 0', color: 'var(--text-secondary)', fontSize: 13 }}>Cadastre jogadores na aba Jogadores antes.</p>
+                  <p style={{ textAlign: 'center', padding: '16px 0', color: 'var(--text-secondary)', fontSize: 13 }}>Cadastre jogadores na aba Jogadores antes.</p>
                 ) : (
                   jogadores.map(j => {
                     const noA = timeAJogadores.includes(j.id);
@@ -1332,7 +1332,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 {periodo >= 5 ? 'PRORROGAÇÃO' : `${periodo}º QUARTO`}
               </span>
-              <span style={{ background: '#EF4444', color: '#FFF', padding: '2px 6px', borderRadius: '4px', fontSize: '11px', fontWeight: 800 }}>
+              <span style={{ background: '#EF4444', color: '#FFF', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 800 }}>
                 AO VIVO
               </span>
             </div>
@@ -1341,7 +1341,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           {/* Placar compartilhado: quem pode pontuar (pedido + aceite) */}
           {partidaAtiva.status === 'ativo' && (
             <div className="card" style={{
-              padding: '10px 12px',
+              padding: '8px 12px',
               marginBottom: 10,
               background: possoOperarPlacar ? 'var(--bg-card)' : 'rgba(239,68,68,0.08)',
               border: `1px solid ${possoOperarPlacar ? 'var(--border)' : 'rgba(239,68,68,0.35)'}`,
@@ -1358,10 +1358,10 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                       <span style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {p.nome || 'Um atleta'} quer operar o placar
                       </span>
-                      <button onClick={() => handleResponderPedido(partidaAtiva.id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
+                      <button onClick={() => handleResponderPedido(partidaAtiva.id, p.usuario_id, true)} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '4px 8px', fontSize: 11, fontWeight: 800, cursor: 'pointer', fontFamily: 'inherit' }}>
                         Aceitar
                       </button>
-                      <button onClick={() => handleResponderPedido(partidaAtiva.id, p.usuario_id, false)} style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                      <button onClick={() => handleResponderPedido(partidaAtiva.id, p.usuario_id, false)} style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 8px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
                         Recusar
                       </button>
                     </div>
@@ -1376,7 +1376,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   {operadoresAprovados.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
                       {operadoresAprovados.map(o => (
-                        <button key={o.usuario_id} onClick={() => handleResponderPedido(partidaAtiva.id, o.usuario_id, false)} title="Remover autorização" style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--accent-line)', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                        <button key={o.usuario_id} onClick={() => handleResponderPedido(partidaAtiva.id, o.usuario_id, false)} title="Remover autorização" style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--accent-line)', borderRadius: 20, padding: '4px 8px', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
                           {o.nome || 'Um atleta'} ✕
                         </button>
                       ))}
@@ -1396,7 +1396,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                   <span style={{ flex: 1, fontSize: 13, color: 'var(--text-secondary)' }}>
                     Só quem criou a partida pontua neste placar.
                   </span>
-                  <button onClick={handlePedirOperar} disabled={pedindoOperar} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '5px 12px', fontSize: 11, fontWeight: 800, cursor: pedindoOperar ? 'default' : 'pointer', fontFamily: 'inherit', opacity: pedindoOperar ? 0.6 : 1 }}>
+                  <button onClick={handlePedirOperar} disabled={pedindoOperar} style={{ background: 'var(--accent)', color: 'var(--accent-on)', border: 'none', borderRadius: 6, padding: '4px 12px', fontSize: 11, fontWeight: 800, cursor: pedindoOperar ? 'default' : 'pointer', fontFamily: 'inherit', opacity: pedindoOperar ? 0.6 : 1 }}>
                     {pedindoOperar ? 'Enviando...' : 'Pedir para operar'}
                   </button>
                 </div>
@@ -1425,7 +1425,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
           {/* Placar Central (Unified Scoreboard Card) */}
           <div className="card live-scoreboard-card" style={{
-            padding: '14px 12px',
+            padding: '12px 12px',
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
             borderRadius: '12px',
@@ -1532,20 +1532,20 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
             borderRadius: '8px',
-            padding: '8px 10px',
+            padding: '8px 8px',
             marginBottom: 12,
             overflowX: 'auto'
           }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', textAlign: 'center' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }}>
-                  <th style={{ padding: '6px 4px', textAlign: 'left', fontWeight: 600 }}>TIME</th>
-                  <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q1</th>
-                  <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q2</th>
-                  <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q3</th>
-                  <th style={{ padding: '6px 4px', fontWeight: 600 }}>Q4</th>
-                  {periodo >= 5 && <th style={{ padding: '6px 4px', fontWeight: 600 }}>PR</th>}
-                  <th style={{ padding: '6px 4px', fontWeight: 800, color: 'var(--text-primary)' }}>T</th>
+                  <th style={{ padding: '8px 4px', textAlign: 'left', fontWeight: 600 }}>TIME</th>
+                  <th style={{ padding: '8px 4px', fontWeight: 600 }}>Q1</th>
+                  <th style={{ padding: '8px 4px', fontWeight: 600 }}>Q2</th>
+                  <th style={{ padding: '8px 4px', fontWeight: 600 }}>Q3</th>
+                  <th style={{ padding: '8px 4px', fontWeight: 600 }}>Q4</th>
+                  {periodo >= 5 && <th style={{ padding: '8px 4px', fontWeight: 600 }}>PR</th>}
+                  <th style={{ padding: '8px 4px', fontWeight: 800, color: 'var(--text-primary)' }}>T</th>
                 </tr>
               </thead>
               <tbody>
@@ -1582,7 +1582,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             <div style={{ marginBottom: 12 }}>
               {periodo < 4 ? (
                 <div className="card" style={{
-                  padding: '10px',
+                  padding: '8px',
                   background: 'var(--card-team-a-bg)',
                   textAlign: 'center'
                 }}>
@@ -1594,7 +1594,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     color: 'var(--accent-on)',
                     border: 'none',
                     borderRadius: '8px',
-                    padding: '6px 14px',
+                    padding: '8px 12px',
                     fontSize: '13px',
                     fontWeight: 700,
                     cursor: 'pointer',
@@ -1606,7 +1606,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 </div>
               ) : (placarA === placarB) ? (
                 <div className="card" style={{
-                  padding: '10px',
+                  padding: '8px',
                   background: 'var(--card-team-b-bg)',
                   textAlign: 'center'
                 }}>
@@ -1618,7 +1618,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     color: 'var(--accent-on)',
                     border: 'none',
                     borderRadius: '8px',
-                    padding: '6px 14px',
+                    padding: '8px 12px',
                     fontSize: '13px',
                     fontWeight: 700,
                     cursor: 'pointer',
@@ -1630,7 +1630,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 </div>
               ) : (
                 <div className="card" style={{
-                  padding: '14px 16px',
+                  padding: '12px 16px',
                   background: 'rgba(239, 68, 68, 0.1)',
                   border: '1px solid rgba(239, 68, 68, 0.25)',
                   textAlign: 'center'
@@ -1660,7 +1660,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                 type="button"
                 onClick={() => setModoMesa((v) => !v)}
                 style={{
-                  border: 'none', borderRadius: 999, padding: '8px 14px', fontWeight: 800, fontSize: 13,
+                  border: 'none', borderRadius: 999, padding: '8px 12px', fontWeight: 800, fontSize: 13,
                   cursor: 'pointer', fontFamily: 'inherit',
                   background: modoMesa ? 'var(--accent)' : 'var(--bg-secondary)',
                   color: modoMesa ? 'var(--accent-on)' : 'var(--text-primary)' }}
@@ -1682,7 +1682,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                     onClick={desfazerUltimaStatMesa}
                     disabled={mesaBusy}
                     style={{
-                      marginBottom: 10, width: '100%', padding: '6px 0', borderRadius: 999,
+                      marginBottom: 10, width: '100%', padding: '8px 0', borderRadius: 999,
                       border: '1px solid var(--border)', background: 'transparent',
                       color: 'var(--text-secondary)', fontSize: 11, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}
                   >
@@ -1860,7 +1860,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
             borderRadius: '16px',
-            padding: '12px 20px',
+            padding: '12px 16px',
             marginBottom: 20
           }}>
             {/* Prev/Reset Button */}
@@ -1943,7 +1943,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             onClick={() => { setTimerAtivo(false); setShowFinalizarModal(true); }} 
             style={{
               width: '100%',
-              padding: '14px',
+              padding: '12px',
               background: '#EF4444',
               color: '#FFF',
               border: 'none',
@@ -2015,7 +2015,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
             {/* Box score da mesa (se houver anotação) */}
             {detalheJogadores.some(j => (j.pontos || j.assistencias || j.rebotes || j.turnovers || j.faltas)) && (
-              <div className="card" style={{ marginBottom: 12, padding: 10 }}>
+              <div className="card" style={{ marginBottom: 12, padding: 8 }}>
                 <div style={{ fontSize: 13, fontWeight: 800, marginBottom: 8, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
                   Box score
                 </div>
@@ -2030,7 +2030,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
                         .slice()
                         .sort((a, b) => (b.pontos || 0) - (a.pontos || 0))
                         .map((j) => (
-                          <div key={j.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '3px 0', borderBottom: '1px solid var(--border)' }}>
+                          <div key={j.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '4px 0', borderBottom: '1px solid var(--border)' }}>
                             <span style={{ fontWeight: 600 }}>{nomeAtleta(j.jogador)}</span>
                             <span style={{ fontFamily: 'monospace', color: 'var(--text-muted)' }}>
                               {j.pontos || 0}/{j.assistencias || 0}/{j.rebotes || 0}
@@ -2112,7 +2112,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
               {gradeAtual ? (
                 <div style={{
-                  marginTop: 12, padding: '12px 14px', borderRadius: 12,
+                  marginTop: 12, padding: '12px 12px', borderRadius: 12,
                   background: 'var(--bg-card)', border: `1px solid ${gradeAtual.line}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <span style={{

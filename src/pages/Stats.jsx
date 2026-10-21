@@ -404,7 +404,7 @@ export default function Stats({ profile, onNavigate }) {
                   color: 'var(--accent)',
                   border: '1px solid var(--accent-line)',
                   borderRadius: '6px',
-                  padding: '2px 8px',
+                  padding: '4px 8px',
                   fontSize: '11px',
                   fontWeight: 800,
                   letterSpacing: '0.02em'
@@ -456,7 +456,7 @@ export default function Stats({ profile, onNavigate }) {
           display: 'flex',
           background: 'var(--bg-secondary)',
           borderRadius: '8px',
-          padding: '2px',
+          padding: '4px',
           gap: 4,
           marginBottom: 10
         }}>
@@ -471,7 +471,7 @@ export default function Stats({ profile, onNavigate }) {
               onClick={() => setAba(t.key)}
               style={{
                 flex: 1,
-                padding: '6px 3px',
+                padding: '8px 4px',
                 borderRadius: '6px',
                 border: 'none',
                 background: aba === t.key ? 'var(--bg-elevated)' : 'none',
@@ -535,7 +535,7 @@ export default function Stats({ profile, onNavigate }) {
               </div>
 
               {/* Registro Privado */}
-              <div className="card" style={{ padding: '10px' }}>
+              <div className="card" style={{ padding: '8px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                   <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.04em', fontFamily: "'Inter',sans-serif", textTransform: 'uppercase' }}>ESTATÍSTICAS PRIVADAS</span>
                   <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>{historicoPrivado.length} jogos</span>
@@ -549,15 +549,15 @@ export default function Stats({ profile, onNavigate }) {
                     
                     {/* Linha Principal de Médias */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, textAlign: 'center' }}>
-                      <div style={{ background: 'var(--bg-secondary)', padding: '6px 3px', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                      <div style={{ background: 'var(--bg-secondary)', padding: '8px 4px', borderRadius: '8px', border: '1px solid var(--border)' }}>
                         <div style={{ fontSize: '17px', fontWeight: 900, color: 'var(--accent)' }}>{mediasPrivadas.pontos}</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>PPJ</div>
                       </div>
-                      <div style={{ background: 'var(--bg-secondary)', padding: '6px 3px', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                      <div style={{ background: 'var(--bg-secondary)', padding: '8px 4px', borderRadius: '8px', border: '1px solid var(--border)' }}>
                         <div style={{ fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)' }}>{mediasPrivadas.rebotes}</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>REB</div>
                       </div>
-                      <div style={{ background: 'var(--bg-secondary)', padding: '6px 3px', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                      <div style={{ background: 'var(--bg-secondary)', padding: '8px 4px', borderRadius: '8px', border: '1px solid var(--border)' }}>
                         <div style={{ fontSize: '17px', fontWeight: 900, color: 'var(--text-primary)' }}>{mediasPrivadas.assistencias}</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, marginTop: 2 }}>AST</div>
                       </div>
@@ -567,7 +567,7 @@ export default function Stats({ profile, onNavigate }) {
                     <div style={{ 
                       background: 'var(--bg-secondary)', 
                       borderRadius: '10px', 
-                      padding: '10px', 
+                      padding: '8px', 
                       border: '1px solid var(--border)',
                       display: 'flex',
                       alignItems: 'center',
@@ -626,7 +626,7 @@ export default function Stats({ profile, onNavigate }) {
                       <div style={{ 
                         background: 'var(--bg-card)', 
                         borderRadius: '10px', 
-                        padding: '10px', 
+                        padding: '8px', 
                         border: '1px solid var(--border)'
                       }}>
                         <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)', letterSpacing: '0.04em', marginBottom: 8, textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>
@@ -738,7 +738,7 @@ export default function Stats({ profile, onNavigate }) {
               {subAbaHistorico === 'pessoal' ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {historicoPrivado.length === 0 ? (
-                    <div style={{ fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
+                    <div style={{ fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>
                       Nenhuma partida registrada no seu histórico pessoal privado.
                     </div>
                   ) : (
@@ -770,7 +770,7 @@ export default function Stats({ profile, onNavigate }) {
                             border: 'none',
                             color: '#EF4444',
                             cursor: 'pointer',
-                            padding: 6,
+                            padding: 8,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
@@ -785,14 +785,14 @@ export default function Stats({ profile, onNavigate }) {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {historicoQuadra.length === 0 ? (
-                    <div style={{ fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0' }}>
+                    <div style={{ fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '16px 0' }}>
                       Nenhuma partida finalizada jogada em quadras oficiais.
                     </div>
                   ) : (
                     historicoQuadra.map(h => (
                       <div key={h.id} style={{
                         background: 'var(--bg-card)',
-                        padding: '10px 12px',
+                        padding: '8px 12px',
                         borderRadius: '8px',
                         border: '1px solid var(--border)',
                         display: 'flex',
@@ -812,7 +812,7 @@ export default function Stats({ profile, onNavigate }) {
                           fontWeight: 800,
                           color: h.vencedor === 'Ganhou' ? '#10B981' : '#EF4444',
                           background: h.vencedor === 'Ganhou' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
-                          padding: '2px 6px',
+                          padding: '4px 8px',
                           borderRadius: '4px'
                         }}>
                           {h.vencedor.toUpperCase()}
@@ -887,7 +887,7 @@ export default function Stats({ profile, onNavigate }) {
                       { l: '3 Pts Tentados', k: 'tres_pontos_tentados' },
                       { l: '3 Pts Convertidos', k: 'tres_pontos_convertidos' },
                     ].map(item => (
-                      <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
+                      <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{item.l}</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                           <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 28, height: 28, padding: 0, fontSize: 17, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>
@@ -904,7 +904,7 @@ export default function Stats({ profile, onNavigate }) {
                       { l: 'Arremessos Convertidos', k: 'arremessos_convertidos' },
                       { l: 'Pontos', k: 'pontos' },
                     ].map(item => (
-                      <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
+                      <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
                         <span style={{ fontSize: 15, fontWeight: 600 }}>{item.l}</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                           <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 17, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>
@@ -923,7 +923,7 @@ export default function Stats({ profile, onNavigate }) {
                   { l: 'Tocos', k: 'tocos' },
                   { l: 'Perdas de Bola', k: 'perdas_bola' },
                 ].map(item => (
-                  <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
+                  <div key={item.k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
                     <span style={{ fontSize: 15, fontWeight: 600 }}>{item.l}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                       <button type="button" onClick={() => ajustarCampo(item.k, -1)} className="btn btn-secondary" style={{ width: 26, height: 26, padding: 0, fontSize: 17, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 6 }}>-</button>

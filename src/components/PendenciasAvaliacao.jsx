@@ -43,7 +43,7 @@ function BotaoFechar({ onClick, titulo }) {
       title={titulo}
       style={{
         background: 'none', border: 'none', color: 'var(--text-muted)',
-        fontSize: 17, lineHeight: 1, cursor: 'pointer', padding: '2px 4px',
+        fontSize: 17, lineHeight: 1, cursor: 'pointer', padding: '4px 4px',
         flexShrink: 0, fontFamily: "'Inter',sans-serif" }}
     >
       ×
@@ -174,7 +174,7 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
                 style={{
                   display: 'flex', alignItems: 'center', gap: 8,
                   background: 'var(--bg-secondary)', border: '1px solid var(--border)',
-                  borderRadius: 10, padding: '8px 10px' }}
+                  borderRadius: 10, padding: '8px 8px' }}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
@@ -191,7 +191,7 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
                   type="button"
                   onClick={() => setAvaliarAgora(p.jogador)}
                   style={{
-                    flexShrink: 0, padding: '0 14px', minHeight: 34, lineHeight: 1.2,
+                    flexShrink: 0, padding: '0 12px', minHeight: 34, lineHeight: 1.2,
                     borderRadius: 999,
                     background: 'transparent', border: '1px solid var(--accent-line)',
                     color: 'var(--accent-text)', fontSize: 13, fontWeight: 700,
@@ -215,7 +215,7 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
         <div style={{
           display: 'flex', alignItems: 'center', gap: 8,
           background: 'var(--bg-card)', border: '1px solid var(--border)',
-          borderRadius: 12, padding: '10px 12px', marginBottom: 20 }}>
+          borderRadius: 12, padding: '8px 12px', marginBottom: 20 }}>
           <div style={{
             flex: 1, fontSize: 13, color: 'var(--text-secondary)',
             fontFamily: "'Inter',sans-serif", lineHeight: 1.45 }}>
@@ -229,7 +229,7 @@ export default function PendenciasAvaliacao({ profile, onNavigate }) {
               flexShrink: 0, background: 'none', border: 'none',
               color: 'var(--accent-text)', fontSize: 13, fontWeight: 800,
               textTransform: 'uppercase', letterSpacing: '0.04em',
-              cursor: 'pointer', padding: '4px 2px', fontFamily: "'Inter',sans-serif" }}
+              cursor: 'pointer', padding: '4px 4px', fontFamily: "'Inter',sans-serif" }}
           >
             Conferir
           </button>

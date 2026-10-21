@@ -39,7 +39,7 @@ function StatusPill({ label, tone = 'muted' }) {
         fontSize: 11,
         textTransform: 'uppercase',
         letterSpacing: '0.04em',
-        padding: '3px 8px',
+        padding: '4px 8px',
         borderRadius: 99,
         background: c.bg,
         color: c.fg }}
@@ -199,7 +199,7 @@ export default function AdminActivity({ profile, onNavigate }) {
         )}
 
         {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 32 }}>
             <div className="spinner" />
           </div>
         ) : aba === 'partidas' ? (
@@ -272,7 +272,7 @@ function ListaPartidas({ list, onOpen }) {
             onClick={() => onOpen(p)}
             style={{
               borderRadius: 14,
-              padding: '12px 14px',
+              padding: '12px 12px',
               textAlign: 'left',
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -328,7 +328,7 @@ function ListaRacoes({ list, onOpen }) {
             onClick={() => onOpen(r)}
             style={{
               borderRadius: 14,
-              padding: '12px 14px',
+              padding: '12px 12px',
               textAlign: 'left',
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -373,7 +373,7 @@ function ListaTorneios({ list, onOpen }) {
             onClick={() => onOpen(t)}
             style={{
               borderRadius: 14,
-              padding: '12px 14px',
+              padding: '12px 12px',
               textAlign: 'left',
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -447,7 +447,7 @@ function DetalheModal({ detalhe, onClose, onFechar, onExcluir }) {
               {item.local ? ` · ${item.local}` : ''}
             </p>
             {(item.racao_participantes || []).slice(0, 12).map((pp) => (
-              <div key={pp.id} className="text-sm" style={{ padding: '6px 0', borderBottom: '1px solid var(--border)', color: 'var(--text-primary)' }}>
+              <div key={pp.id} className="text-sm" style={{ padding: '8px 0', borderBottom: '1px solid var(--border)', color: 'var(--text-primary)' }}>
                 {pp.jogador?.apelido || pp.jogador?.nome || pp.perfil?.apelido || pp.perfil?.nome_completo || 'Participante'}
               </div>
             ))}

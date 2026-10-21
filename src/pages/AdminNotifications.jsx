@@ -65,7 +65,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
 
   return (
     <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
-      <div style={{ padding: 'clamp(14px, 4vw, 20px) clamp(12px, 3vw, 20px) 0', maxWidth: 960, margin: '0 auto' }}>
+      <div style={{ padding: 'clamp(12px, 4vw, 16px) clamp(12px, 3vw, 16px) 0', maxWidth: 960, margin: '0 auto' }}>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
@@ -81,7 +81,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
               gap: '4px',
               fontSize: 'clamp(11px, 2.5vw, 13px)',
               fontWeight: 700,
-              padding: '8px 14px',
+              padding: '8px 12px',
               borderRadius: '50px',
               fontFamily: 'inherit',
               flexShrink: 0
@@ -179,7 +179,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
               color: feedback.type === 'success' ? 'var(--success-text)' : '#f87171',
               background: feedback.type === 'success' ? 'var(--success-soft)' : 'rgba(239,68,68,0.1)',
               border: feedback.type === 'success' ? '1px solid var(--success-soft)' : '1px solid rgba(239,68,68,0.3)',
-              padding: 14,
+              padding: 12,
               borderRadius: 12,
               fontSize: 'clamp(12px, 3vw, 14px)',
               fontWeight: 600,
@@ -209,7 +209,7 @@ export default function AdminNotifications({ profile, onNavigate }) {
               background: 'linear-gradient(135deg, var(--bg-card) 0%, var(--accent-soft) 100%)',
               border: '1px solid var(--accent-line)',
               borderRadius: 'clamp(12px, 2vw, 16px)',
-              padding: 'clamp(14px, 3vw, 20px)',
+              padding: 'clamp(12px, 3vw, 16px)',
               display: 'flex',
               alignItems: 'center',
               gap: 16

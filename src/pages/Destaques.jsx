@@ -158,7 +158,7 @@ export default function Destaques({ profile, onNavigate }) {
             <div
               key={s.label}
               className="premium-card"
-              style={{ borderRadius: 14, padding: '14px 12px' }}
+              style={{ borderRadius: 14, padding: '12px 12px' }}
             >
               <div
                 style={{
@@ -222,7 +222,7 @@ export default function Destaques({ profile, onNavigate }) {
                   className="premium-card"
                   style={{
                     borderRadius: 14,
-                    padding: '12px 14px',
+                    padding: '12px 12px',
                     display: 'flex',
                     alignItems: 'center',
                     gap: 12 }}

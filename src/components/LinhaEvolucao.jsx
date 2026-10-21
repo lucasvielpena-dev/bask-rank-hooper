@@ -200,7 +200,7 @@ const LinhaEvolucao = memo(function LinhaEvolucao({ serie = [], loading = false,
   const tendencia = calcularTendencia(serie);
 
   return (
-    <div className="card" style={{ padding: '10px 12px', marginBottom: 10 }}>
+    <div className="card" style={{ padding: '8px 12px', marginBottom: 10 }}>
       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
         <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', letterSpacing: '0.04em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>
           Evolução
@@ -213,7 +213,7 @@ const LinhaEvolucao = memo(function LinhaEvolucao({ serie = [], loading = false,
           Carregando evolução...
         </div>
       ) : !temDados ? (
-        <div style={{ padding: '16px 4px 10px', fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.5 }}>
+        <div style={{ padding: '16px 4px 8px', fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.5 }}>
           {proprio ? 'Ainda não há avaliações no seu histórico.' : 'Ainda não há avaliações no histórico deste atleta.'}
           <br />
           {proprio ? 'Sua linha aparece' : 'A linha aparece'} assim que {proprio ? 'você receber' : 'ele receber'} notas nos <strong style={{ color: 'var(--text-secondary)' }}>rachões</strong>, <strong style={{ color: 'var(--text-secondary)' }}>competições</strong>/<strong style={{ color: 'var(--text-secondary)' }}>torneios</strong> ou votos na aba <strong style={{ color: 'var(--text-secondary)' }}>Atletas</strong>.

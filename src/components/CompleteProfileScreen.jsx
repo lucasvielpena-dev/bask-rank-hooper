@@ -319,7 +319,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
   return (
     <div className="app-shell" style={{ justifyContent: 'center', minHeight: '100dvh' }}>
-      <div style={{ padding: '0 clamp(14px, 4vw, 24px)', display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
+      <div style={{ padding: '0 clamp(12px, 4vw, 24px)', display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 12 }}>
           <div style={{ position: 'relative', width: 80, height: 80, margin: '0 auto 16px' }}>

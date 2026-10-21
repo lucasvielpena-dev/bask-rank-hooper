@@ -100,7 +100,7 @@ const StarPicker = memo(function StarPicker({ value, onChange, disabled }) {
           disabled={disabled}
           style={{
             background: 'none', border: 'none',
-            cursor: disabled ? 'default' : 'pointer', padding: '2px',
+            cursor: disabled ? 'default' : 'pointer', padding: '4px',
             transition: 'transform 0.1s',
             transform: (hover || value) >= i ? 'scale(1.15)' : 'scale(1)' }}
         >
@@ -316,7 +316,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
             <button
               type="button"
               style={{
-                padding: '12px 10px',
+                padding: '12px 8px',
                 borderRadius: 12,
                 border: '1.5px solid var(--accent)',
                 background: 'var(--accent)',
@@ -333,7 +333,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
               type="button"
               onClick={() => onNavigate('explorar')}
               style={{
-                padding: '12px 10px',
+                padding: '12px 8px',
                 borderRadius: 12,
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg-card)',
@@ -387,7 +387,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 onClick={() => setFiltroAtivo(f.key)}
                 style={{
                   position: 'relative',
-                  flex: '1 0 auto', padding: '8px 6px', borderRadius: 8,
+                  flex: '1 0 auto', padding: '8px 8px', borderRadius: 8,
                   border: 'none', background: 'transparent',
                   color: active ? 'var(--text-primary)' : 'var(--text-muted)',
                   fontWeight: active ? 600 : 500, fontSize: 13, cursor: 'pointer',
@@ -419,7 +419,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
             ))}
           </div>
         ) : filtrados.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+          <div style={{ textAlign: 'center', padding: '32px 16px' }}>
             <svg viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.5" style={{ width: 48, height: 48, marginBottom: 16, opacity: 0.5, margin: '0 auto' }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             <h3 style={{ color: 'var(--text-primary)', fontSize: 17, marginBottom: 8, fontFamily: "'Inter',sans-serif" }}>Nenhum atleta encontrado</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: 15, fontFamily: "'Inter',sans-serif" }}>Tente ajustar os filtros ou a sua busca.</p>
@@ -444,7 +444,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                       position: 'absolute', top: -8, right: 12,
                       background: isFirst ? 'var(--accent)' : 'var(--bg-elevated)',
                       color: isFirst ? '#000000' : 'var(--text-primary)',
-                      padding: '2px 8px', borderRadius: 999,
+                      padding: '4px 8px', borderRadius: 999,
                       fontSize: 13, fontWeight: 800, fontFamily: "'Barlow Condensed',sans-serif",
                       boxShadow: '0 2px 4px rgba(0,0,0,0.35)', zIndex: 1
                     }}>

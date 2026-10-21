@@ -82,7 +82,7 @@ export const RendimentoPill = memo(function RendimentoPill({ media, total, showL
       title={r.pct === null ? 'Sem avaliações ainda' : `${r.label} · ${r.total} avaliação(ões)`}
       style={{
         display: 'inline-flex', alignItems: 'center', gap: 8,
-        padding: '3px 9px', borderRadius: 999,
+        padding: '4px 9px', borderRadius: 999,
         background: r.soft, border: `1px solid ${r.line}`,
         color: r.cor, fontSize: 11, fontWeight: 800,
         fontFamily: "'Inter', sans-serif", whiteSpace: 'nowrap' }}

@@ -150,7 +150,7 @@ export default function Home({ profile, onNavigate }) {
           {/* Top badge */}
           <div className="premium-badge" style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
-            padding: '6px 12px', marginBottom: 12,
+            padding: '8px 12px', marginBottom: 12,
             transform: 'translateZ(20px)',
             transition: 'transform 0.4s ease'
           }}>
@@ -166,7 +166,7 @@ export default function Home({ profile, onNavigate }) {
           <div style={{ display: 'flex', alignItems: 'stretch', gap: 8, marginBottom: 10 }}>
 
             {/* Info */}
-            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '2px 0' }}>
+            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '4px 0' }}>
               <div>
                 {/* Rank + Name */}
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 6 }}>
@@ -300,7 +300,7 @@ export default function Home({ profile, onNavigate }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {carregandoDestaques
               ? [0, 1, 2, 3, 4].map((i) => (
-                <div key={`destaque-skeleton-${i}`} className="premium-card" style={{ borderRadius: 14, padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 16, minHeight: 64 }}>
+                <div key={`destaque-skeleton-${i}`} className="premium-card" style={{ borderRadius: 14, padding: '12px 12px', display: 'flex', alignItems: 'center', gap: 16, minHeight: 64 }}>
                   <div className="skeleton" style={{ width: 48, height: 48, borderRadius: 12, flexShrink: 0 }} />
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
                     <div className="skeleton" style={{ height: 13, width: '62%', borderRadius: 6 }} />
@@ -316,7 +316,7 @@ export default function Home({ profile, onNavigate }) {
                 onClick={() => setSelectedPlayer({ ...player, rank: i + 1 })}
                 style={{
                   borderRadius: 14,
-                  padding: '12px 14px',
+                  padding: '12px 12px',
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: 16,

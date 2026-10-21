@@ -195,7 +195,7 @@ export default function Explorar({ profile, onNavigate }) {
                 style={{
                   fontSize: 11,
                   fontWeight: 800,
-                  padding: '5px 8px',
+                  padding: '4px 8px',
                   borderRadius: 8,
                   background: `${ativ.color}22`,
                   color: ativ.color,
@@ -216,7 +216,7 @@ export default function Explorar({ profile, onNavigate }) {
           {erro && <p style={{ color: '#f87171', fontSize: 13, marginBottom: 12 }}>{erro}</p>}
 
           {loadingAtletas ? (
-            <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: 32 }}>
               <div className="spinner" />
             </div>
           ) : topGeral.length === 0 ? (
@@ -303,7 +303,7 @@ export default function Explorar({ profile, onNavigate }) {
             type="button"
             onClick={() => onNavigate?.('atletas')}
             style={{
-              padding: '12px 10px',
+              padding: '12px 8px',
               borderRadius: 12,
               border: '1.5px solid var(--border)',
               background: 'var(--bg-card)',
@@ -319,7 +319,7 @@ export default function Explorar({ profile, onNavigate }) {
           <button
             type="button"
             style={{
-              padding: '12px 10px',
+              padding: '12px 8px',
               borderRadius: 12,
               border: '1.5px solid var(--accent)',
               background: 'var(--accent)',
@@ -361,7 +361,7 @@ export default function Explorar({ profile, onNavigate }) {
         {erro && <p style={{ color: '#f87171', fontSize: 13, marginBottom: 12 }}>{erro}</p>}
 
         {loadingCities && cidades.length === 0 ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: 40 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: 32 }}>
             <div className="spinner" />
           </div>
         ) : filtradas.length === 0 ? (
@@ -389,7 +389,7 @@ export default function Explorar({ profile, onNavigate }) {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 12,
-                    padding: '10px 12px',
+                    padding: '8px 12px',
                     borderRadius: 12,
                     textAlign: 'left',
                     cursor: 'pointer',
@@ -411,7 +411,7 @@ export default function Explorar({ profile, onNavigate }) {
                             fontWeight: 800,
                             color: 'var(--accent)',
                             background: 'var(--accent-dim)',
-                            padding: '2px 6px',
+                            padding: '4px 8px',
                             borderRadius: 6,
                             letterSpacing: '0.04em' }}
                         >
@@ -454,7 +454,7 @@ function PlayerList({ list, onOpen }) {
               display: 'flex',
               alignItems: 'center',
               gap: 12,
-              padding: '10px 12px',
+              padding: '8px 12px',
               borderRadius: 12,
               textAlign: 'left',
               cursor: 'pointer',
@@ -504,7 +504,7 @@ function PlayerList({ list, onOpen }) {
                   marginTop: 4,
                   fontSize: 11,
                   fontWeight: 700,
-                  padding: '2px 6px',
+                  padding: '4px 8px',
                   borderRadius: 6,
                   background: badge.bg,
                   color: badge.fg }}

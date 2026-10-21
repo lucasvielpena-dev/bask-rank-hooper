@@ -85,7 +85,7 @@ export default function AvisoVersao() {
         right: 12,
         bottom: 84,
         zIndex: 70,
-        padding: '12px 14px',
+        padding: '12px 12px',
         background: 'var(--accent)',
         color: 'var(--accent-on)',
         border: 'none',

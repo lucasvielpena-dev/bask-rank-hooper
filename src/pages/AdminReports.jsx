@@ -99,7 +99,7 @@ function SectionCard({ title, icon, children }) {
       background: 'var(--bg-card)',
       border: '1px solid var(--border)',
       borderRadius: 'clamp(12px, 2vw, 16px)',
-      padding: 'clamp(14px, 3vw, 20px)'
+      padding: 'clamp(12px, 3vw, 16px)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
         <div style={{
@@ -186,7 +186,7 @@ export default function AdminReports({ profile, onNavigate }) {
 
   return (
     <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
-      <div style={{ padding: 'clamp(14px, 4vw, 20px) clamp(12px, 3vw, 20px) 24px', maxWidth: 960, margin: '0 auto' }}>
+      <div style={{ padding: 'clamp(12px, 4vw, 16px) clamp(12px, 3vw, 16px) 24px', maxWidth: 960, margin: '0 auto' }}>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 'clamp(16px, 4vw, 24px)' }}>
@@ -293,7 +293,7 @@ export default function AdminReports({ profile, onNavigate }) {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 8,
-                      padding: '10px 12px',
+                      padding: '8px 12px',
                       background: 'var(--bg-secondary)',
                       borderRadius: 10
                     }}>
@@ -367,7 +367,7 @@ export default function AdminReports({ profile, onNavigate }) {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 8,
-                    padding: '10px 12px',
+                    padding: '8px 12px',
                     background: 'var(--bg-secondary)',
                     borderRadius: 10
                   }}>

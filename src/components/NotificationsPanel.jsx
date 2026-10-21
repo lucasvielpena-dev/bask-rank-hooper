@@ -235,7 +235,7 @@ function NotificationsPanel({
             </div>
           </div>
 
-          <div className="notif-detail" style={{ flex: 1, overflowY: 'auto', padding: '4px 2px 12px' }}>
+          <div className="notif-detail" style={{ flex: 1, overflowY: 'auto', padding: '4px 4px 12px' }}>
             <div
               style={{
                 background: 'var(--bg-card)',
@@ -390,7 +390,7 @@ function NotificationsPanel({
                 bottom: 24,
                 left: 16,
                 right: 16,
-                padding: '10px 14px',
+                padding: '8px 12px',
                 borderRadius: 12,
                 background: 'rgba(12,12,20,0.95)',
                 border: '1px solid var(--accent-line)',
@@ -522,7 +522,7 @@ function NotificationsPanel({
               bottom: 72,
               left: 16,
               right: 16,
-              padding: '10px 14px',
+              padding: '8px 12px',
               borderRadius: 12,
               background: 'rgba(12,12,20,0.95)',
               border: '1px solid var(--accent-line)',

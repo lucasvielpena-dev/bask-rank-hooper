@@ -119,7 +119,7 @@ export default function MasterDashboard({ onNavigate }) {
               background: 'rgba(239,68,68,0.1)',
               border: '1px solid rgba(239,68,68,0.3)',
               borderRadius: 12,
-              padding: '12px 14px',
+              padding: '12px 12px',
               color: '#f87171',
               fontSize: 'var(--fs-sm)',
               marginBottom: 14 }}
@@ -143,7 +143,7 @@ export default function MasterDashboard({ onNavigate }) {
                 onClick={() => onNavigate?.('master-players')}
                 style={{
                   borderRadius: 14,
-                  padding: 14,
+                  padding: 12,
                   textAlign: 'left',
                   cursor: 'pointer',
                   border: insights.semCidade.length ? '1px solid rgba(245,158,11,0.35)' : undefined,
@@ -159,7 +159,7 @@ export default function MasterDashboard({ onNavigate }) {
                 type="button"
                 className="premium-card"
                 onClick={() => onNavigate?.('master-players')}
-                style={{ borderRadius: 14, padding: 14, textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit' }}
+                style={{ borderRadius: 14, padding: 12, textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit' }}
               >
                 <div className="text-lg" style={{ color: 'var(--text-secondary)', margin: 0 }}>{insights.suspensos.length}</div>
                 <div className="text-sm" style={{ fontWeight: 700, color: 'var(--text-primary)', marginTop: 4 }}>Suspensos</div>
@@ -169,7 +169,7 @@ export default function MasterDashboard({ onNavigate }) {
                 type="button"
                 className="premium-card"
                 onClick={() => onNavigate?.('master-players')}
-                style={{ borderRadius: 14, padding: 14, textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit' }}
+                style={{ borderRadius: 14, padding: 12, textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit' }}
               >
                 <div className="text-lg" style={{ color: '#93c5fd', margin: 0 }}>{insights.semVotos.length}</div>
                 <div className="text-sm" style={{ fontWeight: 700, color: 'var(--text-primary)', marginTop: 4 }}>Sem votos</div>
@@ -179,7 +179,7 @@ export default function MasterDashboard({ onNavigate }) {
                 type="button"
                 className="premium-card"
                 onClick={() => onNavigate?.('master-reports')}
-                style={{ borderRadius: 14, padding: 14, textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit' }}
+                style={{ borderRadius: 14, padding: 12, textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit' }}
               >
                 <div className="text-lg" style={{ color: 'var(--accent)', margin: 0 }}>→</div>
                 <div className="text-sm" style={{ fontWeight: 700, color: 'var(--text-primary)', marginTop: 4 }}>Relatórios</div>
@@ -188,7 +188,7 @@ export default function MasterDashboard({ onNavigate }) {
             </div>
 
             {insights.semCidade.length > 0 && (
-              <div className="premium-card" style={{ borderRadius: 14, padding: 14, marginBottom: 18 }}>
+              <div className="premium-card" style={{ borderRadius: 14, padding: 12, marginBottom: 18 }}>
                 <div className="text-sm" style={{ fontWeight: 800, color: '#fbbf24', marginBottom: 8 }}>
                   Atletas sem cidade
                 </div>
@@ -219,7 +219,7 @@ export default function MasterDashboard({ onNavigate }) {
               onClick={() => onNavigate?.('master-activity')}
               style={{
                 borderRadius: 14,
-                padding: 14,
+                padding: 12,
                 textAlign: 'left',
                 cursor: 'pointer',
                 fontFamily: 'inherit',
@@ -239,7 +239,7 @@ export default function MasterDashboard({ onNavigate }) {
               {STAT_CARDS.map((card) => {
                 const Icon = card.icon;
                 return (
-                  <div key={card.key} className="premium-card" style={{ borderRadius: 12, padding: '10px 6px', textAlign: 'center' }}>
+                  <div key={card.key} className="premium-card" style={{ borderRadius: 12, padding: '8px 8px', textAlign: 'center' }}>
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 4 }}>
                       <Icon size={16} color="var(--accent)" />
                     </div>
@@ -282,7 +282,7 @@ export default function MasterDashboard({ onNavigate }) {
                       onClick={() => onNavigate?.('master-cities')}
                       style={{
                         borderRadius: 14,
-                        padding: '12px 14px',
+                        padding: '12px 12px',
                         textAlign: 'left',
                         cursor: 'pointer',
                         fontFamily: 'inherit',

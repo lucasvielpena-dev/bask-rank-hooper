@@ -113,7 +113,7 @@ export default function AdminUsers({ profile, onNavigate }) {
 
   if (loading) {
     return (
-      <div className="page-content" style={{ padding: '20px' }}>
+      <div className="page-content" style={{ padding: '16px' }}>
         <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
           <div className="skeleton skeleton-avatar" style={{ width: 40, height: 40 }} />
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -132,7 +132,7 @@ export default function AdminUsers({ profile, onNavigate }) {
 
   return (
     <div className="page-content" style={{ background: 'var(--bg-primary)' }}>
-      <div style={{ padding: '20px 20px 0' }}>
+      <div style={{ padding: '16px 16px 0' }}>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
           <button
@@ -142,7 +142,7 @@ export default function AdminUsers({ profile, onNavigate }) {
               border: 'none',
               color: 'var(--accent)',
               cursor: 'pointer',
-              padding: 6,
+              padding: 8,
               display: 'flex',
               alignItems: 'center',
               fontFamily: 'inherit'
@@ -185,14 +185,14 @@ export default function AdminUsers({ profile, onNavigate }) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
-              paddingLeft: 40,
+              paddingLeft: 32,
               paddingRight: 16,
               borderRadius: 50,
               background: 'var(--bg-card)',
               border: '1px solid var(--border)',
               color: 'var(--text-primary)',
               fontSize: 'clamp(13px, 3vw, 15px)',
-              padding: '12px 16px 12px 40px'
+              padding: '12px 16px 12px 32px'
             }}
           />
         </div>
@@ -310,7 +310,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                       <span style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        padding: '2px 8px',
+                        padding: '4px 8px',
                         borderRadius: 50,
                         fontSize: 11,
                         fontWeight: 800,
@@ -327,7 +327,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                         <span style={{
                           display: 'inline-flex',
                           alignItems: 'center',
-                          padding: '2px 8px',
+                          padding: '4px 8px',
                           borderRadius: 50,
                           fontSize: 11,
                           fontWeight: 800,
@@ -376,7 +376,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                       style={{
                         flex: '1 1 auto',
                         minWidth: 'clamp(80px, 25vw, 110px)',
-                        padding: '7px 10px',
+                        padding: '8px 8px',
                         borderRadius: 8,
                         border: isAdmin ? '1px solid var(--accent-line)' : '1px solid var(--accent-line)',
                         background: isAdmin ? 'var(--accent-soft)' : 'var(--accent-dim)',
@@ -397,7 +397,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                       style={{
                         flex: '1 1 auto',
                         minWidth: 'clamp(80px, 25vw, 110px)',
-                        padding: '7px 10px',
+                        padding: '8px 8px',
                         borderRadius: 8,
                         border: isSuspended ? '1px solid var(--success-soft)' : '1px solid rgba(239,68,68,0.2)',
                         background: isSuspended ? 'var(--success-soft)' : 'rgba(239,68,68,0.08)',
@@ -416,7 +416,7 @@ export default function AdminUsers({ profile, onNavigate }) {
                       onClick={() => setConfirmDelete(user.id)}
                       disabled={isLoading}
                       style={{
-                        padding: '7px 10px',
+                        padding: '8px 8px',
                         borderRadius: 8,
                         border: '1px solid rgba(239,68,68,0.2)',
                         background: 'rgba(239,68,68,0.08)',
@@ -445,7 +445,7 @@ export default function AdminUsers({ profile, onNavigate }) {
         <div className="modal-overlay" onClick={() => setConfirmDelete(null)}>
           <div className="modal-sheet" onClick={e => e.stopPropagation()}>
             <div className="modal-handle" />
-            <div style={{ textAlign: 'center', padding: '8px 0 20px' }}>
+            <div style={{ textAlign: 'center', padding: '8px 0 16px' }}>
               <div style={{
                 width: 52,
                 height: 52,

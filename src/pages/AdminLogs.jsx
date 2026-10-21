@@ -98,7 +98,7 @@ export default function AdminLogs({ profile, onNavigate }) {
 
   return (
     <div className="page-content">
-      <div style={{ padding: 'clamp(12px, 3vw, 20px) clamp(14px, 3vw, 20px) 0' }}>
+      <div style={{ padding: 'clamp(12px, 3vw, 16px) clamp(12px, 3vw, 16px) 0' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
           <button
             onClick={() => onNavigate('master')}
@@ -144,13 +144,13 @@ export default function AdminLogs({ profile, onNavigate }) {
             <p>As ações dos administradores aparecerão aqui.</p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 30 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 32 }}>
             {logs.map((log, i) => (
               <div
                 key={log.id || i}
                 className="card card-enter"
                 style={{
-                  padding: '14px 16px',
+                  padding: '12px 16px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 12,

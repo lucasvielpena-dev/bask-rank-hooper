@@ -43,7 +43,7 @@ export default class ErrorBoundary extends Component {
       >
         <div
           className="premium-card"
-          style={{ maxWidth: 380, width: '100%', padding: 20, textAlign: 'center' }}
+          style={{ maxWidth: 380, width: '100%', padding: 16, textAlign: 'center' }}
         >
           <div
             style={{
@@ -81,7 +81,7 @@ export default class ErrorBoundary extends Component {
             <button
               onClick={() => window.location.reload()}
               style={{
-                padding: '10px 18px', borderRadius: 12, fontSize: 13, fontWeight: 700,
+                padding: '8px 18px', borderRadius: 12, fontSize: 13, fontWeight: 700,
                 textTransform: 'uppercase', letterSpacing: '0.05em', cursor: 'pointer',
                 fontFamily: "'Inter',sans-serif",
                 background: 'transparent', color: 'var(--text-secondary)',
