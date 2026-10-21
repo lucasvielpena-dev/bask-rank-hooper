@@ -218,19 +218,21 @@ export default function Home({ profile, onNavigate }) {
                 alt={greetingName}
                 className="premium-photo"
                 style={{
-                  width: 80, height: 80, borderRadius: 16, objectFit: 'cover',
+                  width: 'clamp(96px, 27vw, 112px)', height: 'clamp(96px, 27vw, 112px)',
+                  borderRadius: 18, objectFit: 'cover',
                   border: '1px solid rgba(255,255,255,0.06)', flexShrink: 0,
                 }}
               />
             ) : (
               <div className="premium-photo" style={{
-                width: 80, height: 80, borderRadius: 16, flexShrink: 0,
+                width: 'clamp(96px, 27vw, 112px)', height: 'clamp(96px, 27vw, 112px)',
+                borderRadius: 18, flexShrink: 0,
                 background: 'var(--accent-soft)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 border: '1px solid rgba(255,255,255,0.06)',
               }}>
                 <span style={{
-                  fontSize: 30, fontWeight: 800, color: 'var(--accent)',
+                  fontSize: 40, fontWeight: 800, color: 'var(--accent)',
                   fontFamily: "'Barlow Condensed',sans-serif",
                 }}>
                   {greetingName.charAt(0).toUpperCase()}
