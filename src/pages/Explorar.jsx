@@ -388,7 +388,7 @@ export default function Explorar({ profile, onNavigate }) {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 12,
+                    gap: 16,
                     padding: '12px 12px',
                     minHeight: 64,
                     textAlign: 'left',
@@ -397,7 +397,7 @@ export default function Explorar({ profile, onNavigate }) {
                     border: isMinha ? '1px solid var(--accent-line)' : undefined,
                     width: '100%' }}
                 >
-                  <CityCrest cidade={c.cidade} uf={c.uf} size={42} />
+                  <CityCrest cidade={c.cidade} uf={c.uf} size={48} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                       <span style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)' }}>
