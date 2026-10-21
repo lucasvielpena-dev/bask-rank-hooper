@@ -170,10 +170,11 @@ export default function Home({ profile, onNavigate }) {
             <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '2px 0' }}>
               <div>
                 {/* Rank + Name */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, marginBottom: 6 }}>
                   <span style={{
-                    fontSize: 32, fontWeight: 800, color: 'var(--accent-text)',
-                    fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 1,
+                    fontSize: 64, fontWeight: 800, color: 'var(--accent-text)',
+                    fontFamily: "'Barlow Condensed',sans-serif", lineHeight: 0.86,
+                    letterSpacing: '-0.02em',
                   }}>
                     {myRank}
                   </span>
@@ -186,16 +187,10 @@ export default function Home({ profile, onNavigate }) {
                   {myPlayerInfo?.nome || greetingName}
                 </div>
                 <div className="hero-position" style={{
-                  display: 'flex', alignItems: 'center', gap: 8, width: '100%', boxSizing: 'border-box',
-                  padding: '7px 10px', marginBottom: 8, borderRadius: 10,
-                  background: 'var(--accent-soft)', border: '1px solid var(--accent-line)',
-                  fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '0.03em',
-                  textTransform: 'uppercase', fontFamily: "'Inter',sans-serif",
+                  fontSize: 12, color: getPositionColor(myPlayerInfo?.posicao), fontWeight: 600,
+                  fontFamily: "'Inter',sans-serif", marginBottom: 8,
                 }}>
-                  <span style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--accent-text)', flexShrink: 0 }} />
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {myPlayerInfo?.posicao || 'Atleta'}
-                  </span>
+                  {myPlayerInfo?.posicao || 'Atleta'}
                 </div>
               </div>
 
