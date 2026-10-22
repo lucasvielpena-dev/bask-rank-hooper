@@ -1,5 +1,5 @@
 -- Notificacoes por cidade: rachao, partida, torneio
--- Cole no SQL Editor do Supabase (arquivo limpo, sem $$)
+-- Cole no SQL Editor do Supabase (arquivo limpo, sem dollar-quote)
 
 CREATE TABLE IF NOT EXISTS public.realtime_pings (
   topico TEXT PRIMARY KEY,
