@@ -273,37 +273,6 @@ export const notasJogoAPI = {
   },
 };
 
-export const jogosAPI = {
-  listar: async (esporte = 'basquete') => {
-    const { data, error } = await supabase
-      .from('jogos')
-      .select('*')
-      .eq('esporte', esporte)
-      .order('created_at', { ascending: false });
-    return { data, error };
-  },
-
-  criar: async (jogo) => {
-    const user = (await supabase.auth.getUser()).data.user;
-    const { data, error } = await supabase
-      .from('jogos')
-      .insert([{ ...jogo, esporte: jogo.esporte || 'basquete', criado_por: user?.id }])
-      .select()
-      .single();
-    return { data, error };
-  },
-
-  atualizar: async (id, updates) => {
-    const { data, error } = await supabase
-      .from('jogos')
-      .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .select()
-      .single();
-    return { data, error };
-  },
-};
-
 export const estatisticasPessoaisAPI = {
   obterMinhas: async (esporte = 'basquete') => {
     const user = (await supabase.auth.getUser()).data.user;
