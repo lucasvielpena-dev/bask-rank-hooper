@@ -387,10 +387,25 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               )}
             </label>
           </div>
-          <h2 style={{ fontWeight: 800, fontSize: 'clamp(20px, 5vw, 24px)', marginBottom: 6 }}>Complete seu perfil</h2>
-          <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.5 }}>
-            Falta pouco! Preencha as informações obrigatórias para ter acesso completo ao Rank Hooper.
+          <h2 style={{ fontWeight: 800, fontSize: 'clamp(20px, 5vw, 24px)', marginBottom: 8 }}>Complete seu perfil</h2>
+          <p style={{ color: 'var(--text-muted, #64748b)', fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>
+            Falta pouco para entrar no Rank Hooper.
           </p>
+          <div style={{
+            textAlign: 'left',
+            background: 'var(--bg-card, rgba(255,255,255,0.06))',
+            border: '1px solid var(--border, rgba(255,255,255,0.12))',
+            borderRadius: 14,
+            padding: '12px 14px',
+            marginTop: 4
+          }}>
+            <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary, #F5F8FF)', margin: '0 0 6px' }}>
+              O que é o Rank Hooper?
+            </p>
+            <p style={{ fontSize: 12, color: 'var(--text-secondary, #94A3B8)', lineHeight: 1.5, margin: 0 }}>
+              É o app de ranking de basquete da sua cidade. Jogadores avaliam jogadores, montam rachões e torneios, e sobem no ranking local. Você está criando seu perfil de atleta para participar.
+            </p>
+          </div>
         </div>
 
         {erro && (
