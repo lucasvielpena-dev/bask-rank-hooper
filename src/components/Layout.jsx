@@ -598,7 +598,7 @@ export default function Layout({ page, onNavigate, children }) {
         onDelete={handleExcluirNotificacao}
         onRefresh={carregarNotificacoes}
         onAbrirJogos={() => { setShowNotificacoes(false); onNavigate('jogos'); }}
-        onNavigate={(page) => { setShowNotificacoes(false); onNavigate(page); }}
+        onNavigate={(page, props) => { setShowNotificacoes(false); onNavigate(page, props || {}); }}
       />
     </div>
   );

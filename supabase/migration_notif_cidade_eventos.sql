@@ -1,5 +1,12 @@
--- Notificacoes por cidade (arquivo para abrir no editor e colar no Supabase)
--- NAO copie de mensagens de chat. Abra este arquivo ou o Raw do GitHub.
+-- Notificacoes: tipo + referencia_id + avisos por cidade
+-- Abra este arquivo (ou Raw no GitHub) e cole no SQL Editor do Supabase.
+-- NAO copie de chat (simbolos quebram).
+
+ALTER TABLE public.notificacoes
+  ADD COLUMN IF NOT EXISTS tipo TEXT,
+  ADD COLUMN IF NOT EXISTS referencia_id UUID;
+
+CREATE INDEX IF NOT EXISTS idx_notificacoes_tipo ON public.notificacoes(tipo);
 
 CREATE TABLE IF NOT EXISTS public.realtime_pings (
   topico TEXT PRIMARY KEY,
@@ -50,11 +57,16 @@ $function$;
 REVOKE ALL ON FUNCTION public.notificar_realtime(TEXT, INTERVAL) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.notificar_realtime(TEXT, INTERVAL) TO authenticated, service_role;
 
+-- Drop old signature if exists (4 args) then create 6-arg version
+DROP FUNCTION IF EXISTS public.notificar_usuarios_cidade(TEXT, TEXT, TEXT, UUID);
+
 CREATE OR REPLACE FUNCTION public.notificar_usuarios_cidade(
   p_cidade TEXT,
   p_titulo TEXT,
   p_mensagem TEXT,
-  p_exceto_usuario UUID DEFAULT NULL
+  p_exceto_usuario UUID DEFAULT NULL,
+  p_tipo TEXT DEFAULT NULL,
+  p_referencia_id UUID DEFAULT NULL
 )
 RETURNS INTEGER
 LANGUAGE plpgsql
@@ -70,8 +82,8 @@ BEGIN
     RETURN 0;
   END IF;
 
-  INSERT INTO public.notificacoes (usuario_id, titulo, mensagem, lida)
-  SELECT p.id, p_titulo, p_mensagem, FALSE
+  INSERT INTO public.notificacoes (usuario_id, titulo, mensagem, lida, tipo, referencia_id)
+  SELECT p.id, p_titulo, p_mensagem, FALSE, p_tipo, p_referencia_id
   FROM public.profiles p
   WHERE
     (
@@ -87,8 +99,8 @@ BEGIN
 END;
 $function$;
 
-REVOKE ALL ON FUNCTION public.notificar_usuarios_cidade(TEXT, TEXT, TEXT, UUID) FROM PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION public.notificar_usuarios_cidade(TEXT, TEXT, TEXT, UUID) TO authenticated, service_role;
+REVOKE ALL ON FUNCTION public.notificar_usuarios_cidade(TEXT, TEXT, TEXT, UUID, TEXT, UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.notificar_usuarios_cidade(TEXT, TEXT, TEXT, UUID, TEXT, UUID) TO authenticated, service_role;
 
 CREATE OR REPLACE FUNCTION public.trg_notif_nova_partida()
 RETURNS TRIGGER
@@ -109,7 +121,7 @@ BEGIN
     coalesce(NEW.time_b, 'Time B'),
     CASE WHEN NEW.cidade IS NOT NULL AND NEW.cidade <> '' THEN ' em ' || NEW.cidade ELSE '' END
   );
-  PERFORM public.notificar_usuarios_cidade(NEW.cidade, v_titulo, v_msg, v_exceto);
+  PERFORM public.notificar_usuarios_cidade(NEW.cidade, v_titulo, v_msg, v_exceto, 'partida', NEW.id);
   RETURN NEW;
 EXCEPTION WHEN OTHERS THEN
   RETURN NEW;
@@ -147,7 +159,7 @@ BEGIN
     CASE WHEN NEW.local IS NOT NULL AND NEW.local <> '' THEN ' em ' || NEW.local ELSE '' END,
     CASE WHEN v_quando IS NOT NULL THEN ' - ' || v_quando ELSE '' END
   );
-  PERFORM public.notificar_usuarios_cidade(NEW.cidade, v_titulo, v_msg, v_exceto);
+  PERFORM public.notificar_usuarios_cidade(NEW.cidade, v_titulo, v_msg, v_exceto, 'racha', NEW.id);
   RETURN NEW;
 EXCEPTION WHEN OTHERS THEN
   RETURN NEW;
@@ -181,7 +193,7 @@ BEGIN
       ELSE ''
     END
   );
-  PERFORM public.notificar_usuarios_cidade(NEW.cidade, v_titulo, v_msg, v_exceto);
+  PERFORM public.notificar_usuarios_cidade(NEW.cidade, v_titulo, v_msg, v_exceto, 'torneio', NEW.id);
   RETURN NEW;
 EXCEPTION WHEN OTHERS THEN
   RETURN NEW;
@@ -211,8 +223,9 @@ END;
 $function$;
 
 SELECT
+  (SELECT count(*) FROM information_schema.columns WHERE table_schema='public' AND table_name='notificacoes' AND column_name='tipo') AS col_tipo,
+  (SELECT count(*) FROM information_schema.columns WHERE table_schema='public' AND table_name='notificacoes' AND column_name='referencia_id') AS col_ref,
   (SELECT count(*) FROM pg_proc WHERE proname = 'notificar_usuarios_cidade') AS tem_fn_cidade,
-  (SELECT count(*) FROM pg_proc WHERE proname = 'notificar_realtime') AS tem_fn_realtime,
   (SELECT count(*) FROM pg_trigger WHERE tgname = 'trg_notif_nova_partida') AS trg_partida,
   (SELECT count(*) FROM pg_trigger WHERE tgname = 'trg_notif_novo_racha') AS trg_racha,
   (SELECT count(*) FROM pg_trigger WHERE tgname = 'trg_notif_novo_torneio') AS trg_torneio;

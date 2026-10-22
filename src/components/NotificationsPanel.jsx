@@ -47,6 +47,22 @@ function IconForTitle({ titulo = '', size = 18, color = 'var(--accent)' }) {
 
 /** Destino sugerido a partir do título/mensagem */
 function destinoPara(n) {
+  // Prefer structured fields from DB (tipo / referencia_id)
+  const tipo = String(n?.tipo || '').toLowerCase().trim();
+  if (tipo === 'partida' || tipo === 'placar' || tipo === 'operador') {
+    return { page: 'jogos', label: 'Abrir Competições', props: n?.referencia_id ? { openPartidaId: n.referencia_id } : {} };
+  }
+  if (tipo === 'torneio') {
+    return { page: 'torneios', label: 'Abrir Torneios', props: n?.referencia_id ? { openTorneioId: n.referencia_id } : {} };
+  }
+  if (tipo === 'racha' || tipo === 'rachao' || tipo === 'racao') {
+    return { page: 'racoes', label: 'Abrir Rachões', props: n?.referencia_id ? { openRacaoId: n.referencia_id } : {} };
+  }
+  if (tipo === 'avaliacao' || tipo === 'ranking' || tipo === 'atleta') {
+    return { page: 'atletas', label: 'Abrir Atletas' };
+  }
+
+  // Fallback: infer from title/message text
   const t = `${n?.titulo || ''} ${n?.mensagem || ''}`.toLowerCase();
   if (t.includes('placar') || t.includes('operar') || t.includes('partida') || t.includes('compet')) {
     return { page: 'jogos', label: 'Abrir Competições' };
@@ -190,8 +206,8 @@ function NotificationsPanel({
     }
   }
 
-  function goTo(page) {
-    if (onNavigate) onNavigate(page);
+  function goTo(page, props = {}) {
+    if (onNavigate) onNavigate(page, props);
     else if (page === 'jogos' && onAbrirJogos) onAbrirJogos();
     onClose?.();
   }
@@ -353,7 +369,7 @@ function NotificationsPanel({
                   type="button"
                   className="btn btn-primary"
                   style={{ width: '100%' }}
-                  onClick={() => goTo(dest.page)}
+                  onClick={() => goTo(dest.page, dest.props || {})}
                 >
                   {dest.label}
                 </button>
