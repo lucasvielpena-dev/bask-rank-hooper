@@ -20,22 +20,6 @@ function traduzErro(msg) {
   return original || 'Algo deu errado. Tente novamente.';
 }
 
-// Vídeo de fundo do login: só monta depois da primeira pintura, para não disputar banda com a tela.
-function VideoFundo() {
-  const [on, setOn] = useState(false);
-  useEffect(() => {
-    const t = setTimeout(() => setOn(true), 400);
-    return () => clearTimeout(t);
-  }, []);
-  if (!on) return null;
-  return (
-    <video autoPlay loop muted playsInline preload="auto"
-      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.45 }}>
-      <source src="/images/site.mp4" type="video/mp4" />
-    </video>
-  );
-}
-
 export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguardando = false }) {
   const [tab, setTab] = useState('login');
   const [email, setEmail] = useState('');
@@ -189,21 +173,21 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
   }));
 
   return (
-    <div className={`app-shell auth-screen ${isShooting ? 'is-shooting' : ''}`} style={{ minHeight: '100dvh', background: 'var(--bg-primary, #0B1220)', position: 'relative', overflow: 'hidden' }}>
+    <div className={`app-shell auth-screen ${isShooting ? 'is-shooting' : ''}`} style={{ minHeight: '100dvh', background: 'var(--bg-primary, #0C0C14)', position: 'relative', overflow: 'hidden' }}>
       <style>{`
         /* O fade de saída desta tela é controlado pelo AuthContext (só depois
            que o perfil chegou e o app já está montado por baixo). */
 
         /* IDLE ANIMATIONS (Cubic-bezier gerais) */
         .idle-breathe {
-          animation: breathe 2.5s cubic-bezier(0.45, 0, 0.55, 1) 1 both;
+          animation: breathe 2.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
         }
         .idle-sway {
-          animation: sway 3s cubic-bezier(0.45, 0, 0.55, 1) 1 both;
+          animation: sway 3s cubic-bezier(0.45, 0, 0.55, 1) infinite;
           transform-origin: 200px 450px;
         }
         .idle-bounce {
-          animation: bounce 0.8s cubic-bezier(0.45, 0, 0.55, 1) 1 both;
+          animation: bounce 0.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
         }
 
         /* SQUASH & STRETCH BALL (IDLE) */
@@ -304,7 +288,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
           /* Sem backdrop-filter: atrás deste formulário há vídeo/animação, e o
              navegador re-borrava o quadro inteiro o tempo todo. Fundo sólido
              escuro dá o mesmo contraste e é instantâneo. */
-          background: rgba(22, 27, 34, 0.90);
+          background: rgba(18, 18, 26, 0.78);
           border: 0.5px solid rgba(255,255,255,0.12);
           border-radius: 20px;
           padding: 1.5rem;
@@ -318,7 +302,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
           border: 0.5px solid rgba(255,255,255,0.15);
           border-radius: 12px;
           color: #FFFFFF;
-          padding: 12px 16px 14px 40px;
+          padding: 14px 16px 14px 40px;
           width: 100%;
           box-sizing: border-box;
           font-family: 'Inter', sans-serif;
@@ -348,9 +332,17 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
       {/* Sem `filter` no <video>: filtrar vídeo de tela cheia obriga a GPU a
           refazer o filtro em TODO quadro — era o que engasgava a tela de login.
           O escurecimento virou um véu escuro fixo por cima do vídeo. */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#0B1220' }}>
-        <VideoFundo />
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(11,18,32,0.62)' }} />
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#000000' }}>
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+        >
+          <source src="/images/site.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.2)' }} />
       </div>
 
       {/* BACKGROUND SVG LINE ART (Desativado a pedido do vídeo) */}
@@ -447,7 +439,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
       </div>
 
       {/* CONTENT LAYER */}
-      <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', padding: '10vh 16px 5vh' }}>
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between', padding: '10vh 20px 5vh' }}>
         
         {/* LOGO */}
         <div style={{ textAlign: 'center' }}>
@@ -455,19 +447,22 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
             width: 64, height: 64, background: 'rgba(255,255,255,0.05)', borderRadius: 18,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 12px', border: '1px solid var(--accent-line)',
-            backdropFilter: 'blur(10px)' }}>
+            backdropFilter: 'blur(10px)',
+          }}>
             <span style={{
               fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800,
-              fontSize: 22, color: 'var(--accent-text)', letterSpacing: '-0.02em' }}>RH</span>
+              fontSize: 24, color: 'var(--accent-text)', letterSpacing: '-0.02em',
+            }}>RH</span>
           </div>
           <h1 style={{
             fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 800,
-            fontSize: '22px', color: '#FFFFFF',
-            letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1, marginBottom: 4 }}>
+            fontSize: '28px', color: '#FFFFFF',
+            letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1, marginBottom: 4,
+          }}>
             Rank Hooper
           </h1>
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, letterSpacing: '0.5px', fontFamily: "'Inter',sans-serif" }}>
-            Ready to ball?
+          <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 13, letterSpacing: '0.2px', fontFamily: "'Inter',sans-serif", maxWidth: 280, margin: '0 auto', lineHeight: 1.45 }}>
+            Ranking de basquete da sua cidade
           </p>
         </div>
 
@@ -475,20 +470,20 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
         <div className={`glass-form ${isShake ? 'shake-animation' : ''}`} style={{ marginTop: 'auto' }}>
           
           {erro && (
-            <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 10, color: '#f87171', padding: '8px', fontSize: 13, marginBottom: 16, textAlign: 'center' }}>
+            <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 10, color: '#f87171', padding: '10px', fontSize: 12, marginBottom: 16, textAlign: 'center' }}>
               {erro}
             </div>
           )}
           {successMsg && (
-            <div style={{ background: 'var(--success-soft)', border: '1px solid var(--success-soft)', borderRadius: 10, color: 'var(--success-text)', padding: '8px', fontSize: 13, marginBottom: 16, textAlign: 'center' }}>
+            <div style={{ background: 'var(--success-soft)', border: '1px solid var(--success-soft)', borderRadius: 10, color: 'var(--success-text)', padding: '10px', fontSize: 12, marginBottom: 16, textAlign: 'center' }}>
               {successMsg}
             </div>
           )}
 
           {tab === 'forgot' ? (
             <div style={{ textAlign: 'center', marginBottom: 16 }}>
-              <h3 style={{ fontWeight: 800, fontSize: 17, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif" }}>Recuperar Senha</h3>
-              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, marginTop: 4, fontFamily: "'Inter',sans-serif" }}>Digite seu e-mail para receber as instruções</p>
+              <h3 style={{ fontWeight: 800, fontSize: 16, color: '#FFFFFF', fontFamily: "'Barlow Condensed',sans-serif" }}>Recuperar Senha</h3>
+              <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, marginTop: 4, fontFamily: "'Inter',sans-serif" }}>Digite seu e-mail para receber as instruções</p>
             </div>
           ) : (
             <div style={{ display: 'flex', background: 'rgba(0,0,0,0.3)', borderRadius: 10, padding: 4, gap: 4, marginBottom: 16 }}>
@@ -502,13 +497,32 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
                   style={{
                     flex: 1, padding: '8px 4px', borderRadius: 8, border: 'none',
                     background: tab === t.key ? 'var(--accent)' : 'transparent',
-                    color: tab === t.key ? 'var(--accent-on)' : 'rgba(255,255,255,0.5)',
+                    color: tab === t.key ? '#0C0C14' : 'rgba(255,255,255,0.5)',
                     fontSize: 13, fontWeight: 700, cursor: 'pointer',
-                    fontFamily: "'Inter',sans-serif", transition: 'all 0.2s' }}
+                    fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
+                  }}
                 >
                   {t.label}
                 </button>
               ))}
+            </div>
+          )}
+
+          {tab === 'register' && (
+            <div style={{
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: 14,
+              padding: '12px 14px',
+              marginBottom: 14,
+              textAlign: 'left'
+            }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF', marginBottom: 6, fontFamily: "'Inter',sans-serif" }}>
+                O que é o Rank Hooper?
+              </p>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, fontFamily: "'Inter',sans-serif", margin: 0 }}>
+                App de basquete da sua cidade: você avalia outros jogadores, entra em rachões e torneios, e sobe no ranking local. Grátis, no celular — só com quem joga perto de você.
+              </p>
             </div>
           )}
 
@@ -549,7 +563,8 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
                   />
                   <button type="button" onClick={() => setShowPassword(p => !p)} style={{
                     position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-                    background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: 'rgba(255,255,255,0.4)' }}>
+                    background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: 'rgba(255,255,255,0.4)',
+                  }}>
                     {showPassword ? (
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
                     ) : (
@@ -561,7 +576,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
                 
                 {tab === 'login' && (
                   <div style={{ textAlign: 'right' }}>
-                    <button type="button" onClick={() => { setTab('forgot'); setErro(null); setSuccessMsg(null); }} style={{ background: 'none', border: 'none', color: 'var(--accent-text)', cursor: 'pointer', fontSize: 13, fontWeight: 600, padding: 0, fontFamily: "'Inter',sans-serif" }}>
+                    <button type="button" onClick={() => { setTab('forgot'); setErro(null); setSuccessMsg(null); }} style={{ background: 'none', border: 'none', color: 'var(--accent-text)', cursor: 'pointer', fontSize: 12, fontWeight: 600, padding: 0, fontFamily: "'Inter',sans-serif" }}>
                       Esqueci minha senha
                     </button>
                   </div>
@@ -571,7 +586,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
 
             <button type="submit" disabled={carregando || isShooting} style={{
               width: '100%', height: 50, borderRadius: 12, border: 'none',
-              background: 'var(--accent)', color: 'var(--accent-on)', fontSize: 15, fontWeight: 700,
+              background: 'var(--accent)', color: '#0C0C14', fontSize: 15, fontWeight: 700,
               cursor: 'pointer', fontFamily: "'Barlow Condensed',sans-serif",
               textTransform: 'uppercase', letterSpacing: '0.06em',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -590,10 +605,11 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
             {tab === 'login' && !isShooting && (
               <button type="button" onClick={handleGoogleLogin} disabled={carregando} style={{
                 width: '100%', height: 50, borderRadius: 12, border: '1px solid rgba(255,255,255,0.15)',
-                background: 'rgba(255,255,255,0.05)', color: '#FFFFFF', fontSize: 15, fontWeight: 600,
+                background: 'rgba(255,255,255,0.05)', color: '#FFFFFF', fontSize: 14, fontWeight: 600,
                 cursor: 'pointer', fontFamily: "'Inter',sans-serif",
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                transition: 'all 0.2s' }}>
+                transition: 'all 0.2s',
+              }}>
                 <svg width="18" height="18" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -608,7 +624,8 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
               <button type="button" onClick={() => { setTab('login'); setErro(null); setSuccessMsg(null); }} disabled={carregando} style={{
                 width: '100%', height: 48, borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)',
                 background: 'transparent', color: 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: 600,
-                cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>
+                cursor: 'pointer', fontFamily: "'Inter',sans-serif",
+              }}>
                 Voltar ao Login
               </button>
             )}
@@ -626,9 +643,10 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
           background: 'rgba(12,12,20,0.75)', border: '1px solid var(--accent-line)',
           borderRadius: 999, padding: '9px 16px',
           backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-          animation: 'fadeIn 0.3s ease both' }}>
+          animation: 'fadeIn 0.3s ease both',
+        }}>
           <div className="spinner" style={{ width: 13, height: 13 }} />
-          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', fontWeight: 600, fontFamily: "'Inter',sans-serif" }}>
+          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 600, fontFamily: "'Inter',sans-serif" }}>
             Preparando sua quadra…
           </span>
         </div>

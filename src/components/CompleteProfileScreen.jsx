@@ -319,7 +319,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
   return (
     <div className="app-shell" style={{ justifyContent: 'center', minHeight: '100dvh' }}>
-      <div style={{ padding: '0 clamp(12px, 4vw, 24px)', display: 'flex', flexDirection: 'column', gap: 16, position: 'relative', zIndex: 1 }}>
+      <div style={{ padding: '0 clamp(14px, 4vw, 24px)', display: 'flex', flexDirection: 'column', gap: 20, position: 'relative', zIndex: 1 }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 12 }}>
           <div style={{ position: 'relative', width: 80, height: 80, margin: '0 auto 16px' }}>
@@ -387,7 +387,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               )}
             </label>
           </div>
-          <h2 style={{ fontWeight: 800, fontSize: 'clamp(20px, 5vw, 24px)', marginBottom: 8 }}>Complete seu perfil</h2>
+          <h2 style={{ fontWeight: 800, fontSize: 'clamp(20px, 5vw, 24px)', marginBottom: 6 }}>Complete seu perfil</h2>
           <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.5 }}>
             Falta pouco! Preencha as informações obrigatórias para ter acesso completo ao Rank Hooper.
           </p>
@@ -403,13 +403,13 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
             fontSize: 13,
             lineHeight: 1.4
           }}>
-            {erro}
+            ⚠️ {erro}
           </div>
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div>
-            <label style={{ fontSize: 13, color: '#64748b', fontWeight: 600, display: 'block', marginBottom: 8 }}>
+            <label style={{ fontSize: 13, color: '#64748b', fontWeight: 600, display: 'block', marginBottom: 6 }}>
               Nome completo
             </label>
             <input
@@ -421,7 +421,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           </div>
 
           <div>
-            <label style={{ fontSize: 13, color: '#64748b', fontWeight: 600, display: 'block', marginBottom: 8 }}>
+            <label style={{ fontSize: 13, color: '#64748b', fontWeight: 600, display: 'block', marginBottom: 6 }}>
               E-mail
             </label>
             <input
@@ -433,7 +433,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           </div>
 
           <div>
-            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
               Apelido *
             </label>
             <input
@@ -446,7 +446,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           </div>
 
           <div>
-            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
+            <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
               Posição de Jogo *
             </label>
             <select
@@ -470,14 +470,14 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
           {locationStatus === 'success' && (
             <div style={{ padding: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 8, fontSize: 13, color: '#a7f3d0' }}>
-              Localização identificada: <strong>{cidade} - {uf}</strong> (Ranking Municipal liberado)
+              ✓ Localização identificada: <strong>{cidade} - {uf}</strong> (Ranking Municipal liberado)
             </div>
           )}
 
           {locationStatus === 'denied' && (
             <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: 8, fontSize: 13, color: '#fca5a5' }}>
               <div style={{ marginBottom: 8 }}>
-                Localização obrigatória. Sem ela você não entra no app — precisamos classificar você na cidade correta.
+                ⚠️ Localização obrigatória. Sem ela você não entra no app — precisamos classificar você na cidade correta.
               </div>
               <button type="button" className="btn btn-primary btn-sm" onClick={obterLocalizacao}>
                 Tentar novamente
@@ -488,7 +488,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           {locationStatus === 'error' && (
             <div style={{ padding: '12px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 8, fontSize: 13, color: '#fde047' }}>
               <div style={{ marginBottom: 8 }}>
-                Não foi possível obter a localização. Ative o GPS e permita o acesso para continuar.
+                ⚠️ Não foi possível obter a localização. Ative o GPS e permita o acesso para continuar.
               </div>
               <button type="button" className="btn btn-primary btn-sm" onClick={obterLocalizacao}>
                 Tentar novamente
@@ -498,7 +498,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
                 Altura (m) *
               </label>
               <input
@@ -511,7 +511,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
               />
             </div>
             <div>
-              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>
+              <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
                 Idade *
               </label>
               <input
@@ -529,7 +529,7 @@ export default function CompleteProfileScreen({ profile, onComplete }) {
           <button
             type="submit"
             className="btn btn-primary"
-            style={{ marginTop: 12 }}
+            style={{ marginTop: 14 }}
             disabled={carregando || locationStatus !== 'success'}
           >
             {carregando ? (
