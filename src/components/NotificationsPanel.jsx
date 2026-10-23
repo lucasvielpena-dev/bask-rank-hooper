@@ -272,12 +272,14 @@ function NotificationsPanel({
                 {selected.titulo}
               </h2>
               <p
+                className="notif-msg-body"
                 style={{
                   fontSize: 15,
                   color: 'var(--text-secondary)',
                   lineHeight: 1.55,
                   whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word' }}
+                  wordBreak: 'break-word',
+                  overflowWrap: 'anywhere' }}
               >
                 {selected.mensagem || 'Sem mensagem adicional.'}
               </p>

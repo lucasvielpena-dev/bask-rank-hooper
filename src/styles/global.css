@@ -824,22 +824,29 @@ body:not(.light-theme) .btn-secondary {
 .notif-overlay { z-index: 1100; }
 .notif-sheet {
   max-width: 440px !important;
-  max-height: min(88dvh, 720px) !important;
-  height: min(88dvh, 720px);
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
-  padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+  /* Folha inteira rola — mensagem longa não corta */
+  max-height: min(92dvh, 780px) !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
 }
 .notif-detail {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  padding: 4px 4px 12px;
+  flex: 0 0 auto;
+  overflow: visible !important;
+  padding: 4px 2px 16px;
+  max-height: none !important;
+}
+.notif-detail .notif-msg-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-height: none !important;
+  display: block;
 }
 .notif-header {
   display: flex;
@@ -3094,4 +3101,17 @@ body:not(.light-theme) .card {
   border-radius: var(--radius-card);
   object-fit: cover;
   flex-shrink: 0;
+}
+
+/* NOTIF SCROLL FIX — mensagem longa legível */
+.modal-sheet.notif-sheet {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: min(92dvh, 780px) !important;
+  height: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+.modal-sheet.notif-sheet .notif-detail {
+  overflow: visible !important;
+  max-height: none !important;
 }
