@@ -316,8 +316,8 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
   };
 
   return (
-    <div className="page-content" style={{ background: 'var(--bg-primary)', position: 'relative' }}>
-      <div style={{ padding: '16px 16px 0', position: 'relative', zIndex: 1 }}>
+    <div className="page-content atletas-page" style={{ background: 'var(--bg-primary)', position: 'relative' }}>
+      <div className="home-container" style={{ paddingBottom: 80, position: 'relative', zIndex: 1 }}>
 
         {/* Header */}
         <div style={{ marginBottom: 12 }}>
@@ -615,6 +615,8 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
           </div>
         </div>
       )}
+
+      </div>
 
       {selectedPlayer && (
         <PlayerProfileModal

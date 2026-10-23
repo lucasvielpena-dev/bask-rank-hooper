@@ -2918,12 +2918,12 @@ body.light-theme .card,
 body.light-theme .premium-card {
   background: var(--bg-card) !important;
   border: 1px solid rgba(15,23,42,0.08) !important;
-  border-radius: 20px !important;
+  border-radius: var(--radius-card) !important;
   box-shadow: 0 8px 24px rgba(15,23,42,0.07) !important;
 }
 
 /* Espaço entre cartões de rachão (lista vertical). */
-.racao-card { margin-bottom:12px; }
+.racao-card { margin-bottom: 0; }
 
 /* ===== Desempenho em celular (tela até 768px) =====
    Desfoque e sombras grandes repintam a tela inteira a cada rolagem em celulares
@@ -3012,4 +3012,72 @@ body.light-theme .premium-card {
     padding: 12px;
     border-radius: var(--radius-card) !important;
   }
+}
+
+/* ============================================================
+   PADRONIZAÇÃO PASSO 2 — títulos, shell de página, cards unificados
+   ============================================================ */
+.page-shell {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 12px var(--page-pad-x) 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Título de seção único (substitui variantes inline) */
+.section-label,
+.home-section-label {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: var(--font-ui);
+  margin-bottom: var(--space-list);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-primary);
+  margin-bottom: var(--space-section);
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* Premium e card: mesmo raio, padding e borda no escuro */
+body:not(.light-theme) .premium-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-card) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  padding: var(--pad-card);
+}
+
+body:not(.light-theme) .card {
+  border-radius: var(--radius-card) !important;
+  padding: var(--pad-card);
+}
+
+/* Listas de rachão / partida usam o mesmo stack */
+.racoes-list,
+.partidas-list,
+.torneios-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-list);
+}
+
+/* Avatar padrão em listas */
+.list-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-card);
+  object-fit: cover;
+  flex-shrink: 0;
 }

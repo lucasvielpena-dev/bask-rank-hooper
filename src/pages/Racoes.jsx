@@ -312,7 +312,8 @@ export default function Racoes({ profile, onNavigate }) {
   const gradeAtual = GRADES.find((g) => g.key === notaGrade) || null;
 
   return (
-    <div className="page-content" style={{ padding: '16px 16px 80px' }}>
+    <div className="page-content racoes-page">
+      <div className="home-container" style={{ paddingBottom: 80 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
         <div>
           <h1 style={{ margin: 0, fontSize: 'var(--fs-lg)', fontWeight: 900, fontFamily: "'Barlow Condensed', sans-serif" }}>RACHÕES</h1>
@@ -395,6 +396,8 @@ export default function Racoes({ profile, onNavigate }) {
           </div>
         </div>
       )}
+
+      </div>
 
       {selected && (
         <div className="modal-overlay" onClick={() => setSelected(null)}>
