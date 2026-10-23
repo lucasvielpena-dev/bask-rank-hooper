@@ -1,59 +1,58 @@
 import { useEffect, useState } from 'react';
 
-// ============================================================
-// AVISO DE VERSÃO NOVA
-// ============================================================
-// O site publicado muda a cada deploy, mas o celular pode continuar rodando o
-// pacote antigo (service worker / cache do app instalado). Foi exatamente isso
-// que fez um conserto já publicado "não fazer efeito" no aparelho.
-//
-// Aqui o app compara o JS que está rodando com o que o site está servindo
-// agora. Se for diferente, aparece a faixa "Nova versão disponível". Ao tocar,
-// o app limpa o cache, desregistra o service worker e recarrega — aí sim a
-// versão nova entra de verdade.
-//
-// Detalhe importante: o pedido usa "/index.html?v=..." de propósito. O service
-// worker guarda o "/index.html" puro (precache), e uma URL com query string
-// não bate nessa regra — então a resposta vem mesmo do servidor.
-// ============================================================
+// Compara o bundle que o aparelho está rodando com o index.html do servidor.
+// Se for diferente, aparece a faixa "Nova versão disponível". Ao tocar,
+// limpa cache/SW e recarrega.
 
 export default function AvisoVersao() {
   const [temNova, setTemNova] = useState(false);
 
   useEffect(() => {
     let vivo = true;
-    const atual = [...document.scripts]
-      .map((s) => s.src)
-      .find((s) => s.includes('/static/js/main.'));
 
-    if (!atual) return () => { vivo = false; };
-    const hashAtual = atual.split('/').pop();
+    function hashDoDocumento() {
+      const scripts = [...document.scripts].map((s) => s.src).filter(Boolean);
+      const main = scripts.find((s) => /\/static\/js\/main\./.test(s));
+      if (main) return main.split('/').pop();
+      // fallback: qualquer chunk com hash
+      const chunk = scripts.find((s) => /\/static\/js\/.+?\.[a-f0-9]{6,}\.js/.test(s));
+      return chunk ? chunk.split('/').pop() : null;
+    }
+
+    const hashAtual = hashDoDocumento();
+    if (!hashAtual) return () => { vivo = false; };
 
     async function conferir() {
       if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return;
       try {
         const r = await fetch(`/index.html?v=${Date.now()}`, { cache: 'no-store' });
+        if (!r.ok) return;
         const html = await r.text();
-        const m = html.match(/\/static\/js\/main\.[a-f0-9]+\.js/);
+        const m =
+          html.match(/\/static\/js\/main\.[a-f0-9]+\.js/) ||
+          html.match(/\/static\/js\/[^"' ]+\.[a-f0-9]{6,}\.js/);
         if (!m) return;
-        if (!hashAtual || !m[0].endsWith(hashAtual)) {
+        const hashServidor = m[0].split('/').pop();
+        if (hashServidor && hashAtual && hashServidor !== hashAtual) {
           if (vivo) setTemNova(true);
         } else if (vivo) {
           setTemNova(false);
         }
       } catch (e) {
-        /* sem rede agora: tenta na próxima */
+        /* sem rede: tenta na próxima */
       }
     }
 
     conferir();
-    const intervalo = setInterval(() => { if (!document.hidden) conferir(); }, 60000);
+    const intervalo = setInterval(() => { if (!document.hidden) conferir(); }, 45000);
     const aoVoltar = () => { if (document.visibilityState === 'visible') conferir(); };
     document.addEventListener('visibilitychange', aoVoltar);
+    window.addEventListener('focus', aoVoltar);
     return () => {
       vivo = false;
       clearInterval(intervalo);
       document.removeEventListener('visibilitychange', aoVoltar);
+      window.removeEventListener('focus', aoVoltar);
     };
   }, []);
 
@@ -68,9 +67,9 @@ export default function AvisoVersao() {
         await Promise.all(chaves.map((k) => caches.delete(k)));
       }
     } catch (e) {
-      /* mesmo com erro aqui, o reload abaixo resolve */
+      /* reload resolve */
     }
-    window.location.reload();
+    window.location.reload(true);
   }
 
   if (!temNova) return null;
@@ -79,22 +78,24 @@ export default function AvisoVersao() {
     <button
       type="button"
       onClick={atualizar}
+      aria-label="Nova versão disponível. Toque para atualizar."
       style={{
         position: 'fixed',
         left: 12,
         right: 12,
-        bottom: 84,
-        zIndex: 70,
-        padding: '12px 12px',
+        bottom: 'calc(72px + env(safe-area-inset-bottom, 0px))',
+        zIndex: 500,
+        padding: '14px 16px',
         background: 'var(--accent)',
         color: 'var(--accent-on)',
-        border: 'none',
-        borderRadius: 12,
-        fontSize: 13,
+        border: '2px solid var(--accent-line)',
+        borderRadius: 14,
+        fontSize: 14,
         fontWeight: 800,
         fontFamily: 'inherit',
         cursor: 'pointer',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.5)'
+        boxShadow: '0 12px 32px rgba(0,0,0,0.55)',
+        letterSpacing: '0.01em',
       }}
     >
       Nova versão disponível — toque para atualizar
