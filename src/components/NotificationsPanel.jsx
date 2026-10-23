@@ -251,7 +251,7 @@ function NotificationsPanel({
             </div>
           </div>
 
-          <div className="notif-detail" style={{ flex: 1, overflowY: 'auto', padding: '4px 4px 12px' }}>
+          <div className="notif-detail">
             <div
               style={{
                 background: 'var(--bg-card)',
