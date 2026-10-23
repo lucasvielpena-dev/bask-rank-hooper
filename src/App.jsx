@@ -21,6 +21,7 @@ const AdminNotifications = lazy(() => import('./pages/AdminNotifications'));
 const AdminReports = lazy(() => import('./pages/AdminReports'));
 const AdminLogs = lazy(() => import('./pages/AdminLogs'));
 const AdminActivity = lazy(() => import('./pages/AdminActivity'));
+const Times = lazy(() => import('./pages/Times'));
 
 // ============================================================
 // TROCA DE ABA SEM REMONTAR A TELA
@@ -92,9 +93,10 @@ function AppRoutes() {
       case 'inicio': return <Home profile={profile} onNavigate={navigate} />;
       case 'atletas': return <Atletas profile={profile} initialOpenAdd={props.openAdd} initialFiltro={props.filtro} onNavigate={navigate} />;
       case 'explorar': return <Explorar profile={profile} onNavigate={navigate} />;
-      case 'torneios': return <Jogos profile={profile} initialAba="torneios" />;
-      case 'jogos': return <Jogos profile={profile} initialAba={props.aba || 'jogos'} />;
+      case 'torneios': return <Jogos profile={profile} initialAba="torneios" onNavigate={navigate} />;
+      case 'jogos': return <Jogos profile={profile} initialAba={props.aba || 'jogos'} onNavigate={navigate} />;
       case 'racoes': return <Racoes profile={profile} onNavigate={navigate} />;
+      case 'times': return <Times profile={profile} onNavigate={navigate} />;
       case 'perfil': return <Stats profile={profile} onNavigate={navigate} />;
       case 'master': return <MasterDashboard onNavigate={navigate} />;
       case 'master-users': return <AdminUsers profile={profile} onNavigate={navigate} />;

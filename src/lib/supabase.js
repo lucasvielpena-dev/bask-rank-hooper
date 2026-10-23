@@ -1286,3 +1286,249 @@ export const racoesAPI = {
     return { data: data || [], error };
   },
 };
+
+export const timesAPI = {
+  cidadeDoProfile(profile) {
+    return (profile?.cidade_atual || profile?.cidade || '').trim();
+  },
+
+  listarPorCidade: async (cidade) => {
+    const c = (cidade || '').trim();
+    if (!c) return { data: [], error: null };
+    const { data, error } = await supabase
+      .from('times')
+      .select('*, capitao:profiles!capitao_id(id, nome_completo, apelido, foto_perfil)')
+      .eq('ativo', true)
+      .ilike('cidade', c)
+      .order('nome');
+    return { data: data || [], error };
+  },
+
+  buscar: async (id) => {
+    const { data, error } = await supabase
+      .from('times')
+      .select('*, capitao:profiles!capitao_id(id, nome_completo, apelido, foto_perfil)')
+      .eq('id', id)
+      .maybeSingle();
+    return { data, error };
+  },
+
+  criar: async ({ nome, cidade, uf, descricao }) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: null, error: new Error('Não autenticado') };
+    if (!nome?.trim()) return { data: null, error: new Error('Informe o nome do time') };
+    if (!cidade?.trim()) return { data: null, error: new Error('Cidade obrigatória') };
+
+    const { data: ja } = await timesAPI.meuTimeNaCidade(cidade);
+    if (ja) {
+      return { data: null, error: new Error('Você já está em um time nesta cidade.') };
+    }
+
+    const { data, error } = await supabase
+      .from('times')
+      .insert([{
+        nome: nome.trim(),
+        cidade: cidade.trim(),
+        uf: (uf || 'PA').trim(),
+        descricao: descricao?.trim() || null,
+        capitao_id: user.id,
+      }])
+      .select()
+      .single();
+    if (error) return { data: null, error };
+
+    const { error: memErr } = await supabase
+      .from('time_membros')
+      .insert([{ time_id: data.id, usuario_id: user.id, status: 'ativo' }]);
+    if (memErr) {
+      try { await supabase.from('times').delete().eq('id', data.id); } catch (_) {}
+      return { data: null, error: memErr };
+    }
+    return { data, error: null };
+  },
+
+  listarMembros: async (timeId) => {
+    const { data, error } = await supabase
+      .from('time_membros')
+      .select('*, perfil:profiles(id, nome_completo, apelido, foto_perfil, cidade_atual, cidade)')
+      .eq('time_id', timeId)
+      .eq('status', 'ativo')
+      .order('entrou_em');
+    return { data: data || [], error };
+  },
+
+  meuTimeNaCidade: async (cidade) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: null, error: null };
+    const { data: mem } = await supabase
+      .from('time_membros')
+      .select('time_id, times!inner(id, nome, cidade, ativo, capitao_id)')
+      .eq('usuario_id', user.id)
+      .eq('status', 'ativo')
+      .eq('times.ativo', true);
+    const c = (cidade || '').toLowerCase().trim();
+    const row = (mem || []).find((m) => (m.times?.cidade || '').toLowerCase().trim() === c);
+    return { data: row?.times || null, error: null };
+  },
+
+  convidar: async (timeId, convidadoId) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: null, error: new Error('Não autenticado') };
+
+    const { data: time } = await supabase.from('times').select('id, nome, capitao_id, cidade').eq('id', timeId).maybeSingle();
+    if (!time || time.capitao_id !== user.id) {
+      return { data: null, error: new Error('Só o capitão pode convidar') };
+    }
+
+    const { data: ja } = await supabase
+      .from('time_membros')
+      .select('id')
+      .eq('time_id', timeId)
+      .eq('usuario_id', convidadoId)
+      .eq('status', 'ativo')
+      .maybeSingle();
+    if (ja) return { data: null, error: new Error('Já é membro deste time') };
+
+    const { data, error } = await supabase
+      .from('time_convites')
+      .insert([{
+        time_id: timeId,
+        convidado_id: convidadoId,
+        convidado_por: user.id,
+        status: 'pendente',
+      }])
+      .select()
+      .single();
+    if (error) return { data: null, error };
+
+    try {
+      await supabase.from('notificacoes').insert([{
+        usuario_id: convidadoId,
+        titulo: 'Convite para time',
+        mensagem: `Você foi convidado para o time "${time.nome}". Abra Times para aceitar ou recusar.`,
+        lida: false,
+        tipo: 'time_convite',
+        referencia_id: data.id,
+      }]);
+    } catch (_) {}
+
+    return { data, error: null };
+  },
+
+  meusConvitesPendentes: async () => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: [], error: null };
+    const { data, error } = await supabase
+      .from('time_convites')
+      .select('*, time:times(id, nome, cidade, capitao_id)')
+      .eq('convidado_id', user.id)
+      .eq('status', 'pendente')
+      .order('created_at', { ascending: false });
+    return { data: data || [], error };
+  },
+
+  responderConvite: async (conviteId, aceitar) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { error: new Error('Não autenticado') };
+
+    const { data: conv } = await supabase
+      .from('time_convites')
+      .select('*')
+      .eq('id', conviteId)
+      .eq('convidado_id', user.id)
+      .eq('status', 'pendente')
+      .maybeSingle();
+    if (!conv) return { error: new Error('Convite não encontrado') };
+
+    const { error: upErr } = await supabase
+      .from('time_convites')
+      .update({ status: aceitar ? 'aceito' : 'recusado' })
+      .eq('id', conviteId);
+    if (upErr) return { error: upErr };
+
+    if (aceitar) {
+      const { error: mErr } = await supabase
+        .from('time_membros')
+        .upsert({
+          time_id: conv.time_id,
+          usuario_id: user.id,
+          status: 'ativo',
+          entrou_em: new Date().toISOString(),
+        }, { onConflict: 'time_id,usuario_id' });
+      if (mErr) return { error: mErr };
+    }
+    return { error: null };
+  },
+
+  desafiar: async ({ timeAId, timeBId, cidade, local, dataHora, mensagem }) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: null, error: new Error('Não autenticado') };
+
+    const { data: ta } = await supabase.from('times').select('id, nome, capitao_id').eq('id', timeAId).maybeSingle();
+    if (!ta || ta.capitao_id !== user.id) {
+      return { data: null, error: new Error('Só o capitão do seu time pode desafiar') };
+    }
+
+    const { data, error } = await supabase
+      .from('amistosos')
+      .insert([{
+        time_a_id: timeAId,
+        time_b_id: timeBId,
+        cidade: (cidade || '').trim(),
+        local_quadra: local?.trim() || null,
+        data_hora: dataHora || null,
+        status: 'pendente',
+        desafiado_por: user.id,
+        mensagem: mensagem?.trim() || null,
+      }])
+      .select()
+      .single();
+    if (error) return { data: null, error };
+
+    const { data: tb } = await supabase.from('times').select('capitao_id, nome').eq('id', timeBId).maybeSingle();
+    if (tb?.capitao_id) {
+      try {
+        await supabase.from('notificacoes').insert([{
+          usuario_id: tb.capitao_id,
+          titulo: 'Desafio de amistoso',
+          mensagem: `O time "${ta.nome}" desafiou "${tb.nome}". Abra Times para responder.`,
+          lida: false,
+          tipo: 'amistoso',
+          referencia_id: data.id,
+        }]);
+      } catch (_) {}
+    }
+    return { data, error: null };
+  },
+
+  listarAmistososCidade: async (cidade) => {
+    const c = (cidade || '').trim();
+    if (!c) return { data: [], error: null };
+    const { data, error } = await supabase
+      .from('amistosos')
+      .select('*, time_a:times!time_a_id(id, nome), time_b:times!time_b_id(id, nome)')
+      .ilike('cidade', c)
+      .order('created_at', { ascending: false })
+      .limit(40);
+    return { data: data || [], error };
+  },
+
+  responderAmistoso: async (amistosoId, aceitar) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { error: new Error('Não autenticado') };
+
+    const { data: am } = await supabase.from('amistosos').select('*').eq('id', amistosoId).maybeSingle();
+    if (!am || am.status !== 'pendente') return { error: new Error('Amistoso inválido') };
+
+    const { data: tb } = await supabase.from('times').select('capitao_id').eq('id', am.time_b_id).maybeSingle();
+    if (!tb || tb.capitao_id !== user.id) {
+      return { error: new Error('Só o capitão do time desafiado pode responder') };
+    }
+
+    const { error } = await supabase
+      .from('amistosos')
+      .update({ status: aceitar ? 'aceito' : 'recusado' })
+      .eq('id', amistosoId);
+    return { error };
+  },
+};

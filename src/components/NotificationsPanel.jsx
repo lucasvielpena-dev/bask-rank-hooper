@@ -61,6 +61,9 @@ function destinoPara(n) {
   if (tipo === 'avaliacao' || tipo === 'ranking' || tipo === 'atleta') {
     return { page: 'atletas', label: 'Abrir Atletas' };
   }
+  if (tipo === 'time_convite' || tipo === 'amistoso' || tipo === 'time') {
+    return { page: 'times', label: 'Abrir Times' };
+  }
 
   // Fallback: infer from title/message text
   const t = `${n?.titulo || ''} ${n?.mensagem || ''}`.toLowerCase();
@@ -75,6 +78,9 @@ function destinoPara(n) {
   }
   if (t.includes('avalia') || t.includes('ranking') || t.includes('atleta')) {
     return { page: 'atletas', label: 'Abrir Atletas' };
+  }
+  if (t.includes('time') || t.includes('amistoso') || t.includes('desafio') || t.includes('convite')) {
+    return { page: 'times', label: 'Abrir Times' };
   }
   return null;
 }

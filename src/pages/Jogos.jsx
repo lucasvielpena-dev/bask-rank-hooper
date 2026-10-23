@@ -19,7 +19,7 @@ function normalizarCidade(v) {
     .replace(/\s+/g, ' ');
 }
 
-export default function Jogos({ profile, initialAba = 'jogos' }) {
+export default function Jogos({ profile, initialAba = 'jogos', onNavigate }) {
   const { esporte } = useEsporte();
   const [tela, setTela] = useState('lista'); // 'lista' | 'novo' | 'partida'
   const [aba, setAba] = useState(initialAba); // 'jogos' | 'historico' | 'torneios'
@@ -1028,6 +1028,16 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
       {/* TELA 1: LISTAGEM DE PARTIDAS / HISTÓRICO */}
       {tela === 'lista' && (
         <div className="home-container" style={{ position: 'relative', zIndex: 1 }}>
+          {onNavigate && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              style={{ marginBottom: 12, borderRadius: 50 }}
+              onClick={() => onNavigate('times')}
+            >
+              Times da cidade · amistosos
+            </button>
+          )}
           {/* Header + tabs na mesma lógica visual */}
           <div style={{ marginBottom: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 12 }}>
@@ -1062,6 +1072,9 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               </button>
               <button type="button" className={`tab ${aba === 'torneios' ? 'active' : ''}`} onClick={() => setAba('torneios')}>
                 Torneios
+              </button>
+              <button type="button" className="tab" onClick={() => onNavigate && onNavigate('times')}>
+                Times
               </button>
             </div>
           </div>
