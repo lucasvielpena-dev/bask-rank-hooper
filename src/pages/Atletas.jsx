@@ -342,7 +342,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
               type="button"
               style={{
                 padding: '12px 8px',
-                borderRadius: 12,
+                borderRadius: 14,
                 border: '1.5px solid var(--accent)',
                 background: 'var(--accent)',
                 color: 'var(--accent-on)',
@@ -359,7 +359,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
               onClick={() => onNavigate('explorar')}
               style={{
                 padding: '12px 8px',
-                borderRadius: 12,
+                borderRadius: 14,
                 border: '1.5px solid var(--border)',
                 background: 'var(--bg-card)',
                 color: 'var(--text-secondary)',
@@ -389,7 +389,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
             style={{
               width: '100%', boxSizing: 'border-box',
               background: 'var(--bg-card)', border: '1px solid var(--border)',
-              borderRadius: 12, padding: '12px 12px 12px 42px',
+              borderRadius: 14, padding: '12px 12px 12px 42px',
               fontSize: 15, color: 'var(--text-primary)', fontFamily: "'Inter',sans-serif",
               outline: 'none', transition: 'border-color 0.2s' }}
             onFocus={e => e.target.style.borderColor = 'var(--accent)'}
@@ -400,7 +400,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
         {/* Segmented Control — 5 filtros não cabem espremidos em tela estreita,
             então a barra rola na horizontal em vez de cortar os nomes. */}
         <div className="tabs" style={{
-          display: 'flex', background: 'var(--bg-card)', borderRadius: 12, padding: 4, marginBottom: 16, border: '1px solid var(--border)',
+          display: 'flex', background: 'var(--bg-card)', borderRadius: 14, padding: 4, marginBottom: 16, border: '1px solid var(--border)',
           overflowX: 'auto', overflowY: 'hidden', scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch'
         }}>
           {FILTROS.map(f => {
@@ -438,9 +438,9 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
 
         {/* List */}
         {loading && jogadores.length === 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="stack-cards">
             {[1, 2, 3].map(idx => (
-              <div key={idx} className="skeleton card" style={{ height: 88, borderRadius: 12 }} />
+              <div key={idx} className="skeleton card" style={{ height: 88, borderRadius: 14 }} />
             ))}
           </div>
         ) : filtrados.length === 0 ? (
@@ -451,7 +451,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
           </div>
         ) : (
           <div
-            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+            className="stack-cards"
           >
             {listaVisivel.map((j, i) => {
               const score = j.total_votos >= 1 ? Number(j.media_estrelas) : 0;
@@ -566,7 +566,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 return (
                   <div key={f.key} style={{
                     background: val > 0 ? 'rgba(255,184,0,0.1)' : 'var(--bg-card)',
-                    padding: '8px 12px', borderRadius: 12,
+                    padding: '8px 12px', borderRadius: 14,
                     border: val > 0 ? '1px solid rgba(255,184,0,0.3)' : '1px solid var(--border)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -592,7 +592,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                   value={comentarioVoto}
                   onChange={e => setComentarioVoto(e.target.value)}
                   placeholder="Comentário (opcional)"
-                  style={{ width: '100%', boxSizing: 'border-box', padding: '12px', fontSize: 13, borderRadius: 12, border: '1px solid #27272A', background: '#18181B', color: '#FFF' }}
+                  style={{ width: '100%', boxSizing: 'border-box', padding: '12px', fontSize: 13, borderRadius: 14, border: '1px solid #27272A', background: '#18181B', color: '#FFF' }}
                   disabled={enviandoVoto}
                 />
               </div>
@@ -604,10 +604,10 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
               )}
 
               <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                <button type="button" onClick={() => setVotingPlayer(null)} disabled={enviandoVoto} style={{ flex: 1, padding: '12px 0', background: 'transparent', border: '1px solid #3F3F46', color: '#FFF', borderRadius: 12, fontWeight: 600 }}>
+                <button type="button" onClick={() => setVotingPlayer(null)} disabled={enviandoVoto} style={{ flex: 1, padding: '12px 0', background: 'transparent', border: '1px solid #3F3F46', color: '#FFF', borderRadius: 14, fontWeight: 600 }}>
                   Cancelar
                 </button>
-                <button type="submit" disabled={enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])} style={{ flex: 2, padding: '12px 0', background: '#FFB800', border: 'none', color: '#000', borderRadius: 12, fontWeight: 700, opacity: (enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])) ? 0.5 : 1 }}>
+                <button type="submit" disabled={enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])} style={{ flex: 2, padding: '12px 0', background: '#FFB800', border: 'none', color: '#000', borderRadius: 14, fontWeight: 700, opacity: (enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])) ? 0.5 : 1 }}>
                   {enviandoVoto ? 'Enviando...' : 'Confirmar Avaliação'}
                 </button>
               </div>

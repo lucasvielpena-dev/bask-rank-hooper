@@ -368,7 +368,7 @@ export default function Stats({ profile, onNavigate }) {
           position: 'relative',
           width: '100%',
           height: 'clamp(130px, 30vw, 160px)',
-          borderRadius: '12px',
+          borderRadius: 14,
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'flex-end',

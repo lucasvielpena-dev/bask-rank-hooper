@@ -1027,7 +1027,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
     <div className="page-content home-page" style={{ position: 'relative' }}>
       {/* TELA 1: LISTAGEM DE PARTIDAS / HISTÓRICO */}
       {tela === 'lista' && (
-        <div className="home-container" style={{ padding: '16px 16px 0', position: 'relative', zIndex: 1 }}>
+        <div className="home-container" style={{ position: 'relative', zIndex: 1 }}>
           {/* Header + tabs na mesma lógica visual */}
           <div style={{ marginBottom: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 12 }}>
@@ -1072,12 +1072,12 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
           ) : loading && partidas.length === 0 && historico.length === 0 ? (
             aba === 'jogos' ? (
               <div className="responsive-card-grid">
-                <div className="skeleton" style={{ height: 130, borderRadius: '12px' }} />
+                <div className="skeleton" style={{ height: 130, borderRadius: 14 }} />
               </div>
             ) : (
               <div className="responsive-card-grid">
                 {[1, 2, 3].map(idx => (
-                  <div key={idx} className="skeleton" style={{ height: 72, borderRadius: '12px' }} />
+                  <div key={idx} className="skeleton" style={{ height: 72, borderRadius: 14 }} />
                 ))}
               </div>
             )
@@ -1428,7 +1428,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
             padding: '12px 12px',
             background: 'var(--bg-card)',
             border: '1px solid var(--border)',
-            borderRadius: '12px',
+            borderRadius: 14,
             display: 'grid',
             gridTemplateColumns: '1fr auto 1fr',
             alignItems: 'center',
@@ -1947,7 +1947,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
               background: '#EF4444',
               color: '#FFF',
               border: 'none',
-              borderRadius: '12px',
+              borderRadius: 14,
               fontWeight: 800,
               fontSize: '15px',
               cursor: 'pointer',
@@ -2112,7 +2112,7 @@ export default function Jogos({ profile, initialAba = 'jogos' }) {
 
               {gradeAtual ? (
                 <div style={{
-                  marginTop: 12, padding: '12px 12px', borderRadius: 12,
+                  marginTop: 12, padding: '12px 12px', borderRadius: 14,
                   background: 'var(--bg-card)', border: `1px solid ${gradeAtual.line}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <span style={{

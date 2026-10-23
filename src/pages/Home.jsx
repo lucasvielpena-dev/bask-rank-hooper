@@ -270,7 +270,7 @@ export default function Home({ profile, onNavigate }) {
             className="hero-btn btn-primary"
             onClick={() => onNavigate('atletas')}
             style={{
-              width: '100%', height: 40, borderRadius: 12, marginTop: 12, fontWeight: 700,
+              width: '100%', height: 40, borderRadius: 14, marginTop: 12, fontWeight: 700,
               cursor: 'pointer', fontFamily: "'Inter',sans-serif",
               textTransform: 'uppercase', letterSpacing: '0.06em',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -297,11 +297,11 @@ export default function Home({ profile, onNavigate }) {
               Ver todos
             </button>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="stack-cards">
             {carregandoDestaques
               ? [0, 1, 2, 3, 4].map((i) => (
                 <div key={`destaque-skeleton-${i}`} className="premium-card" style={{ borderRadius: 14, padding: '12px 12px', display: 'flex', alignItems: 'center', gap: 16, minHeight: 64 }}>
-                  <div className="skeleton" style={{ width: 48, height: 48, borderRadius: 12, flexShrink: 0 }} />
+                  <div className="skeleton" style={{ width: 48, height: 48, borderRadius: 14, flexShrink: 0 }} />
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
                     <div className="skeleton" style={{ height: 13, width: '62%', borderRadius: 6 }} />
                     <div className="skeleton" style={{ height: 11, width: '38%', borderRadius: 6 }} />
@@ -329,13 +329,13 @@ export default function Home({ profile, onNavigate }) {
                     alt={nomeAtleta(player)}
                     className="premium-photo"
                     style={{
-                      width: 48, height: 48, borderRadius: 12, objectFit: 'cover',
+                      width: 48, height: 48, borderRadius: 14, objectFit: 'cover',
                       border: '1px solid var(--accent-line)',
                       flexShrink: 0 }}
                   />
                 ) : (
                   <div className="premium-photo" style={{
-                    width: 48, height: 48, borderRadius: 12, flexShrink: 0,
+                    width: 48, height: 48, borderRadius: 14, flexShrink: 0,
                     background: 'var(--bg-secondary)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     border: '1px solid var(--accent-line)' }}>

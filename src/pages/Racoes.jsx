@@ -482,7 +482,7 @@ export default function Racoes({ profile, onNavigate }) {
 
               {gradeAtual ? (
                 <div style={{
-                  marginTop: 12, padding: '12px 12px', borderRadius: 12,
+                  marginTop: 12, padding: '12px 12px', borderRadius: 14,
                   background: 'var(--bg-card)', border: `1px solid ${gradeAtual.line}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <span style={{

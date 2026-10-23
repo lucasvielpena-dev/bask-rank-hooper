@@ -108,7 +108,7 @@ export default function Torneios({ profile, isNested = false, openCriar = false,
           {loading && torneios.length === 0 ? (
             <div className="responsive-card-grid" style={{ paddingBottom: 16 }}>
               {[1, 2, 3].map(idx => (
-                <div key={idx} className="skeleton" style={{ height: 100, borderRadius: '12px' }} />
+                <div key={idx} className="skeleton" style={{ height: 100, borderRadius: 14 }} />
               ))}
             </div>
           ) : torneios.length === 0 ? (
@@ -1086,7 +1086,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                     background: 'var(--accent)',
                     color: 'var(--text-primary)',
                     border: 'none',
-                    borderRadius: '12px',
+                    borderRadius: 14,
                     padding: '8px 16px',
                     fontSize: '13px',
                     fontWeight: 800,
@@ -1313,7 +1313,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                           border: '1px solid var(--border)',
                           color: 'var(--text-primary)',
                           padding: '8px 12px',
-                          borderRadius: '12px',
+                          borderRadius: 14,
                           fontWeight: 700,
                           fontSize: '13px',
                           cursor: 'pointer',
@@ -1334,7 +1334,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
                           border: '1px solid var(--accent)',
                           color: 'var(--accent)',
                           padding: '8px 12px',
-                          borderRadius: '12px',
+                          borderRadius: 14,
                           fontWeight: 800,
                           fontSize: '13px',
                           cursor: 'pointer',
@@ -1537,7 +1537,7 @@ function TorneioDetalhes({ torneio, profile, onBack }) {
 
               {gradeAtualNota ? (
                 <div style={{
-                  marginTop: 12, padding: '12px 12px', borderRadius: 12,
+                  marginTop: 12, padding: '12px 12px', borderRadius: 14,
                   background: 'var(--bg-card)', border: `1px solid ${gradeAtualNota.line}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                     <span style={{
@@ -2154,7 +2154,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
       <div style={{
         background: 'var(--bg-card)',
         border: '1px solid var(--border)',
-        borderRadius: '12px',
+        borderRadius: 14,
         padding: '12px 12px',
         marginBottom: 16,
         overflowX: 'auto'
@@ -2276,7 +2276,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           padding: '12px',
           background: 'var(--bg-card)',
           border: '1px solid rgba(17, 24, 39, 0.16)',
-          borderRadius: '12px',
+          borderRadius: 14,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -2301,7 +2301,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           padding: '12px',
           background: 'var(--bg-card)',
           border: '1px solid var(--accent-line)',
-          borderRadius: '12px',
+          borderRadius: 14,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -2451,7 +2451,7 @@ function ConsolePlacarJogo({ jogo, torneio, onBack }) {
           background: '#EF4444',
           color: '#FFF',
           border: 'none',
-          borderRadius: '12px',
+          borderRadius: 14,
           fontWeight: 800,
           fontSize: '15px',
           cursor: 'pointer',
@@ -2588,7 +2588,7 @@ function TeamRosterSection({ team, profile, isCapitao, isOrganizador, torneioSta
       ) : roster.length === 0 ? (
         <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8 }}>Nenhum jogador no time ainda.</div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
+        <div className="stack-cards" style={{ marginBottom: 8 }}>
           {roster.map(r => (
             <div key={r.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-secondary)', padding: '8px 8px', borderRadius: 8 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

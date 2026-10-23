@@ -304,7 +304,7 @@ export default function Explorar({ profile, onNavigate }) {
             onClick={() => onNavigate?.('atletas')}
             style={{
               padding: '12px 8px',
-              borderRadius: 12,
+              borderRadius: 14,
               border: '1.5px solid var(--border)',
               background: 'var(--bg-card)',
               color: 'var(--text-secondary)',
@@ -320,7 +320,7 @@ export default function Explorar({ profile, onNavigate }) {
             type="button"
             style={{
               padding: '12px 8px',
-              borderRadius: 12,
+              borderRadius: 14,
               border: '1.5px solid var(--accent)',
               background: 'var(--accent)',
               color: 'var(--accent-on)',
@@ -349,7 +349,7 @@ export default function Explorar({ profile, onNavigate }) {
               boxSizing: 'border-box',
               background: 'var(--bg-card)',
               border: '1px solid var(--border)',
-              borderRadius: 12,
+              borderRadius: 14,
               padding: '12px 12px 12px 42px',
               fontSize: 15,
               color: 'var(--text-primary)',
@@ -373,7 +373,7 @@ export default function Explorar({ profile, onNavigate }) {
             </p>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div className="stack-cards">
             {filtradas.map((c) => {
               const ativ = nivelAtividade(c);
               const isMinha =
@@ -438,7 +438,7 @@ export default function Explorar({ profile, onNavigate }) {
 
 function PlayerList({ list, onOpen }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
+    <div className="stack-cards" style={{ marginBottom: 8 }}>
       {list.map((j, i) => {
         const votos = Number(j.total_votos) || 0;
         const media = votos >= 1 ? Number(j.media_estrelas).toFixed(1) : '—';
@@ -455,7 +455,7 @@ function PlayerList({ list, onOpen }) {
               alignItems: 'center',
               gap: 12,
               padding: '8px 12px',
-              borderRadius: 12,
+              borderRadius: 14,
               textAlign: 'left',
               cursor: 'pointer',
               fontFamily: 'inherit',

@@ -28,6 +28,15 @@
   --radius: 22px;
   --radius-sm: 14px;
   --radius-lg: 28px;
+  /* Espaçamento / card (máx. 3 ritmos) */
+  --space-xs: 4px;
+  --space-list: 8px;      /* entre cards de lista */
+  --space-section: 12px;  /* entre blocos */
+  --space-block: 16px;    /* seções maiores */
+  --radius-card: 14px;    /* cards de lista e blocos */
+  --radius-chip: 8px;
+  --pad-card: 14px;
+  --page-pad-x: 16px;
   --glass-blur: 18px;
   --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
   --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
@@ -174,9 +183,11 @@ body {
 
 /* Cards */
 .card {
-  background:var(--bg-card); border-radius:14px; border:1px solid rgba(255,255,255,0.07);
-  padding:16px; transition:background-color 0.25s,border-color 0.25s,box-shadow 0.25s,transform 0.2s;
-  box-shadow:0 2px 12px rgba(0,0,0,0.2);
+  background:var(--bg-card);
+  border-radius:var(--radius-card);
+  border:1px solid var(--border);
+  padding:var(--pad-card);
+  transition:background-color 0.25s,border-color 0.25s,box-shadow 0.25s,transform 0.2s;
 }
 /* Evita transform aqui: um transform no card cria um "containing block"
    que quebra modais position:fixed renderizados dentro do card (abre/fecha). */
@@ -329,7 +340,7 @@ input:focus { border-color:var(--accent); }
 
 /* Home */
 .home-page { background:transparent; min-height:100%; }
-.home-container { width:100%; max-width:1120px; margin:0 auto; padding:10px 16px 0; padding-bottom:60px; }
+.home-container { width:100%; max-width:1120px; margin:0 auto; padding:12px var(--page-pad-x) 0; padding-bottom:60px; }
 .home-greeting { margin-bottom:10px; }
 .home-greeting-title { font-size:clamp(22px,5vw,28px); font-weight:700; color:var(--text-primary); line-height:1.25; font-family:var(--font-display); letter-spacing:-0.02em; }
 .home-greeting-title .home-greeting-name { color:var(--accent-text); }
@@ -445,7 +456,7 @@ input:focus { border-color:var(--accent); }
   box-shadow:0 -4px 20px rgba(15,23,42,0.06) !important;
 }
 
-.light-theme .card { background:var(--bg-card) !important; border-radius:16px !important; border:1px solid var(--border) !important; box-shadow:var(--shadow) !important; }
+.light-theme .card { background:var(--bg-card) !important; border-radius:var(--radius-card) !important; border:1px solid var(--border) !important; box-shadow:var(--shadow) !important; }
 .light-theme .page-content { background:var(--bg-primary) !important; }
 .light-theme .home-page { background:var(--bg-primary) !important; }
 .light-theme .modal-sheet { background:var(--bg-card) !important; border-color:var(--border) !important; }
@@ -2929,5 +2940,76 @@ body.light-theme .premium-card {
   .card,
   .premium-card {
     box-shadow: 0 2px 8px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  }
+}
+
+/* ============================================================
+   PADRONIZAÇÃO GLOBAL — cards, gaps e padding de página
+   ============================================================ */
+.page-content {
+  padding-left: 0;
+  padding-right: 0;
+}
+.page-pad,
+.home-container,
+.atletas-page .home-container,
+.racoes-page .home-container {
+  padding-left: var(--page-pad-x) !important;
+  padding-right: var(--page-pad-x) !important;
+}
+
+/* Lista vertical de cards */
+.stack-cards,
+.card-stack,
+.home-highlights-list,
+.atletas-list,
+.racoes-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-list);
+}
+
+.card,
+.premium-card,
+.home-highlight-card,
+.athlete-card,
+.racha-card,
+.partida-card {
+  border-radius: var(--radius-card) !important;
+}
+
+.card,
+.premium-card {
+  padding: var(--pad-card);
+}
+
+/* Chips / badges pequenos */
+.badge-elite,
+.badge-destaque,
+.badge-desenvolvimento {
+  border-radius: var(--radius-chip) !important;
+}
+
+/* Espaço entre seções de página */
+.section-block {
+  margin-bottom: var(--space-section);
+}
+.section-title {
+  margin-bottom: var(--space-section);
+}
+
+/* Mobile: manter ritmo, só reduzir padding interno um pouco */
+@media (max-width: 480px) {
+  .card,
+  .premium-card {
+    padding: 12px;
+    border-radius: var(--radius-card) !important;
+  }
+}
+@media (max-width: 359px) {
+  .card,
+  .premium-card {
+    padding: 12px;
+    border-radius: var(--radius-card) !important;
   }
 }
