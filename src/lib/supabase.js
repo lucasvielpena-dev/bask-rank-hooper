@@ -494,16 +494,20 @@ export const profilesAPI = {
 
 export const midiaAPI = {
   MAX_FOTOS: 5,
+  MAX_VIDEOS: 1,
+  MAX_VIDEO_BYTES: 20 * 1024 * 1024, // 20 MB
+  MAX_VIDEO_SEGUNDOS: 20,
 
-  listarPorUsuario: async (usuarioId) => {
+  listarPorUsuario: async (usuarioId, tipo = 'foto') => {
     if (!usuarioId) return { data: [], error: null };
-    const { data, error } = await supabase
+    let q = supabase
       .from('midia_jogador')
       .select('id, usuario_id, url, storage_path, tipo, ordem, created_at')
       .eq('usuario_id', usuarioId)
-      .eq('tipo', 'foto')
       .order('ordem', { ascending: true })
       .order('created_at', { ascending: true });
+    if (tipo) q = q.eq('tipo', tipo);
+    const { data, error } = await q;
     return { data: data || [], error };
   },
 
@@ -575,6 +579,85 @@ export const midiaAPI = {
         storage_path: filePath,
         tipo: 'foto',
         ordem,
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      try { await supabase.storage.from('avatars').remove([filePath]); } catch (_) {}
+      return { data: null, error };
+    }
+    return { data, error: null };
+  },
+
+  obterVideo: async (usuarioId) => {
+    const { data, error } = await midiaAPI.listarPorUsuario(usuarioId, 'video');
+    return { data: (data && data[0]) || null, error };
+  },
+
+  adicionarVideo: async (userId, file) => {
+    if (!userId || !file) return { data: null, error: new Error('Dados incompletos') };
+
+    const { data: atuais } = await midiaAPI.listarPorUsuario(userId, 'video');
+    if ((atuais || []).length >= midiaAPI.MAX_VIDEOS) {
+      return { data: null, error: new Error('Já existe um vídeo no perfil. Remova o atual para enviar outro.') };
+    }
+
+    const ALLOWED = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-m4v'];
+    const tipoOk = ALLOWED.includes(file.type)
+      || (!file.type && /\.(mp4|webm|mov|m4v)$/i.test(file.name || ''));
+    if (!tipoOk) {
+      return { data: null, error: new Error('Envie MP4, WEBM ou MOV.') };
+    }
+    if (file.size > midiaAPI.MAX_VIDEO_BYTES) {
+      return { data: null, error: new Error('Vídeo acima de 20 MB. Grave mais curto ou em qualidade menor.') };
+    }
+
+    // Duração no aparelho (se o navegador permitir)
+    try {
+      const dur = await new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const v = document.createElement('video');
+        v.preload = 'metadata';
+        v.onloadedmetadata = () => {
+          const d = v.duration;
+          URL.revokeObjectURL(url);
+          resolve(d);
+        };
+        v.onerror = () => {
+          URL.revokeObjectURL(url);
+          resolve(null);
+        };
+        v.src = url;
+      });
+      if (dur != null && Number.isFinite(dur) && dur > midiaAPI.MAX_VIDEO_SEGUNDOS + 0.5) {
+        return {
+          data: null,
+          error: new Error(`Vídeo com ${Math.round(dur)}s. Máximo ${midiaAPI.MAX_VIDEO_SEGUNDOS} segundos.`),
+        };
+      }
+    } catch (_) {
+      /* segue sem checagem de duração */
+    }
+
+    const ext = (file.name.split('.').pop() || 'mp4').toLowerCase().replace(/[^a-z0-9]/g, '') || 'mp4';
+    const filePath = `galeria/${userId}/video-${Date.now()}.${ext}`;
+
+    const { error: upErr } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file, { upsert: false, contentType: file.type || 'video/mp4' });
+    if (upErr) return { data: null, error: upErr };
+
+    const { data: pub } = supabase.storage.from('avatars').getPublicUrl(filePath);
+
+    const { data, error } = await supabase
+      .from('midia_jogador')
+      .insert([{
+        usuario_id: userId,
+        url: pub?.publicUrl,
+        storage_path: filePath,
+        tipo: 'video',
+        ordem: 0,
       }])
       .select()
       .single();

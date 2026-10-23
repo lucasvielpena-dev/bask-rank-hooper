@@ -1,34 +1,84 @@
 import { useEffect, useRef, useState } from 'react';
-import { midiaAPI } from '../lib/supabase';
+import { midiaAPI, supabase } from '../lib/supabase';
 
 const MAX = midiaAPI.MAX_FOTOS;
 
 /**
- * Fase 1 — galeria de fotos do perfil (máx. 5).
- * isOwner: mostra botão adicionar e remover.
- * usuarioId: dono da galeria (profiles.id).
- * jogador: opcional — se não tiver usuarioId, tenta resolver pelo jogador.
+ * Fase 1 + 2 — fotos (máx. 5) e 1 vídeo curto (play sob demanda).
  */
 export default function GaleriaPerfil({ usuarioId, jogador, isOwner = false }) {
   const [fotos, setFotos] = useState([]);
+  const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [enviando, setEnviando] = useState(false);
+  const [enviandoVideo, setEnviandoVideo] = useState(false);
   const [erro, setErro] = useState(null);
   const [viewer, setViewer] = useState(null);
+  const [playVideo, setPlayVideo] = useState(false);
   const inputRef = useRef(null);
+  const videoInputRef = useRef(null);
+
+  async function resolveUid() {
+    if (usuarioId) return usuarioId;
+    if (jogador) {
+      const res = await midiaAPI.listarPorJogador(jogador);
+      // listarPorJogador only returns fotos; resolve uid like API
+      let uid = jogador.usuario_id || jogador.user_id || null;
+      if (!uid && jogador.criado_por) uid = jogador.criado_por;
+      return uid;
+    }
+    return null;
+  }
 
   async function carregar() {
     setLoading(true);
     setErro(null);
     try {
-      let res;
-      if (usuarioId) res = await midiaAPI.listarPorUsuario(usuarioId);
-      else if (jogador) res = await midiaAPI.listarPorJogador(jogador);
-      else res = { data: [] };
-      if (res.error) throw res.error;
-      setFotos(res.data || []);
+      let uid = usuarioId;
+      if (!uid && jogador) {
+        // reuse listarPorJogador logic for fotos + need uid for video
+        const fotosRes = await midiaAPI.listarPorJogador(jogador);
+        if (fotosRes.error) throw fotosRes.error;
+        setFotos(fotosRes.data || []);
+        // try video via profile link
+        let u = jogador.usuario_id || jogador.criado_por || null;
+        if (!u && jogador.id) {
+          const { data: pr } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('player_id', jogador.id)
+            .maybeSingle();
+          u = pr?.id || null;
+          if (!u) {
+            const { data: j } = await supabase
+              .from('jogadores')
+              .select('criado_por')
+              .eq('id', jogador.id)
+              .maybeSingle();
+            u = j?.criado_por || null;
+          }
+        }
+        if (u) {
+          const vRes = await midiaAPI.obterVideo(u);
+          setVideo(vRes.data || null);
+        } else {
+          setVideo(null);
+        }
+      } else if (uid) {
+        const [fRes, vRes] = await Promise.all([
+          midiaAPI.listarPorUsuario(uid, 'foto'),
+          midiaAPI.obterVideo(uid),
+        ]);
+        if (fRes.error) throw fRes.error;
+        setFotos(fRes.data || []);
+        setVideo(vRes.data || null);
+      } else {
+        setFotos([]);
+        setVideo(null);
+      }
     } catch (e) {
       setFotos([]);
+      setVideo(null);
       setErro(e?.message || 'Não foi possível carregar a galeria');
     } finally {
       setLoading(false);
@@ -36,6 +86,7 @@ export default function GaleriaPerfil({ usuarioId, jogador, isOwner = false }) {
   }
 
   useEffect(() => {
+    setPlayVideo(false);
     carregar();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuarioId, jogador?.id]);
@@ -57,19 +108,43 @@ export default function GaleriaPerfil({ usuarioId, jogador, isOwner = false }) {
     }
   }
 
+  async function onPickVideo(e) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file || !usuarioId) return;
+    setEnviandoVideo(true);
+    setErro(null);
+    try {
+      const { error } = await midiaAPI.adicionarVideo(usuarioId, file);
+      if (error) throw error;
+      setPlayVideo(false);
+      await carregar();
+    } catch (err) {
+      setErro(err?.message || 'Falha no upload do vídeo');
+    } finally {
+      setEnviandoVideo(false);
+    }
+  }
+
   async function onRemove(f, ev) {
     ev?.stopPropagation?.();
-    if (!window.confirm('Remover esta foto?')) return;
+    if (!window.confirm('Remover esta mídia?')) return;
     const { error } = await midiaAPI.remover(f.id, f.storage_path);
     if (error) {
       setErro(error.message || 'Não foi possível remover');
       return;
     }
-    setFotos((prev) => prev.filter((x) => x.id !== f.id));
+    if (f.tipo === 'video' || video?.id === f.id) {
+      setVideo(null);
+      setPlayVideo(false);
+    } else {
+      setFotos((prev) => prev.filter((x) => x.id !== f.id));
+    }
     if (viewer?.id === f.id) setViewer(null);
   }
 
-  if (loading && fotos.length === 0) {
+  const vazio = fotos.length === 0 && !video;
+  if (loading && vazio) {
     return (
       <div style={{ marginTop: 12, marginBottom: 12 }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 8, letterSpacing: '0.04em' }}>
@@ -80,13 +155,147 @@ export default function GaleriaPerfil({ usuarioId, jogador, isOwner = false }) {
     );
   }
 
-  if (!isOwner && fotos.length === 0) return null;
+  if (!isOwner && vazio) return null;
 
   return (
     <div style={{ marginTop: 12, marginBottom: 12 }}>
+      {/* ---- Vídeo (fase 2) ---- */}
+      {(video || isOwner) && (
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.04em' }}>
+              VÍDEO HIGHLIGHT
+            </div>
+            {isOwner && !video && (
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                disabled={enviandoVideo}
+                onClick={() => videoInputRef.current?.click()}
+                style={{ fontSize: 12, padding: '6px 12px', borderRadius: 50 }}
+              >
+                {enviandoVideo ? 'Enviando…' : 'Enviar vídeo'}
+              </button>
+            )}
+          </div>
+
+          <input
+            ref={videoInputRef}
+            type="file"
+            accept="video/mp4,video/webm,video/quicktime,video/x-m4v"
+            style={{ display: 'none' }}
+            onChange={onPickVideo}
+          />
+
+          {!video && isOwner ? (
+            <button
+              type="button"
+              onClick={() => videoInputRef.current?.click()}
+              disabled={enviandoVideo}
+              style={{
+                width: '100%',
+                padding: '18px 12px',
+                borderRadius: 14,
+                border: '1px dashed var(--border)',
+                background: 'var(--bg-secondary)',
+                color: 'var(--text-secondary)',
+                fontSize: 13,
+                cursor: 'pointer',
+                textAlign: 'center',
+              }}
+            >
+              {enviandoVideo
+                ? 'Enviando vídeo…'
+                : '1 vídeo de até 20 segundos (MP4) · play só quando tocar'}
+            </button>
+          ) : video ? (
+            <div
+              style={{
+                position: 'relative',
+                borderRadius: 14,
+                overflow: 'hidden',
+                border: '1px solid var(--border)',
+                background: '#000',
+                aspectRatio: '16 / 9',
+              }}
+            >
+              {playVideo ? (
+                <video
+                  src={video.url}
+                  controls
+                  playsInline
+                  autoPlay
+                  style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+                />
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setPlayVideo(true)}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, var(--bg-elevated) 0%, #0a0e14 100%)',
+                    color: 'var(--text-primary)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 52,
+                      height: 52,
+                      borderRadius: '50%',
+                      background: 'var(--accent-soft)',
+                      border: '1px solid var(--accent-line)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 22,
+                    }}
+                  >
+                    ▶
+                  </span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>
+                    Tocar highlight
+                  </span>
+                </button>
+              )}
+              {isOwner && (
+                <button
+                  type="button"
+                  onClick={(e) => onRemove(video, e)}
+                  style={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 8,
+                    padding: '6px 12px',
+                    borderRadius: 50,
+                    border: 'none',
+                    background: 'rgba(0,0,0,0.7)',
+                    color: '#fff',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    zIndex: 2,
+                  }}
+                >
+                  Remover
+                </button>
+              )}
+            </div>
+          ) : null}
+        </div>
+      )}
+
+      {/* ---- Fotos (fase 1) ---- */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.04em' }}>
-          GALERIA{fotos.length > 0 ? ` · ${fotos.length}/${MAX}` : ''}
+          FOTOS{fotos.length > 0 ? ` · ${fotos.length}/${MAX}` : ''}
         </div>
         {isOwner && fotos.length < MAX && (
           <button
@@ -105,7 +314,6 @@ export default function GaleriaPerfil({ usuarioId, jogador, isOwner = false }) {
         ref={inputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp,image/gif"
-        capture={undefined}
         style={{ display: 'none' }}
         onChange={onPick}
       />
@@ -132,7 +340,7 @@ export default function GaleriaPerfil({ usuarioId, jogador, isOwner = false }) {
         >
           {enviando ? 'Enviando…' : 'Adicione até 5 fotos do seu jogo'}
         </button>
-      ) : (
+      ) : fotos.length > 0 ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
           {fotos.map((f) => (
             <div
@@ -144,7 +352,7 @@ export default function GaleriaPerfil({ usuarioId, jogador, isOwner = false }) {
               style={{
                 position: 'relative',
                 aspectRatio: '1',
-                borderRadius: 12,
+                borderRadius: 14,
                 overflow: 'hidden',
                 border: '1px solid var(--border)',
                 cursor: 'pointer',
@@ -183,33 +391,15 @@ export default function GaleriaPerfil({ usuarioId, jogador, isOwner = false }) {
             </div>
           ))}
         </div>
-      )}
+      ) : null}
 
       {viewer && (
-        <div
-          className="modal-overlay"
-          onClick={() => setViewer(null)}
-          style={{ zIndex: 80 }}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              maxWidth: 420,
-              width: '100%',
-              margin: 'auto',
-              padding: 12,
-            }}
-          >
+        <div className="modal-overlay" onClick={() => setViewer(null)} style={{ zIndex: 80 }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ maxWidth: 420, width: '100%', margin: 'auto', padding: 12 }}>
             <img
               src={viewer.url}
               alt=""
-              style={{
-                width: '100%',
-                maxHeight: '80vh',
-                objectFit: 'contain',
-                borderRadius: 16,
-                background: '#000',
-              }}
+              style={{ width: '100%', maxHeight: '80vh', objectFit: 'contain', borderRadius: 16, background: '#000' }}
             />
             <button
               type="button"
