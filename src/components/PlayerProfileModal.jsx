@@ -7,6 +7,7 @@ import { IconSportDynamic } from './Icons';
 import { nomeAtleta, nomeCompletoAtleta } from '../lib/nomes';
 import { resumoAvaliacoes } from '../lib/ranking';
 import LinhaEvolucao from './LinhaEvolucao';
+import GaleriaPerfil from './GaleriaPerfil';
 
 const labelsNota = ['', 'Muito Fraco', 'Fraco', 'Regular', 'Bom', 'Excelente'];
 
@@ -422,6 +423,13 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
                   "Promessa 2024", "MVP 2026") que não vinha de voto nenhum. */}
               <div style={{ padding: '0 16px 16px' }}>
                 <LinhaEvolucao serie={evolucao} loading={loadingEvolucao} proprio={!!isMe} />
+                <div style={{ padding: '0 16px' }}>
+                  <GaleriaPerfil
+                    usuarioId={isMe ? minhaId : (profileData?.id || null)}
+                    jogador={localJogador}
+                    isOwner={!!isMe}
+                  />
+                </div>
               </div>
 
               {/* Tabs */}

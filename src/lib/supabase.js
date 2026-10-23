@@ -492,6 +492,118 @@ export const profilesAPI = {
   }
 };
 
+export const midiaAPI = {
+  MAX_FOTOS: 5,
+
+  listarPorUsuario: async (usuarioId) => {
+    if (!usuarioId) return { data: [], error: null };
+    const { data, error } = await supabase
+      .from('midia_jogador')
+      .select('id, usuario_id, url, storage_path, tipo, ordem, created_at')
+      .eq('usuario_id', usuarioId)
+      .eq('tipo', 'foto')
+      .order('ordem', { ascending: true })
+      .order('created_at', { ascending: true });
+    return { data: data || [], error };
+  },
+
+  /** Resolve usuario_id a partir do jogador (player_id do perfil ou criado_por). */
+  listarPorJogador: async (jogador) => {
+    if (!jogador) return { data: [], error: null };
+    let uid = jogador.usuario_id || jogador.user_id || null;
+    if (!uid && jogador.id) {
+      const { data: j } = await supabase
+        .from('jogadores')
+        .select('criado_por, id')
+        .eq('id', jogador.id)
+        .maybeSingle();
+      if (j?.criado_por) uid = j.criado_por;
+      if (!uid) {
+        const { data: pr } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('player_id', jogador.id)
+          .maybeSingle();
+        if (pr?.id) uid = pr.id;
+      }
+    }
+    if (!uid) return { data: [], error: null };
+    return midiaAPI.listarPorUsuario(uid);
+  },
+
+  adicionarFoto: async (userId, file) => {
+    if (!userId || !file) return { data: null, error: new Error('Dados incompletos') };
+
+    const { data: atuais } = await midiaAPI.listarPorUsuario(userId);
+    if ((atuais || []).length >= midiaAPI.MAX_FOTOS) {
+      return { data: null, error: new Error(`Máximo de ${midiaAPI.MAX_FOTOS} fotos na galeria.`) };
+    }
+
+    const ALLOWED = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    const MAX_BYTES = LIMITE_FOTO_PERFIL;
+    const tipoOk = ALLOWED.includes(file.type)
+      || (!file.type && /\.(jpe?g|png|webp|gif)$/i.test(file.name || ''));
+    if (!tipoOk) {
+      return { data: null, error: new Error('Envie JPG, PNG, WEBP ou GIF.') };
+    }
+
+    let arquivo = file;
+    if (file.size > MAX_BYTES) {
+      try {
+        arquivo = await comprimirImagem(file, { maxBytes: MAX_BYTES });
+      } catch (err) {
+        return { data: null, error: new Error(`Não foi possível comprimir: ${err.message}`) };
+      }
+    }
+
+    const ext = (arquivo.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    const filePath = `galeria/${userId}/${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+
+    const { error: upErr } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, arquivo, { upsert: false });
+    if (upErr) return { data: null, error: upErr };
+
+    const { data: pub } = supabase.storage.from('avatars').getPublicUrl(filePath);
+    const ordem = (atuais || []).length;
+
+    const { data, error } = await supabase
+      .from('midia_jogador')
+      .insert([{
+        usuario_id: userId,
+        url: pub?.publicUrl,
+        storage_path: filePath,
+        tipo: 'foto',
+        ordem,
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      try { await supabase.storage.from('avatars').remove([filePath]); } catch (_) {}
+      return { data: null, error };
+    }
+    return { data, error: null };
+  },
+
+  remover: async (id, storagePath) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { error: new Error('Não autenticado') };
+
+    const { error } = await supabase
+      .from('midia_jogador')
+      .delete()
+      .eq('id', id)
+      .eq('usuario_id', user.id);
+    if (error) return { error };
+
+    if (storagePath) {
+      try { await supabase.storage.from('avatars').remove([storagePath]); } catch (_) {}
+    }
+    return { error: null };
+  },
+};
+
 export const denunciasAPI = {
   criar: async (denuncia) => {
     const user = (await supabase.auth.getUser()).data.user;

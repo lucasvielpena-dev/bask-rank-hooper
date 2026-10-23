@@ -4,6 +4,7 @@ import { supabase, rankingAPI, estatisticasPessoaisAPI } from '../lib/supabase';
 import { useEsporte } from '../contexts/EsporteContext';
 import LinhaEvolucao from '../components/LinhaEvolucao';
 import { lerCache, salvarCache } from '../lib/pageCache';
+import GaleriaPerfil from '../components/GaleriaPerfil';
 import { meusAvaliados } from '../lib/avaliacaoPendente';
 import { compartilharApp } from '../lib/compartilhar';
 
@@ -450,6 +451,8 @@ export default function Stats({ profile, onNavigate }) {
 
         {/* Linha de Evolução (média mensal real das avaliações recebidas) */}
         <LinhaEvolucao serie={evolucao} loading={loadingEvolucao} />
+
+        <GaleriaPerfil usuarioId={profile?.id} isOwner />
 
         {/* Tab Bar interna */}
         <div style={{
