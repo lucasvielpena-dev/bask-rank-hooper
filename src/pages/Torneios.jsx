@@ -180,7 +180,8 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
     max_jogadores_por_equipe: 10,
     taxa_inscricao: 0,
     premiacao: '',
-    formato: 'eliminatoria_simples'
+    formato: 'eliminatoria_simples',
+    notificar_regiao: false,
   });
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState(null);
@@ -197,7 +198,9 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
       const payload = {
         ...form,
         cidade: profile.cidade_atual || profile.cidade || 'Altamira',
-        status: 'inscricoes_abertas'
+        uf: profile.uf || 'PA',
+        status: 'inscricoes_abertas',
+        notificar_regiao: !!form.notificar_regiao,
       };
 
       const { error } = await torneiosAPI.criar(payload);
@@ -276,6 +279,26 @@ function CriarTorneioModal({ profile, onClose, onSuccess }) {
             <label style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 8 }}>Descrição</label>
             <textarea rows="2" style={{ resize: 'none' }} placeholder="Detalhes do evento..." value={form.descricao} onChange={e => setForm(p => ({ ...p, descricao: e.target.value }))} />
           </div>
+
+          <label style={{
+            display: 'flex', alignItems: 'flex-start', gap: 10,
+            padding: '12px 14px', borderRadius: 14,
+            background: 'var(--bg-card, rgba(255,255,255,0.04))',
+            border: '1px solid var(--border, rgba(255,255,255,0.1))',
+            cursor: 'pointer', marginTop: 4
+          }}>
+            <input
+              type="checkbox"
+              checked={!!form.notificar_regiao}
+              onChange={e => setForm(p => ({ ...p, notificar_regiao: e.target.checked }))}
+              style={{ marginTop: 3, width: 16, height: 16, flexShrink: 0 }}
+            />
+            <span style={{ fontSize: 13, lineHeight: 1.45, color: 'var(--text-secondary)' }}>
+              <strong style={{ color: 'var(--text-primary, #fff)', fontWeight: 700 }}>Avisar a região (UF inteira)</strong>
+              <br />
+              Por padrão só a sua cidade recebe o aviso. Marque para notificar todos do mesmo estado (ex.: todo o Pará).
+            </span>
+          </label>
 
           <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
             <button type="button" className="btn btn-secondary" onClick={onClose} disabled={salvando} style={{ flex: 1 }}>Cancelar</button>
