@@ -102,21 +102,30 @@ export default function Times({ profile, onNavigate }) {
     const q = buscaAtleta.trim();
     if (q.length < 2) {
       setCandidatos([]);
+      showToast('Digite pelo menos 2 letras', 'err');
       return;
     }
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('profiles')
       .select('id, nome_completo, apelido, foto_perfil, cidade_atual, cidade')
       .or(`nome_completo.ilike.%${q}%,apelido.ilike.%${q}%`)
-      .limit(20);
-    const cNorm = cidade.toLowerCase();
-    const idsMembros = new Set(membros.map((m) => m.usuario_id));
-    setCandidatos(
-      (data || []).filter((p) => {
-        const pc = (p.cidade_atual || p.cidade || '').toLowerCase();
-        return pc.includes(cNorm) || cNorm.includes(pc);
-      }).filter((p) => !idsMembros.has(p.id) && p.id !== profile?.id)
-    );
+      .limit(30);
+    if (error) {
+      showToast(error.message || 'Erro na busca', 'err');
+      return;
+    }
+    const cNorm = (cidade || '').toLowerCase().trim();
+    const idsMembros = new Set(membros.map((m) => m.usuario_id).filter(Boolean));
+    const filtrados = (data || []).filter((p) => {
+      if (p.id === profile?.id || idsMembros.has(p.id)) return false;
+      if (!cNorm) return true;
+      const pc = (p.cidade_atual || p.cidade || '').toLowerCase().trim();
+      return !pc || pc.includes(cNorm) || cNorm.includes(pc);
+    });
+    setCandidatos(filtrados);
+    if (filtrados.length === 0) {
+      showToast(data?.length ? 'Nenhum atleta da sua cidade com esse nome' : 'Nenhum atleta encontrado', 'err');
+    }
   }
 
   async function enviarConvite(uid) {
