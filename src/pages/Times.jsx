@@ -109,22 +109,32 @@ export default function Times({ profile, onNavigate }) {
       .from('profiles')
       .select('id, nome_completo, apelido, foto_perfil, cidade_atual, cidade')
       .or(`nome_completo.ilike.%${q}%,apelido.ilike.%${q}%`)
-      .limit(30);
+      .limit(40);
     if (error) {
       showToast(error.message || 'Erro na busca', 'err');
       return;
     }
     const cNorm = (cidade || '').toLowerCase().trim();
     const idsMembros = new Set(membros.map((m) => m.usuario_id).filter(Boolean));
+    // Filtro mais flexível: aceita se a cidade contém ou está vazia
     const filtrados = (data || []).filter((p) => {
       if (p.id === profile?.id || idsMembros.has(p.id)) return false;
       if (!cNorm) return true;
       const pc = (p.cidade_atual || p.cidade || '').toLowerCase().trim();
-      return !pc || pc.includes(cNorm) || cNorm.includes(pc);
+      // Aceita se cidade vazia, ou se uma contém a outra (sem acento rigoroso)
+      if (!pc) return true;
+      const n1 = pc.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const n2 = cNorm.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      return n1.includes(n2) || n2.includes(n1);
     });
     setCandidatos(filtrados);
     if (filtrados.length === 0) {
-      showToast(data?.length ? 'Nenhum atleta da sua cidade com esse nome' : 'Nenhum atleta encontrado', 'err');
+      showToast(
+        (data || []).length
+          ? 'Nenhum atleta da sua cidade com esse nome. Tente outro termo.'
+          : 'Nenhum atleta encontrado',
+        'err'
+      );
     }
   }
 

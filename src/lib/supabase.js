@@ -1433,8 +1433,12 @@ export const timesAPI = {
       }])
       .select()
       .single();
-    if (error) return { data: null, error };
+    if (error) {
+      // Tabela ou RLS pode não existir ainda
+      return { data: null, error: new Error(error.message || 'Não foi possível enviar o convite') };
+    }
 
+    // Notificação (não bloqueia se falhar)
     try {
       await supabase.from('notificacoes').insert([{
         usuario_id: convidadoId,
