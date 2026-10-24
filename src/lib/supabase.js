@@ -1297,20 +1297,42 @@ export const timesAPI = {
     if (!c) return { data: [], error: null };
     const { data, error } = await supabase
       .from('times')
-      .select('*, capitao:profiles!capitao_id(id, nome_completo, apelido, foto_perfil)')
+      .select('*')
       .eq('ativo', true)
       .ilike('cidade', c)
       .order('nome');
-    return { data: data || [], error };
+    if (error || !data?.length) return { data: data || [], error };
+
+    // Busca capitão separado para não depender do schema cache do PostgREST
+    const ids = [...new Set(data.map((t) => t.capitao_id).filter(Boolean))];
+    let map = {};
+    if (ids.length) {
+      const { data: profs } = await supabase
+        .from('profiles')
+        .select('id, nome_completo, apelido, foto_perfil')
+        .in('id', ids);
+      map = Object.fromEntries((profs || []).map((p) => [p.id, p]));
+    }
+    const withCap = data.map((t) => ({ ...t, capitao: map[t.capitao_id] || null }));
+    return { data: withCap, error: null };
   },
 
   buscar: async (id) => {
     const { data, error } = await supabase
       .from('times')
-      .select('*, capitao:profiles!capitao_id(id, nome_completo, apelido, foto_perfil)')
+      .select('*')
       .eq('id', id)
       .maybeSingle();
-    return { data, error };
+    if (error || !data) return { data, error };
+    if (data.capitao_id) {
+      const { data: prof } = await supabase
+        .from('profiles')
+        .select('id, nome_completo, apelido, foto_perfil')
+        .eq('id', data.capitao_id)
+        .maybeSingle();
+      data.capitao = prof || null;
+    }
+    return { data, error: null };
   },
 
   criar: async ({ nome, cidade, uf, descricao }) => {
@@ -1350,11 +1372,23 @@ export const timesAPI = {
   listarMembros: async (timeId) => {
     const { data, error } = await supabase
       .from('time_membros')
-      .select('*, perfil:profiles(id, nome_completo, apelido, foto_perfil, cidade_atual, cidade)')
+      .select('*')
       .eq('time_id', timeId)
       .eq('status', 'ativo')
       .order('entrou_em');
-    return { data: data || [], error };
+    if (error || !data?.length) return { data: data || [], error };
+
+    const ids = [...new Set(data.map((m) => m.usuario_id).filter(Boolean))];
+    let map = {};
+    if (ids.length) {
+      const { data: profs } = await supabase
+        .from('profiles')
+        .select('id, nome_completo, apelido, foto_perfil, cidade_atual, cidade')
+        .in('id', ids);
+      map = Object.fromEntries((profs || []).map((p) => [p.id, p]));
+    }
+    const withP = data.map((m) => ({ ...m, perfil: map[m.usuario_id] || null }));
+    return { data: withP, error: null };
   },
 
   meuTimeNaCidade: async (cidade) => {
