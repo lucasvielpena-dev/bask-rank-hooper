@@ -211,6 +211,23 @@ export default function Racoes({ profile, onNavigate }) {
   }
 
   // Notas são anônimas: a RPC devolve só o que EU avaliei + o resumo agregado.
+  async function handleExcluir(r) {
+    if (!confirm('Excluir este rachão? Ele não aconteceu e será removido.')) return;
+    setBusy(true);
+    try {
+      const { error } = await racoesAPI.excluir(r.id);
+      if (error) throw error;
+      showMsg('Rachão excluído');
+      setSelected(null);
+      await load();
+    } catch (err) {
+      showMsg(err.message || 'Erro ao excluir', 'error');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+
   async function carregarNotas(racaoId) {
     try {
       const [minhas, resumo] = await Promise.all([
@@ -301,7 +318,10 @@ export default function Racoes({ profile, onNavigate }) {
             <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => handleLeave(r)}>Sair</button>
           )}
           {isCreator && r.status !== 'finalizado' && r.status !== 'cancelado' && (
-            <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => handleFinish(r)}>Finalizar</button>
+            <>
+              <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => handleFinish(r)}>Finalizar</button>
+              <button className="btn btn-secondary btn-sm" disabled={busy} onClick={() => handleExcluir(r)} style={{ color: 'var(--danger, #ef4444)' }}>Excluir</button>
+            </>
           )}
           {r.status === 'finalizado' && (
             <span style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 700 }}>Avaliar quem jogou →</span>

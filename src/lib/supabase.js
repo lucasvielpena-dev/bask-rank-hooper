@@ -1321,6 +1321,18 @@ export const racoesAPI = {
     return { data, error };
   },
 
+  excluir: async (racaoId) => {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { error: new Error('Não autenticado') };
+    // Só o criador pode excluir
+    const { data: r } = await supabase.from('racoes').select('criado_por').eq('id', racaoId).maybeSingle();
+    if (!r || r.criado_por !== user.id) return { error: new Error('Só o criador pode excluir') };
+    // Remove participantes e o rachão
+    await supabase.from('racao_participantes').delete().eq('racao_id', racaoId);
+    const { error } = await supabase.from('racoes').delete().eq('id', racaoId);
+    return { error };
+  },
+
   participantesConfirmados: async (racaoId) => {
     const { data, error } = await supabase
       .from('racao_participantes')
