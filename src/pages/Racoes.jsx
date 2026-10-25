@@ -19,6 +19,7 @@ function countParts(r) {
 }
 
 export default function Racoes({ profile, onNavigate }) {
+  const { esporte } = useEsporte();
   const _cache = lerCache('racoes');
   const [lista, setLista] = useState(_cache || []);
   const [loading, setLoading] = useState(!_cache);
@@ -95,7 +96,7 @@ export default function Racoes({ profile, onNavigate }) {
         nivel: form.nivel,
         criado_por: uid,
         jogador_id: profile?.player_id || null,
-        esporte: 'basquete',
+        esporte: esporte || 'basquete',
         status: 'aberto',
       });
       if (error) throw error;

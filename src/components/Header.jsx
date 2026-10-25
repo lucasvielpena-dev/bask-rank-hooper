@@ -5,7 +5,7 @@ import { IconSino, IconSportDynamic } from './Icons';
 
 export default memo(function Header() {
   const { profile, notificacoes, setShowUserMenu, setShowNotificacoes } = useAuth();
-  const { esporte } = useEsporte();
+  const { esporte, limparEsporte, cfg } = useEsporte();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -30,6 +30,27 @@ export default memo(function Header() {
         <div className="header-brand">
           RANK <span style={{ color: 'var(--accent)' }}>HOOPER</span>
         </div>
+        {cfg && (
+          <button
+            type="button"
+            onClick={limparEsporte}
+            style={{
+              background: 'var(--accent-dim)',
+              border: '1px solid var(--accent-line)',
+              color: 'var(--accent)',
+              fontSize: 11,
+              fontWeight: 700,
+              padding: '4px 8px',
+              borderRadius: 999,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              whiteSpace: 'nowrap',
+            }}
+            title="Trocar esporte"
+          >
+            {cfg.label}
+          </button>
+        )}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

@@ -8,6 +8,7 @@ import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 
 import Home from './pages/Home';
+import SelecionarEsporte from './pages/SelecionarEsporte';
 import Atletas from './pages/Atletas';
 const Explorar = lazy(() => import('./pages/Explorar'));
 const Jogos = lazy(() => import('./pages/Jogos'));
@@ -43,6 +44,7 @@ function chaveDaTela(p, props) {
 
 function AppRoutes() {
   const { profile } = useAuth();
+  const { esporte } = useEsporte();
   const [page, setPage] = useState('inicio');
   const [pageProps, setPageProps] = useState({});
 
@@ -126,6 +128,10 @@ function AppRoutes() {
     overflowX: 'hidden',
     WebkitOverflowScrolling: 'touch',
   });
+
+  if (profile && !esporte) {
+    return <SelecionarEsporte />;
+  }
 
   return (
     <Layout page={page} onNavigate={navigate}>
