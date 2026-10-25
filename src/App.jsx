@@ -3,7 +3,7 @@ import './styles/global.css';
 
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { EsporteProvider } from './contexts/EsporteContext';
+import { EsporteProvider, useEsporte } from './contexts/EsporteContext';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 
