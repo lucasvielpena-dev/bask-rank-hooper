@@ -41,7 +41,7 @@ export default function Times({ profile, onNavigate }) {
     setErro(null);
     try {
       const [tRes, mRes, cRes, aRes] = await Promise.all([
-        timesAPI.listarPorCidade(cidade),
+        timesAPI.listarPorCidade(cidade, esporte || 'basquete'),
         timesAPI.meuTimeNaCidade(cidade),
         timesAPI.meusConvitesPendentes(),
         timesAPI.listarAmistososCidade(cidade),
@@ -75,6 +75,7 @@ export default function Times({ profile, onNavigate }) {
         cidade,
         uf: profile?.uf || 'PA',
         descricao: descTime,
+        esporte: esporte || 'basquete',
       });
       if (error) throw error;
       setShowCriar(false);

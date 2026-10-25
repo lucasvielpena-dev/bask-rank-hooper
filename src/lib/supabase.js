@@ -1292,13 +1292,14 @@ export const timesAPI = {
     return (profile?.cidade_atual || profile?.cidade || '').trim();
   },
 
-  listarPorCidade: async (cidade) => {
+  listarPorCidade: async (cidade, esporte = 'basquete') => {
     const c = (cidade || '').trim();
     if (!c) return { data: [], error: null };
     const { data, error } = await supabase
       .from('times')
       .select('*')
       .eq('ativo', true)
+      .eq('esporte', esporte)
       .ilike('cidade', c)
       .order('nome');
     if (error || !data?.length) return { data: data || [], error };
@@ -1335,7 +1336,7 @@ export const timesAPI = {
     return { data, error: null };
   },
 
-  criar: async ({ nome, cidade, uf, descricao }) => {
+  criar: async ({ nome, cidade, uf, descricao, esporte = 'basquete' }) => {
     const user = (await supabase.auth.getUser()).data.user;
     if (!user) return { data: null, error: new Error('Não autenticado') };
     if (!nome?.trim()) return { data: null, error: new Error('Informe o nome do time') };
@@ -1354,6 +1355,7 @@ export const timesAPI = {
         uf: (uf || 'PA').trim(),
         descricao: descricao?.trim() || null,
         capitao_id: user.id,
+        esporte: esporte || 'basquete',
       }])
       .select()
       .single();
