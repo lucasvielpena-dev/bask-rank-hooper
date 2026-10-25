@@ -7,7 +7,7 @@ const VISUAL = {
     tags: ['Arremesso', 'Rebote', 'Assistência'],
   },
   handebol: {
-    imagem: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80',
+    imagem: 'https://images.pexels.com/photos/25048028/pexels-photo-25048028.jpeg?auto=compress&cs=tinysrgb&w=800',
     tags: ['Gols', 'Interceptação', 'Bloqueio'],
   },
 };
