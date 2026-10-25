@@ -221,6 +221,19 @@ export const votacaoAPI = {
       const user = (await supabase.auth.getUser()).data.user;
       if (!user) return { data: null, error: new Error('Não autenticado') };
 
+      // Não pode avaliar a si mesmo
+      const { data: jog } = await supabase.from('jogadores').select('criado_por, cidade, uf').eq('id', jogadorId).maybeSingle();
+      if (jog?.criado_por === user.id) {
+        return { data: null, error: new Error('Você não pode avaliar a si mesmo') };
+      }
+      // Mesma cidade
+      const { data: prof } = await supabase.from('profiles').select('cidade_atual, cidade, uf').eq('id', user.id).maybeSingle();
+      const cAval = (prof?.cidade_atual || prof?.cidade || '').toLowerCase().trim();
+      const cJog = (jog?.cidade || '').toLowerCase().trim();
+      if (cAval && cJog && cAval !== cJog) {
+        return { data: null, error: new Error('Você só pode avaliar atletas da sua cidade') };
+      }
+
       const { data, error } = await supabase
         .from('avaliacoes')
         .upsert({

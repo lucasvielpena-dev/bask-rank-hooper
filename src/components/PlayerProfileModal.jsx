@@ -259,6 +259,10 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
   }
 
   async function handleConfirmarAvaliacao() {
+    if (profile?.player_id === jogador.id || profile?.id === jogador.criado_por) {
+      showToast('Você não pode avaliar a si mesmo!', 'error');
+      return;
+    }
     if (!mesmaCidadeQueEu(localJogador || jogador)) {
       showToast('Você só pode avaliar atletas da sua cidade.', 'error');
       return;
