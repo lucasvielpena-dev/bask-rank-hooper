@@ -12,6 +12,8 @@ import {
 } from '../components/Icons';
 import MasterNav from '../components/MasterNav';
 import { lerCache, salvarCache } from '../lib/pageCache';
+import { useEsporte } from '../contexts/EsporteContext';
+import { ESPORTES } from '../config/esportes';
 
 const STAT_CARDS = [
   { key: 'total_users', label: 'Usuários', icon: IconJogador },
@@ -25,6 +27,8 @@ const STAT_CARDS = [
 ];
 
 export default function MasterDashboard({ onNavigate }) {
+  const { esporte: esporteApp } = useEsporte();
+  const [esporteFiltro, setEsporteFiltro] = useState(esporteApp || 'basquete');
   const _cache = lerCache('master');
   const [stats, setStats] = useState(_cache?.stats || {});
   const [cities, setCities] = useState(_cache?.cities || []);
@@ -35,7 +39,7 @@ export default function MasterDashboard({ onNavigate }) {
 
   async function loadAll() {
     try {
-      const statsRes = await supabase.rpc('get_master_stats');
+      const statsRes = await supabase.rpc('get_master_stats', { p_esporte: esporteFiltro });
       if (statsRes.error) throw statsRes.error;
       const d = Array.isArray(statsRes.data) ? statsRes.data[0] : statsRes.data;
       setStats(d && typeof d === 'object' ? d : {});
@@ -75,14 +79,19 @@ export default function MasterDashboard({ onNavigate }) {
     salvarCache('master', { stats, cities, players });
   }, [loading, lastUpdate, stats, cities, players]);
 
-  const insights = useMemo(() => {
+  const playersFiltrados = useMemo(() => {
     const list = Array.isArray(players) ? players : [];
+    return list.filter((p) => (p.esporte || 'basquete') === esporteFiltro);
+  }, [players, esporteFiltro]);
+
+  const insights = useMemo(() => {
+    const list = playersFiltrados;
     return {
       semCidade: list.filter((p) => !p?.cidade || String(p.cidade).trim() === ''),
       suspensos: list.filter((p) => p?.ativo === false),
       semVotos: list.filter((p) => p?.ativo !== false && (Number(p?.total_votos) || 0) === 0),
     };
-  }, [players]);
+  }, [playersFiltrados]);
 
   if (loading && !_cache) {
     return (
@@ -109,6 +118,26 @@ export default function MasterDashboard({ onNavigate }) {
           <button type="button" onClick={loadAll} className="btn btn-secondary btn-sm">
             Atualizar
           </button>
+        </div>
+
+        {/* Seletor de esporte */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+          {Object.entries(ESPORTES).map(([key, cfg]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setEsporteFiltro(key)}
+              className="btn btn-sm"
+              style={{
+                flex: 1,
+                background: esporteFiltro === key ? 'var(--accent)' : 'var(--bg-card)',
+                color: esporteFiltro === key ? 'var(--accent-on)' : 'var(--text-primary)',
+                border: '1px solid var(--border)',
+              }}
+            >
+              {cfg.label}
+            </button>
+          ))}
         </div>
 
         <MasterNav current="master" onNavigate={onNavigate} />
