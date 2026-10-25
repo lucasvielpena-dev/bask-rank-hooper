@@ -292,12 +292,14 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
     try {
       const { data, error } = await votacaoAPI.votar(votingPlayer.id, {
         ...estrelasVoto,
-        comentario: comentarioVoto.trim() || null
+        comentario: comentarioVoto.trim() || null,
+        esporte: esporte || 'basquete',
       });
-      if (error || !data?.sucesso) {
+      if (error || (data?.sucesso === false)) {
         showToast(data?.erro || error?.message || 'Erro ao registrar avaliação.', 'error');
       } else {
-        showToast(`Avaliação computada! Nova média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
+        const media = data?.media_estrelas ?? data?.media ?? null;
+        showToast(media ? `Avaliação computada! Nova média: ★ ${Number(media).toFixed(1)}` : 'Avaliação registrada', 'success');
         setVotingPlayer(null);
         loadJogadores(true);
       }

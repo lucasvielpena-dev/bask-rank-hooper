@@ -265,10 +265,11 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
     }
     if (fundamentos.some(f => !estrelas[f.key])) { showToast('Selecione uma nota para todos os fundamentos', 'error'); return; }
     setEnviandoAvaliacao(true);
-    const { data, error } = await votacaoAPI.votar(jogador.id, estrelas);
-    if (error || !data?.sucesso) { showToast(data?.erro || error?.message || 'Erro ao registrar avaliação', 'error'); }
+    const { data, error } = await votacaoAPI.votar(jogador.id, { ...estrelas, esporte: esporte || 'basquete' });
+    if (error || (data?.sucesso === false)) { showToast(data?.erro || error?.message || 'Erro ao registrar avaliação', 'error'); }
     else {
-      showToast(`Avaliação registrada! Média: ★ ${Number(data.media_estrelas).toFixed(1)}`, 'success');
+      const media = data?.media_estrelas ?? data?.media ?? null;
+      showToast(media ? `Avaliação registrada! Média: ★ ${Number(media).toFixed(1)}` : 'Avaliação registrada', 'success');
       setJaAvaliou(true); setShowAvaliar(false);
       const { data: updatedJ } = await supabase.from('jogadores').select('*').eq('id', jogador.id).single();
       if (updatedJ) setLocalJogador(updatedJ);

@@ -211,6 +211,33 @@ export const rankingAPI = {
 
 export const votacaoAPI = {
   votar: async (jogadorId, avaliacao, metadata = {}) => {
+    const esporte = avaliacao.esporte || 'basquete';
+
+    // Handebol (e outros): salva habilidades em JSON
+    if (esporte !== 'basquete') {
+      const habilidades = { ...avaliacao };
+      delete habilidades.esporte;
+      delete habilidades.comentario;
+      const user = (await supabase.auth.getUser()).data.user;
+      if (!user) return { data: null, error: new Error('Não autenticado') };
+
+      const { data, error } = await supabase
+        .from('avaliacoes')
+        .upsert({
+          avaliador_id: user.id,
+          jogador_id: jogadorId,
+          esporte,
+          habilidades,
+          comentario: avaliacao.comentario || null,
+          // colunas de basquete ficam 0 para não violar NOT NULL
+          arremesso: 0, defesa: 0, controle_de_bola: 0, explosao_fisica: 0, visao_de_jogo: 0,
+        }, { onConflict: 'avaliador_id,jogador_id' })
+        .select()
+        .maybeSingle();
+      return { data, error };
+    }
+
+    // Basquete: RPC original
     const { data, error } = await supabase.rpc('registrar_avaliacao', {
       p_jogador_id: jogadorId,
       p_arremesso: avaliacao.arremesso,
