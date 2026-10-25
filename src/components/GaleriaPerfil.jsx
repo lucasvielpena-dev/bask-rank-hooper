@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { midiaAPI, supabase } from '../lib/supabase';
+import { useEsporte } from '../contexts/EsporteContext';
 
 const MAX = midiaAPI.MAX_FOTOS;
 
@@ -59,15 +60,15 @@ export default function GaleriaPerfil({ usuarioId, jogador, isOwner = false }) {
           }
         }
         if (u) {
-          const vRes = await midiaAPI.obterVideo(u);
+          const vRes = await midiaAPI.obterVideo(u, esporte || 'basquete');
           setVideo(vRes.data || null);
         } else {
           setVideo(null);
         }
       } else if (uid) {
         const [fRes, vRes] = await Promise.all([
-          midiaAPI.listarPorUsuario(uid, 'foto'),
-          midiaAPI.obterVideo(uid),
+          midiaAPI.listarPorUsuario(uid, 'foto', esporte || 'basquete'),
+          midiaAPI.obterVideo(uid, esporte || 'basquete'),
         ]);
         if (fRes.error) throw fRes.error;
         setFotos(fRes.data || []);
@@ -98,7 +99,7 @@ export default function GaleriaPerfil({ usuarioId, jogador, isOwner = false }) {
     setEnviando(true);
     setErro(null);
     try {
-      const { error } = await midiaAPI.adicionarFoto(usuarioId, file);
+      const { error } = await midiaAPI.adicionarFoto(usuarioId, file, esporte || 'basquete');
       if (error) throw error;
       await carregar();
     } catch (err) {
@@ -115,7 +116,7 @@ export default function GaleriaPerfil({ usuarioId, jogador, isOwner = false }) {
     setEnviandoVideo(true);
     setErro(null);
     try {
-      const { error } = await midiaAPI.adicionarVideo(usuarioId, file);
+      const { error } = await midiaAPI.adicionarVideo(usuarioId, file, esporte || 'basquete');
       if (error) throw error;
       setPlayVideo(false);
       await carregar();

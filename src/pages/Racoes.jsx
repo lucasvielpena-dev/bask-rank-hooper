@@ -4,6 +4,7 @@ import { resolveAuthUserId } from '../lib/authUser';
 import { GRADES, GradePicker, gradePorValor, RendimentoPill, LegendaRendimento } from '../components/GameGrade';
 import { nomeAtleta } from '../lib/nomes';
 import { lerCache, salvarCache } from '../lib/pageCache';
+import { useEsporte } from '../contexts/EsporteContext';
 
 function formatWhen(iso) {
   if (!iso) return '';
@@ -49,7 +50,7 @@ export default function Racoes({ profile, onNavigate }) {
   async function load() {
     setLoading(true);
     setErro(null);
-    const { data, error } = await racoesAPI.listar({ cidade, uf });
+    const { data, error } = await racoesAPI.listar({ cidade, uf, esporte: esporte || 'basquete' });
     if (error) {
       setErro(error.message || 'Erro ao carregar rachões. Rode a migration SQL no Supabase.');
       setLista([]);

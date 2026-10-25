@@ -498,7 +498,7 @@ export const midiaAPI = {
   MAX_VIDEO_BYTES: 20 * 1024 * 1024, // 20 MB
   MAX_VIDEO_SEGUNDOS: 20,
 
-  listarPorUsuario: async (usuarioId, tipo = 'foto') => {
+  listarPorUsuario: async (usuarioId, tipo = 'foto', esporte = null) => {
     if (!usuarioId) return { data: [], error: null };
     let q = supabase
       .from('midia_jogador')
@@ -507,6 +507,7 @@ export const midiaAPI = {
       .order('ordem', { ascending: true })
       .order('created_at', { ascending: true });
     if (tipo) q = q.eq('tipo', tipo);
+    if (esporte) q = q.eq('esporte', esporte);
     const { data, error } = await q;
     return { data: data || [], error };
   },
@@ -535,7 +536,7 @@ export const midiaAPI = {
     return midiaAPI.listarPorUsuario(uid);
   },
 
-  adicionarFoto: async (userId, file) => {
+  adicionarFoto: async (userId, file, esporte = 'basquete') => {
     if (!userId || !file) return { data: null, error: new Error('Dados incompletos') };
 
     const { data: atuais } = await midiaAPI.listarPorUsuario(userId);
@@ -579,6 +580,7 @@ export const midiaAPI = {
         storage_path: filePath,
         tipo: 'foto',
         ordem,
+        esporte: esporte || 'basquete',
       }])
       .select()
       .single();
@@ -590,12 +592,12 @@ export const midiaAPI = {
     return { data, error: null };
   },
 
-  obterVideo: async (usuarioId) => {
-    const { data, error } = await midiaAPI.listarPorUsuario(usuarioId, 'video');
+  obterVideo: async (usuarioId, esporte = null) => {
+    const { data, error } = await midiaAPI.listarPorUsuario(usuarioId, 'video', esporte);
     return { data: (data && data[0]) || null, error };
   },
 
-  adicionarVideo: async (userId, file) => {
+  adicionarVideo: async (userId, file, esporte = 'basquete') => {
     if (!userId || !file) return { data: null, error: new Error('Dados incompletos') };
 
     const { data: atuais } = await midiaAPI.listarPorUsuario(userId, 'video');
@@ -657,6 +659,7 @@ export const midiaAPI = {
         url: pub?.publicUrl,
         storage_path: filePath,
         tipo: 'video',
+        esporte: esporte || 'basquete',
         ordem: 0,
       }])
       .select()
@@ -1203,13 +1206,14 @@ export const masterAPI = {
 // ============================================================
 
 export const racoesAPI = {
-  listar: async ({ cidade, uf, status } = {}) => {
+  listar: async ({ cidade, uf, status, esporte } = {}) => {
     let q = supabase
       .from('racoes')
       .select('*, racao_participantes(id, usuario_id, jogador_id, status, perfil:profiles(nome_completo, apelido, foto_perfil, player_id), jogador:jogadores(nome, apelido, foto_url))')
       .order('data_hora', { ascending: true });
     if (cidade) q = q.eq('cidade', cidade);
     if (uf) q = q.eq('uf', uf);
+    if (esporte) q = q.eq('esporte', esporte);
     if (status) q = q.eq('status', status);
     else q = q.in('status', ['aberto', 'lotado', 'em_andamento', 'finalizado']);
     const { data, error } = await q.limit(40);
