@@ -3115,3 +3115,11 @@ body:not(.light-theme) .card {
   overflow: visible !important;
   max-height: none !important;
 }
+
+/* Avisos (toast): texto completo, quebrando linha no celular (antes cortava mensagens longas) */
+.toast {
+  white-space: normal !important;
+  max-width: calc(100vw - 32px) !important;
+  text-align: center;
+  line-height: 1.4;
+}
