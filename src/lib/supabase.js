@@ -253,21 +253,24 @@ export const votacaoAPI = {
     // Basquete: RPC original
     const { data, error } = await supabase.rpc('registrar_avaliacao', {
       p_jogador_id: jogadorId,
-      p_arremesso: avaliacao.arremesso,
-      p_finalizacao: avaliacao.finalizacao,
-      p_controle_de_bola: avaliacao.controle_de_bola,
-      p_passe_visao: avaliacao.passe_visao,
-      p_defesa_perimetral: avaliacao.defesa_perimetral,
-      p_defesa_garrafao: avaliacao.defesa_garrafao,
-      p_rebote: avaliacao.rebote,
-      p_velocidade_agilidade: avaliacao.velocidade_agilidade,
-      p_explosao_forca: avaliacao.explosao_forca,
-      p_hustle_equipe: avaliacao.hustle_equipe,
+      p_arremesso: Number(avaliacao.arremesso) || 0,
+      p_finalizacao: Number(avaliacao.finalizacao) || 0,
+      p_controle_de_bola: Number(avaliacao.controle_de_bola) || 0,
+      p_passe_visao: Number(avaliacao.passe_visao) || 0,
+      p_defesa_perimetral: Number(avaliacao.defesa_perimetral) || 0,
+      p_defesa_garrafao: Number(avaliacao.defesa_garrafao) || 0,
+      p_rebote: Number(avaliacao.rebote) || 0,
+      p_velocidade_agilidade: Number(avaliacao.velocidade_agilidade) || 0,
+      p_explosao_forca: Number(avaliacao.explosao_forca) || 0,
+      p_hustle_equipe: Number(avaliacao.hustle_equipe) || 0,
       p_ip: metadata.ip || null,
       p_device_id: metadata.deviceId || null,
       p_localizacao: metadata.localizacao || null,
       p_comentario: avaliacao.comentario || null
     });
+    if (error) {
+      console.error('RPC registrar_avaliacao falhou:', error);
+    }
     return { data, error };
   },
 

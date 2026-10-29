@@ -296,7 +296,9 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
         esporte: esporte || 'basquete',
       });
       if (error || (data?.sucesso === false)) {
-        showToast(data?.erro || error?.message || 'Erro ao registrar avaliação.', 'error');
+        const msg = data?.erro || error?.message || error?.details || 'Erro ao registrar avaliação.';
+        console.error('Erro ao salvar avaliação:', { error, data });
+        showToast(msg, 'error');
       } else {
         const media = data?.media_estrelas ?? data?.media ?? null;
         showToast(media ? `Avaliação computada! Nova média: ★ ${Number(media).toFixed(1)}` : 'Avaliação registrada', 'success');
