@@ -1,4 +1,5 @@
 import { useState, useEffect, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase, denunciasAPI, votacaoAPI } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import AnimatedCounter from './AnimatedCounter';
@@ -601,7 +602,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
         )}
       </div>
 
-      {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
+      {toast && createPortal(<div className={`toast ${toast.type}`} style={{ zIndex: 9999 }}>{toast.msg}</div>, document.body)}
     </div>
   );
 }
