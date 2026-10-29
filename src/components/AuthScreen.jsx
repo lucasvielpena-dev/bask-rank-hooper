@@ -518,6 +518,7 @@ export default function AuthScreen({ onStartAnimation, onFinishAnimation, aguard
             {carregando ? 'Conectando…' : 'Entrar com Google'}
           </button>
         </div>
+      </div>
 
       {/* Só aparece se o perfil demorar mais que o normal depois do arremesso:
           antes, nesse caso, o app ficava mudo esperando. */}
