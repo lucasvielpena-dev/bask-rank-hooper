@@ -128,6 +128,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
   const [estrelasVoto, setEstrelasVoto] = useState(Object.fromEntries(cfg.habilidades.map(h => [h.key, 0])));
   const [comentarioVoto, setComentarioVoto] = useState('');
   const [enviandoVoto, setEnviandoVoto] = useState(false);
+  const [voteFeedback, setVoteFeedback] = useState(null);
   const [votosStatus, setVotosStatus] = useState(_cache?.votosStatus || null);
   const [toast, setToast] = useState(null);
   const LIST_PAGE = 24;
@@ -285,10 +286,13 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
     e.preventDefault();
     const faltando = fundamentos.filter(f => !estrelasVoto[f.key]);
     if (faltando.length > 0) {
-      showToast(`Falta nota em: ${faltando.map(f => f.label).join(', ')}`, 'error');
+      const msg = `Falta nota em: ${faltando.map(f => f.label).join(', ')}`;
+      setVoteFeedback({ type: 'error', msg });
+      showToast(msg, 'error');
       return;
     }
     setEnviandoVoto(true);
+    setVoteFeedback(null);
     try {
       const { data, error } = await votacaoAPI.votar(votingPlayer.id, {
         ...estrelasVoto,
@@ -298,15 +302,23 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
       if (error || (data?.sucesso === false)) {
         const msg = data?.erro || error?.message || error?.details || 'Erro ao registrar avaliação.';
         console.error('Erro ao salvar avaliação:', { error, data });
+        setVoteFeedback({ type: 'error', msg });
         showToast(msg, 'error');
       } else {
         const media = data?.media_estrelas ?? data?.media ?? null;
-        showToast(media ? `Avaliação computada! Nova média: ★ ${Number(media).toFixed(1)}` : 'Avaliação registrada', 'success');
-        setVotingPlayer(null);
-        loadJogadores(true);
+        const ok = media ? `Avaliação computada! Nova média: ★ ${Number(media).toFixed(1)}` : 'Avaliação registrada com sucesso';
+        setVoteFeedback({ type: 'ok', msg: ok });
+        showToast(ok, 'success');
+        setTimeout(() => {
+          setVotingPlayer(null);
+          setVoteFeedback(null);
+          loadJogadores(true);
+        }, 900);
       }
     } catch (err) {
-      showToast('Erro de conexão ao salvar avaliação.', 'error');
+      const msg = err.message || 'Erro de conexão ao salvar avaliação.';
+      setVoteFeedback({ type: 'error', msg });
+      showToast(msg, 'error');
     } finally {
       setEnviandoVoto(false);
     }
@@ -607,8 +619,19 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 </div>
               )}
 
+              {voteFeedback && (
+                <div style={{
+                  padding: '10px 12px', borderRadius: 12, textAlign: 'center', fontSize: 13, fontWeight: 600,
+                  background: voteFeedback.type === 'ok' ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)',
+                  color: voteFeedback.type === 'ok' ? '#4ade80' : '#f87171',
+                  border: `1px solid ${voteFeedback.type === 'ok' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}`,
+                }}>
+                  {voteFeedback.msg}
+                </div>
+              )}
+
               <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                <button type="button" onClick={() => setVotingPlayer(null)} disabled={enviandoVoto} style={{ flex: 1, padding: '12px 0', background: 'transparent', border: '1px solid #3F3F46', color: '#FFF', borderRadius: 14, fontWeight: 600 }}>
+                <button type="button" onClick={() => { setVotingPlayer(null); setVoteFeedback(null); }} disabled={enviandoVoto} style={{ flex: 1, padding: '12px 0', background: 'transparent', border: '1px solid #3F3F46', color: '#FFF', borderRadius: 14, fontWeight: 600 }}>
                   Cancelar
                 </button>
                 <button type="submit" disabled={enviandoVoto} style={{ flex: 2, padding: '12px 0', background: '#FFB800', border: 'none', color: '#000', borderRadius: 14, fontWeight: 700, opacity: (enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])) ? 0.5 : 1 }}>
