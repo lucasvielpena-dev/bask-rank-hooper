@@ -283,9 +283,9 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
 
   async function handleSubmitVote(e) {
     e.preventDefault();
-    const faltando = fundamentos.some(f => !estrelasVoto[f.key]);
-    if (faltando) {
-      showToast('Selecione uma nota para todos os fundamentos', 'error');
+    const faltando = fundamentos.filter(f => !estrelasVoto[f.key]);
+    if (faltando.length > 0) {
+      showToast(`Falta nota em: ${faltando.map(f => f.label).join(', ')}`, 'error');
       return;
     }
     setEnviandoVoto(true);
@@ -611,7 +611,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 <button type="button" onClick={() => setVotingPlayer(null)} disabled={enviandoVoto} style={{ flex: 1, padding: '12px 0', background: 'transparent', border: '1px solid #3F3F46', color: '#FFF', borderRadius: 14, fontWeight: 600 }}>
                   Cancelar
                 </button>
-                <button type="submit" disabled={enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])} style={{ flex: 2, padding: '12px 0', background: '#FFB800', border: 'none', color: '#000', borderRadius: 14, fontWeight: 700, opacity: (enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])) ? 0.5 : 1 }}>
+                <button type="submit" disabled={enviandoVoto} style={{ flex: 2, padding: '12px 0', background: '#FFB800', border: 'none', color: '#000', borderRadius: 14, fontWeight: 700, opacity: (enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])) ? 0.5 : 1 }}>
                   {enviandoVoto ? 'Enviando...' : 'Confirmar Avaliação'}
                 </button>
               </div>

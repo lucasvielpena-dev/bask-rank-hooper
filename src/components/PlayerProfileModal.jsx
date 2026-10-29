@@ -267,7 +267,11 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
       showToast('Você só pode avaliar atletas da sua cidade.', 'error');
       return;
     }
-    if (fundamentos.some(f => !estrelas[f.key])) { showToast('Selecione uma nota para todos os fundamentos', 'error'); return; }
+    const faltando = fundamentos.filter(f => !estrelas[f.key]);
+    if (faltando.length > 0) {
+      showToast(`Falta nota em: ${faltando.map(f => f.label).join(', ')}`, 'error');
+      return;
+    }
     setEnviandoAvaliacao(true);
     const { data, error } = await votacaoAPI.votar(jogador.id, { ...estrelas, esporte: esporte || 'basquete' });
     if (error || (data?.sucesso === false)) { showToast(data?.erro || error?.message || 'Erro ao registrar avaliação', 'error'); }
@@ -344,7 +348,7 @@ export default function PlayerProfileModal({ jogador, rank, onClose, iniciarAval
             </div>
             <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
               <button type="button" onClick={() => setShowAvaliar(false)} disabled={enviandoAvaliacao} style={{ flex: 1, padding: '12px', borderRadius: 12, border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text-primary)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>Voltar</button>
-              <button type="button" onClick={handleConfirmarAvaliacao} disabled={enviandoAvaliacao || fundamentos.some(f => !estrelas[f.key])} style={{ flex: 2, padding: '12px', borderRadius: 12, border: 'none', background: 'var(--accent)', color: 'var(--accent-on)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>{enviandoAvaliacao ? 'Salvando...' : 'Salvar'}</button>
+              <button type="button" onClick={handleConfirmarAvaliacao} disabled={enviandoAvaliacao} style={{ flex: 2, padding: '12px', borderRadius: 12, border: 'none', background: 'var(--accent)', color: 'var(--accent-on)', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: "'Inter',sans-serif" }}>{enviandoAvaliacao ? 'Salvando...' : 'Salvar'}</button>
             </div>
           </div>
         ) : (
