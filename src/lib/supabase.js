@@ -250,7 +250,7 @@ export const votacaoAPI = {
       return { data, error };
     }
 
-    // Basquete: RPC original
+    // Basquete: tenta RPC; se falhar, grava direto
     const { data, error } = await supabase.rpc('registrar_avaliacao', {
       p_jogador_id: jogadorId,
       p_arremesso: Number(avaliacao.arremesso) || 0,
@@ -268,10 +268,54 @@ export const votacaoAPI = {
       p_localizacao: metadata.localizacao || null,
       p_comentario: avaliacao.comentario || null
     });
-    if (error) {
-      console.error('RPC registrar_avaliacao falhou:', error);
+
+    if (!error && data?.sucesso !== false) {
+      return { data, error: null };
     }
-    return { data, error };
+
+    // Fallback: grava direto na tabela
+    console.warn('RPC falhou, gravando direto:', error || data);
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) return { data: null, error: new Error('Não autenticado') };
+
+    const { data: jog } = await supabase.from('jogadores').select('criado_por, cidade, uf').eq('id', jogadorId).maybeSingle();
+    if (jog?.criado_por === user.id) {
+      return { data: null, error: new Error('Você não pode avaliar a si mesmo') };
+    }
+    const { data: prof } = await supabase.from('profiles').select('cidade_atual, cidade, uf').eq('id', user.id).maybeSingle();
+    const cAval = (prof?.cidade_atual || prof?.cidade || '').toLowerCase().trim();
+    const cJog = (jog?.cidade || '').toLowerCase().trim();
+    if (cAval && cJog && cAval !== cJog) {
+      return { data: null, error: new Error('Você só pode avaliar atletas da sua cidade') };
+    }
+
+    const payload = {
+      avaliador_id: user.id,
+      jogador_id: jogadorId,
+      esporte: 'basquete',
+      comentario: avaliacao.comentario || null,
+      arremesso: Number(avaliacao.arremesso) || 1,
+      finalizacao: Number(avaliacao.finalizacao) || 1,
+      controle_de_bola: Number(avaliacao.controle_de_bola) || 1,
+      passe_visao: Number(avaliacao.passe_visao) || 1,
+      defesa_perimetral: Number(avaliacao.defesa_perimetral) || 1,
+      defesa_garrafao: Number(avaliacao.defesa_garrafao) || 1,
+      rebote: Number(avaliacao.rebote) || 1,
+      velocidade_agilidade: Number(avaliacao.velocidade_agilidade) || 1,
+      explosao_forca: Number(avaliacao.explosao_forca) || 1,
+      hustle_equipe: Number(avaliacao.hustle_equipe) || 1,
+      // colunas antigas espelhadas
+      defesa: Number(avaliacao.defesa_perimetral) || 1,
+      explosao_fisica: Number(avaliacao.explosao_forca) || 1,
+      visao_de_jogo: Number(avaliacao.passe_visao) || 1,
+    };
+    const { data: saved, error: saveErr } = await supabase
+      .from('avaliacoes')
+      .upsert(payload, { onConflict: 'avaliador_id,jogador_id' })
+      .select()
+      .maybeSingle();
+    if (saveErr) return { data: null, error: saveErr };
+    return { data: { sucesso: true, ...saved }, error: null };
   },
 
   getStatusHoje: async () => {
