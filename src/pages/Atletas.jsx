@@ -283,7 +283,7 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
   }
 
   async function handleSubmitVote(e) {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     const faltando = fundamentos.filter(f => !estrelasVoto[f.key]);
     if (faltando.length > 0) {
       const msg = `Falta nota em: ${faltando.map(f => f.label).join(', ')}`;
@@ -294,11 +294,13 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
     setEnviandoVoto(true);
     setVoteFeedback(null);
     try {
-      const { data, error } = await votacaoAPI.votar(votingPlayer.id, {
+      const votoPromise = votacaoAPI.votar(votingPlayer.id, {
         ...estrelasVoto,
         comentario: comentarioVoto.trim() || null,
         esporte: esporte || 'basquete',
       });
+      const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('Demorou demais. Tente de novo.')), 12000));
+      const { data, error } = await Promise.race([votoPromise, timeout]);
       if (error || (data?.sucesso === false)) {
         const msg = data?.erro || error?.message || error?.details || 'Erro ao registrar avaliação.';
         console.error('Erro ao salvar avaliação:', { error, data });
@@ -634,8 +636,8 @@ export default function Atletas({ profile, onNavigate, initialFiltro }) {
                 <button type="button" onClick={() => { setVotingPlayer(null); setVoteFeedback(null); }} disabled={enviandoVoto} style={{ flex: 1, padding: '12px 0', background: 'transparent', border: '1px solid #3F3F46', color: '#FFF', borderRadius: 14, fontWeight: 600 }}>
                   Cancelar
                 </button>
-                <button type="submit" disabled={enviandoVoto} style={{ flex: 2, padding: '12px 0', background: '#FFB800', border: 'none', color: '#000', borderRadius: 14, fontWeight: 700, opacity: (enviandoVoto || fundamentos.some(f => !estrelasVoto[f.key])) ? 0.5 : 1 }}>
-                  {enviandoVoto ? 'Enviando...' : 'Confirmar Avaliação'}
+                <button type="button" onClick={handleSubmitVote} disabled={enviandoVoto} style={{ flex: 2, padding: '12px 0', background: '#FFB800', border: 'none', color: '#000', borderRadius: 14, fontWeight: 700, opacity: enviandoVoto ? 0.7 : 1 }}>
+                  {enviandoVoto ? 'Salvando...' : 'Confirmar Avaliação'}
                 </button>
               </div>
             </form>
